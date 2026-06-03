@@ -1,7 +1,7 @@
 /* ============================================
    RELIER — Main JS
    Nav scroll, scroll animations, accordion,
-   cart count, email form, toast
+   email form, toast
    ============================================ */
 
 (function () {
@@ -67,19 +67,6 @@
       emailForm.reset();
     });
   }
-
-  /* ---- Cart count from localStorage ---- */
-  function updateCartCount() {
-    try {
-      const cart = JSON.parse(localStorage.getItem('relierCart') || '[]');
-      const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
-      document.querySelectorAll('#cartCount').forEach(el => {
-        el.textContent = count;
-        el.style.display = count > 0 ? 'flex' : 'none';
-      });
-    } catch (e) {}
-  }
-  updateCartCount();
 
   /* ---- Toast notification ---- */
   window.showToast = function (msg, duration) {

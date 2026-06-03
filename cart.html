@@ -8,103 +8,42 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://app.snipcart.com" />
+  <link rel="preconnect" href="https://cdn.snipcart.com" crossorigin />
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.css" />
   <style>
-    .cart-layout {
-      max-width: 1100px;
+    .cart-info-wrap {
+      max-width: 640px;
       margin: 0 auto;
-      padding: calc(var(--ticker-h) + var(--nav-h) + 60px) 32px 80px;
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 60px;
-      align-items: start;
+      padding: calc(var(--ticker-h) + var(--nav-h) + 80px) 32px 100px;
+      text-align: center;
     }
-    .cart-title {
+    .cart-info-wrap .cart-info__eyebrow {
       font-family: var(--font-mono);
-      font-size: clamp(28px, 4vw, 52px);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--grey-400);
+      margin-bottom: 20px;
+    }
+    .cart-info-wrap h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(28px, 5vw, 52px);
       font-weight: 700;
       letter-spacing: -0.02em;
-      grid-column: 1 / -1;
-      border-bottom: 1px solid var(--grey-200);
-      padding-bottom: 24px;
-      margin-bottom: 0;
+      line-height: 1.05;
+      margin-bottom: 24px;
     }
-    .cart-items { display: flex; flex-direction: column; gap: 0; }
-    .cart-item {
-      display: grid;
-      grid-template-columns: 100px 1fr auto;
-      gap: 20px;
-      align-items: center;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--grey-200);
+    .cart-info-wrap p {
+      font-size: 15px;
+      color: var(--grey-600);
+      line-height: 1.7;
+      margin-bottom: 40px;
     }
-    .cart-item__img {
-      aspect-ratio: 3/4;
-      background: var(--grey-100);
+    .cart-info__actions {
       display: flex;
-      align-items: center;
+      gap: 16px;
       justify-content: center;
-    }
-    .cart-item__img--dark { background: var(--grey-800); }
-    .cart-item__img span {
-      font-family: var(--font-mono);
-      font-size: 8px;
-      color: var(--grey-400);
-      letter-spacing: 0.1em;
-    }
-    .cart-item__name { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 6px; }
-    .cart-item__meta { font-size: 12px; color: var(--grey-400); margin-bottom: 12px; }
-    .cart-item__qty { display: flex; align-items: center; gap: 12px; }
-    .qty-btn {
-      width: 28px;
-      height: 28px;
-      border: 1px solid var(--grey-200);
-      background: transparent;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all var(--transition);
-    }
-    .qty-btn:hover { background: var(--black); color: var(--white); border-color: var(--black); }
-    .qty-val { font-family: var(--font-mono); font-size: 13px; min-width: 20px; text-align: center; }
-    .cart-item__remove {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--grey-400);
-      cursor: pointer;
-      background: none;
-      border: none;
-      transition: color var(--transition);
-      margin-top: 8px;
-      display: block;
-    }
-    .cart-item__remove:hover { color: var(--black); }
-    .cart-item__price { font-family: var(--font-mono); font-size: 14px; text-align: right; }
-
-    .cart-empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 80px 0;
-    }
-    .cart-empty__title { font-family: var(--font-mono); font-size: 20px; margin-bottom: 16px; }
-    .cart-empty p { color: var(--grey-400); margin-bottom: 32px; }
-
-    .cart-summary {
-      background: var(--white);
-      padding: 32px;
-      position: sticky;
-      top: calc(var(--ticker-h) + var(--nav-h) + 20px);
-    }
-    .cart-summary__title { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.15em; margin-bottom: 24px; border-bottom: 1px solid var(--grey-200); padding-bottom: 16px; }
-    .cart-summary__row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
-    .cart-summary__row--total { font-family: var(--font-mono); font-weight: 700; font-size: 16px; border-top: 1px solid var(--grey-200); padding-top: 16px; margin-top: 16px; }
-    .cart-summary__note { font-size: 11px; color: var(--grey-400); margin: 16px 0; text-align: center; }
-    @media (max-width: 768px) {
-      .cart-layout { grid-template-columns: 1fr; }
-      .cart-summary { position: static; }
+      flex-wrap: wrap;
     }
   </style>
 </head>
@@ -137,128 +76,74 @@
         <a href="#" class="nav__icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </a>
-        <a href="cart.html" class="nav__icon nav__cart active">
+        <a href="#" class="nav__icon nav__cart snipcart-checkout" aria-label="Cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span class="nav__cart-count" id="cartCount">0</span>
+          <span class="nav__cart-count snipcart-items-count"></span>
         </a>
       </div>
     </div>
   </nav>
 
-  <div class="cart-layout">
-    <h1 class="cart-title">YOUR CART</h1>
-    <div class="cart-items" id="cartItems">
-      <!-- Populated by JS -->
-    </div>
-    <div class="cart-summary" id="cartSummary" style="display:none;">
-      <h3 class="cart-summary__title">ORDER SUMMARY</h3>
-      <div class="cart-summary__row">
-        <span>Subtotal</span>
-        <span id="subtotal">£0.00</span>
-      </div>
-      <div class="cart-summary__row">
-        <span>Shipping</span>
-        <span id="shipping">Calculated at checkout</span>
-      </div>
-      <div class="cart-summary__row cart-summary__row--total">
-        <span>TOTAL</span>
-        <span id="total">£0.00</span>
-      </div>
-      <p class="cart-summary__note">Free UK shipping on orders over £100</p>
-      <a href="checkout.html" class="btn btn--black btn--full" style="margin-bottom:12px;display:flex;align-items:center;justify-content:center;">CHECKOUT</a>
-      <a href="shop.html" class="btn btn--outline btn--full">CONTINUE SHOPPING</a>
+  <div class="cart-info-wrap">
+    <p class="cart-info__eyebrow">YOUR CART</p>
+    <h1>CART &amp; CHECKOUT</h1>
+    <p>Your cart is managed via the cart icon in the navigation. Click the bag icon at the top right to view your items, update quantities, and proceed to secure checkout powered by Stripe.</p>
+    <div class="cart-info__actions">
+      <a href="#" class="btn btn--black snipcart-checkout">VIEW MY CART</a>
+      <a href="shop.html" class="btn btn--outline">CONTINUE SHOPPING</a>
     </div>
   </div>
 
   <footer class="footer">
-    <div class="footer__bottom" style="border-top:none;">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <canvas id="footerLogoCanvas"></canvas>
+        <p>Connect to the Culture.</p>
+      </div>
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4>SHOP</h4>
+          <a href="shop.html?cat=new">New Arrivals</a>
+          <a href="shop.html?cat=tops">Tops</a>
+          <a href="shop.html?cat=bottoms">Bottoms</a>
+          <a href="shop.html?cat=outerwear">Outerwear</a>
+          <a href="shop.html?cat=accessories">Accessories</a>
+        </div>
+        <div class="footer__col">
+          <h4>INFO</h4>
+          <a href="#">About</a>
+          <a href="#">Stockists</a>
+          <a href="lookbook.html">Lookbook</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer__col">
+          <h4>HELP</h4>
+          <a href="returns.html">Shipping & Returns</a>
+          <a href="#">Size Guide</a>
+          <a href="#">FAQ</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer__col">
+          <h4>FOLLOW</h4>
+          <a href="#">Instagram</a>
+          <a href="#">TikTok</a>
+          <a href="#">Twitter</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
       <p>© 2026 RELIER. ALL RIGHTS RESERVED.</p>
       <div class="footer__legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
       </div>
     </div>
   </footer>
 
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_PUBLIC_API_KEY" data-config-modal-style="side" data-currency="gbp"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/logo3d.js"></script>
-  <script>
-  (function() {
-    function getCart() {
-      try { return JSON.parse(localStorage.getItem('relierCart') || '[]'); } catch(e) { return []; }
-    }
-    function saveCart(cart) {
-      localStorage.setItem('relierCart', JSON.stringify(cart));
-    }
-    function renderCart() {
-      const cart = getCart();
-      const itemsEl = document.getElementById('cartItems');
-      const summaryEl = document.getElementById('cartSummary');
-      const countEls = document.querySelectorAll('#cartCount');
-
-      const count = cart.reduce((s,c) => s + (c.qty||1), 0);
-      countEls.forEach(el => { el.textContent = count; el.style.display = count > 0 ? 'flex' : 'none'; });
-
-      if (!cart.length) {
-        itemsEl.innerHTML = `<div class="cart-empty">
-          <h2 class="cart-empty__title">YOUR CART IS EMPTY</h2>
-          <p>You haven't added anything yet.</p>
-          <a href="shop.html" class="btn btn--black">SHOP NOW</a>
-        </div>`;
-        summaryEl.style.display = 'none';
-        return;
-      }
-
-      summaryEl.style.display = '';
-      itemsEl.innerHTML = cart.map((item, i) => `
-        <div class="cart-item" data-index="${i}">
-          <div class="cart-item__img${i % 2 ? ' cart-item__img--dark' : ''}">
-            <span>IMG</span>
-          </div>
-          <div>
-            <p class="cart-item__name">${item.name}</p>
-            <p class="cart-item__meta">${item.colour || ''} / ${item.size}</p>
-            <div class="cart-item__qty">
-              <button class="qty-btn" data-action="dec" data-index="${i}">−</button>
-              <span class="qty-val">${item.qty || 1}</span>
-              <button class="qty-btn" data-action="inc" data-index="${i}">+</button>
-            </div>
-            <button class="cart-item__remove" data-action="remove" data-index="${i}">REMOVE</button>
-          </div>
-          <div class="cart-item__price">${item.price}</div>
-        </div>
-      `).join('');
-
-      /* Totals */
-      let subtotal = 0;
-      cart.forEach(item => {
-        const price = parseFloat((item.price || '£0').replace(/[^0-9.]/g,''));
-        subtotal += price * (item.qty || 1);
-      });
-      document.getElementById('subtotal').textContent = '£' + subtotal.toFixed(2);
-      document.getElementById('total').textContent = '£' + subtotal.toFixed(2);
-      document.getElementById('shipping').textContent = subtotal >= 100 ? 'FREE' : '£4.99';
-
-      /* Qty / remove listeners */
-      itemsEl.querySelectorAll('[data-action]').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const cart = getCart();
-          const idx = parseInt(this.dataset.index);
-          if (this.dataset.action === 'inc') {
-            cart[idx].qty = (cart[idx].qty || 1) + 1;
-          } else if (this.dataset.action === 'dec') {
-            cart[idx].qty = Math.max(1, (cart[idx].qty || 1) - 1);
-          } else if (this.dataset.action === 'remove') {
-            cart.splice(idx, 1);
-          }
-          saveCart(cart);
-          renderCart();
-        });
-      });
-    }
-    renderCart();
-  })();
-  </script>
   <script src="js/main.js"></script>
+  <script async src="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.js"></script>
 </body>
 </html>

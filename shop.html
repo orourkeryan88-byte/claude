@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://app.snipcart.com" />
+  <link rel="preconnect" href="https://cdn.snipcart.com" crossorigin />
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.css" />
 </head>
 <body>
 
@@ -40,9 +43,9 @@
         <a href="#" class="nav__icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </a>
-        <a href="cart.html" class="nav__icon nav__cart">
+        <a href="#" class="nav__icon nav__cart snipcart-checkout" aria-label="Cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span class="nav__cart-count" id="cartCount">0</span>
+          <span class="nav__cart-count snipcart-items-count"></span>
         </a>
       </div>
     </div>
@@ -91,7 +94,16 @@
             <span class="img-placeholder-text">WHITE TEE<br><small>images/white-tee-front.jpg</small></span>
           </div>
           <span class="product-card__tag">NEW</span>
-          <div class="product-card__quick-add">QUICK ADD</div>
+          <button class="product-card__quick-add snipcart-add-item"
+            data-item-id="white-tee"
+            data-item-name="RELIER TEE — WHITE"
+            data-item-price="55.00"
+            data-item-url="shop.html"
+            data-item-image="images/white-tee-front.jpg"
+            data-item-custom1-name="Size"
+            data-item-custom1-options="XS|S|M|L|XL"
+            data-item-custom1-required="true"
+            onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
           <p class="product-card__name">RELIER TEE — WHITE</p>
@@ -109,7 +121,16 @@
             <span class="img-placeholder-text">BLACK TEE<br><small>images/black-tee-front.jpg</small></span>
           </div>
           <span class="product-card__tag">NEW</span>
-          <div class="product-card__quick-add">QUICK ADD</div>
+          <button class="product-card__quick-add snipcart-add-item"
+            data-item-id="black-tee"
+            data-item-name="RELIER TEE — BLACK"
+            data-item-price="55.00"
+            data-item-url="shop.html"
+            data-item-image="images/black-tee-front.jpg"
+            data-item-custom1-name="Size"
+            data-item-custom1-options="XS|S|M|L|XL"
+            data-item-custom1-required="true"
+            onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
           <p class="product-card__name">RELIER TEE — BLACK</p>
@@ -127,7 +148,13 @@
             <span class="img-placeholder-text">GREY CAP<br><small>images/grey-cap.jpg</small></span>
           </div>
           <span class="product-card__tag">NEW</span>
-          <div class="product-card__quick-add">QUICK ADD</div>
+          <button class="product-card__quick-add snipcart-add-item"
+            data-item-id="grey-cap"
+            data-item-name="RELIER TRUCKER CAP — GREY"
+            data-item-price="40.00"
+            data-item-url="shop.html"
+            data-item-image="images/grey-cap.jpg"
+            onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
           <p class="product-card__name">RELIER TRUCKER — GREY</p>
@@ -145,7 +172,13 @@
             <span class="img-placeholder-text">BLACK CAP<br><small>images/black-cap.jpg</small></span>
           </div>
           <span class="product-card__tag">NEW</span>
-          <div class="product-card__quick-add">QUICK ADD</div>
+          <button class="product-card__quick-add snipcart-add-item"
+            data-item-id="black-cap"
+            data-item-name="RELIER SNAPBACK — BLACK"
+            data-item-price="40.00"
+            data-item-url="shop.html"
+            data-item-image="images/black-cap.jpg"
+            onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
           <p class="product-card__name">RELIER SNAPBACK — BLACK</p>
@@ -162,7 +195,16 @@
           <div class="product-card__image product-card__image--placeholder" style="display:none;">
             <span class="img-placeholder-text">WHITE TEE BACK<br><small>images/white-tee-back.jpg</small></span>
           </div>
-          <div class="product-card__quick-add">QUICK ADD</div>
+          <button class="product-card__quick-add snipcart-add-item"
+            data-item-id="white-tee"
+            data-item-name="RELIER TEE — WHITE"
+            data-item-price="55.00"
+            data-item-url="shop.html"
+            data-item-image="images/white-tee-front.jpg"
+            data-item-custom1-name="Size"
+            data-item-custom1-options="XS|S|M|L|XL"
+            data-item-custom1-required="true"
+            onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
           <p class="product-card__name">RELIER TEE — WHITE</p>
@@ -179,7 +221,16 @@
           <div class="product-card__image product-card__image--dark" style="display:none;">
             <span class="img-placeholder-text">BLACK TEE BACK<br><small>images/black-tee-back.jpg</small></span>
           </div>
-          <div class="product-card__quick-add">QUICK ADD</div>
+          <button class="product-card__quick-add snipcart-add-item"
+            data-item-id="black-tee"
+            data-item-name="RELIER TEE — BLACK"
+            data-item-price="55.00"
+            data-item-url="shop.html"
+            data-item-image="images/black-tee-front.jpg"
+            data-item-custom1-name="Size"
+            data-item-custom1-options="XS|S|M|L|XL"
+            data-item-custom1-required="true"
+            onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
           <p class="product-card__name">RELIER TEE — BLACK</p>
@@ -248,7 +299,7 @@
         </div>
         <div class="footer__col">
           <h4>HELP</h4>
-          <a href="#">Shipping & Returns</a>
+          <a href="returns.html">Shipping & Returns</a>
           <a href="#">Size Guide</a>
           <a href="#">FAQ</a>
           <a href="#">Contact</a>
@@ -264,15 +315,17 @@
     <div class="footer__bottom">
       <p>© 2026 RELIER. ALL RIGHTS RESERVED.</p>
       <div class="footer__legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
       </div>
     </div>
   </footer>
 
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_PUBLIC_API_KEY" data-config-modal-style="side" data-currency="gbp"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/logo3d.js"></script>
   <script src="js/shop.js"></script>
   <script src="js/main.js"></script>
+  <script async src="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.js"></script>
 </body>
 </html>
