@@ -1,7 +1,8 @@
 /* ============================================
-   RELIER — 3D Logo Engine (Three.js)
-   Renders the "RELIER" wordmark as a 3D
-   extruded object on any canvas element.
+   RELIER — 3D Logo Engine
+   Renders the RR monogram (4 mirrored Rs
+   forming an X) as a spinning 3D plane
+   via Three.js CanvasTexture.
    ============================================ */
 
 (function () {
@@ -11,340 +12,326 @@
   if (!THREE) return;
 
   const instances = [];
-  let rafId = null;
+  let rafRunning = false;
 
-  /* ---- Shared assets ---- */
-  let sharedFont = null;
-  const fontCallbacks = [];
-  let fontLoading = false;
+  /* ---- Draw RR Monogram to a 2D canvas ---- */
+  function drawMonogram(canvas, opts) {
+    const w = canvas.width;
+    const h = canvas.height;
+    const ctx = canvas.getContext('2d');
 
-  function loadFont(cb) {
-    if (sharedFont) { cb(sharedFont); return; }
-    fontCallbacks.push(cb);
-    if (fontLoading) return;
-    fontLoading = true;
+    ctx.clearRect(0, 0, w, h);
 
-    const loader = new THREE.FontLoader();
-    /* Fallback: build a simple custom font-like geometry using shapes */
-    loader.load(
-      'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json',
-      function (font) {
-        sharedFont = font;
-        fontCallbacks.forEach(fn => fn(font));
-        fontCallbacks.length = 0;
-      },
-      undefined,
-      function () {
-        /* Font failed to load — use box-letter fallback */
-        fontCallbacks.forEach(fn => fn(null));
-        fontCallbacks.length = 0;
-      }
-    );
+    if (opts.bgColor) {
+      ctx.fillStyle = opts.bgColor;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const fontSize = Math.min(w, h) * (opts.fontScale || 0.29);
+
+    /* Offsets — tuned so the R legs form the centre X */
+    const ox = fontSize * 0.44;
+    const oy = fontSize * 0.41;
+
+    ctx.fillStyle = opts.color || '#ffffff';
+    ctx.font = `900 ${fontSize}px Georgia, "Times New Roman", serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    /* Top-left: normal R */
+    ctx.save();
+    ctx.translate(cx - ox, cy - oy);
+    ctx.fillText('R', 0, 0);
+    ctx.restore();
+
+    /* Top-right: mirrored R (Я) */
+    ctx.save();
+    ctx.translate(cx + ox, cy - oy);
+    ctx.scale(-1, 1);
+    ctx.fillText('R', 0, 0);
+    ctx.restore();
+
+    /* Bottom-left: mirrored + flipped (180° of top-right) */
+    ctx.save();
+    ctx.translate(cx - ox, cy + oy);
+    ctx.scale(-1, -1);
+    ctx.fillText('R', 0, 0);
+    ctx.restore();
+
+    /* Bottom-right: flipped (180° of top-left) */
+    ctx.save();
+    ctx.translate(cx + ox, cy + oy);
+    ctx.scale(1, -1);
+    ctx.fillText('R', 0, 0);
+    ctx.restore();
+
+    /* Optional RELIER wordmark below monogram */
+    if (opts.showWordmark) {
+      const wFontSize = fontSize * 0.2;
+      ctx.fillStyle = opts.color || '#ffffff';
+      ctx.font = `700 ${wFontSize}px Georgia, serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      /* Letter spacing via individual chars */
+      const word = 'RELIER';
+      const spacing = wFontSize * 0.55;
+      const totalW = (word.length - 1) * spacing;
+      word.split('').forEach((ch, i) => {
+        ctx.fillText(ch, cx - totalW / 2 + i * spacing, cy + oy + fontSize * 0.68);
+      });
+    }
   }
 
-  /* ---- Colour themes ---- */
-  const themes = {
-    dark: {
-      background: 0x1a1a18,
-      logoColor: 0xd4d4d0,
-      emissive: 0x333330,
-      envLight: 0x444440,
-    },
-    light: {
-      background: 0xe8e8e6,
-      logoColor: 0x1a1a18,
-      emissive: 0x888884,
-      envLight: 0xffffff,
-    },
-    transparent: {
-      background: null,
-      logoColor: 0xd4d4d0,
-      emissive: 0x555550,
-      envLight: 0xaaaaaa,
-    },
-  };
+  /* ---- Create Three.js CanvasTexture from monogram ---- */
+  function makeTexture(opts) {
+    const size = opts.texSize || 512;
+    const c = document.createElement('canvas');
+    c.width = size;
+    c.height = size;
+    drawMonogram(c, opts);
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }
 
-  /* ---- Create a single 3D logo instance ---- */
-  function createLogoInstance(canvas, opts) {
-    const theme = themes[opts.theme] || themes.dark;
-    const width = canvas.clientWidth || canvas.width || 400;
-    const height = canvas.clientHeight || canvas.height || 200;
+  /* ---- Build a Three.js logo instance on a canvas element ---- */
+  function createInstance(canvas, opts) {
+    if (!canvas) return null;
+
+    const w = canvas.clientWidth || canvas.width || 400;
+    const h = canvas.clientHeight || canvas.height || 300;
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
-      alpha: theme.background === null,
+      alpha: opts.alpha !== false,
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(width, height, false);
+    renderer.setSize(w, h, false);
     renderer.outputEncoding = THREE.sRGBEncoding;
-    if (theme.background !== null) renderer.setClearColor(theme.background, 1);
+    if (opts.bgHex != null) renderer.setClearColor(opts.bgHex, 1);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, opts.camZ || 6);
+    const camera = new THREE.PerspectiveCamera(38, w / h, 0.01, 100);
+    camera.position.z = opts.camZ || 5;
 
     /* Lighting */
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const dir1 = new THREE.DirectionalLight(0xffffff, 1.2);
-    dir1.position.set(5, 5, 5);
-    scene.add(dir1);
-    const dir2 = new THREE.DirectionalLight(theme.envLight, 0.6);
-    dir2.position.set(-5, -3, 2);
-    scene.add(dir2);
-    const pointLight = new THREE.PointLight(0xffffff, 0.4, 20);
-    pointLight.position.set(0, 3, 4);
-    scene.add(pointLight);
+    scene.add(new THREE.AmbientLight(0xffffff, opts.ambient || 0.65));
 
-    let logoMesh = null;
-    let group = new THREE.Group();
+    const key = new THREE.DirectionalLight(0xffffff, opts.keyLight || 1.5);
+    key.position.set(4, 5, 6);
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0xcccccc, 0.4);
+    fill.position.set(-5, -2, 2);
+    scene.add(fill);
+
+    const rim = new THREE.PointLight(0xffffff, 0.35, 20);
+    rim.position.set(0, 4, -4);
+    scene.add(rim);
+
+    const group = new THREE.Group();
     scene.add(group);
 
-    /* Build geometry once font is ready */
-    function buildLogo(font) {
-      /* Remove old */
-      while (group.children.length) group.remove(group.children[0]);
+    /* Logo plane */
+    const logoTex = makeTexture({
+      texSize: 512,
+      color: opts.logoColor || '#e8e8e6',
+      bgColor: opts.drawBg ? opts.bgDrawColor : null,
+      fontScale: 0.29,
+      showWordmark: opts.showWordmark || false,
+    });
 
-      if (font) {
-        const textGeo = new THREE.TextGeometry(opts.text || 'RELIER', {
-          font,
-          size: opts.size || 0.7,
-          height: opts.depth || 0.18,
-          curveSegments: 12,
-          bevelEnabled: true,
-          bevelThickness: 0.025,
-          bevelSize: 0.012,
-          bevelSegments: 5,
-        });
+    const planeSize = opts.planeSize || 3;
+    const geo = new THREE.PlaneGeometry(planeSize, planeSize);
+    const mat = new THREE.MeshStandardMaterial({
+      map: logoTex,
+      transparent: true,
+      alphaTest: 0.05,
+      metalness: opts.metalness || 0.35,
+      roughness: opts.roughness || 0.45,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
 
-        textGeo.computeBoundingBox();
-        const bb = textGeo.boundingBox;
-        const cx = -(bb.max.x - bb.min.x) / 2;
-        const cy = -(bb.max.y - bb.min.y) / 2;
-        textGeo.translate(cx, cy, 0);
+    const plane = new THREE.Mesh(geo, mat);
+    group.add(plane);
 
-        const mat = new THREE.MeshStandardMaterial({
-          color: theme.logoColor,
-          emissive: theme.emissive,
-          metalness: 0.4,
-          roughness: 0.3,
-        });
-
-        logoMesh = new THREE.Mesh(textGeo, mat);
-        group.add(logoMesh);
-      } else {
-        /* Fallback: simple block letters using boxes */
-        buildFallbackLogo(group, theme);
-      }
+    /* Optional thin ring for feature section */
+    if (opts.ring) {
+      const ringGeo = new THREE.TorusGeometry(planeSize * 0.52, 0.018, 6, 90);
+      const ringMat = new THREE.MeshStandardMaterial({
+        color: opts.ringColor || 0x888880,
+        metalness: 0.8,
+        roughness: 0.2,
+      });
+      group.add(new THREE.Mesh(ringGeo, ringMat));
     }
 
-    function buildFallbackLogo(g, t) {
-      const mat = new THREE.MeshStandardMaterial({
-        color: t.logoColor,
-        emissive: t.emissive,
-        metalness: 0.3,
-        roughness: 0.4,
-      });
-      const letters = 'RELIER'.split('');
-      const spacing = 0.9;
-      const startX = -(letters.length - 1) * spacing * 0.5;
-      letters.forEach((_, i) => {
-        const geo = new THREE.BoxGeometry(0.65, 0.8, 0.15);
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.position.x = startX + i * spacing;
-        g.add(mesh);
-      });
-    }
-
-    loadFont(buildLogo);
-
-    /* Resize handler */
+    /* Resize observer */
     const ro = new ResizeObserver(() => {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      if (!w || !h) return;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
+      const nw = canvas.clientWidth;
+      const nh = canvas.clientHeight;
+      if (!nw || !nh) return;
+      renderer.setSize(nw, nh, false);
+      camera.aspect = nw / nh;
       camera.updateProjectionMatrix();
     });
     ro.observe(canvas);
 
-    const inst = {
+    return {
       renderer, scene, camera, group,
-      rotSpeed: opts.rotSpeed || 0.004,
-      floatSpeed: opts.floatSpeed || 0.8,
-      floatAmp: opts.floatAmp || 0.06,
-      mouseX: 0, mouseY: 0,
-      clock: new THREE.Clock(),
-      isHero: opts.isHero || false,
+      rotSpeed:    opts.rotSpeed    || 0.006,
+      floatAmp:    opts.floatAmp    || 0.09,
+      floatSpeed:  opts.floatSpeed  || 0.65,
+      parallax:    opts.parallax    || false,
+      clock:       new THREE.Clock(),
       ro,
     };
-    return inst;
   }
 
-  /* ---- Animation loop ---- */
-  function tick(t) {
-    rafId = requestAnimationFrame(tick);
-    instances.forEach(inst => {
-      if (!inst.renderer) return;
-      const elapsed = inst.clock.getElapsedTime();
-
-      if (inst.isHero) {
+  /* ---- Render loop ---- */
+  function startLoop() {
+    if (rafRunning) return;
+    rafRunning = true;
+    (function tick() {
+      requestAnimationFrame(tick);
+      instances.forEach(inst => {
+        if (!inst || !inst.renderer) return;
+        const t = inst.clock.getElapsedTime();
         inst.group.rotation.y += inst.rotSpeed;
-        inst.group.rotation.x = Math.sin(elapsed * inst.floatSpeed) * 0.06;
-        inst.group.position.y = Math.sin(elapsed * inst.floatSpeed) * inst.floatAmp;
-      } else {
-        inst.group.rotation.y += inst.rotSpeed;
-        inst.group.position.y = Math.sin(elapsed * inst.floatSpeed) * inst.floatAmp;
-      }
-
-      inst.renderer.render(inst.scene, inst.camera);
-    });
+        inst.group.position.y = Math.sin(t * inst.floatSpeed) * inst.floatAmp;
+        inst.renderer.render(inst.scene, inst.camera);
+      });
+    })();
   }
 
   /* ---- Mouse parallax for hero ---- */
   document.addEventListener('mousemove', function (e) {
-    const nx = (e.clientX / window.innerWidth - 0.5) * 2;
-    const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+    const nx = e.clientX / window.innerWidth - 0.5;
+    const ny = e.clientY / window.innerHeight - 0.5;
     instances.forEach(inst => {
-      if (inst.isHero) {
-        inst.group.rotation.x += (ny * 0.15 - inst.group.rotation.x) * 0.05;
-        inst.group.rotation.y += (nx * 0.25 - inst.group.rotation.y) * 0.05;
-      }
+      if (!inst || !inst.parallax || !inst.group) return;
+      inst.group.rotation.x += (ny * 0.25 - inst.group.rotation.x) * 0.04;
+      inst.group.rotation.y += (nx * 0.4  - inst.group.rotation.y) * 0.04;
     });
-  });
+  }, { passive: true });
+
+  /* ---- Helper ---- */
+  function reg(canvas, opts) {
+    const inst = createInstance(canvas, opts);
+    if (!inst) return null;
+    instances.push(inst);
+    startLoop();
+    return inst;
+  }
 
   /* ---- Public API ---- */
   window.RelierLogo3D = {
 
-    /* Full-screen hero canvas with spinning logo */
-    initHero: function (canvasId, opts) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const inst = createLogoInstance(canvas, {
-        text: 'RELIER',
-        size: 1.2,
-        depth: 0.3,
-        theme: 'dark',
-        camZ: 7,
-        rotSpeed: 0.003,
-        floatAmp: 0.12,
-        floatSpeed: 0.5,
-        isHero: true,
-        ...opts,
-      });
-      instances.push(inst);
-      if (instances.length === 1) tick();
-      return inst;
+    initHero: function (id, extra) {
+      return reg(document.getElementById(id), Object.assign({
+        alpha: false,
+        bgHex:      0x0d0d0c,
+        logoColor:  '#e8e8e6',
+        planeSize:  4.6,
+        camZ:       7.5,
+        rotSpeed:   0.0035,
+        floatAmp:   0.18,
+        floatSpeed: 0.45,
+        parallax:   true,
+        metalness:  0.55,
+        roughness:  0.3,
+        ambient:    0.45,
+        keyLight:   2.0,
+      }, extra));
     },
 
-    /* Feature section canvas */
-    initFeature: function (canvasId, opts) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const inst = createLogoInstance(canvas, {
-        text: 'RELIER',
-        size: 1.6,
-        depth: 0.4,
-        theme: 'dark',
-        camZ: 8,
-        rotSpeed: 0.006,
-        floatAmp: 0.15,
-        floatSpeed: 0.6,
-        ...opts,
-      });
-      instances.push(inst);
-      if (instances.length === 1) tick();
-      return inst;
+    initFeature: function (id, extra) {
+      return reg(document.getElementById(id), Object.assign({
+        alpha: false,
+        bgHex:      0x2a2a28,
+        logoColor:  '#d4d4d0',
+        planeSize:  5.2,
+        camZ:       8.5,
+        rotSpeed:   0.005,
+        floatAmp:   0.22,
+        floatSpeed: 0.55,
+        ring:       true,
+        ringColor:  0x555550,
+        metalness:  0.45,
+        roughness:  0.35,
+      }, extra));
     },
 
-    /* Email / footer small canvases */
-    initSmall: function (canvasId, opts) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const inst = createLogoInstance(canvas, {
-        text: 'RELIER',
-        size: 0.5,
-        depth: 0.12,
-        theme: 'transparent',
-        camZ: 4,
-        rotSpeed: 0.008,
-        floatAmp: 0.04,
-        floatSpeed: 1.0,
-        ...opts,
-      });
-      instances.push(inst);
-      if (instances.length === 1) tick();
-      return inst;
+    initShopHeader: function (id, extra) {
+      return reg(document.getElementById(id), Object.assign({
+        alpha:      true,
+        logoColor:  '#1a1a18',
+        planeSize:  3.2,
+        camZ:       5.5,
+        rotSpeed:   0.005,
+        floatAmp:   0.07,
+        floatSpeed: 0.75,
+        metalness:  0.2,
+        roughness:  0.6,
+      }, extra));
     },
 
-    /* Shop header canvas */
-    initShopHeader: function (canvasId, opts) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const inst = createLogoInstance(canvas, {
-        text: 'RELIER',
-        size: 1.0,
-        depth: 0.25,
-        theme: 'light',
-        camZ: 6,
-        rotSpeed: 0.004,
-        floatAmp: 0.08,
-        floatSpeed: 0.7,
-        ...opts,
-      });
-      instances.push(inst);
-      if (instances.length === 1) tick();
-      return inst;
+    initProduct: function (id, extra) {
+      return reg(document.getElementById(id), Object.assign({
+        alpha:      true,
+        logoColor:  '#2a2a28',
+        planeSize:  2.6,
+        camZ:       4.5,
+        rotSpeed:   0.005,
+        floatAmp:   0.06,
+        floatSpeed: 0.85,
+        metalness:  0.2,
+        roughness:  0.55,
+      }, extra));
     },
 
-    /* Product page canvas */
-    initProduct: function (canvasId, opts) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const inst = createLogoInstance(canvas, {
-        text: 'RELIER',
-        size: 0.8,
-        depth: 0.2,
-        theme: 'light',
-        camZ: 5,
-        rotSpeed: 0.005,
-        floatAmp: 0.06,
-        floatSpeed: 0.8,
-        ...opts,
-      });
-      instances.push(inst);
-      if (instances.length === 1) tick();
-      return inst;
+    initSmall: function (id, extra) {
+      return reg(document.getElementById(id), Object.assign({
+        alpha:      true,
+        logoColor:  '#d4d4d0',
+        planeSize:  1.9,
+        camZ:       3.2,
+        rotSpeed:   0.009,
+        floatAmp:   0.04,
+        floatSpeed: 1.1,
+        metalness:  0.3,
+        roughness:  0.4,
+      }, extra));
     },
 
-    /* Collection card canvases */
     initCollectionCards: function () {
       document.querySelectorAll('.collection-logo-canvas').forEach(canvas => {
-        const text = canvas.dataset.text || 'RELIER';
-        const bgEl = canvas.closest('.collection-card__image');
-        const isDark = bgEl && bgEl.classList.contains('collection-card__image--dark');
-        const inst = createLogoInstance(canvas, {
-          text,
-          size: 0.45,
-          depth: 0.1,
-          theme: isDark ? 'dark' : 'light',
-          camZ: 3.5,
-          rotSpeed: 0.006,
-          floatAmp: 0.04,
+        const isDark = canvas.closest('.collection-card__image--dark') != null ||
+                       canvas.closest('.collection-card__image')?.classList.contains('collection-card__image--dark');
+        reg(canvas, {
+          alpha:      true,
+          logoColor:  isDark ? '#d4d4d0' : '#1a1a18',
+          planeSize:  2.2,
+          camZ:       3.8,
+          rotSpeed:   0.007,
+          floatAmp:   0.04,
           floatSpeed: 1.0,
+          metalness:  0.25,
+          roughness:  0.5,
         });
-        instances.push(inst);
       });
-      if (instances.length > 0 && !rafId) tick();
     },
 
     destroy: function (inst) {
       if (!inst) return;
-      const idx = instances.indexOf(inst);
-      if (idx !== -1) instances.splice(idx, 1);
+      const i = instances.indexOf(inst);
+      if (i !== -1) instances.splice(i, 1);
       if (inst.ro) inst.ro.disconnect();
-      inst.renderer.dispose();
+      if (inst.renderer) inst.renderer.dispose();
     },
   };
 

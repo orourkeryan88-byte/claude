@@ -31,7 +31,10 @@
         <a href="shop.html?cat=new">NEW ARRIVALS</a>
         <a href="lookbook.html">LOOKBOOK</a>
       </div>
-      <a href="index.html" class="nav__logo">RELIER</a>
+      <a href="index.html" class="nav__logo">
+        <img src="images/logo-monogram.svg" alt="RELIER" class="nav__logo-svg" />
+        <span class="nav__logo-text">RELIER</span>
+      </a>
       <div class="nav__links nav__links--right">
         <a href="#">ABOUT</a>
         <a href="#" class="nav__icon">
@@ -79,133 +82,141 @@
   <div class="shop-grid-wrap">
     <div class="product-grid product-grid--3" id="shopGrid">
 
-      <a href="product.html?id=1" class="product-card" data-cat="tops new" data-price="95" data-animate>
+      <!-- WHITE TEE -->
+      <a href="product.html?id=white-tee" class="product-card" data-cat="tops new" data-price="55" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/white-tee-front.jpg" alt="RELIER White Tee" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--placeholder" style="display:none;">
+            <span class="img-placeholder-text">WHITE TEE<br><small>images/white-tee-front.jpg</small></span>
           </div>
           <span class="product-card__tag">NEW</span>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER CORE HOODIE</p>
-          <p class="product-card__sub">Black / Grey / White</p>
-          <p class="product-card__price">£95.00</p>
-        </div>
-      </a>
-
-      <a href="product.html?id=2" class="product-card" data-cat="tops new" data-price="55" data-animate>
-        <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
-          </div>
-          <span class="product-card__tag">NEW</span>
-          <div class="product-card__quick-add">QUICK ADD</div>
-        </div>
-        <div class="product-card__info">
-          <p class="product-card__name">RELIER ARCH TEE</p>
-          <p class="product-card__sub">White / Grey</p>
+          <p class="product-card__name">RELIER TEE — WHITE</p>
+          <p class="product-card__sub">White</p>
           <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <a href="product.html?id=3" class="product-card" data-cat="bottoms" data-price="120" data-animate>
+      <!-- BLACK TEE -->
+      <a href="product.html?id=black-tee" class="product-card" data-cat="tops new" data-price="55" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
-          </div>
-          <span class="product-card__tag product-card__tag--sold">SOLD OUT</span>
-          <div class="product-card__quick-add product-card__quick-add--disabled">SOLD OUT</div>
-        </div>
-        <div class="product-card__info">
-          <p class="product-card__name">RELIER CARGO PANT</p>
-          <p class="product-card__sub">Stone</p>
-          <p class="product-card__price">£120.00</p>
-        </div>
-      </a>
-
-      <a href="product.html?id=4" class="product-card" data-cat="outerwear new" data-price="145" data-animate>
-        <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
-          </div>
-          <div class="product-card__quick-add">QUICK ADD</div>
-        </div>
-        <div class="product-card__info">
-          <p class="product-card__name">RELIER COACHES JACKET</p>
-          <p class="product-card__sub">Grey / Black</p>
-          <p class="product-card__price">£145.00</p>
-        </div>
-      </a>
-
-      <a href="product.html?id=5" class="product-card" data-cat="tops" data-price="85" data-animate>
-        <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
-          </div>
-          <div class="product-card__quick-add">QUICK ADD</div>
-        </div>
-        <div class="product-card__info">
-          <p class="product-card__name">RELIER ESSENTIAL CREWNECK</p>
-          <p class="product-card__sub">Ash Grey</p>
-          <p class="product-card__price">£85.00</p>
-        </div>
-      </a>
-
-      <a href="product.html?id=6" class="product-card" data-cat="accessories" data-price="40" data-animate>
-        <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
-          </div>
-          <div class="product-card__quick-add">QUICK ADD</div>
-        </div>
-        <div class="product-card__info">
-          <p class="product-card__name">RELIER 6-PANEL CAP</p>
-          <p class="product-card__sub">Black / White</p>
-          <p class="product-card__price">£40.00</p>
-        </div>
-      </a>
-
-      <a href="product.html?id=7" class="product-card" data-cat="bottoms new" data-price="95" data-animate>
-        <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/black-tee-front.jpg" alt="RELIER Black Tee" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--dark" style="display:none;">
+            <span class="img-placeholder-text">BLACK TEE<br><small>images/black-tee-front.jpg</small></span>
           </div>
           <span class="product-card__tag">NEW</span>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER TRACK PANT</p>
-          <p class="product-card__sub">Grey Marl</p>
-          <p class="product-card__price">£95.00</p>
+          <p class="product-card__name">RELIER TEE — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <a href="product.html?id=8" class="product-card" data-cat="outerwear" data-price="220" data-animate>
+      <!-- GREY TRUCKER CAP -->
+      <a href="product.html?id=grey-cap" class="product-card" data-cat="accessories new" data-price="40" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/grey-cap.jpg" alt="RELIER Grey Trucker" class="product-card__img product-card__img--contain"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--placeholder" style="display:none;">
+            <span class="img-placeholder-text">GREY CAP<br><small>images/grey-cap.jpg</small></span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER TRUCKER — GREY</p>
+          <p class="product-card__sub">Grey / White</p>
+          <p class="product-card__price">£40.00</p>
+        </div>
+      </a>
+
+      <!-- BLACK SNAPBACK -->
+      <a href="product.html?id=black-cap" class="product-card" data-cat="accessories new" data-price="40" data-animate>
+        <div class="product-card__image-wrap">
+          <img src="images/black-cap.jpg" alt="RELIER Black Snapback" class="product-card__img product-card__img--contain"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--dark" style="display:none;">
+            <span class="img-placeholder-text">BLACK CAP<br><small>images/black-cap.jpg</small></span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER SNAPBACK — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£40.00</p>
+        </div>
+      </a>
+
+      <!-- WHITE TEE BACK VIEW -->
+      <a href="product.html?id=white-tee" class="product-card" data-cat="tops" data-price="55" data-animate>
+        <div class="product-card__image-wrap">
+          <img src="images/white-tee-back.jpg" alt="RELIER White Tee Back" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--placeholder" style="display:none;">
+            <span class="img-placeholder-text">WHITE TEE BACK<br><small>images/white-tee-back.jpg</small></span>
           </div>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER PUFFER VEST</p>
-          <p class="product-card__sub">Charcoal</p>
-          <p class="product-card__price">£220.00</p>
+          <p class="product-card__name">RELIER TEE — WHITE</p>
+          <p class="product-card__sub">Back View</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <a href="product.html?id=9" class="product-card" data-cat="accessories" data-price="25" data-animate>
+      <!-- BLACK TEE BACK VIEW -->
+      <a href="product.html?id=black-tee" class="product-card" data-cat="tops" data-price="55" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/black-tee-back.jpg" alt="RELIER Black Tee Back" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--dark" style="display:none;">
+            <span class="img-placeholder-text">BLACK TEE BACK<br><small>images/black-tee-back.jpg</small></span>
           </div>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER BEANIE</p>
-          <p class="product-card__sub">Grey / Black / White</p>
-          <p class="product-card__price">£25.00</p>
+          <p class="product-card__name">RELIER TEE — BLACK</p>
+          <p class="product-card__sub">Back View</p>
+          <p class="product-card__price">£55.00</p>
+        </div>
+      </a>
+
+      <!-- FUTURE: Outerwear placeholder -->
+      <a href="product.html?id=jacket" class="product-card" data-cat="outerwear" data-price="145" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--mid" style="display:flex;">
+            <canvas class="collection-logo-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+            <span class="img-placeholder-text" style="position:relative;z-index:1;">OUTERWEAR<br><small>Coming Soon</small></span>
+          </div>
+          <div class="product-card__quick-add">NOTIFY ME</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER COACHES JACKET</p>
+          <p class="product-card__sub">Grey — Coming Soon</p>
+          <p class="product-card__price">TBC</p>
+        </div>
+      </a>
+
+      <!-- FUTURE: Bottoms placeholder -->
+      <a href="product.html?id=cargo" class="product-card" data-cat="bottoms" data-price="120" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--dark" style="display:flex;">
+            <canvas class="collection-logo-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+            <span class="img-placeholder-text" style="position:relative;z-index:1;">BOTTOMS<br><small>Coming Soon</small></span>
+          </div>
+          <div class="product-card__quick-add">NOTIFY ME</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER CARGO PANT</p>
+          <p class="product-card__sub">Stone — Coming Soon</p>
+          <p class="product-card__price">TBC</p>
         </div>
       </a>
 

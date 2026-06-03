@@ -15,13 +15,13 @@
   <div class="ticker-wrap">
     <div class="ticker">
       <span>NEW DROP — SUMMER 26</span>
-      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>FREE UK SHIPPING ON ORDERS OVER £100</span>
       <span>RELIER — CONNECT TO THE CULTURE</span>
       <span>NEW DROP — SUMMER 26</span>
-      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>FREE UK SHIPPING ON ORDERS OVER £100</span>
       <span>RELIER — CONNECT TO THE CULTURE</span>
       <span>NEW DROP — SUMMER 26</span>
-      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>FREE UK SHIPPING ON ORDERS OVER £100</span>
       <span>RELIER — CONNECT TO THE CULTURE</span>
     </div>
   </div>
@@ -34,13 +34,16 @@
         <a href="shop.html?cat=new">NEW ARRIVALS</a>
         <a href="lookbook.html">LOOKBOOK</a>
       </div>
-      <a href="index.html" class="nav__logo">RELIER</a>
+      <a href="index.html" class="nav__logo">
+        <img src="images/logo-monogram.svg" alt="RELIER" class="nav__logo-svg" />
+        <span class="nav__logo-text">RELIER</span>
+      </a>
       <div class="nav__links nav__links--right">
         <a href="#">ABOUT</a>
-        <a href="#" class="nav__icon">
+        <a href="#" class="nav__icon" aria-label="Search">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </a>
-        <a href="cart.html" class="nav__icon nav__cart">
+        <a href="cart.html" class="nav__icon nav__cart" aria-label="Cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span class="nav__cart-count" id="cartCount">0</span>
         </a>
@@ -48,13 +51,19 @@
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero">
+  <!-- ======= HERO ======= -->
+  <section class="hero" id="hero">
+    <!-- Background: model lifestyle shot — save as images/hero-bg.jpg -->
+    <div class="hero__bg" id="heroBg"></div>
+    <!-- 3D Logo canvas fills the hero -->
     <canvas id="heroCanvas"></canvas>
     <div class="hero__overlay">
       <p class="hero__sub">SS26 COLLECTION</p>
       <h1 class="hero__title">CONNECT<br/>TO THE<br/>CULTURE.</h1>
-      <a href="shop.html" class="btn btn--ghost">SHOP NOW</a>
+      <div class="hero__actions">
+        <a href="shop.html?cat=new" class="btn btn--white">SHOP NEW ARRIVALS</a>
+        <a href="lookbook.html" class="btn btn--ghost">VIEW LOOKBOOK</a>
+      </div>
     </div>
     <div class="hero__scroll-hint">SCROLL</div>
   </section>
@@ -63,21 +72,21 @@
   <div class="marquee-banner">
     <div class="marquee-track">
       <span>RELIER</span><span class="dot">✦</span>
-      <span>STREETWEAR</span><span class="dot">✦</span>
       <span>SS26</span><span class="dot">✦</span>
-      <span>CONNECT</span><span class="dot">✦</span>
+      <span>CONNECT TO THE CULTURE</span><span class="dot">✦</span>
+      <span>STREETWEAR</span><span class="dot">✦</span>
       <span>RELIER</span><span class="dot">✦</span>
-      <span>STREETWEAR</span><span class="dot">✦</span>
       <span>SS26</span><span class="dot">✦</span>
-      <span>CONNECT</span><span class="dot">✦</span>
+      <span>CONNECT TO THE CULTURE</span><span class="dot">✦</span>
+      <span>STREETWEAR</span><span class="dot">✦</span>
       <span>RELIER</span><span class="dot">✦</span>
-      <span>STREETWEAR</span><span class="dot">✦</span>
       <span>SS26</span><span class="dot">✦</span>
-      <span>CONNECT</span><span class="dot">✦</span>
+      <span>CONNECT TO THE CULTURE</span><span class="dot">✦</span>
+      <span>STREETWEAR</span><span class="dot">✦</span>
     </div>
   </div>
 
-  <!-- New Arrivals -->
+  <!-- ======= NEW ARRIVALS ======= -->
   <section class="section" id="new-arrivals">
     <div class="section__header">
       <h2 class="section__title">NEW ARRIVALS</h2>
@@ -85,68 +94,81 @@
     </div>
     <div class="product-grid product-grid--4">
 
-      <a href="product.html?id=1" class="product-card" data-animate>
+      <!-- White Tee -->
+      <a href="product.html?id=white-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder">
-            <div class="logo-badge-3d" id="badge1"></div>
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/white-tee-front.jpg" alt="RELIER White Tee" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--placeholder" style="display:none;">
+            <span class="img-placeholder-text">WHITE TEE — FRONT<br><small>save as images/white-tee-front.jpg</small></span>
           </div>
           <span class="product-card__tag">NEW</span>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER CORE HOODIE</p>
-          <p class="product-card__price">£95.00</p>
-        </div>
-      </a>
-
-      <a href="product.html?id=2" class="product-card" data-animate>
-        <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
-            <div class="logo-badge-3d" id="badge2"></div>
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
-          </div>
-          <div class="product-card__quick-add">QUICK ADD</div>
-        </div>
-        <div class="product-card__info">
-          <p class="product-card__name">RELIER ARCH TEE</p>
+          <p class="product-card__name">RELIER TEE — WHITE</p>
+          <p class="product-card__sub">White</p>
           <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <a href="product.html?id=3" class="product-card" data-animate>
+      <!-- Black Tee -->
+      <a href="product.html?id=black-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder">
-            <div class="logo-badge-3d" id="badge3"></div>
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/black-tee-front.jpg" alt="RELIER Black Tee" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--dark" style="display:none;">
+            <span class="img-placeholder-text">BLACK TEE — FRONT<br><small>save as images/black-tee-front.jpg</small></span>
           </div>
-          <span class="product-card__tag product-card__tag--sold">SOLD OUT</span>
-          <div class="product-card__quick-add product-card__quick-add--disabled">SOLD OUT</div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER CARGO PANT</p>
-          <p class="product-card__price">£120.00</p>
+          <p class="product-card__name">RELIER TEE — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <a href="product.html?id=4" class="product-card" data-animate>
+      <!-- Grey Trucker Cap -->
+      <a href="product.html?id=grey-cap" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
-            <div class="logo-badge-3d" id="badge4"></div>
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/grey-cap.jpg" alt="RELIER Grey Trucker Cap" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--placeholder" style="display:none;">
+            <span class="img-placeholder-text">GREY CAP<br><small>save as images/grey-cap.jpg</small></span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER TRUCKER CAP — GREY</p>
+          <p class="product-card__sub">Grey / White</p>
+          <p class="product-card__price">£40.00</p>
+        </div>
+      </a>
+
+      <!-- Black Snapback -->
+      <a href="product.html?id=black-cap" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <img src="images/black-cap.jpg" alt="RELIER Black Snapback" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--dark" style="display:none;">
+            <span class="img-placeholder-text">BLACK CAP<br><small>save as images/black-cap.jpg</small></span>
           </div>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER COACHES JACKET</p>
-          <p class="product-card__price">£145.00</p>
+          <p class="product-card__name">RELIER SNAPBACK — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£40.00</p>
         </div>
       </a>
 
     </div>
   </section>
 
-  <!-- 3D Logo Feature Section -->
+  <!-- ======= FEATURE / BRAND STORY ======= -->
   <section class="logo-feature">
     <canvas id="logoCanvas"></canvas>
     <div class="logo-feature__text">
@@ -160,36 +182,43 @@
     </div>
   </section>
 
-  <!-- Collections -->
+  <!-- ======= COLLECTIONS ======= -->
   <section class="section" id="collections">
     <div class="section__header">
       <h2 class="section__title">COLLECTIONS</h2>
     </div>
     <div class="collections-grid">
 
+      <!-- Tees -->
       <a href="shop.html?cat=tops" class="collection-card collection-card--tall" data-animate>
-        <div class="collection-card__image collection-card__image--grey">
-          <canvas class="collection-logo-canvas" data-text="TOPS"></canvas>
+        <div class="collection-card__image">
+          <img src="images/white-tee-back.jpg" alt="Tees" class="collection-card__bg-img"
+               onerror="this.style.display='none'; this.parentElement.classList.add('collection-card__image--grey')">
+          <canvas class="collection-logo-canvas"></canvas>
         </div>
         <div class="collection-card__overlay">
-          <p class="collection-card__name">TOPS</p>
+          <p class="collection-card__name">TEES</p>
           <span class="collection-card__arrow">→</span>
         </div>
       </a>
 
       <div class="collections-grid__right">
-        <a href="shop.html?cat=bottoms" class="collection-card" data-animate>
+        <!-- Caps -->
+        <a href="shop.html?cat=accessories" class="collection-card" data-animate>
           <div class="collection-card__image collection-card__image--dark">
-            <canvas class="collection-logo-canvas" data-text="BOTTOMS"></canvas>
+            <img src="images/grey-cap.jpg" alt="Caps" class="collection-card__bg-img"
+                 onerror="this.style.display='none'">
+            <canvas class="collection-logo-canvas"></canvas>
           </div>
           <div class="collection-card__overlay">
-            <p class="collection-card__name">BOTTOMS</p>
+            <p class="collection-card__name">CAPS</p>
             <span class="collection-card__arrow">→</span>
           </div>
         </a>
+        <!-- Outerwear placeholder -->
         <a href="shop.html?cat=outerwear" class="collection-card" data-animate>
-          <div class="collection-card__image collection-card__image--light">
-            <canvas class="collection-logo-canvas" data-text="OUTERWEAR"></canvas>
+          <div class="collection-card__image collection-card__image--mid">
+            <canvas class="collection-logo-canvas"></canvas>
           </div>
           <div class="collection-card__overlay">
             <p class="collection-card__name">OUTERWEAR</p>
@@ -201,32 +230,44 @@
     </div>
   </section>
 
-  <!-- Lookbook Strip -->
+  <!-- ======= LOOKBOOK STRIP ======= -->
   <section class="lookbook-strip">
-    <div class="section__header">
+    <div class="section__header" style="max-width:1440px;margin:0 auto;padding:0 32px 16px;">
       <h2 class="section__title">LOOKBOOK</h2>
       <a href="lookbook.html" class="section__link">VIEW ALL →</a>
     </div>
     <div class="lookbook-scroll" id="lookbookScroll">
-      <div class="lookbook-item lookbook-item--placeholder">
-        <span>LOOK 01</span>
+
+      <div class="lookbook-item">
+        <img src="images/lookbook-1.jpg" alt="Look 1"
+             onerror="this.style.display='none';this.parentElement.classList.add('lookbook-item--placeholder')">
+        <span class="lookbook-item__label">LOOK 01</span>
       </div>
-      <div class="lookbook-item lookbook-item--placeholder lookbook-item--dark">
-        <span>LOOK 02</span>
+      <div class="lookbook-item">
+        <img src="images/white-tee-back.jpg" alt="Look 2"
+             onerror="this.style.display='none';this.parentElement.classList.add('lookbook-item--placeholder')">
+        <span class="lookbook-item__label">LOOK 02</span>
       </div>
-      <div class="lookbook-item lookbook-item--placeholder">
-        <span>LOOK 03</span>
+      <div class="lookbook-item">
+        <img src="images/black-tee-front.jpg" alt="Look 3"
+             onerror="this.style.display='none';this.parentElement.classList.add('lookbook-item--placeholder lookbook-item--dark')">
+        <span class="lookbook-item__label">LOOK 03</span>
       </div>
-      <div class="lookbook-item lookbook-item--placeholder lookbook-item--dark">
-        <span>LOOK 04</span>
+      <div class="lookbook-item">
+        <img src="images/white-tee-front.jpg" alt="Look 4"
+             onerror="this.style.display='none';this.parentElement.classList.add('lookbook-item--placeholder')">
+        <span class="lookbook-item__label">LOOK 04</span>
       </div>
-      <div class="lookbook-item lookbook-item--placeholder">
-        <span>LOOK 05</span>
+      <div class="lookbook-item">
+        <img src="images/black-tee-back.jpg" alt="Look 5"
+             onerror="this.style.display='none';this.parentElement.classList.add('lookbook-item--placeholder lookbook-item--dark')">
+        <span class="lookbook-item__label">LOOK 05</span>
       </div>
+
     </div>
   </section>
 
-  <!-- More Products -->
+  <!-- ======= BESTSELLERS ======= -->
   <section class="section" id="bestsellers">
     <div class="section__header">
       <h2 class="section__title">BESTSELLERS</h2>
@@ -234,85 +275,93 @@
     </div>
     <div class="product-grid product-grid--3">
 
-      <a href="product.html?id=5" class="product-card" data-animate>
+      <a href="product.html?id=white-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/white-tee-back.jpg" alt="Relier White Tee Back" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--placeholder" style="display:none;">
+            <span class="img-placeholder-text">WHITE TEE — BACK<br><small>save as images/white-tee-back.jpg</small></span>
           </div>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER ESSENTIAL CREWNECK</p>
-          <p class="product-card__price">£85.00</p>
+          <p class="product-card__name">RELIER TEE — WHITE</p>
+          <p class="product-card__sub">White</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <a href="product.html?id=6" class="product-card" data-animate>
+      <a href="product.html?id=black-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          <img src="images/black-tee-back.jpg" alt="Relier Black Tee Back" class="product-card__img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--dark" style="display:none;">
+            <span class="img-placeholder-text">BLACK TEE — BACK<br><small>save as images/black-tee-back.jpg</small></span>
           </div>
           <div class="product-card__quick-add">QUICK ADD</div>
         </div>
         <div class="product-card__info">
-          <p class="product-card__name">RELIER 6-PANEL CAP</p>
+          <p class="product-card__name">RELIER TEE — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£55.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=grey-cap" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <img src="images/grey-cap.jpg" alt="Relier Grey Cap" class="product-card__img product-card__img--contain"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="product-card__image product-card__image--placeholder" style="display:none;">
+            <span class="img-placeholder-text">GREY CAP<br><small>save as images/grey-cap.jpg</small></span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER TRUCKER CAP — GREY</p>
+          <p class="product-card__sub">Grey / White</p>
           <p class="product-card__price">£40.00</p>
-        </div>
-      </a>
-
-      <a href="product.html?id=7" class="product-card" data-animate>
-        <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
-            <span class="img-placeholder-text">PRODUCT IMAGE</span>
-          </div>
-          <span class="product-card__tag">NEW</span>
-          <div class="product-card__quick-add">QUICK ADD</div>
-        </div>
-        <div class="product-card__info">
-          <p class="product-card__name">RELIER TRACK PANT</p>
-          <p class="product-card__price">£95.00</p>
         </div>
       </a>
 
     </div>
   </section>
 
-  <!-- Email Signup -->
+  <!-- ======= EMAIL SIGNUP ======= -->
   <section class="email-section">
     <div class="email-section__inner">
       <canvas id="emailLogoCanvas"></canvas>
       <div class="email-section__content">
         <p class="email-section__eyebrow">JOIN THE MOVEMENT</p>
-        <h2 class="email-section__title">GET EARLY ACCESS TO<br/>EVERY DROP.</h2>
+        <h2 class="email-section__title">GET EARLY ACCESS<br/>TO EVERY DROP.</h2>
         <form class="email-form" id="emailForm">
           <input type="email" placeholder="YOUR EMAIL ADDRESS" class="email-form__input" required />
-          <button type="submit" class="btn btn--black">SUBSCRIBE</button>
+          <button type="submit" class="btn btn--white">SUBSCRIBE</button>
         </form>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- ======= FOOTER ======= -->
   <footer class="footer">
     <div class="footer__top">
       <div class="footer__brand">
-        <canvas id="footerLogoCanvas"></canvas>
+        <img src="images/logo-monogram.svg" alt="RELIER" class="footer__logo-img" />
+        <p class="footer__brand-name">RELIER</p>
         <p>Connect to the Culture.</p>
       </div>
       <div class="footer__links">
         <div class="footer__col">
           <h4>SHOP</h4>
           <a href="shop.html?cat=new">New Arrivals</a>
-          <a href="shop.html?cat=tops">Tops</a>
-          <a href="shop.html?cat=bottoms">Bottoms</a>
+          <a href="shop.html?cat=tops">Tees</a>
+          <a href="shop.html?cat=accessories">Caps</a>
           <a href="shop.html?cat=outerwear">Outerwear</a>
-          <a href="shop.html?cat=accessories">Accessories</a>
         </div>
         <div class="footer__col">
           <h4>INFO</h4>
           <a href="#">About</a>
           <a href="#">Stockists</a>
-          <a href="#">Lookbook</a>
+          <a href="lookbook.html">Lookbook</a>
           <a href="#">Careers</a>
         </div>
         <div class="footer__col">
@@ -324,9 +373,9 @@
         </div>
         <div class="footer__col">
           <h4>FOLLOW</h4>
-          <a href="#">Instagram</a>
+          <a href="https://www.instagram.com/relier_clothing" target="_blank" rel="noopener">Instagram</a>
           <a href="#">TikTok</a>
-          <a href="#">Twitter</a>
+          <a href="#">Twitter / X</a>
         </div>
       </div>
     </div>
