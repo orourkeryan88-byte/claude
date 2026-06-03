@@ -211,7 +211,7 @@ ul { list-style: none; }
 .hero__bg {
   position: absolute;
   inset: 0;
-  background-image: url('../images/hero-bg.jpg');
+  background-image: url('../images/hero-bg.jpg'), url('../images/hero-bg.svg');
   background-size: cover;
   background-position: top center;
   opacity: 0.45;

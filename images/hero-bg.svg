@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <!-- Dark dramatic gradient: near-black to very dark charcoal -->
+    <linearGradient id="heroBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a08"/>
+      <stop offset="45%" stop-color="#141412"/>
+      <stop offset="100%" stop-color="#1e1e1c"/>
+    </linearGradient>
+
+    <!-- Subtle vignette radial -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Ghosted monogram gradient (very faint) -->
+    <linearGradient id="ghostGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="900" fill="url(#heroBg)"/>
+
+  <!-- Subtle noise texture via thin lines -->
+  <line x1="0" y1="300" x2="1600" y2="300" stroke="#ffffff" stroke-width="0.3" opacity="0.03"/>
+  <line x1="0" y1="600" x2="1600" y2="600" stroke="#ffffff" stroke-width="0.3" opacity="0.03"/>
+  <line x1="400" y1="0" x2="400" y2="900" stroke="#ffffff" stroke-width="0.3" opacity="0.02"/>
+  <line x1="800" y1="0" x2="800" y2="900" stroke="#ffffff" stroke-width="0.3" opacity="0.02"/>
+  <line x1="1200" y1="0" x2="1200" y2="900" stroke="#ffffff" stroke-width="0.3" opacity="0.02"/>
+
+  <!-- Large ghosted RR Monogram watermark — centered (CX=800, CY=450) -->
+  <!-- font-size=420, OFFSET=184 -->
+  <!-- Top-left normal R -->
+  <text transform="translate(616,266)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="420" fill="url(#ghostGrad)">R</text>
+  <!-- Top-right mirrored R -->
+  <text transform="translate(984,266) scale(-1,1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="420" fill="url(#ghostGrad)">R</text>
+  <!-- Bottom-left mirror+flip -->
+  <text transform="translate(616,634) scale(-1,-1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="420" fill="url(#ghostGrad)">R</text>
+  <!-- Bottom-right flip -->
+  <text transform="translate(984,634) scale(1,-1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="420" fill="url(#ghostGrad)">R</text>
+
+  <!-- Thin horizontal rule centered -->
+  <line x1="640" y1="450" x2="960" y2="450" stroke="#ffffff" stroke-width="0.6" opacity="0.08"/>
+
+  <!-- RELIER wordmark large, centered -->
+  <text x="800" y="798" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="700" font-size="18" fill="#f0f0ee" letter-spacing="12" opacity="0.6">RELIER</text>
+
+  <!-- Thin rule above wordmark -->
+  <line x1="680" y1="776" x2="920" y2="776" stroke="#f0f0ee" stroke-width="0.6" opacity="0.15"/>
+
+  <!-- Vignette overlay -->
+  <rect width="1600" height="900" fill="url(#vignette)"/>
+</svg>
