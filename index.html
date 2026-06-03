@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RELIER — Streetwear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>NEW DROP — SUMMER 26</span>
+      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>RELIER — CONNECT TO THE CULTURE</span>
+      <span>NEW DROP — SUMMER 26</span>
+      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>RELIER — CONNECT TO THE CULTURE</span>
+      <span>NEW DROP — SUMMER 26</span>
+      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>RELIER — CONNECT TO THE CULTURE</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <div class="nav__links nav__links--left">
+        <a href="shop.html">SHOP</a>
+        <a href="shop.html?cat=new">NEW ARRIVALS</a>
+        <a href="lookbook.html">LOOKBOOK</a>
+      </div>
+      <a href="index.html" class="nav__logo">RELIER</a>
+      <div class="nav__links nav__links--right">
+        <a href="#">ABOUT</a>
+        <a href="#" class="nav__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="cart.html" class="nav__icon nav__cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="nav__cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero__overlay">
+      <p class="hero__sub">SS26 COLLECTION</p>
+      <h1 class="hero__title">CONNECT<br/>TO THE<br/>CULTURE.</h1>
+      <a href="shop.html" class="btn btn--ghost">SHOP NOW</a>
+    </div>
+    <div class="hero__scroll-hint">SCROLL</div>
+  </section>
+
+  <!-- Marquee Banner -->
+  <div class="marquee-banner">
+    <div class="marquee-track">
+      <span>RELIER</span><span class="dot">✦</span>
+      <span>STREETWEAR</span><span class="dot">✦</span>
+      <span>SS26</span><span class="dot">✦</span>
+      <span>CONNECT</span><span class="dot">✦</span>
+      <span>RELIER</span><span class="dot">✦</span>
+      <span>STREETWEAR</span><span class="dot">✦</span>
+      <span>SS26</span><span class="dot">✦</span>
+      <span>CONNECT</span><span class="dot">✦</span>
+      <span>RELIER</span><span class="dot">✦</span>
+      <span>STREETWEAR</span><span class="dot">✦</span>
+      <span>SS26</span><span class="dot">✦</span>
+      <span>CONNECT</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+  <!-- New Arrivals -->
+  <section class="section" id="new-arrivals">
+    <div class="section__header">
+      <h2 class="section__title">NEW ARRIVALS</h2>
+      <a href="shop.html?cat=new" class="section__link">VIEW ALL →</a>
+    </div>
+    <div class="product-grid product-grid--4">
+
+      <a href="product.html?id=1" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder">
+            <div class="logo-badge-3d" id="badge1"></div>
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER CORE HOODIE</p>
+          <p class="product-card__price">£95.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=2" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
+            <div class="logo-badge-3d" id="badge2"></div>
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER ARCH TEE</p>
+          <p class="product-card__price">£55.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=3" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder">
+            <div class="logo-badge-3d" id="badge3"></div>
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <span class="product-card__tag product-card__tag--sold">SOLD OUT</span>
+          <div class="product-card__quick-add product-card__quick-add--disabled">SOLD OUT</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER CARGO PANT</p>
+          <p class="product-card__price">£120.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=4" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
+            <div class="logo-badge-3d" id="badge4"></div>
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER COACHES JACKET</p>
+          <p class="product-card__price">£145.00</p>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- 3D Logo Feature Section -->
+  <section class="logo-feature">
+    <canvas id="logoCanvas"></canvas>
+    <div class="logo-feature__text">
+      <p class="logo-feature__eyebrow">THE LABEL</p>
+      <h2 class="logo-feature__heading">BUILT FOR<br/>THE STREETS</h2>
+      <p class="logo-feature__body">
+        Relier connects the dots between culture, craft, and community.
+        Every piece is designed with intention — built to last, worn to live.
+      </p>
+      <a href="#" class="btn btn--white">OUR STORY</a>
+    </div>
+  </section>
+
+  <!-- Collections -->
+  <section class="section" id="collections">
+    <div class="section__header">
+      <h2 class="section__title">COLLECTIONS</h2>
+    </div>
+    <div class="collections-grid">
+
+      <a href="shop.html?cat=tops" class="collection-card collection-card--tall" data-animate>
+        <div class="collection-card__image collection-card__image--grey">
+          <canvas class="collection-logo-canvas" data-text="TOPS"></canvas>
+        </div>
+        <div class="collection-card__overlay">
+          <p class="collection-card__name">TOPS</p>
+          <span class="collection-card__arrow">→</span>
+        </div>
+      </a>
+
+      <div class="collections-grid__right">
+        <a href="shop.html?cat=bottoms" class="collection-card" data-animate>
+          <div class="collection-card__image collection-card__image--dark">
+            <canvas class="collection-logo-canvas" data-text="BOTTOMS"></canvas>
+          </div>
+          <div class="collection-card__overlay">
+            <p class="collection-card__name">BOTTOMS</p>
+            <span class="collection-card__arrow">→</span>
+          </div>
+        </a>
+        <a href="shop.html?cat=outerwear" class="collection-card" data-animate>
+          <div class="collection-card__image collection-card__image--light">
+            <canvas class="collection-logo-canvas" data-text="OUTERWEAR"></canvas>
+          </div>
+          <div class="collection-card__overlay">
+            <p class="collection-card__name">OUTERWEAR</p>
+            <span class="collection-card__arrow">→</span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Lookbook Strip -->
+  <section class="lookbook-strip">
+    <div class="section__header">
+      <h2 class="section__title">LOOKBOOK</h2>
+      <a href="lookbook.html" class="section__link">VIEW ALL →</a>
+    </div>
+    <div class="lookbook-scroll" id="lookbookScroll">
+      <div class="lookbook-item lookbook-item--placeholder">
+        <span>LOOK 01</span>
+      </div>
+      <div class="lookbook-item lookbook-item--placeholder lookbook-item--dark">
+        <span>LOOK 02</span>
+      </div>
+      <div class="lookbook-item lookbook-item--placeholder">
+        <span>LOOK 03</span>
+      </div>
+      <div class="lookbook-item lookbook-item--placeholder lookbook-item--dark">
+        <span>LOOK 04</span>
+      </div>
+      <div class="lookbook-item lookbook-item--placeholder">
+        <span>LOOK 05</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- More Products -->
+  <section class="section" id="bestsellers">
+    <div class="section__header">
+      <h2 class="section__title">BESTSELLERS</h2>
+      <a href="shop.html" class="section__link">VIEW ALL →</a>
+    </div>
+    <div class="product-grid product-grid--3">
+
+      <a href="product.html?id=5" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER ESSENTIAL CREWNECK</p>
+          <p class="product-card__price">£85.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=6" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER 6-PANEL CAP</p>
+          <p class="product-card__price">£40.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=7" class="product-card" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER TRACK PANT</p>
+          <p class="product-card__price">£95.00</p>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Email Signup -->
+  <section class="email-section">
+    <div class="email-section__inner">
+      <canvas id="emailLogoCanvas"></canvas>
+      <div class="email-section__content">
+        <p class="email-section__eyebrow">JOIN THE MOVEMENT</p>
+        <h2 class="email-section__title">GET EARLY ACCESS TO<br/>EVERY DROP.</h2>
+        <form class="email-form" id="emailForm">
+          <input type="email" placeholder="YOUR EMAIL ADDRESS" class="email-form__input" required />
+          <button type="submit" class="btn btn--black">SUBSCRIBE</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <canvas id="footerLogoCanvas"></canvas>
+        <p>Connect to the Culture.</p>
+      </div>
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4>SHOP</h4>
+          <a href="shop.html?cat=new">New Arrivals</a>
+          <a href="shop.html?cat=tops">Tops</a>
+          <a href="shop.html?cat=bottoms">Bottoms</a>
+          <a href="shop.html?cat=outerwear">Outerwear</a>
+          <a href="shop.html?cat=accessories">Accessories</a>
+        </div>
+        <div class="footer__col">
+          <h4>INFO</h4>
+          <a href="#">About</a>
+          <a href="#">Stockists</a>
+          <a href="#">Lookbook</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer__col">
+          <h4>HELP</h4>
+          <a href="#">Shipping & Returns</a>
+          <a href="#">Size Guide</a>
+          <a href="#">FAQ</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer__col">
+          <h4>FOLLOW</h4>
+          <a href="#">Instagram</a>
+          <a href="#">TikTok</a>
+          <a href="#">Twitter</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 RELIER. ALL RIGHTS RESERVED.</p>
+      <div class="footer__legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/logo3d.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

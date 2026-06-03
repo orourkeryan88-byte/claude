@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — RELIER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .cart-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: calc(var(--ticker-h) + var(--nav-h) + 60px) 32px 80px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 60px;
+      align-items: start;
+    }
+    .cart-title {
+      font-family: var(--font-mono);
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      grid-column: 1 / -1;
+      border-bottom: 1px solid var(--grey-200);
+      padding-bottom: 24px;
+      margin-bottom: 0;
+    }
+    .cart-items { display: flex; flex-direction: column; gap: 0; }
+    .cart-item {
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 20px;
+      align-items: center;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--grey-200);
+    }
+    .cart-item__img {
+      aspect-ratio: 3/4;
+      background: var(--grey-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cart-item__img--dark { background: var(--grey-800); }
+    .cart-item__img span {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--grey-400);
+      letter-spacing: 0.1em;
+    }
+    .cart-item__name { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 6px; }
+    .cart-item__meta { font-size: 12px; color: var(--grey-400); margin-bottom: 12px; }
+    .cart-item__qty { display: flex; align-items: center; gap: 12px; }
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--grey-200);
+      background: transparent;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .qty-btn:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+    .qty-val { font-family: var(--font-mono); font-size: 13px; min-width: 20px; text-align: center; }
+    .cart-item__remove {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--grey-400);
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: color var(--transition);
+      margin-top: 8px;
+      display: block;
+    }
+    .cart-item__remove:hover { color: var(--black); }
+    .cart-item__price { font-family: var(--font-mono); font-size: 14px; text-align: right; }
+
+    .cart-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 0;
+    }
+    .cart-empty__title { font-family: var(--font-mono); font-size: 20px; margin-bottom: 16px; }
+    .cart-empty p { color: var(--grey-400); margin-bottom: 32px; }
+
+    .cart-summary {
+      background: var(--white);
+      padding: 32px;
+      position: sticky;
+      top: calc(var(--ticker-h) + var(--nav-h) + 20px);
+    }
+    .cart-summary__title { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.15em; margin-bottom: 24px; border-bottom: 1px solid var(--grey-200); padding-bottom: 16px; }
+    .cart-summary__row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+    .cart-summary__row--total { font-family: var(--font-mono); font-weight: 700; font-size: 16px; border-top: 1px solid var(--grey-200); padding-top: 16px; margin-top: 16px; }
+    .cart-summary__note { font-size: 11px; color: var(--grey-400); margin: 16px 0; text-align: center; }
+    @media (max-width: 768px) {
+      .cart-layout { grid-template-columns: 1fr; }
+      .cart-summary { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>NEW DROP — SUMMER 26</span>
+      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>RELIER — CONNECT TO THE CULTURE</span>
+      <span>NEW DROP — SUMMER 26</span>
+      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>RELIER — CONNECT TO THE CULTURE</span>
+    </div>
+  </div>
+
+  <nav class="nav nav--light" id="nav">
+    <div class="nav__inner">
+      <div class="nav__links nav__links--left">
+        <a href="shop.html">SHOP</a>
+        <a href="shop.html?cat=new">NEW ARRIVALS</a>
+        <a href="lookbook.html">LOOKBOOK</a>
+      </div>
+      <a href="index.html" class="nav__logo">RELIER</a>
+      <div class="nav__links nav__links--right">
+        <a href="#">ABOUT</a>
+        <a href="#" class="nav__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="cart.html" class="nav__icon nav__cart active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="nav__cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="cart-layout">
+    <h1 class="cart-title">YOUR CART</h1>
+    <div class="cart-items" id="cartItems">
+      <!-- Populated by JS -->
+    </div>
+    <div class="cart-summary" id="cartSummary" style="display:none;">
+      <h3 class="cart-summary__title">ORDER SUMMARY</h3>
+      <div class="cart-summary__row">
+        <span>Subtotal</span>
+        <span id="subtotal">£0.00</span>
+      </div>
+      <div class="cart-summary__row">
+        <span>Shipping</span>
+        <span id="shipping">Calculated at checkout</span>
+      </div>
+      <div class="cart-summary__row cart-summary__row--total">
+        <span>TOTAL</span>
+        <span id="total">£0.00</span>
+      </div>
+      <p class="cart-summary__note">Free UK shipping on orders over £100</p>
+      <button class="btn btn--black btn--full" style="margin-bottom:12px;">CHECKOUT</button>
+      <a href="shop.html" class="btn btn--outline btn--full">CONTINUE SHOPPING</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__bottom" style="border-top:none;">
+      <p>© 2026 RELIER. ALL RIGHTS RESERVED.</p>
+      <div class="footer__legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/logo3d.js"></script>
+  <script>
+  (function() {
+    function getCart() {
+      try { return JSON.parse(localStorage.getItem('relierCart') || '[]'); } catch(e) { return []; }
+    }
+    function saveCart(cart) {
+      localStorage.setItem('relierCart', JSON.stringify(cart));
+    }
+    function renderCart() {
+      const cart = getCart();
+      const itemsEl = document.getElementById('cartItems');
+      const summaryEl = document.getElementById('cartSummary');
+      const countEls = document.querySelectorAll('#cartCount');
+
+      const count = cart.reduce((s,c) => s + (c.qty||1), 0);
+      countEls.forEach(el => { el.textContent = count; el.style.display = count > 0 ? 'flex' : 'none'; });
+
+      if (!cart.length) {
+        itemsEl.innerHTML = `<div class="cart-empty">
+          <h2 class="cart-empty__title">YOUR CART IS EMPTY</h2>
+          <p>You haven't added anything yet.</p>
+          <a href="shop.html" class="btn btn--black">SHOP NOW</a>
+        </div>`;
+        summaryEl.style.display = 'none';
+        return;
+      }
+
+      summaryEl.style.display = '';
+      itemsEl.innerHTML = cart.map((item, i) => `
+        <div class="cart-item" data-index="${i}">
+          <div class="cart-item__img${i % 2 ? ' cart-item__img--dark' : ''}">
+            <span>IMG</span>
+          </div>
+          <div>
+            <p class="cart-item__name">${item.name}</p>
+            <p class="cart-item__meta">${item.colour || ''} / ${item.size}</p>
+            <div class="cart-item__qty">
+              <button class="qty-btn" data-action="dec" data-index="${i}">−</button>
+              <span class="qty-val">${item.qty || 1}</span>
+              <button class="qty-btn" data-action="inc" data-index="${i}">+</button>
+            </div>
+            <button class="cart-item__remove" data-action="remove" data-index="${i}">REMOVE</button>
+          </div>
+          <div class="cart-item__price">${item.price}</div>
+        </div>
+      `).join('');
+
+      /* Totals */
+      let subtotal = 0;
+      cart.forEach(item => {
+        const price = parseFloat((item.price || '£0').replace(/[^0-9.]/g,''));
+        subtotal += price * (item.qty || 1);
+      });
+      document.getElementById('subtotal').textContent = '£' + subtotal.toFixed(2);
+      document.getElementById('total').textContent = '£' + subtotal.toFixed(2);
+      document.getElementById('shipping').textContent = subtotal >= 100 ? 'FREE' : '£4.99';
+
+      /* Qty / remove listeners */
+      itemsEl.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const cart = getCart();
+          const idx = parseInt(this.dataset.index);
+          if (this.dataset.action === 'inc') {
+            cart[idx].qty = (cart[idx].qty || 1) + 1;
+          } else if (this.dataset.action === 'dec') {
+            cart[idx].qty = Math.max(1, (cart[idx].qty || 1) - 1);
+          } else if (this.dataset.action === 'remove') {
+            cart.splice(idx, 1);
+          }
+          saveCart(cart);
+          renderCart();
+        });
+      });
+    }
+    renderCart();
+  })();
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>

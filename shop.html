@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — RELIER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>NEW DROP — SUMMER 26</span>
+      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>RELIER — CONNECT TO THE CULTURE</span>
+      <span>NEW DROP — SUMMER 26</span>
+      <span>FREE SHIPPING ON ORDERS OVER £100</span>
+      <span>RELIER — CONNECT TO THE CULTURE</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav nav--light" id="nav">
+    <div class="nav__inner">
+      <div class="nav__links nav__links--left">
+        <a href="shop.html" class="active">SHOP</a>
+        <a href="shop.html?cat=new">NEW ARRIVALS</a>
+        <a href="lookbook.html">LOOKBOOK</a>
+      </div>
+      <a href="index.html" class="nav__logo">RELIER</a>
+      <div class="nav__links nav__links--right">
+        <a href="#">ABOUT</a>
+        <a href="#" class="nav__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="cart.html" class="nav__icon nav__cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="nav__cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Shop Header -->
+  <div class="shop-header">
+    <div class="shop-header__logo-wrap">
+      <canvas id="shopLogoCanvas"></canvas>
+    </div>
+    <h1 class="shop-header__title" id="shopTitle">ALL PRODUCTS</h1>
+  </div>
+
+  <!-- Filters -->
+  <div class="shop-filters">
+    <div class="shop-filters__inner">
+      <div class="shop-filters__cats">
+        <button class="filter-btn active" data-cat="all">ALL</button>
+        <button class="filter-btn" data-cat="new">NEW ARRIVALS</button>
+        <button class="filter-btn" data-cat="tops">TOPS</button>
+        <button class="filter-btn" data-cat="bottoms">BOTTOMS</button>
+        <button class="filter-btn" data-cat="outerwear">OUTERWEAR</button>
+        <button class="filter-btn" data-cat="accessories">ACCESSORIES</button>
+      </div>
+      <div class="shop-filters__sort">
+        <select class="sort-select" id="sortSelect">
+          <option value="featured">FEATURED</option>
+          <option value="price-asc">PRICE: LOW TO HIGH</option>
+          <option value="price-desc">PRICE: HIGH TO LOW</option>
+          <option value="newest">NEWEST</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products -->
+  <div class="shop-grid-wrap">
+    <div class="product-grid product-grid--3" id="shopGrid">
+
+      <a href="product.html?id=1" class="product-card" data-cat="tops new" data-price="95" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER CORE HOODIE</p>
+          <p class="product-card__sub">Black / Grey / White</p>
+          <p class="product-card__price">£95.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=2" class="product-card" data-cat="tops new" data-price="55" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER ARCH TEE</p>
+          <p class="product-card__sub">White / Grey</p>
+          <p class="product-card__price">£55.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=3" class="product-card" data-cat="bottoms" data-price="120" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <span class="product-card__tag product-card__tag--sold">SOLD OUT</span>
+          <div class="product-card__quick-add product-card__quick-add--disabled">SOLD OUT</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER CARGO PANT</p>
+          <p class="product-card__sub">Stone</p>
+          <p class="product-card__price">£120.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=4" class="product-card" data-cat="outerwear new" data-price="145" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER COACHES JACKET</p>
+          <p class="product-card__sub">Grey / Black</p>
+          <p class="product-card__price">£145.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=5" class="product-card" data-cat="tops" data-price="85" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER ESSENTIAL CREWNECK</p>
+          <p class="product-card__sub">Ash Grey</p>
+          <p class="product-card__price">£85.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=6" class="product-card" data-cat="accessories" data-price="40" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER 6-PANEL CAP</p>
+          <p class="product-card__sub">Black / White</p>
+          <p class="product-card__price">£40.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=7" class="product-card" data-cat="bottoms new" data-price="95" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--mid">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <span class="product-card__tag">NEW</span>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER TRACK PANT</p>
+          <p class="product-card__sub">Grey Marl</p>
+          <p class="product-card__price">£95.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=8" class="product-card" data-cat="outerwear" data-price="220" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder product-card__image--dark">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER PUFFER VEST</p>
+          <p class="product-card__sub">Charcoal</p>
+          <p class="product-card__price">£220.00</p>
+        </div>
+      </a>
+
+      <a href="product.html?id=9" class="product-card" data-cat="accessories" data-price="25" data-animate>
+        <div class="product-card__image-wrap">
+          <div class="product-card__image product-card__image--placeholder">
+            <span class="img-placeholder-text">PRODUCT IMAGE</span>
+          </div>
+          <div class="product-card__quick-add">QUICK ADD</div>
+        </div>
+        <div class="product-card__info">
+          <p class="product-card__name">RELIER BEANIE</p>
+          <p class="product-card__sub">Grey / Black / White</p>
+          <p class="product-card__price">£25.00</p>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <canvas id="footerLogoCanvas"></canvas>
+        <p>Connect to the Culture.</p>
+      </div>
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4>SHOP</h4>
+          <a href="shop.html?cat=new">New Arrivals</a>
+          <a href="shop.html?cat=tops">Tops</a>
+          <a href="shop.html?cat=bottoms">Bottoms</a>
+          <a href="shop.html?cat=outerwear">Outerwear</a>
+          <a href="shop.html?cat=accessories">Accessories</a>
+        </div>
+        <div class="footer__col">
+          <h4>INFO</h4>
+          <a href="#">About</a>
+          <a href="#">Stockists</a>
+          <a href="#">Lookbook</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer__col">
+          <h4>HELP</h4>
+          <a href="#">Shipping & Returns</a>
+          <a href="#">Size Guide</a>
+          <a href="#">FAQ</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer__col">
+          <h4>FOLLOW</h4>
+          <a href="#">Instagram</a>
+          <a href="#">TikTok</a>
+          <a href="#">Twitter</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 RELIER. ALL RIGHTS RESERVED.</p>
+      <div class="footer__legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/logo3d.js"></script>
+  <script src="js/shop.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
