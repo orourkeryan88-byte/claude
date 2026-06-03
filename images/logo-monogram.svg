@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 160">
+  <style>
+    .r {
+      font: 900 60px Georgia, "Times New Roman", serif;
+      fill: currentColor;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .wordmark {
+      font: 700 13px Georgia, "Times New Roman", serif;
+      fill: currentColor;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      letter-spacing: 5px;
+    }
+  </style>
+  <!-- Top-left: normal R -->
+  <text class="r" transform="translate(46,68)">R</text>
+  <!-- Top-right: mirrored R -->
+  <text class="r" transform="translate(94,68) scale(-1,1)">R</text>
+  <!-- Bottom-left: mirrored + flipped -->
+  <text class="r" transform="translate(46,110) scale(-1,-1)">R</text>
+  <!-- Bottom-right: flipped -->
+  <text class="r" transform="translate(94,110) scale(1,-1)">R</text>
+  <!-- RELIER wordmark -->
+  <text class="wordmark" transform="translate(70,142)">RELIER</text>
+</svg>
