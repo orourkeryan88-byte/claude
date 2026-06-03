@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://app.snipcart.com" />
+  <link rel="preconnect" href="https://cdn.snipcart.com" crossorigin />
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.css" />
   <style>
     .lookbook-hero {
       height: 70vh;
@@ -149,9 +152,9 @@
         <a href="#" class="nav__icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </a>
-        <a href="cart.html" class="nav__icon nav__cart">
+        <a href="#" class="nav__icon nav__cart snipcart-checkout" aria-label="Cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span class="nav__cart-count" id="cartCount">0</span>
+          <span class="nav__cart-count snipcart-items-count"></span>
         </a>
       </div>
     </div>
@@ -273,7 +276,7 @@
         </div>
         <div class="footer__col">
           <h4>HELP</h4>
-          <a href="#">Shipping & Returns</a>
+          <a href="returns.html">Shipping & Returns</a>
           <a href="#">Size Guide</a>
           <a href="#">FAQ</a>
           <a href="#">Contact</a>
@@ -289,12 +292,13 @@
     <div class="footer__bottom">
       <p>© 2026 RELIER. ALL RIGHTS RESERVED.</p>
       <div class="footer__legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
       </div>
     </div>
   </footer>
 
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_PUBLIC_API_KEY" data-config-modal-style="side" data-currency="gbp"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/logo3d.js"></script>
   <script>
@@ -306,5 +310,6 @@
     });
   </script>
   <script src="js/main.js"></script>
+  <script async src="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.js"></script>
 </body>
 </html>

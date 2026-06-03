@@ -79,49 +79,13 @@
   }
 
   /* ---- Quick Add to Cart ---- */
-  function addToCartItem(item) {
-    try {
-      const cart = JSON.parse(localStorage.getItem('relierCart') || '[]');
-      const existing = cart.find(c =>
-        c.name === item.name && c.size === item.size && c.colour === item.colour
-      );
-      if (existing) {
-        existing.qty = (existing.qty || 1) + 1;
-      } else {
-        cart.push({ ...item, qty: 1 });
-      }
-      localStorage.setItem('relierCart', JSON.stringify(cart));
-      const count = cart.reduce((s, c) => s + (c.qty || 1), 0);
-      document.querySelectorAll('#cartCount').forEach(el => {
-        el.textContent = count;
-        el.style.display = 'flex';
-      });
-    } catch (e) {}
-  }
-
-  document.querySelectorAll('.product-card__quick-add').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      if (this.textContent.trim() === 'NOTIFY ME') return;
+  /* Snipcart handles add-to-cart via data attributes on .snipcart-add-item buttons.
+     This handler only prevents parent <a> navigation for NOTIFY ME divs. */
+  document.querySelectorAll('.product-card__quick-add:not(.snipcart-add-item)').forEach(function(el) {
+    el.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-
-      const card = this.closest('.product-card');
-      const name = card.querySelector('.product-card__name')?.textContent || 'RELIER ITEM';
-      const priceNum = parseFloat(card.dataset.price || '0');
-      const price = '£' + priceNum.toFixed(2);
-      const colour = card.querySelector('.product-card__sub')?.textContent || '';
-      const cats = (card.dataset.cat || '').split(' ');
-      const size = cats.includes('accessories') ? 'One Size' : 'M';
-
-      addToCartItem({ name, price, colour, size });
-
-      if (window.showToast) window.showToast('ADDED TO CART');
-
-      const cartIcon = document.querySelector('.nav__cart');
-      if (cartIcon) {
-        cartIcon.style.transform = 'scale(1.3)';
-        setTimeout(() => cartIcon.style.transform = '', 300);
-      }
+      // Snipcart handles add-to-cart via data attributes
     });
   });
 

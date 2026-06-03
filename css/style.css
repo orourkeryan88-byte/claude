@@ -1569,3 +1569,21 @@ ul { list-style: none; }
 }
 
 .logo-badge-3d canvas { width: 100%; height: 100%; }
+
+/* ============================================
+   SNIPCART THEME OVERRIDES
+   ============================================ */
+:root {
+  --color-default: #0d0d0c;
+  --color-alt: #5c5c58;
+  --color-badge-foreground: #fff;
+  --color-badge: #0d0d0c;
+  --color-input-border: #d1d1ce;
+  --color-button-primary: #0d0d0c;
+  --color-button-primary-hover: #2a2a28;
+  --border-radius: 0;
+}
+.snip-layout { font-family: 'Space Grotesk', sans-serif !important; }
+.snip-header { background: #0d0d0c !important; }
+.snip-btn--highlight { background: #0d0d0c !important; border-color: #0d0d0c !important; border-radius: 0 !important; font-family: 'Space Mono', monospace !important; letter-spacing: 0.1em; }
+.snip-btn--highlight:hover { background: #2a2a28 !important; }
