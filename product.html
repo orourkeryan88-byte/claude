@@ -75,20 +75,11 @@
     <!-- Gallery -->
     <div class="product-gallery">
       <div class="product-gallery__main">
-        <div class="product-gallery__main-img product-gallery__main-img--placeholder">
-          <canvas id="productLogoCanvas"></canvas>
-          <span class="img-placeholder-text img-placeholder-text--large">
-            PRODUCT IMAGE<br/>
-            <small>Drop your image here</small>
-          </span>
+        <div class="product-gallery__main-img" id="mainImgWrap">
+          <img id="mainProductImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" />
         </div>
       </div>
-      <div class="product-gallery__thumbs">
-        <div class="product-gallery__thumb product-gallery__thumb--active product-gallery__thumb--placeholder"></div>
-        <div class="product-gallery__thumb product-gallery__thumb--placeholder product-gallery__thumb--dark"></div>
-        <div class="product-gallery__thumb product-gallery__thumb--placeholder"></div>
-        <div class="product-gallery__thumb product-gallery__thumb--placeholder product-gallery__thumb--dark"></div>
-      </div>
+      <div class="product-gallery__thumbs" id="galleryThumbs"></div>
     </div>
 
     <!-- Info -->
@@ -363,6 +354,7 @@
           name: 'RELIER TEE — WHITE',
           price: '55.00',
           image: 'images/white-tee-front.jpg',
+          images: ['images/white-tee-front.jpg', 'images/white-tee-back.jpg'],
           hasSize: true,
           displayName: 'RELIER TEE — WHITE',
           displayPrice: '£55.00',
@@ -373,6 +365,7 @@
           name: 'RELIER TEE — BLACK',
           price: '55.00',
           image: 'images/black-tee-front.jpg',
+          images: ['images/black-tee-front.jpg', 'images/black-tee-back.jpg'],
           hasSize: true,
           displayName: 'RELIER TEE — BLACK',
           displayPrice: '£55.00',
@@ -383,6 +376,7 @@
           name: 'RELIER TRUCKER CAP — GREY',
           price: '40.00',
           image: 'images/grey-cap.jpg',
+          images: ['images/grey-cap.jpg', 'images/black-cap.jpg'],
           hasSize: false,
           displayName: 'RELIER TRUCKER CAP — GREY',
           displayPrice: '£40.00',
@@ -393,6 +387,7 @@
           name: 'RELIER SNAPBACK — BLACK',
           price: '40.00',
           image: 'images/black-cap.jpg',
+          images: ['images/black-cap.jpg', 'images/grey-cap.jpg'],
           hasSize: false,
           displayName: 'RELIER SNAPBACK — BLACK',
           displayPrice: '£40.00',
@@ -423,10 +418,35 @@
           btn.removeAttribute('data-item-custom1-name');
           btn.removeAttribute('data-item-custom1-options');
           btn.removeAttribute('data-item-custom1-required');
-          /* Hide size selector for one-size items */
           var sizeOption = document.querySelector('.product-option:nth-of-type(2)');
           if (sizeOption) sizeOption.style.display = 'none';
         }
+      }
+
+      /* Build gallery */
+      var mainImg = document.getElementById('mainProductImg');
+      var thumbsWrap = document.getElementById('galleryThumbs');
+      if (mainImg && thumbsWrap && product.images) {
+        mainImg.src = product.images[0];
+        mainImg.alt = product.displayName;
+        product.images.forEach(function(src, i) {
+          var thumb = document.createElement('button');
+          thumb.className = 'product-gallery__thumb' + (i === 0 ? ' product-gallery__thumb--active' : '');
+          thumb.style.cssText = 'background:none;border:none;padding:0;cursor:pointer;overflow:hidden;';
+          var img = document.createElement('img');
+          img.src = src;
+          img.alt = product.displayName;
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+          thumb.appendChild(img);
+          thumb.addEventListener('click', function() {
+            mainImg.src = src;
+            thumbsWrap.querySelectorAll('.product-gallery__thumb').forEach(function(t) {
+              t.classList.remove('product-gallery__thumb--active');
+            });
+            thumb.classList.add('product-gallery__thumb--active');
+          });
+          thumbsWrap.appendChild(thumb);
+        });
       }
     })();
   </script>
