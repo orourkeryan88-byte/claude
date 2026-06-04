@@ -32,6 +32,9 @@
   <!-- Nav -->
   <nav class="nav" id="nav">
     <div class="nav__inner">
+      <button class="nav__hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
+        <span class="nav__hamburger-bar"></span>
+      </button>
       <div class="nav__links nav__links--left">
         <a href="shop.html">SHOP</a>
         <a href="shop.html?cat=new">NEW ARRIVALS</a>
@@ -42,8 +45,8 @@
         <span class="nav__logo-text">RELIER</span>
       </a>
       <div class="nav__links nav__links--right">
-        <a href="#">ABOUT</a>
-        <a href="#" class="nav__icon" aria-label="Search">
+        <a href="#" class="nav__mobile-hide">ABOUT</a>
+        <a href="#" class="nav__icon nav__mobile-hide" aria-label="Search">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </a>
         <a href="#" class="nav__icon nav__cart snipcart-checkout" aria-label="Cart">
@@ -51,6 +54,12 @@
           <span class="nav__cart-count snipcart-items-count"></span>
         </a>
       </div>
+    </div>
+    <div class="nav__mobile-menu" id="navMobileMenu" aria-hidden="true">
+      <a href="shop.html">SHOP</a>
+      <a href="shop.html?cat=new">NEW ARRIVALS</a>
+      <a href="lookbook.html">LOOKBOOK</a>
+      <a href="#">ABOUT</a>
     </div>
   </nav>
 

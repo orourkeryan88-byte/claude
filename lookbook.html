@@ -14,14 +14,17 @@
   <style>
     .lookbook-hero {
       height: 70vh;
-      min-height: 500px;
+      min-height: clamp(280px, 50vh, 500px);
       background: var(--grey-800);
       margin-top: calc(var(--ticker-h) + var(--nav-h));
       display: flex;
       align-items: flex-end;
-      padding: 60px;
+      padding: var(--space-sm);
       position: relative;
       overflow: hidden;
+    }
+    @media (min-width: 768px) {
+      .lookbook-hero { padding: 60px; }
     }
     .lookbook-hero canvas {
       position: absolute;
@@ -70,7 +73,10 @@
     .lookbook-grid__item--span2 {
       grid-column: span 2;
       aspect-ratio: unset;
-      min-height: 500px;
+      min-height: clamp(220px, 40vh, 500px);
+    }
+    @media (min-width: 768px) {
+      .lookbook-grid__item--span2 { min-height: 500px; }
     }
 
     .lookbook-grid__item span {
@@ -138,6 +144,9 @@
 
   <nav class="nav" id="nav">
     <div class="nav__inner">
+      <button class="nav__hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
+        <span class="nav__hamburger-bar"></span>
+      </button>
       <div class="nav__links nav__links--left">
         <a href="shop.html">SHOP</a>
         <a href="shop.html?cat=new">NEW ARRIVALS</a>
@@ -148,8 +157,8 @@
         <span class="nav__logo-text">RELIER</span>
       </a>
       <div class="nav__links nav__links--right">
-        <a href="#">ABOUT</a>
-        <a href="#" class="nav__icon">
+        <a href="#" class="nav__mobile-hide">ABOUT</a>
+        <a href="#" class="nav__icon nav__mobile-hide" aria-label="Search">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </a>
         <a href="#" class="nav__icon nav__cart snipcart-checkout" aria-label="Cart">
@@ -157,6 +166,12 @@
           <span class="nav__cart-count snipcart-items-count"></span>
         </a>
       </div>
+    </div>
+    <div class="nav__mobile-menu" id="navMobileMenu" aria-hidden="true">
+      <a href="shop.html">SHOP</a>
+      <a href="shop.html?cat=new">NEW ARRIVALS</a>
+      <a href="lookbook.html" class="active">LOOKBOOK</a>
+      <a href="#">ABOUT</a>
     </div>
   </nav>
 

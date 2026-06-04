@@ -1587,3 +1587,163 @@ ul { list-style: none; }
 .snip-header { background: #0d0d0c !important; }
 .snip-btn--highlight { background: #0d0d0c !important; border-color: #0d0d0c !important; border-radius: 0 !important; font-family: 'Space Mono', monospace !important; letter-spacing: 0.1em; }
 .snip-btn--highlight:hover { background: #2a2a28 !important; }
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   ============================================ */
+
+/* --- Nav: absolute-center logo on mobile --- */
+.nav__inner { position: relative; }
+
+.nav__logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* --- Hamburger button (mobile only) --- */
+.nav__hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  color: var(--white);
+}
+
+.nav--light .nav__hamburger,
+.nav--scrolled .nav__hamburger { color: var(--black); }
+
+.nav__hamburger-bar {
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 1.5px;
+  background: currentColor;
+  transition: background var(--transition);
+}
+
+.nav__hamburger-bar::before,
+.nav__hamburger-bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 20px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform var(--transition);
+}
+
+.nav__hamburger-bar::before { top: -6px; }
+.nav__hamburger-bar::after { top: 6px; }
+
+.nav__hamburger.is-open .nav__hamburger-bar { background: transparent; }
+.nav__hamburger.is-open .nav__hamburger-bar::before {
+  transform: translateY(6px) rotate(45deg);
+}
+.nav__hamburger.is-open .nav__hamburger-bar::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Hide these items on mobile (shown via hamburger menu) */
+.nav__mobile-hide { display: none; }
+
+/* --- Mobile full-screen nav drawer --- */
+.nav__mobile-menu {
+  display: none;
+  position: fixed;
+  top: calc(var(--ticker-h) + var(--nav-h));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--black);
+  z-index: 997;
+  flex-direction: column;
+  padding: var(--space-md) var(--space-sm);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav__mobile-menu.is-open { display: flex; }
+
+.nav__mobile-menu a {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  color: var(--grey-600);
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--grey-800);
+  font-weight: 700;
+  transition: color var(--transition);
+}
+
+.nav__mobile-menu a:last-child { border-bottom: none; }
+
+.nav__mobile-menu a:hover,
+.nav__mobile-menu a.active { color: var(--white); }
+
+/* --- Nav icon touch targets: minimum 44×44px --- */
+.nav__icon {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  justify-content: center;
+}
+
+/* --- Tablet+: restore desktop nav, hide mobile elements --- */
+@media (min-width: 768px) {
+  .nav__inner { position: static; }
+  .nav__logo { position: static; transform: none; }
+  .nav__hamburger { display: none; }
+  .nav__mobile-menu { display: none !important; }
+  .nav__mobile-hide { display: inline-flex; }
+}
+
+/* --- Prevent body scroll when mobile menu open --- */
+body.nav-open { overflow: hidden; }
+
+/* --- Ticker: legible on small screens --- */
+.ticker span { font-size: 0.6875rem; }
+
+/* --- Hero sub text: readable on mobile --- */
+.hero__sub { font-size: 0.6875rem; }
+
+/* --- Product card name: readable on mobile --- */
+.product-card__name { font-size: 0.6875rem; }
+
+/* --- Filter bar: taller tap targets --- */
+.filter-btn { padding: 0.875rem 0.75rem; }
+.shop-filters__inner { height: 3.5rem; }
+
+@media (min-width: 768px) {
+  .filter-btn { padding: 0.875rem 1rem; }
+}
+
+/* --- Sort select: taller touch target --- */
+.sort-select { padding: 0.75rem; }
+
+/* --- Shop header: smaller 3D logo wrap on mobile --- */
+.shop-header__logo-wrap { height: 8rem; }
+
+@media (min-width: 768px) {
+  .shop-header__logo-wrap { height: 12.5rem; }
+}
+
+/* --- Swatches: 44×44px minimum touch target --- */
+.swatch {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+/* --- Lookbook carousel items: fluid height on mobile --- */
+.lookbook-item { height: clamp(18rem, 65vw, 26rem); }
+
+@media (min-width: 768px) {
+  .lookbook-item { height: 30rem; }
+}
+
+/* --- Footer col headings: slightly larger --- */
+.footer__col h4 { font-size: 0.75rem; }
+
+/* --- Breadcrumb: tappable font size --- */
+.breadcrumb { font-size: 0.75rem; }

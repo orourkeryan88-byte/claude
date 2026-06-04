@@ -7,6 +7,47 @@
 (function () {
   'use strict';
 
+  /* ---- Mobile hamburger menu ---- */
+  const hamburger = document.getElementById('navHamburger');
+  const mobileMenu = document.getElementById('navMobileMenu');
+
+  if (hamburger && mobileMenu) {
+    const openMenu = () => {
+      mobileMenu.classList.add('is-open');
+      hamburger.classList.add('is-open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('nav-open');
+    };
+
+    const closeMenu = () => {
+      mobileMenu.classList.remove('is-open');
+      hamburger.classList.remove('is-open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('nav-open');
+    };
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.contains('is-open') ? closeMenu() : openMenu();
+    });
+
+    /* Close on escape key */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    /* Close when a menu link is tapped */
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    /* Close menu if viewport resizes to tablet+ */
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) closeMenu();
+    }, { passive: true });
+  }
+
   /* ---- Nav scroll state ---- */
   const nav = document.getElementById('nav');
   if (nav && !nav.classList.contains('nav--light')) {
