@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stage Door Café — Temple Bar, Dublin</title>
+  <meta name="description" content="Stage Door Café — legendary Dublin breakfast café in Temple Bar. Not a café, it's a mental health test. 4.8★ across 3,500+ reviews." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0e0d0b;
+      --coal:    #1a1813;
+      --dark:    #242118;
+      --card:    #2a2620;
+      --border:  #3a342a;
+      --amber:   #c8861a;
+      --gold:    #e8a832;
+      --light-amber: #f0c060;
+      --cream:   #f5ede0;
+      --off-white: #e8ddd0;
+      --muted:   #8a7d6e;
+      --font-display: 'Abril Fatface', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── Noise Texture Overlay ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: linear-gradient(to bottom, rgba(14,13,11,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(2px);
+      transition: background 0.3s;
+    }
+
+    nav.scrolled {
+      background: rgba(14,13,11,0.97);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .nav-burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--cream);
+      transition: all 0.3s;
+    }
+
+    /* ─── Hero ─── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(200,134,26,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,134,26,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 20%, rgba(200,134,26,0.05) 0%, transparent 60%);
+    }
+
+    /* Curtain lines — a nod to the stage */
+    .hero-curtain {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--amber) 0%, transparent 30%, transparent 70%, var(--amber) 100%);
+      opacity: 0.15;
+    }
+    .hero-curtain-left  { left: 8%; }
+    .hero-curtain-right { right: 8%; }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 820px;
+      padding: 2rem;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--amber);
+      padding: 0.35rem 1rem;
+      border-radius: 2px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 1.0;
+      color: var(--cream);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title span {
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--off-white);
+      margin: 1.5rem 0 2.5rem;
+      opacity: 0.85;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-star {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .hero-star svg { width: 16px; height: 16px; fill: var(--gold); }
+
+    .hero-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
+
+    .hero-rank {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .hero-rank strong { color: var(--off-white); }
+
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 2.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--amber);
+      color: var(--black);
+      border: 2px solid var(--amber);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(200,134,26,0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--cream);
+      border: 2px solid var(--border);
+      margin-left: 1rem;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+      transform: translateY(-2px);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+
+    .hero-scroll svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ─── Section Shared ─── */
+    section { padding: 6rem 2rem; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.1;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--amber);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ─── About ─── */
+    #about { background: var(--coal); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--off-white);
+      opacity: 0.85;
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .about-text p:last-child { margin-bottom: 0; }
+
+    .about-text strong { color: var(--gold); font-weight: 600; }
+
+    .about-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .about-feature {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .feature-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .feature-body h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 0.3rem;
+    }
+
+    .feature-body p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .about-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, rgba(200,134,26,0.15), rgba(200,134,26,0.05));
+      border: 1px solid rgba(200,134,26,0.3);
+      border-radius: 4px;
+      padding: 0.6rem 1rem;
+      font-size: 0.8rem;
+      color: var(--gold);
+      margin-top: 2rem;
+    }
+
+    /* ─── Menu ─── */
+    #menu { background: var(--black); }
+
+    .menu-header { text-align: center; margin-bottom: 3.5rem; }
+    .menu-header .section-divider { margin: 0 auto 0; }
+
+    .menu-categories {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .menu-category h3 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .menu-item {
+      background: var(--card);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: background 0.2s;
+    }
+
+    .menu-item:hover { background: var(--dark); }
+
+    .menu-item-info { flex: 1; }
+
+    .menu-item-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 0.3rem;
+    }
+
+    .menu-item-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .menu-item-price {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    .menu-item-featured {
+      background: linear-gradient(135deg, rgba(200,134,26,0.12), rgba(200,134,26,0.04));
+      border-left: 3px solid var(--amber);
+    }
+
+    .menu-item-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--amber);
+      color: var(--black);
+      padding: 0.15rem 0.4rem;
+      border-radius: 2px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    /* ─── Hours & Location ─── */
+    #location { background: var(--coal); }
+
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .hours-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+
+    .hours-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hours-table tr:last-child { border-bottom: none; }
+
+    .hours-table td {
+      padding: 0.75rem 0;
+      font-size: 0.9rem;
+      color: var(--off-white);
+    }
+
+    .hours-table td:first-child {
+      font-weight: 500;
+      color: var(--cream);
+      width: 45%;
+    }
+
+    .hours-table td:last-child { color: var(--muted); }
+
+    .hours-table tr.today td { color: var(--gold); }
+    .hours-table tr.today td:first-child { color: var(--gold); }
+
+    .open-now {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #5dba7a;
+      margin-bottom: 1.5rem;
+    }
+
+    .open-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5dba7a;
+      animation: pulse-green 2s infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(93,186,122,0.4); }
+      50%       { opacity: 0.8; box-shadow: 0 0 0 6px rgba(93,186,122,0); }
+    }
+
+    .contact-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--off-white);
+    }
+
+    .contact-item svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--amber);
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .contact-item a:hover { color: var(--gold); }
+
+    .map-wrapper {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .map-wrapper iframe {
+      width: 100%;
+      height: 420px;
+      display: block;
+      filter: grayscale(40%) contrast(1.1);
+    }
+
+    /* ─── Reviews ─── */
+    #reviews { background: var(--black); }
+
+    .reviews-header { text-align: center; margin-bottom: 3rem; }
+    .reviews-header .section-divider { margin: 0 auto 0; }
+
+    .reviews-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .score-number {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .score-details { text-align: left; }
+
+    .stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 0.2rem;
+    }
+
+    .stars svg { width: 16px; height: 16px; fill: var(--gold); }
+
+    .score-count {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Carousel */
+    .carousel-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .review-card {
+      flex: 0 0 calc(33.333% - 1.5rem);
+      margin: 0 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .review-card::before {
+      content: '\201C';
+      position: absolute;
+      top: 1rem;
+      left: 1.5rem;
+      font-family: var(--font-display);
+      font-size: 4rem;
+      color: var(--amber);
+      opacity: 0.3;
+      line-height: 1;
+    }
+
+    .review-text {
+      font-size: 0.95rem;
+      color: var(--off-white);
+      line-height: 1.7;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .review-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .reviewer-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--dark);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--amber);
+      flex-shrink: 0;
+    }
+
+    .reviewer-info { flex: 1; }
+
+    .reviewer-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cream);
+    }
+
+    .reviewer-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .review-stars {
+      display: flex;
+      gap: 2px;
+    }
+
+    .review-stars svg { width: 12px; height: 12px; fill: var(--gold); }
+
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .carousel-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--cream);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .carousel-btn:hover {
+      border-color: var(--amber);
+      background: var(--dark);
+    }
+
+    .carousel-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; }
+
+    .carousel-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      padding: 0;
+    }
+
+    .carousel-dot.active {
+      background: var(--amber);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      background: var(--coal);
+      border-top: 1px solid var(--border);
+      padding: 4rem 2rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand .nav-logo {
+      font-size: 1.8rem;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-tagline {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .footer-social a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--off-white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      transition: all 0.2s;
+    }
+
+    .footer-social a:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .footer-social svg { width: 16px; height: 16px; fill: currentColor; }
+
+    .footer-col h5 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-col ul { list-style: none; }
+
+    .footer-col ul li {
+      margin-bottom: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .footer-col ul li svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--amber);
+      fill: none;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .footer-col ul li a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .footer-bottom a:hover { color: var(--amber); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .about-grid,
+      .location-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-brand { grid-column: 1 / -1; }
+
+      .review-card {
+        flex: 0 0 calc(100% - 3rem);
+      }
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.25rem; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(14,13,11,0.98);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 0;
+        gap: 1.25rem;
+      }
+
+      .nav-links.open { display: flex; }
+      .nav-burger { display: flex; }
+
+      section { padding: 4rem 1.25rem; }
+
+      .hero-buttons { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+      .btn-outline { margin-left: 0; }
+
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+
+      .menu-items { grid-template-columns: 1fr; }
+
+      .review-card {
+        flex: 0 0 calc(100% - 2rem);
+        margin: 0 1rem;
+      }
+    }
+
+    /* ─── Scroll-reveal animations ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Navigation ─── -->
+  <nav id="navbar">
+    <span class="nav-logo">Stage Door</span>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#location">Visit</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+    </ul>
+    <button class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ─── Hero ─── -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-curtain hero-curtain-left"></div>
+    <div class="hero-curtain hero-curtain-right"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Temple Bar · Dublin 2 · Est. in legend</div>
+
+      <h1 class="hero-title">
+        Stage Door
+        <span>Café</span>
+      </h1>
+
+      <p class="hero-tagline">"Not a café, it's a mental health test."</p>
+
+      <div class="hero-meta">
+        <div class="hero-star">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          4.8 / 5
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-rank">
+          <strong>3,500+</strong> reviews
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-rank">
+          <strong>#45</strong> of 2,695 Dublin restaurants
+        </div>
+      </div>
+
+      <div class="hero-buttons">
+        <a href="#location" class="btn btn-primary">Find Us</a>
+        <a href="#menu" class="btn btn-outline">See the Menu</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      Scroll
+    </div>
+  </section>
+
+  <!-- ─── About ─── -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p class="section-label">Our Story</p>
+          <h2 class="section-title">The most beloved corner of Temple Bar</h2>
+          <div class="section-divider"></div>
+
+          <p>Tucked into the cobblestones of East Essex Street, Stage Door has been feeding Dublin's artists, night owls, tourists, and locals for years. It has no neon sign, no PR budget, and absolutely no pretension — just brilliant food, warm chaos, and <strong>Alan on the door</strong>.</p>
+
+          <p>Alan is the kind of host who'll hand you a live music recommendation before you've ordered, remember your name the next morning, and deliver a one-liner so good you'll be repeating it at dinner parties for years. Half of those 4.8-star reviews are really about him.</p>
+
+          <p>Inside, the walls are lined with <strong>Al Pacino headshots</strong>, the seating is mismatched in the best charity-shop tradition, and the intimate booths make every breakfast feel like a secret. There's outdoor seating for Temple Bar's rare sunny moments, and a crowd that tends to lean artistic, creative, and unapologetically themselves.</p>
+
+          <p>Stage Door is <strong>proudly LGBTQ+ welcoming</strong>. Everyone is here. Everyone belongs.</p>
+
+          <div class="about-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            #45 of 2,695 Dublin restaurants on Tripadvisor
+          </div>
+        </div>
+
+        <div class="about-features">
+          <div class="about-feature reveal reveal-delay-1">
+            <div class="feature-icon">🎭</div>
+            <div class="feature-body">
+              <h4>Arts &amp; Culture Crowd</h4>
+              <p>A hub for Temple Bar's creative community — musicians, actors, artists, and anyone who keeps interesting hours.</p>
+            </div>
+          </div>
+
+          <div class="about-feature reveal reveal-delay-2">
+            <div class="feature-icon">🏆</div>
+            <div class="feature-body">
+              <h4>Legendary Irish Breakfast</h4>
+              <p>Rashers, sausages, black pudding, eggs, soda bread. The full Irish that reviewers describe as "the best in Dublin."</p>
+            </div>
+          </div>
+
+          <div class="about-feature reveal reveal-delay-3">
+            <div class="feature-icon">🌈</div>
+            <div class="feature-body">
+              <h4>Proudly Inclusive</h4>
+              <p>"Outstanding, super gay friendly café in the heart of Temple Bar." We're for everyone — full stop.</p>
+            </div>
+          </div>
+
+          <div class="about-feature reveal reveal-delay-4">
+            <div class="feature-icon">🛋️</div>
+            <div class="feature-body">
+              <h4>Charity Shop Character</h4>
+              <p>Intimate booths, mismatched décor, Al Pacino on the walls. The anti-chain. Authentically, defiantly Dublin.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Menu ─── -->
+  <section id="menu">
+    <div class="container">
+      <div class="menu-header reveal">
+        <p class="section-label">What We Serve</p>
+        <h2 class="section-title">The Menu</h2>
+        <div class="section-divider"></div>
+        <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1rem;">Fresh, generous, and priced like a proper Dublin caff.</p>
+      </div>
+
+      <div class="menu-categories">
+
+        <!-- Breakfast -->
+        <div class="menu-category reveal">
+          <h3>Breakfast &amp; Brunch</h3>
+          <div class="menu-items">
+
+            <div class="menu-item menu-item-featured">
+              <div class="menu-item-info">
+                <div class="menu-item-name">
+                  Full Irish Breakfast
+                  <span class="menu-item-badge">Signature</span>
+                </div>
+                <div class="menu-item-desc">Rashers, sausages, black pudding, eggs your way, soda bread, grilled tomato &amp; mushrooms</div>
+              </div>
+              <div class="menu-item-price">€14</div>
+            </div>
+
+            <div class="menu-item">
+              <div class="menu-item-info">
+                <div class="menu-item-name">Cheese Omelette</div>
+                <div class="menu-item-desc">Fluffy eggs, melted cheese, served with toast</div>
+              </div>
+              <div class="menu-item-price">€8.95</div>
+            </div>
+
+            <div class="menu-item">
+              <div class="menu-item-info">
+                <div class="menu-item-name">BLT</div>
+                <div class="menu-item-desc">Back bacon, crisp lettuce, ripe tomato, on fresh bread</div>
+              </div>
+              <div class="menu-item-price">Ask us</div>
+            </div>
+
+            <div class="menu-item">
+              <div class="menu-item-info">
+                <div class="menu-item-name">Parfait</div>
+                <div class="menu-item-desc">Layered yogurt, seasonal fruit, granola</div>
+              </div>
+              <div class="menu-item-price">Ask us</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Drinks -->
+        <div class="menu-category reveal">
+          <h3>Drinks &amp; Something Stronger</h3>
+          <div class="menu-items">
+
+            <div class="menu-item">
+              <div class="menu-item-info">
+                <div class="menu-item-name">Coffee</div>
+                <div class="menu-item-desc">Espresso, Americano, flat white, cappuccino</div>
+              </div>
+              <div class="menu-item-price">€2.75</div>
+            </div>
+
+            <div class="menu-item menu-item-featured">
+              <div class="menu-item-info">
+                <div class="menu-item-name">
+                  Irish Coffee
+                  <span class="menu-item-badge">Classic</span>
+                </div>
+                <div class="menu-item-desc">Hot coffee, Irish whiskey, lightly whipped cream</div>
+              </div>
+              <div class="menu-item-price">Ask us</div>
+            </div>
+
+            <div class="menu-item">
+              <div class="menu-item-info">
+                <div class="menu-item-name">Whiskey</div>
+                <div class="menu-item-desc">A proper drop of the good stuff</div>
+              </div>
+              <div class="menu-item-price">Ask us</div>
+            </div>
+
+            <div class="menu-item">
+              <div class="menu-item-info">
+                <div class="menu-item-name">Wine</div>
+                <div class="menu-item-desc">House red &amp; white available</div>
+              </div>
+              <div class="menu-item-price">Ask us</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Hours & Location ─── -->
+  <section id="location">
+    <div class="container">
+      <div class="location-grid">
+
+        <div class="reveal">
+          <p class="section-label">Find Us</p>
+          <h2 class="section-title">Hours &amp; Location</h2>
+          <div class="section-divider"></div>
+
+          <div class="open-now" id="open-status">
+            <span class="open-dot"></span>
+            <span id="open-text">Checking hours…</span>
+          </div>
+
+          <table class="hours-table">
+            <tbody>
+              <tr data-day="1"><td>Monday</td><td>08:00 – 18:00</td></tr>
+              <tr data-day="2"><td>Tuesday</td><td>08:00 – 22:30</td></tr>
+              <tr data-day="3"><td>Wednesday</td><td>08:00 – 18:00</td></tr>
+              <tr data-day="4"><td>Thursday</td><td>08:00 – 18:00</td></tr>
+              <tr data-day="5"><td>Friday</td><td>06:00 – 18:00</td></tr>
+              <tr data-day="6"><td>Saturday</td><td>08:00 – 18:00</td></tr>
+              <tr data-day="0"><td>Sunday</td><td>06:00 – 15:00</td></tr>
+            </tbody>
+          </table>
+
+          <div class="contact-items">
+            <div class="contact-item">
+              <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0z"/></svg>
+              11–12 East Essex Street, Temple Bar, Dublin 2
+            </div>
+            <div class="contact-item">
+              <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 6z"/></svg>
+              <a href="tel:+35316776297">+353 1 677 6297</a>
+            </div>
+            <div class="contact-item">
+              <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              <a href="https://www.instagram.com/stagedoorcafetemplebar" target="_blank" rel="noopener">@stagedoorcafetemplebar</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-wrapper reveal reveal-delay-2">
+          <iframe
+            src="https://maps.google.com/maps?q=11+East+Essex+Street+Temple+Bar+Dublin+2+Ireland&output=embed&z=16"
+            title="Stage Door Café on Google Maps"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Reviews ─── -->
+  <section id="reviews">
+    <div class="container">
+      <div class="reviews-header reveal">
+        <p class="section-label">What People Say</p>
+        <h2 class="section-title">Heard on the Street</h2>
+        <div class="section-divider"></div>
+
+        <div class="reviews-score">
+          <div class="score-number">4.8</div>
+          <div class="score-details">
+            <div class="stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="score-count">Based on 3,500+ reviews</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-container reveal">
+        <div class="carousel-track" id="carousel-track">
+
+          <div class="review-card">
+            <div class="review-text">
+              "Hands down the best place in Dublin for an Irish breakfast. Stands out every time."
+            </div>
+            <div class="review-footer">
+              <div class="reviewer-avatar">M</div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">Michael O.</div>
+                <div class="reviewer-meta">Tripadvisor · Dublin</div>
+              </div>
+              <div class="review-stars">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-text">
+              "The owner on the door was absolutely brilliant and comedy gold."
+            </div>
+            <div class="review-footer">
+              <div class="reviewer-avatar">S</div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">Sarah K.</div>
+                <div class="reviewer-meta">Google · Visitor</div>
+              </div>
+              <div class="review-stars">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-text">
+              "Went two days in a row. Quantity more than generous, price is not bad."
+            </div>
+            <div class="review-footer">
+              <div class="reviewer-avatar">T</div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">Thomas R.</div>
+                <div class="reviewer-meta">Tripadvisor · France</div>
+              </div>
+              <div class="review-stars">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-text">
+              "Alan is an amazing host — gave us the best tips for music and eating in Dublin."
+            </div>
+            <div class="review-footer">
+              <div class="reviewer-avatar">J</div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">Jamie L.</div>
+                <div class="reviewer-meta">Google · New York</div>
+              </div>
+              <div class="review-stars">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-text">
+              "Outstanding, super gay friendly café in the heart of Temple Bar."
+            </div>
+            <div class="review-footer">
+              <div class="reviewer-avatar">A</div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">Alex M.</div>
+                <div class="reviewer-meta">Google · London</div>
+              </div>
+              <div class="review-stars">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="carousel-controls">
+        <button class="carousel-btn" id="prev-btn" aria-label="Previous review">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+        <button class="carousel-btn" id="next-btn" aria-label="Next review">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+
+        <div class="footer-brand">
+          <span class="nav-logo">Stage Door Café</span>
+          <p class="footer-tagline">"Not a café, it's a mental health test."<br>Temple Bar, Dublin 2.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/stagedoorcafetemplebar" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="var(--coal)"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="var(--coal)" stroke-width="2"/></svg>
+              @stagedoorcafetemplebar
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Opening Hours</h5>
+          <ul>
+            <li>Mon &nbsp;08:00 – 18:00</li>
+            <li>Tue &nbsp;08:00 – 22:30</li>
+            <li>Wed &nbsp;08:00 – 18:00</li>
+            <li>Thu &nbsp;08:00 – 18:00</li>
+            <li>Fri &nbsp;&nbsp;06:00 – 18:00</li>
+            <li>Sat &nbsp;08:00 – 18:00</li>
+            <li>Sun &nbsp;06:00 – 15:00</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Contact &amp; Find Us</h5>
+          <ul>
+            <li>
+              <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0z"/></svg>
+              11–12 East Essex Street, Temple Bar, Dublin 2
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 6z"/></svg>
+              <a href="tel:+35316776297">+353 1 677 6297</a>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              <a href="https://www.instagram.com/stagedoorcafetemplebar" target="_blank" rel="noopener">Instagram</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2025 Stage Door Café · 11–12 East Essex Street, Temple Bar, Dublin 2</span>
+        <span>4.8★ · #45 of 2,695 Dublin restaurants</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── JavaScript ─── -->
+  <script>
+    /* Nav scroll */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* Mobile menu */
+    const burger = document.getElementById('nav-burger');
+    const navLinks = document.getElementById('nav-links');
+    burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    /* Open / Closed status */
+    (function updateOpenStatus() {
+      const hours = {
+        0: [6, 15],
+        1: [8, 18],
+        2: [8, 22.5],
+        3: [8, 18],
+        4: [8, 18],
+        5: [6, 18],
+        6: [8, 18]
+      };
+
+      const now = new Date();
+      const day = now.getDay();
+      const currentHour = now.getHours() + now.getMinutes() / 60;
+      const [open, close] = hours[day];
+      const isOpen = currentHour >= open && currentHour < close;
+
+      const statusEl = document.getElementById('open-status');
+      const textEl = document.getElementById('open-text');
+      const dot = statusEl.querySelector('.open-dot');
+
+      if (isOpen) {
+        textEl.textContent = 'Open now';
+        statusEl.style.color = '#5dba7a';
+        dot.style.background = '#5dba7a';
+      } else {
+        textEl.textContent = 'Closed now';
+        statusEl.style.color = '#c06060';
+        dot.style.background = '#c06060';
+        dot.style.animationName = 'none';
+      }
+
+      /* Highlight today's row */
+      const rows = document.querySelectorAll('.hours-table tr[data-day]');
+      rows.forEach(row => {
+        if (parseInt(row.dataset.day) === day) row.classList.add('today');
+      });
+    })();
+
+    /* Carousel */
+    (function initCarousel() {
+      const track = document.getElementById('carousel-track');
+      const dotsContainer = document.getElementById('carousel-dots');
+      const cards = track.querySelectorAll('.review-card');
+      const total = cards.length;
+      let current = 0;
+      let autoTimer;
+
+      function getVisible() {
+        return window.innerWidth <= 640 ? 1 : window.innerWidth <= 900 ? 1 : 3;
+      }
+
+      function maxIndex() {
+        return Math.max(0, total - getVisible());
+      }
+
+      function buildDots() {
+        dotsContainer.innerHTML = '';
+        const count = maxIndex() + 1;
+        for (let i = 0; i < count; i++) {
+          const btn = document.createElement('button');
+          btn.className = 'carousel-dot' + (i === current ? ' active' : '');
+          btn.addEventListener('click', () => goTo(i));
+          dotsContainer.appendChild(btn);
+        }
+      }
+
+      function getCardWidth() {
+        if (!cards[0]) return 0;
+        const style = getComputedStyle(cards[0]);
+        return cards[0].offsetWidth + parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+      }
+
+      function goTo(index) {
+        current = Math.max(0, Math.min(index, maxIndex()));
+        track.style.transform = `translateX(-${current * getCardWidth()}px)`;
+        document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === current);
+        });
+      }
+
+      document.getElementById('prev-btn').addEventListener('click', () => {
+        goTo(current > 0 ? current - 1 : maxIndex());
+        restartAuto();
+      });
+
+      document.getElementById('next-btn').addEventListener('click', () => {
+        goTo(current < maxIndex() ? current + 1 : 0);
+        restartAuto();
+      });
+
+      function startAuto() {
+        autoTimer = setInterval(() => {
+          goTo(current < maxIndex() ? current + 1 : 0);
+        }, 5000);
+      }
+
+      function restartAuto() {
+        clearInterval(autoTimer);
+        startAuto();
+      }
+
+      window.addEventListener('resize', () => {
+        buildDots();
+        goTo(Math.min(current, maxIndex()));
+      });
+
+      buildDots();
+      startAuto();
+    })();
+
+    /* Scroll reveal */
+    (function initReveal() {
+      const els = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(el => observer.observe(el));
+    })();
+  </script>
+
+</body>
+</html>
