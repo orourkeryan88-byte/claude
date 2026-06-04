@@ -285,10 +285,20 @@ ul { list-style: none; }
 
 #heroCanvas {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 55%;
   height: 100%;
   z-index: 1;
+  opacity: 0.55;
+}
+
+@media (max-width: 767px) {
+  #heroCanvas {
+    width: 60%;
+    opacity: 0.3;
+  }
 }
 
 .hero__overlay {
@@ -1683,7 +1693,7 @@ ul { list-style: none; }
 .nav__mobile-menu a:hover,
 .nav__mobile-menu a.active { color: var(--white); }
 
-/* --- Nav icon touch targets: minimum 44x44px --- */
+/* --- Nav icon touch targets: minimum 44×44px --- */
 .nav__icon {
   min-width: 2.75rem;
   min-height: 2.75rem;
@@ -1729,7 +1739,7 @@ body.nav-open { overflow: hidden; }
   .shop-header__logo-wrap { height: 12.5rem; }
 }
 
-/* --- Swatches: 44x44px minimum touch target --- */
+/* --- Swatches: 44×44px minimum touch target --- */
 .swatch {
   width: 2.75rem;
   height: 2.75rem;
