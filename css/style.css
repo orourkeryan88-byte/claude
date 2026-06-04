@@ -285,10 +285,20 @@ ul { list-style: none; }
 
 #heroCanvas {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 55%;
   height: 100%;
   z-index: 1;
+  opacity: 0.55;
+}
+
+@media (max-width: 767px) {
+  #heroCanvas {
+    width: 60%;
+    opacity: 0.3;
+  }
 }
 
 .hero__overlay {
