@@ -66,7 +66,6 @@
   <!-- ======= HERO ======= -->
   <section class="hero" id="hero">
     <div class="hero__bg" id="heroBg" style="background-image:url('images/hero-bg.svg')"></div>
-    <!-- 3D Logo canvas fills the hero -->
     <canvas id="heroCanvas"></canvas>
     <div class="hero__overlay">
       <p class="hero__sub">SS26 COLLECTION</p>
@@ -98,19 +97,17 @@
   </div>
 
   <!-- ======= NEW ARRIVALS ======= -->
-  <section class="section" id="newArrivals">
+  <section class="section" id="new-arrivals">
     <div class="section__header">
       <h2 class="section__title">NEW ARRIVALS</h2>
       <a href="shop.html?cat=new" class="section__link">VIEW ALL →</a>
     </div>
     <div class="product-grid product-grid--4">
 
-      <!-- Card 1 -->
       <a href="product.html?id=white-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image">
-            <img src="images/white-tee-front.jpg" alt="RELIER Tee White" class="product-card__img product-card__img--contain" />
-          </div>
+          <img src="images/white-tee-front.jpg" alt="RELIER White Tee" class="product-card__img"
+               onerror="this.onerror=null;this.src=this.src.replace('.jpg','.svg')">
           <span class="product-card__tag">NEW</span>
           <button class="product-card__quick-add snipcart-add-item"
             data-item-id="white-tee"
@@ -124,18 +121,16 @@
             onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
-          <div class="product-card__name">RELIER TEE — WHITE</div>
-          <div class="product-card__sub">Essential / Unisex</div>
-          <div class="product-card__price">£55.00</div>
+          <p class="product-card__name">RELIER TEE — WHITE</p>
+          <p class="product-card__sub">White</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <!-- Card 2 -->
       <a href="product.html?id=black-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--dark">
-            <img src="images/black-tee-front.jpg" alt="RELIER Tee Black" class="product-card__img product-card__img--contain" />
-          </div>
+          <img src="images/black-tee-front.jpg" alt="RELIER Black Tee" class="product-card__img"
+               onerror="this.onerror=null;this.src=this.src.replace('.jpg','.svg')">
           <span class="product-card__tag">NEW</span>
           <button class="product-card__quick-add snipcart-add-item"
             data-item-id="black-tee"
@@ -149,135 +144,115 @@
             onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
-          <div class="product-card__name">RELIER TEE — BLACK</div>
-          <div class="product-card__sub">Essential / Unisex</div>
-          <div class="product-card__price">£55.00</div>
+          <p class="product-card__name">RELIER TEE — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
-      <!-- Card 3 -->
       <a href="product.html?id=grey-cap" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--mid">
-            <img src="images/grey-cap.jpg" alt="RELIER Cap Grey" class="product-card__img product-card__img--contain" />
-          </div>
+          <img src="images/grey-cap.jpg" alt="RELIER Grey Trucker Cap" class="product-card__img"
+               onerror="this.onerror=null;this.src=this.src.replace('.jpg','.svg')">
           <span class="product-card__tag">NEW</span>
           <button class="product-card__quick-add snipcart-add-item"
             data-item-id="grey-cap"
-            data-item-name="RELIER CAP — GREY"
-            data-item-price="45.00"
+            data-item-name="RELIER TRUCKER CAP — GREY"
+            data-item-price="40.00"
             data-item-url="shop.html"
             data-item-image="images/grey-cap.jpg"
             onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
-          <div class="product-card__name">RELIER CAP — GREY</div>
-          <div class="product-card__sub">Accessories / One Size</div>
-          <div class="product-card__price">£45.00</div>
+          <p class="product-card__name">RELIER TRUCKER CAP — GREY</p>
+          <p class="product-card__sub">Grey / White</p>
+          <p class="product-card__price">£40.00</p>
         </div>
       </a>
 
-      <!-- Card 4 -->
       <a href="product.html?id=black-cap" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--dark">
-            <img src="images/black-cap.jpg" alt="RELIER Cap Black" class="product-card__img product-card__img--contain" />
-          </div>
-          <span class="product-card__tag">NEW</span>
+          <img src="images/black-cap.jpg" alt="RELIER Black Snapback" class="product-card__img"
+               onerror="this.onerror=null;this.src=this.src.replace('.jpg','.svg')">
           <button class="product-card__quick-add snipcart-add-item"
             data-item-id="black-cap"
-            data-item-name="RELIER CAP — BLACK"
-            data-item-price="45.00"
+            data-item-name="RELIER SNAPBACK — BLACK"
+            data-item-price="40.00"
             data-item-url="shop.html"
             data-item-image="images/black-cap.jpg"
             onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
-          <div class="product-card__name">RELIER CAP — BLACK</div>
-          <div class="product-card__sub">Accessories / One Size</div>
-          <div class="product-card__price">£45.00</div>
+          <p class="product-card__name">RELIER SNAPBACK — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£40.00</p>
         </div>
       </a>
 
     </div>
   </section>
 
-  <!-- ======= LOGO FEATURE ======= -->
-  <div class="logo-feature">
+  <!-- ======= FEATURE / BRAND STORY ======= -->
+  <section class="logo-feature">
     <canvas id="logoCanvas"></canvas>
     <div class="logo-feature__text">
-      <p class="logo-feature__eyebrow">THE BRAND</p>
-      <h2 class="logo-feature__heading">CONNECT<br/>TO THE<br/>CULTURE</h2>
-      <p class="logo-feature__body">RELIER bridges the gap between streetwear and culture. Each piece is designed to connect — to the moment, to the movement, to each other.</p>
-      <a href="shop.html" class="btn btn--ghost">EXPLORE THE COLLECTION</a>
+      <p class="logo-feature__eyebrow">THE LABEL</p>
+      <h2 class="logo-feature__heading">BUILT FOR<br/>THE STREETS</h2>
+      <p class="logo-feature__body">
+        Relier connects the dots between culture, craft, and community.
+        Every piece is designed with intention — built to last, worn to live.
+      </p>
+      <a href="#" class="btn btn--white">OUR STORY</a>
     </div>
-  </div>
+  </section>
 
   <!-- ======= COLLECTIONS ======= -->
-  <section class="section">
+  <section class="section" id="collections">
     <div class="section__header">
-      <h2 class="section__title">SHOP BY COLLECTION</h2>
+      <h2 class="section__title">COLLECTIONS</h2>
     </div>
     <div class="collections-grid">
-      <a href="shop.html?cat=tees" class="collection-card collection-card--tall">
-        <div class="collection-card__image collection-card__image--grey">
-          <canvas class="collection-logo-canvas" data-collection="tees"></canvas>
+
+      <a href="shop.html?cat=tops" class="collection-card collection-card--tall" data-animate>
+        <div class="collection-card__image">
+          <img src="images/white-tee-back.jpg" alt="Tees" class="collection-card__bg-img"
+               onerror="this.style.display='none'; this.parentElement.classList.add('collection-card__image--grey')">
+          <canvas class="collection-logo-canvas"></canvas>
         </div>
         <div class="collection-card__overlay">
-          <span class="collection-card__name">TEES</span>
+          <p class="collection-card__name">TEES</p>
           <span class="collection-card__arrow">→</span>
         </div>
       </a>
+
       <div class="collections-grid__right">
-        <a href="shop.html?cat=caps" class="collection-card">
+        <a href="shop.html?cat=accessories" class="collection-card" data-animate>
           <div class="collection-card__image collection-card__image--dark">
-            <canvas class="collection-logo-canvas" data-collection="caps"></canvas>
+            <img src="images/grey-cap.jpg" alt="Caps" class="collection-card__bg-img"
+                 onerror="this.style.display='none'">
+            <canvas class="collection-logo-canvas"></canvas>
           </div>
           <div class="collection-card__overlay">
-            <span class="collection-card__name">CAPS</span>
+            <p class="collection-card__name">CAPS</p>
             <span class="collection-card__arrow">→</span>
           </div>
         </a>
-        <a href="shop.html?cat=new" class="collection-card">
-          <div class="collection-card__image collection-card__image--light">
-            <canvas class="collection-logo-canvas" data-collection="new"></canvas>
+        <a href="shop.html?cat=outerwear" class="collection-card" data-animate>
+          <div class="collection-card__image collection-card__image--mid">
+            <canvas class="collection-logo-canvas"></canvas>
           </div>
           <div class="collection-card__overlay">
-            <span class="collection-card__name">NEW ARRIVALS</span>
+            <p class="collection-card__name">OUTERWEAR</p>
             <span class="collection-card__arrow">→</span>
           </div>
         </a>
       </div>
+
     </div>
   </section>
 
-  <!-- ======= LOOKBOOK STRIP ======= -->
-  <div class="lookbook-strip">
-    <div class="section__header">
-      <h2 class="section__title">LOOKBOOK</h2>
-      <a href="lookbook.html" class="section__link">VIEW ALL →</a>
-    </div>
-    <div class="lookbook-scroll" id="lookbookScroll">
-      <div class="lookbook-item lookbook-item--placeholder">
-        <span>SS26</span>
-      </div>
-      <div class="lookbook-item lookbook-item--dark">
-        <span>RELIER</span>
-      </div>
-      <div class="lookbook-item lookbook-item--placeholder">
-        <span>CULTURE</span>
-      </div>
-      <div class="lookbook-item lookbook-item--dark">
-        <span>CONNECT</span>
-      </div>
-      <div class="lookbook-item lookbook-item--placeholder">
-        <span>SS26</span>
-      </div>
-    </div>
-  </div>
-
   <!-- ======= BESTSELLERS ======= -->
-  <section class="section">
+  <section class="section" id="bestsellers">
     <div class="section__header">
       <h2 class="section__title">BESTSELLERS</h2>
       <a href="shop.html" class="section__link">VIEW ALL →</a>
@@ -286,9 +261,8 @@
 
       <a href="product.html?id=white-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image">
-            <img src="images/white-tee-front.jpg" alt="RELIER Tee White" class="product-card__img product-card__img--contain" />
-          </div>
+          <img src="images/white-tee-back.jpg" alt="Relier White Tee Back" class="product-card__img"
+               onerror="this.onerror=null;this.src=this.src.replace('.jpg','.svg')">
           <button class="product-card__quick-add snipcart-add-item"
             data-item-id="white-tee"
             data-item-name="RELIER TEE — WHITE"
@@ -301,17 +275,16 @@
             onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
-          <div class="product-card__name">RELIER TEE — WHITE</div>
-          <div class="product-card__sub">Essential / Unisex</div>
-          <div class="product-card__price">£55.00</div>
+          <p class="product-card__name">RELIER TEE — WHITE</p>
+          <p class="product-card__sub">White</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
       <a href="product.html?id=black-tee" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--dark">
-            <img src="images/black-tee-front.jpg" alt="RELIER Tee Black" class="product-card__img product-card__img--contain" />
-          </div>
+          <img src="images/black-tee-back.jpg" alt="Relier Black Tee Back" class="product-card__img"
+               onerror="this.onerror=null;this.src=this.src.replace('.jpg','.svg')">
           <button class="product-card__quick-add snipcart-add-item"
             data-item-id="black-tee"
             data-item-name="RELIER TEE — BLACK"
@@ -324,29 +297,28 @@
             onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
-          <div class="product-card__name">RELIER TEE — BLACK</div>
-          <div class="product-card__sub">Essential / Unisex</div>
-          <div class="product-card__price">£55.00</div>
+          <p class="product-card__name">RELIER TEE — BLACK</p>
+          <p class="product-card__sub">Black</p>
+          <p class="product-card__price">£55.00</p>
         </div>
       </a>
 
       <a href="product.html?id=grey-cap" class="product-card" data-animate>
         <div class="product-card__image-wrap">
-          <div class="product-card__image product-card__image--mid">
-            <img src="images/grey-cap.jpg" alt="RELIER Cap Grey" class="product-card__img product-card__img--contain" />
-          </div>
+          <img src="images/grey-cap.jpg" alt="Relier Grey Cap" class="product-card__img product-card__img--contain"
+               onerror="this.onerror=null;this.src=this.src.replace('.jpg','.svg')">
           <button class="product-card__quick-add snipcart-add-item"
             data-item-id="grey-cap"
-            data-item-name="RELIER CAP — GREY"
-            data-item-price="45.00"
+            data-item-name="RELIER TRUCKER CAP — GREY"
+            data-item-price="40.00"
             data-item-url="shop.html"
             data-item-image="images/grey-cap.jpg"
             onclick="event.stopPropagation()">QUICK ADD</button>
         </div>
         <div class="product-card__info">
-          <div class="product-card__name">RELIER CAP — GREY</div>
-          <div class="product-card__sub">Accessories / One Size</div>
-          <div class="product-card__price">£45.00</div>
+          <p class="product-card__name">RELIER TRUCKER CAP — GREY</p>
+          <p class="product-card__sub">Grey / White</p>
+          <p class="product-card__price">£40.00</p>
         </div>
       </a>
 
@@ -354,19 +326,19 @@
   </section>
 
   <!-- ======= EMAIL SIGNUP ======= -->
-  <div class="email-section">
-    <canvas id="emailLogoCanvas"></canvas>
+  <section class="email-section">
     <div class="email-section__inner">
+      <canvas id="emailLogoCanvas"></canvas>
       <div class="email-section__content">
         <p class="email-section__eyebrow">JOIN THE MOVEMENT</p>
-        <h2 class="email-section__title">BE FIRST TO<br/>THE DROP.</h2>
+        <h2 class="email-section__title">GET EARLY ACCESS<br/>TO EVERY DROP.</h2>
         <form class="email-form" id="emailForm">
-          <input type="email" class="email-form__input" placeholder="YOUR EMAIL ADDRESS" required />
+          <input type="email" placeholder="YOUR EMAIL ADDRESS" class="email-form__input" required />
           <button type="submit" class="btn btn--white">SUBSCRIBE</button>
         </form>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- ======= FOOTER ======= -->
   <footer class="footer">
@@ -374,69 +346,69 @@
       <div class="footer__brand">
         <img src="images/logo-monogram.svg" alt="RELIER" class="footer__logo-img" />
         <p class="footer__brand-name">RELIER</p>
-        <p>Streetwear rooted in culture. Made for those who connect.</p>
+        <p>Connect to the Culture.</p>
       </div>
       <div class="footer__links">
         <div class="footer__col">
           <h4>SHOP</h4>
           <a href="shop.html?cat=new">New Arrivals</a>
-          <a href="shop.html?cat=tees">Tees</a>
-          <a href="shop.html?cat=caps">Caps</a>
-          <a href="shop.html">All Products</a>
+          <a href="shop.html?cat=tops">Tees</a>
+          <a href="shop.html?cat=accessories">Caps</a>
+          <a href="shop.html?cat=outerwear">Outerwear</a>
         </div>
         <div class="footer__col">
           <h4>INFO</h4>
           <a href="#">About</a>
-          <a href="lookbook.html">Lookbook</a>
           <a href="#">Stockists</a>
-          <a href="#">Contact</a>
+          <a href="lookbook.html">Lookbook</a>
+          <a href="#">Careers</a>
         </div>
         <div class="footer__col">
           <h4>HELP</h4>
           <a href="returns.html">Shipping & Returns</a>
           <a href="#">Size Guide</a>
           <a href="#">FAQ</a>
-          <a href="#">Track Order</a>
+          <a href="#">Contact</a>
         </div>
         <div class="footer__col">
           <h4>FOLLOW</h4>
-          <a href="#">Instagram</a>
+          <a href="https://www.instagram.com/relier_clothing" target="_blank" rel="noopener">Instagram</a>
           <a href="#">TikTok</a>
           <a href="#">Twitter / X</a>
         </div>
       </div>
     </div>
     <div class="footer__bottom">
-      <p>© 2026 RELIER. All rights reserved.</p>
+      <p>© 2026 RELIER. ALL RIGHTS RESERVED.</p>
       <div class="footer__legal">
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="returns.html">Returns</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
       </div>
     </div>
   </footer>
 
-  <!-- Cookie Consent -->
-  <div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--black);color:var(--grey-400);padding:1rem var(--space-sm);display:flex;align-items:center;justify-content:space-between;gap:1rem;z-index:9998;flex-wrap:wrap;">
-    <p style="font-family:var(--font-mono);font-size:0.625rem;letter-spacing:0.1em;">We use cookies to improve your experience. <a href="privacy.html" style="color:var(--white);text-decoration:underline;">Learn more</a></p>
-    <button onclick="document.getElementById('cookieBanner').style.display='none';localStorage.setItem('cookie_consent','1');" style="font-family:var(--font-mono);font-size:0.625rem;letter-spacing:0.15em;background:var(--white);color:var(--black);padding:0.5rem 1rem;cursor:pointer;">ACCEPT</button>
+  <div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#0d0d0c;color:#f5f5f3;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:9999;font-family:'Space Grotesk',sans-serif;font-size:13px;flex-wrap:wrap;">
+    <p style="margin:0;line-height:1.5;">We use cookies to improve your experience and process orders. By continuing you agree to our <a href="privacy.html" style="color:#d1d1ce;text-decoration:underline;">Privacy Policy</a>.</p>
+    <button id="cookieAccept" style="background:#f5f5f3;color:#0d0d0c;border:none;padding:10px 24px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;cursor:pointer;white-space:nowrap;flex-shrink:0;">ACCEPT</button>
   </div>
   <script>
-    if (!localStorage.getItem('cookie_consent')) {
-      document.getElementById('cookieBanner').style.display = 'flex';
-    }
+    (function() {
+      var banner = document.getElementById('cookieBanner');
+      var btn = document.getElementById('cookieAccept');
+      if (!localStorage.getItem('cookie_consent')) {
+        banner.style.display = 'flex';
+      }
+      btn.addEventListener('click', function() {
+        localStorage.setItem('cookie_consent', '1');
+        banner.style.display = 'none';
+      });
+    })();
   </script>
 
-  <!-- Snipcart -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_PUBLIC_API_KEY" data-config-modal-style="side" data-currency="gbp"></div>
-  <script async src="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.js"></script>
-
-  <!-- Three.js r128 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- RELIER 3D Logo -->
   <script src="js/logo3d.js"></script>
-  <!-- Main JS -->
   <script src="js/main.js"></script>
-
+  <script async src="https://cdn.snipcart.com/themes/v3.3.3/default/snipcart.js"></script>
 </body>
 </html>
