@@ -1,40 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
-  <!-- Background -->
-  <rect width="600" height="800" fill="#f0f0ee"/>
-
-  <!-- T-shirt silhouette (white, back view — no collar opening, rounded back neck) -->
-  <!-- Left sleeve -->
-  <polygon points="60,160 130,120 200,200 170,230 130,195 130,340 100,340 100,200" fill="#ffffff" stroke="#d8d8d6" stroke-width="1.5"/>
-  <!-- Right sleeve -->
-  <polygon points="540,160 470,120 400,200 430,230 470,195 470,340 500,340 500,200" fill="#ffffff" stroke="#d8d8d6" stroke-width="1.5"/>
-  <!-- Body -->
-  <rect x="100" y="195" width="400" height="420" rx="4" fill="#ffffff" stroke="#d8d8d6" stroke-width="1.5"/>
-  <!-- Back neckline (shallow curve) -->
-  <path d="M210,195 Q300,165 390,195" fill="#f0f0ee" stroke="none"/>
-  <path d="M210,195 Q300,165 390,195" fill="none" stroke="#d8d8d6" stroke-width="1.5"/>
-
-  <!-- RELIER large back print centered -->
-  <text x="300" y="380" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="700" font-size="28" fill="#1a1a18" letter-spacing="10">RELIER</text>
-
-  <!-- Thin horizontal rule -->
-  <line x1="220" y1="405" x2="380" y2="405" stroke="#1a1a18" stroke-width="0.8" opacity="0.4"/>
-
-  <!-- Small text below -->
-  <text x="300" y="422" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="9" fill="#888884" letter-spacing="4">EST. MMXXV</text>
-
-  <!-- RR Monogram small, lower back area -->
-  <!-- Top-left normal R -->
-  <text transform="translate(286,490)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="32" fill="#1a1a18" opacity="0.18">R</text>
-  <!-- Top-right mirrored R -->
-  <text transform="translate(314,490) scale(-1,1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="32" fill="#1a1a18" opacity="0.18">R</text>
-  <!-- Bottom-left mirror+flip -->
-  <text transform="translate(286,518) scale(-1,-1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="32" fill="#1a1a18" opacity="0.18">R</text>
-  <!-- Bottom-right flip -->
-  <text transform="translate(314,518) scale(1,-1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="32" fill="#1a1a18" opacity="0.18">R</text>
-
-  <!-- RELIER wordmark -->
-  <text x="300" y="710" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="700" font-size="14" fill="#1a1a18" letter-spacing="6">RELIER</text>
-
-  <!-- Product label -->
-  <text x="300" y="740" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="11" fill="#888884" letter-spacing="3">WHITE TEE — BACK</text>
+  <rect width="600" height="800" fill="#f2f2f0"/>
+  <!-- T-shirt body back -->
+  <g fill="#ffffff" stroke="#d0d0ce" stroke-width="1.5">
+    <polygon points="120,140 190,105 240,170 240,620 360,620 360,170 410,105 480,140 500,220 440,240 440,620 160,620 160,240 100,220" />
+    <rect x="240" y="138" width="120" height="32" fill="#f2f2f0" stroke="none"/>
+  </g>
+  <!-- Back graphic: RELIER text + large monogram -->
+  <text x="300" y="300" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="22" fill="#1a1a18" letter-spacing="10">RELIER</text>
+  <!-- Large RR monogram centered -->
+  <g transform="translate(300,390)">
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="70" fill="#1a1a18" transform="translate(-32,-35)">R</text>
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="70" fill="#1a1a18" transform="translate(32,-35) scale(-1,1)">R</text>
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="70" fill="#1a1a18" transform="translate(-32,35) scale(-1,-1)">R</text>
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="70" fill="#1a1a18" transform="translate(32,35) scale(1,-1)">R</text>
+  </g>
+  <text x="300" y="680" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="13" fill="#1a1a18" letter-spacing="5">RELIER</text>
+  <text x="300" y="700" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="#999" letter-spacing="3">WHITE TEE — BACK</text>
+  <text x="300" y="720" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="#999" letter-spacing="2">£55.00</text>
 </svg>

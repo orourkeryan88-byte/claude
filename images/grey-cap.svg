@@ -1,40 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
-  <!-- Background -->
-  <rect width="600" height="800" fill="#f0f0ee"/>
-
-  <!-- Cap silhouette (forward-facing 5-panel structured cap) -->
-  <!-- Crown panels (dome shape) -->
-  <path d="M145,440 Q140,300 300,260 Q460,300 455,440 Z" fill="#9a9a96" stroke="#7e7e7a" stroke-width="1.5"/>
-
-  <!-- Crown panel seam lines (subtle) -->
-  <line x1="300" y1="262" x2="300" y2="440" stroke="#7e7e7a" stroke-width="0.8" opacity="0.5"/>
-  <line x1="222" y1="288" x2="215" y2="440" stroke="#7e7e7a" stroke-width="0.8" opacity="0.4"/>
-  <line x1="378" y1="288" x2="385" y2="440" stroke="#7e7e7a" stroke-width="0.8" opacity="0.4"/>
-
-  <!-- Sweatband / base band -->
-  <path d="M145,440 Q300,460 455,440 L460,458 Q300,480 140,458 Z" fill="#7e7e7a"/>
-
-  <!-- Brim (bill) -->
-  <path d="M145,448 Q300,472 455,448 Q480,470 460,488 Q300,510 140,488 Q120,470 145,448 Z" fill="#888884" stroke="#6e6e6a" stroke-width="1"/>
-  <!-- Brim underside shadow -->
-  <path d="M145,458 Q300,480 455,458 Q477,475 460,488 Q300,500 140,488 Q123,475 145,458 Z" fill="#6e6e6a" opacity="0.35"/>
-
-  <!-- Button on top -->
-  <circle cx="300" cy="270" r="9" fill="#7e7e7a" stroke="#6e6e6a" stroke-width="1"/>
-
-  <!-- RR Monogram on front panel (CX=300, CY=370) -->
-  <!-- Top-left normal R -->
-  <text transform="translate(272,342)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="64" fill="#1a1a18" opacity="0.75">R</text>
-  <!-- Top-right mirrored R -->
-  <text transform="translate(328,342) scale(-1,1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="64" fill="#1a1a18" opacity="0.75">R</text>
-  <!-- Bottom-left mirror+flip -->
-  <text transform="translate(272,398) scale(-1,-1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="64" fill="#1a1a18" opacity="0.75">R</text>
-  <!-- Bottom-right flip -->
-  <text transform="translate(328,398) scale(1,-1)" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="900" font-size="64" fill="#1a1a18" opacity="0.75">R</text>
-
-  <!-- RELIER wordmark -->
-  <text x="300" y="710" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-weight="700" font-size="14" fill="#1a1a18" letter-spacing="6">RELIER</text>
-
-  <!-- Product label -->
-  <text x="300" y="740" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="11" fill="#888884" letter-spacing="3">GREY CAP</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#f2f2f0"/>
+  <!-- Cap crown (grey front panels) -->
+  <ellipse cx="300" cy="320" rx="210" ry="130" fill="#9a9a98"/>
+  <!-- White mesh back section -->
+  <ellipse cx="300" cy="320" rx="210" ry="130" fill="none" stroke="none"/>
+  <path d="M300,190 Q430,200 510,320 Q430,440 300,450 Q170,440 90,320 Q170,200 300,190" fill="#9a9a98"/>
+  <!-- Lighter right side (mesh) -->
+  <path d="M300,195 Q430,200 510,320 Q430,440 300,450" fill="#d8d8d6"/>
+  <!-- Brim -->
+  <path d="M90,320 Q120,400 200,420 Q140,380 130,320" fill="#808080" stroke="#707070" stroke-width="1"/>
+  <path d="M90,320 Q120,240 200,220 Q140,260 130,320" fill="#808080"/>
+  <ellipse cx="160" cy="320" rx="72" ry="100" fill="#878787"/>
+  <!-- Cap brim (front) -->
+  <path d="M100,340 Q180,480 300,470 Q420,480 500,340 L480,330 Q420,450 300,445 Q180,450 120,330 Z" fill="#707070" stroke="#606060" stroke-width="1"/>
+  <!-- Top button -->
+  <circle cx="300" cy="196" r="10" fill="#808080" stroke="#707070" stroke-width="1"/>
+  <!-- Center panel seam -->
+  <line x1="300" y1="196" x2="300" y2="448" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <!-- White RR monogram -->
+  <g transform="translate(300,310)">
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="52" fill="#ffffff" transform="translate(-22,-26)">R</text>
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="52" fill="#ffffff" transform="translate(22,-26) scale(-1,1)">R</text>
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="52" fill="#ffffff" transform="translate(-22,26) scale(-1,-1)">R</text>
+    <text text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-weight="900" font-size="52" fill="#ffffff" transform="translate(22,26) scale(1,-1)">R</text>
+  </g>
+  <text x="300" y="540" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="13" fill="#1a1a18" letter-spacing="5">RELIER</text>
+  <text x="300" y="560" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="#999" letter-spacing="3">TRUCKER CAP — GREY</text>
+  <text x="300" y="578" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="#999" letter-spacing="2">£40.00</text>
 </svg>
