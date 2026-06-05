@@ -1,0 +1,65 @@
+<nav class="nav{% if section.settings.light_nav %} nav--light{% endif %}" id="nav">
+  <div class="nav__inner">
+    <button class="nav__hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
+      <span class="nav__hamburger-bar"></span>
+    </button>
+
+    <div class="nav__links nav__links--left">
+      <a href="/collections/all">SHOP</a>
+      <a href="/collections/new-arrivals">NEW ARRIVALS</a>
+      <a href="/pages/lookbook">LOOKBOOK</a>
+    </div>
+
+    <a href="/" class="nav__logo">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | image_url: width: 80 }}" alt="{{ shop.name }}" class="nav__logo-svg">
+      {%- else -%}
+        {{ 'logo-monogram.svg' | asset_url | img_tag: shop.name, 'nav__logo-svg' }}
+      {%- endif -%}
+      <span class="nav__logo-text">{{ shop.name | upcase }}</span>
+    </a>
+
+    <div class="nav__links nav__links--right">
+      <a href="/pages/about" class="nav__mobile-hide">ABOUT</a>
+      <a href="/search" class="nav__icon nav__mobile-hide" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </a>
+      <button class="nav__icon nav__cart" id="cartToggle" aria-label="Cart ({{ cart.item_count }} items)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="nav__cart-count" id="cartCount">{{ cart.item_count }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav__mobile-menu" id="navMobileMenu" aria-hidden="true">
+    <a href="/collections/all">SHOP</a>
+    <a href="/collections/new-arrivals">NEW ARRIVALS</a>
+    <a href="/pages/lookbook">LOOKBOOK</a>
+    <a href="/pages/about">ABOUT</a>
+  </div>
+</nav>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "checkbox",
+      "id": "light_nav",
+      "label": "Light navigation (for light background pages)",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

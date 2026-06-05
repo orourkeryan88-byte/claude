@@ -1,0 +1,77 @@
+<section class="hero" id="hero">
+  <div class="hero__bg" id="heroBg"
+    {%- if section.settings.bg_image != blank -%}
+      style="background-image: url('{{ section.settings.bg_image | image_url: width: 1600 }}')"
+    {%- endif -%}>
+  </div>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero__overlay">
+    <p class="hero__sub">{{ section.settings.eyebrow | default: 'SS26 COLLECTION' }}</p>
+    <h1 class="hero__title">{{ section.settings.heading | default: 'CONNECT<br/>TO THE<br/>CULTURE.' | newline_to_br }}</h1>
+    <div class="hero__actions">
+      {%- if section.settings.btn1_label != blank -%}
+        <a href="{{ section.settings.btn1_url | default: '/collections/new-arrivals' }}" class="btn btn--white">
+          {{ section.settings.btn1_label }}
+        </a>
+      {%- endif -%}
+      {%- if section.settings.btn2_label != blank -%}
+        <a href="{{ section.settings.btn2_url | default: '/pages/lookbook' }}" class="btn btn--ghost">
+          {{ section.settings.btn2_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="hero__scroll-hint">SCROLL</div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "SS26 COLLECTION"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading (use newlines for line breaks)",
+      "default": "CONNECT\nTO THE\nCULTURE."
+    },
+    {
+      "type": "text",
+      "id": "btn1_label",
+      "label": "Button 1 label",
+      "default": "SHOP NEW ARRIVALS"
+    },
+    {
+      "type": "url",
+      "id": "btn1_url",
+      "label": "Button 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "btn2_label",
+      "label": "Button 2 label",
+      "default": "VIEW LOOKBOOK"
+    },
+    {
+      "type": "url",
+      "id": "btn2_url",
+      "label": "Button 2 URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

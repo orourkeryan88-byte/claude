@@ -1,0 +1,183 @@
+<style>
+  .lookbook-hero {
+    height: 70vh;
+    min-height: clamp(280px, 50vh, 500px);
+    background: var(--grey-800);
+    margin-top: calc(var(--ticker-h) + var(--nav-h));
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-sm);
+    position: relative;
+    overflow: hidden;
+  }
+  @media (min-width: 768px) { .lookbook-hero { padding: 60px; } }
+  .lookbook-hero canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  .lookbook-hero__content { position: relative; z-index: 2; }
+  .lookbook-hero__eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.25em; color: var(--grey-400); margin-bottom: 12px;
+  }
+  .lookbook-hero__title {
+    font-family: var(--font-mono);
+    font-size: clamp(40px, 7vw, 100px);
+    font-weight: 700; color: var(--white);
+    letter-spacing: -0.02em; line-height: 0.95;
+  }
+  .lookbook-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px; padding: 2px;
+  }
+  .lookbook-grid__item {
+    aspect-ratio: 4/5; background: var(--grey-100);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .lookbook-grid__item:nth-child(3n+2) { background: var(--grey-800); }
+  .lookbook-grid__item:nth-child(3n) { background: var(--grey-200); }
+  .lookbook-grid__item--span2 {
+    grid-column: span 2; aspect-ratio: unset;
+    min-height: clamp(220px, 40vh, 500px);
+  }
+  @media (min-width: 768px) { .lookbook-grid__item--span2 { min-height: 500px; } }
+  .lookbook-grid__item__overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0);
+    display: flex; align-items: flex-end; padding: 24px;
+    transition: background var(--transition);
+  }
+  .lookbook-grid__item:hover .lookbook-grid__item__overlay { background: rgba(0,0,0,0.3); }
+  .lookbook-grid__item__tag {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.15em; color: var(--white);
+    background: var(--black); padding: 4px 12px;
+    opacity: 0; transform: translateY(10px); transition: all var(--transition);
+  }
+  .lookbook-grid__item:hover .lookbook-grid__item__tag { opacity: 1; transform: translateY(0); }
+  @media (max-width: 768px) {
+    .lookbook-grid { grid-template-columns: repeat(2, 1fr); }
+    .lookbook-grid__item--span2 { grid-column: span 2; }
+  }
+  @media (max-width: 480px) {
+    .lookbook-grid { grid-template-columns: 1fr; }
+    .lookbook-grid__item--span2 { grid-column: span 1; }
+  }
+</style>
+
+<!-- Lookbook Hero -->
+<div class="lookbook-hero">
+  <canvas id="lookbookHeroCanvas"></canvas>
+  <div class="lookbook-hero__content">
+    <p class="lookbook-hero__eyebrow">{{ section.settings.eyebrow | default: 'SS26 COLLECTION' }}</p>
+    <h1 class="lookbook-hero__title">LOOK<br>BOOK</h1>
+  </div>
+</div>
+
+<!-- Marquee -->
+<div class="marquee-banner">
+  <div class="marquee-track">
+    <span>RELIER</span><span class="dot">✦</span>
+    <span>SS26</span><span class="dot">✦</span>
+    <span>CONNECT TO THE CULTURE</span><span class="dot">✦</span>
+    <span>RELIER</span><span class="dot">✦</span>
+    <span>SS26</span><span class="dot">✦</span>
+    <span>CONNECT TO THE CULTURE</span><span class="dot">✦</span>
+    <span>RELIER</span><span class="dot">✦</span>
+    <span>SS26</span><span class="dot">✦</span>
+    <span>CONNECT TO THE CULTURE</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- Lookbook Grid -->
+<div class="lookbook-grid">
+  {%- for block in section.blocks -%}
+    <div class="lookbook-grid__item{% if block.settings.span_two %} lookbook-grid__item--span2{% endif %}"
+         data-animate
+         {{ block.shopify_attributes }}>
+      {%- if block.settings.image -%}
+        <img
+          src="{{ block.settings.image | image_url: width: 1200 }}"
+          alt="{{ block.settings.alt | default: 'Look ' | append: forloop.index }}"
+          style="width:100%;height:100%;object-fit:cover;{% if block.settings.image_position != blank %}object-position:{{ block.settings.image_position }};{% endif %}"
+          loading="lazy">
+      {%- else -%}
+        <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.15em;color:var(--grey-400);">
+          LOOK {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+        </span>
+      {%- endif -%}
+      <div class="lookbook-grid__item__overlay">
+        <span class="lookbook-grid__item__tag">
+          {%- if block.settings.link_url != blank -%}
+            <a href="{{ block.settings.link_url }}" style="color:inherit;">SHOP THIS LOOK →</a>
+          {%- else -%}
+            SHOP THIS LOOK →
+          {%- endif -%}
+        </span>
+      </div>
+    </div>
+  {%- endfor -%}
+</div>
+
+<script>
+  window.addEventListener('load', function() {
+    if (window.RelierLogo3D) {
+      window.RelierLogo3D.initHero('lookbookHeroCanvas', { rotSpeed: 0.004 });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Lookbook Grid",
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text"
+        },
+        {
+          "type": "checkbox",
+          "id": "span_two",
+          "label": "Span two columns",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image position",
+          "options": [
+            { "value": "center", "label": "Center" },
+            { "value": "top", "label": "Top" },
+            { "value": "bottom", "label": "Bottom" },
+            { "value": "center 20%", "label": "Upper center" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Shop this look URL"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "SS26 COLLECTION"
+    }
+  ]
+}
+{% endschema %}

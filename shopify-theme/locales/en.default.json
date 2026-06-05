@@ -1,0 +1,20 @@
+{
+  "general": {
+    "currency": {
+      "symbol": "£"
+    }
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty.",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "view_cart": "View Cart",
+    "add_to_cart": "Add to Cart",
+    "sold_out": "Sold Out"
+  },
+  "products": {
+    "new": "New",
+    "quick_add": "Quick Add"
+  }
+}

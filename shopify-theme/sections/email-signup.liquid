@@ -1,0 +1,72 @@
+<section class="email-section">
+  <div class="email-section__inner">
+    <canvas id="emailLogoCanvas"></canvas>
+    <div class="email-section__content">
+      <p class="email-section__eyebrow">{{ section.settings.eyebrow | default: 'JOIN THE MOVEMENT' }}</p>
+      <h2 class="email-section__title">{{ section.settings.heading | default: 'GET EARLY ACCESS<br/>TO EVERY DROP.' | newline_to_br }}</h2>
+
+      {%- form 'customer', id: 'emailForm' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="email-form">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="{{ section.settings.placeholder | default: 'YOUR EMAIL ADDRESS' }}"
+            class="email-form__input"
+            required
+            autocomplete="email">
+          <button type="submit" class="btn btn--white">
+            {{ section.settings.btn_label | default: 'SUBSCRIBE' }}
+          </button>
+        </div>
+        {%- if form.posted_successfully? -%}
+          <p style="color:var(--grey-400);font-family:var(--font-mono);font-size:0.75rem;margin-top:1rem;letter-spacing:0.1em;">
+            YOU'RE IN. WELCOME TO RELIER.
+          </p>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <p style="color:#c0392b;font-family:var(--font-mono);font-size:0.75rem;margin-top:1rem;">
+            {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+          </p>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Email Signup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "JOIN THE MOVEMENT"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "GET EARLY ACCESS\nTO EVERY DROP."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "YOUR EMAIL ADDRESS"
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button label",
+      "default": "SUBSCRIBE"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email Signup"
+    }
+  ]
+}
+{% endschema %}

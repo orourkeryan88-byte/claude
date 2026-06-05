@@ -1,0 +1,90 @@
+{%- assign featured = collections[section.settings.collection] -%}
+
+<section class="section" id="{{ section.settings.section_id | default: 'featured' }}">
+  <div class="section__header">
+    <h2 class="section__title">{{ section.settings.heading | default: 'NEW ARRIVALS' }}</h2>
+    {%- if section.settings.view_all_label != blank -%}
+      <a href="{{ featured.url | default: '/collections/all' }}" class="section__link">
+        {{ section.settings.view_all_label }} →
+      </a>
+    {%- endif -%}
+  </div>
+
+  <div class="product-grid product-grid--{{ section.settings.columns }}">
+    {%- if featured != blank -%}
+      {%- for product in featured.products limit: section.settings.products_count -%}
+        {%- render 'product-card', product: product, show_tag: true, lazy_load: true -%}
+      {%- else -%}
+        <p style="color: var(--grey-400); font-family: var(--font-mono); font-size: 0.75rem;">
+          No products found in this collection.
+        </p>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..section.settings.products_count) -%}
+        <div class="product-card">
+          <div class="product-card__image-wrap">
+            <div class="product-card__image product-card__image--placeholder" style="aspect-ratio:3/4;width:100%;"></div>
+          </div>
+          <div class="product-card__info">
+            <p class="product-card__name">PRODUCT {{ i }}</p>
+            <p class="product-card__price">£00.00</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all label",
+      "default": "VIEW ALL"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "Number of products",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section anchor ID (optional)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}
