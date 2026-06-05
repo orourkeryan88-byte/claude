@@ -1,0 +1,55 @@
+<section class="logo-feature">
+  <canvas id="logoCanvas"></canvas>
+  <div class="logo-feature__text">
+    <p class="logo-feature__eyebrow">{{ section.settings.eyebrow | default: 'THE LABEL' }}</p>
+    <h2 class="logo-feature__heading">{{ section.settings.heading | default: 'BUILT FOR<br/>THE STREETS' | newline_to_br }}</h2>
+    <p class="logo-feature__body">{{ section.settings.body | default: 'Relier connects the dots between culture, craft, and community. Every piece is designed with intention — built to last, worn to live.' }}</p>
+    {%- if section.settings.btn_label != blank -%}
+      <a href="{{ section.settings.btn_url | default: '/pages/about' }}" class="btn btn--white">
+        {{ section.settings.btn_label }}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "THE LABEL"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "BUILT FOR\nTHE STREETS"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body text",
+      "default": "Relier connects the dots between culture, craft, and community. Every piece is designed with intention — built to last, worn to live."
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button label",
+      "default": "OUR STORY"
+    },
+    {
+      "type": "url",
+      "id": "btn_url",
+      "label": "Button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Story"
+    }
+  ]
+}
+{% endschema %}

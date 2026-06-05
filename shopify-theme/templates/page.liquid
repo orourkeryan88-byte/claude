@@ -1,0 +1,12 @@
+---
+layout: theme
+---
+
+<div style="max-width:var(--container);margin:0 auto;padding:calc(var(--ticker-h) + var(--nav-h) + 2rem) var(--space-sm) var(--space-2xl);">
+  <h1 style="font-family:var(--font-mono);font-size:clamp(1.5rem,4vw,3rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:2rem;">
+    {{ page.title | upcase }}
+  </h1>
+  <div style="max-width:50rem;font-size:0.9375rem;line-height:1.7;color:var(--grey-600);">
+    {{ page.content }}
+  </div>
+</div>

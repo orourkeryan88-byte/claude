@@ -1,0 +1,79 @@
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__brand">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | image_url: width: 120 }}" alt="{{ shop.name }}" class="footer__logo-img">
+      {%- else -%}
+        {{ 'logo-monogram.svg' | asset_url | img_tag: shop.name, 'footer__logo-img' }}
+      {%- endif -%}
+      <p class="footer__brand-name">{{ shop.name | upcase }}</p>
+      <p>{{ section.settings.tagline | default: 'Connect to the Culture.' }}</p>
+    </div>
+
+    <div class="footer__links">
+      <div class="footer__col">
+        <h4>SHOP</h4>
+        <a href="/collections/new-arrivals">New Arrivals</a>
+        <a href="/collections/tees">Tees</a>
+        <a href="/collections/caps">Caps</a>
+        <a href="/collections/outerwear">Outerwear</a>
+      </div>
+      <div class="footer__col">
+        <h4>INFO</h4>
+        <a href="/pages/about">About</a>
+        <a href="/pages/stockists">Stockists</a>
+        <a href="/pages/lookbook">Lookbook</a>
+        <a href="/pages/careers">Careers</a>
+      </div>
+      <div class="footer__col">
+        <h4>HELP</h4>
+        <a href="/pages/shipping-returns">Shipping &amp; Returns</a>
+        <a href="/pages/size-guide">Size Guide</a>
+        <a href="/pages/faq">FAQ</a>
+        <a href="/pages/contact">Contact</a>
+      </div>
+      <div class="footer__col">
+        <h4>FOLLOW</h4>
+        {%- if section.settings.instagram_url != blank -%}
+          <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
+        {%- else -%}
+          <a href="#">Instagram</a>
+        {%- endif -%}
+        <a href="#">TikTok</a>
+        <a href="#">Twitter / X</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | upcase }}. ALL RIGHTS RESERVED.</p>
+    <div class="footer__legal">
+      <a href="/pages/privacy-policy">Privacy Policy</a>
+      <a href="/pages/terms-of-service">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Connect to the Culture."
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    }
+  ]
+}
+{% endschema %}

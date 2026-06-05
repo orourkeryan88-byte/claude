@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d0d0c">
+
+  <title>
+    {%- if page_title -%}
+      {{ page_title }} — {{ shop.name }}
+    {%- else -%}
+      {{ shop.name }} — {{ shop.description | default: 'Streetwear' }}
+    {%- endif -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {{ content_for_header }}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  {{ 'relier.css' | asset_url | stylesheet_tag }}
+</head>
+
+<body>
+  {%- sections 'announcement-bar' -%}
+  {%- sections 'header' -%}
+
+  <main id="main-content">
+    {{ content_for_layout }}
+  </main>
+
+  {%- sections 'footer' -%}
+
+  <!-- Cart Drawer -->
+  <div id="cartDrawer" class="cart-drawer" aria-hidden="true">
+    <div class="cart-drawer__overlay" id="cartOverlay"></div>
+    <div class="cart-drawer__panel">
+      <div class="cart-drawer__header">
+        <p class="cart-drawer__title">YOUR CART</p>
+        <button class="cart-drawer__close" id="cartClose" aria-label="Close cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cart-drawer__body" id="cartBody">
+        <p class="cart-drawer__empty">Your cart is empty.</p>
+      </div>
+      <div class="cart-drawer__footer">
+        <div class="cart-drawer__subtotal">
+          <span>SUBTOTAL</span>
+          <span id="cartSubtotal">£0.00</span>
+        </div>
+        <p class="cart-drawer__shipping-note">Shipping calculated at checkout</p>
+        <a href="/checkout" class="btn btn--black btn--full" id="checkoutBtn">CHECKOUT</a>
+        <a href="/cart" class="btn btn--outline btn--full" style="margin-top:0.5rem;">VIEW CART</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Cookie Consent -->
+  <div id="cookieBanner" class="cookie-banner" style="display:none;">
+    <p>We use cookies to improve your experience. By continuing you agree to our <a href="/pages/privacy-policy">Privacy Policy</a>.</p>
+    <button id="cookieAccept" class="btn btn--white">ACCEPT</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"></script>
+  {{ 'logo3d.js' | asset_url | script_tag }}
+  {{ 'relier.js' | asset_url | script_tag }}
+</body>
+</html>

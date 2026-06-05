@@ -1,0 +1,76 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "SS26 COLLECTION",
+        "heading": "CONNECT\nTO THE\nCULTURE.",
+        "btn1_label": "SHOP NEW ARRIVALS",
+        "btn1_url": "/collections/new-arrivals",
+        "btn2_label": "VIEW LOOKBOOK",
+        "btn2_url": "/pages/lookbook"
+      }
+    },
+    "marquee": {
+      "type": "marquee-banner",
+      "settings": {
+        "text": "RELIER|SS26|CONNECT TO THE CULTURE|STREETWEAR"
+      }
+    },
+    "new-arrivals": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "NEW ARRIVALS",
+        "view_all_label": "VIEW ALL",
+        "products_count": 4,
+        "columns": "4",
+        "section_id": "new-arrivals"
+      }
+    },
+    "brand-story": {
+      "type": "brand-story",
+      "settings": {}
+    },
+    "collections": {
+      "type": "collections-grid",
+      "blocks": {
+        "tees": {
+          "type": "collection_card",
+          "settings": { "label": "TEES" }
+        },
+        "caps": {
+          "type": "collection_card",
+          "settings": { "label": "CAPS" }
+        },
+        "outerwear": {
+          "type": "collection_card",
+          "settings": { "label": "OUTERWEAR" }
+        }
+      },
+      "block_order": ["tees", "caps", "outerwear"]
+    },
+    "bestsellers": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "BESTSELLERS",
+        "view_all_label": "VIEW ALL",
+        "products_count": 3,
+        "columns": "3",
+        "section_id": "bestsellers"
+      }
+    },
+    "email-signup": {
+      "type": "email-signup",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "new-arrivals",
+    "brand-story",
+    "collections",
+    "bestsellers",
+    "email-signup"
+  ]
+}

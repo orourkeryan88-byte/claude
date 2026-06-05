@@ -1,0 +1,59 @@
+{%- comment -%}
+  Renders a product card.
+  Accepts:
+    - product: {Object} Product object
+    - show_tag: {Boolean} Show NEW tag
+    - lazy_load: {Boolean} Lazy load image (default: true)
+{%- endcomment -%}
+
+{%- assign lazy = lazy_load | default: true -%}
+
+<a href="{{ product.url }}" class="product-card" data-animate>
+  <div class="product-card__image-wrap">
+
+    {%- if product.featured_image -%}
+      <img
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        alt="{{ product.featured_image.alt | escape | default: product.title }}"
+        class="product-card__img"
+        width="600"
+        height="800"
+        {% if lazy %}loading="lazy"{% endif %}
+      >
+    {%- else -%}
+      <div class="product-card__image product-card__image--placeholder">
+        <span class="img-placeholder-text">{{ product.title }}</span>
+      </div>
+    {%- endif -%}
+
+    {%- if show_tag and product.tags contains 'new' -%}
+      <span class="product-card__tag">NEW</span>
+    {%- elsif product.available == false -%}
+      <span class="product-card__tag product-card__tag--sold">SOLD OUT</span>
+    {%- endif -%}
+
+    <button
+      class="product-card__quick-add{% unless product.available %} product-card__quick-add--disabled{% endunless %}"
+      data-product-id="{{ product.id }}"
+      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      {% unless product.available %}disabled{% endunless %}
+      onclick="event.preventDefault(); relierAddToCart({{ product.selected_or_first_available_variant.id }}, 1)">
+      {%- if product.available -%}QUICK ADD{%- else -%}SOLD OUT{%- endif -%}
+    </button>
+
+  </div>
+  <div class="product-card__info">
+    <p class="product-card__name">{{ product.title | upcase }}</p>
+    {%- if product.metafields.custom.subtitle -%}
+      <p class="product-card__sub">{{ product.metafields.custom.subtitle }}</p>
+    {%- elsif product.options contains 'Color' -%}
+      <p class="product-card__sub">{{ product.selected_or_first_available_variant.option1 }}</p>
+    {%- endif -%}
+    <p class="product-card__price">
+      {%- if product.compare_at_price > product.price -%}
+        <s style="color: var(--grey-400);">{{ product.compare_at_price | money }}</s>&nbsp;
+      {%- endif -%}
+      {{ product.price | money }}
+    </p>
+  </div>
+</a>

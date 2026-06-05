@@ -1,0 +1,62 @@
+{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+{%- assign current_tag = current_tags | first -%}
+
+<div class="shop-header">
+  <div class="shop-header__logo-wrap">
+    <canvas id="shopLogoCanvas"></canvas>
+  </div>
+  <h1 class="shop-header__title">{{ collection.title | upcase }}</h1>
+</div>
+
+<div class="shop-filters" id="shopFilters">
+  <div class="shop-filters__inner">
+    <div class="shop-filters__cats">
+      <a href="{{ collection.url }}"
+         class="filter-btn{% unless current_tag %} active{% endunless %}">
+        ALL
+      </a>
+      {%- for tag in collection.all_tags -%}
+        {%- assign tag_url = collection.url | append: '/' | append: tag | downcase -%}
+        <a href="{{ tag_url }}"
+           class="filter-btn{% if current_tag == tag %} active{% endif %}">
+          {{ tag | upcase }}
+        </a>
+      {%- endfor -%}
+    </div>
+
+    <form class="sort-form">
+      <select class="sort-select" name="sort_by" onchange="this.form.submit()">
+        {%- for option in collection.sort_options -%}
+          <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>
+            {{ option.name }}
+          </option>
+        {%- endfor -%}
+      </select>
+    </form>
+  </div>
+</div>
+
+<div class="shop-grid-wrap">
+  <div class="product-grid product-grid--4">
+    {%- for product in collection.products -%}
+      {%- render 'product-card', product: product, show_tag: true -%}
+    {%- else -%}
+      <p style="color:var(--grey-400);font-family:var(--font-mono);font-size:0.75rem;grid-column:1/-1;padding:2rem 0;">
+        No products found.
+      </p>
+    {%- endfor -%}
+  </div>
+
+  {%- if paginate.pages > 1 -%}
+    <div class="pagination">
+      {{ paginate | default_pagination }}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Collection Products",
+  "settings": []
+}
+{% endschema %}

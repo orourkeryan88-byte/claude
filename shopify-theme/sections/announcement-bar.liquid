@@ -1,0 +1,25 @@
+<div class="ticker-wrap">
+  <div class="ticker">
+    {%- assign messages = section.settings.messages | split: '|' -%}
+    {%- for msg in messages -%}
+      <span>{{ msg | strip }}</span>
+    {%- endfor -%}
+    {%- for msg in messages -%}
+      <span>{{ msg | strip }}</span>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "messages",
+      "label": "Messages (separate with |)",
+      "default": "NEW DROP — SUMMER 26|FREE UK SHIPPING ON ORDERS OVER £100|RELIER — CONNECT TO THE CULTURE"
+    }
+  ]
+}
+{% endschema %}

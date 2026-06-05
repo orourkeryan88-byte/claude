@@ -1,0 +1,67 @@
+---
+layout: theme
+---
+
+<div style="max-width:var(--container);margin:0 auto;padding:calc(var(--ticker-h) + var(--nav-h) + 2rem) var(--space-sm) var(--space-2xl);">
+  <h1 style="font-family:var(--font-mono);font-size:clamp(1.5rem,4vw,3rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:2rem;">YOUR CART</h1>
+
+  {%- if cart.item_count == 0 -%}
+    <div style="text-align:center;padding:4rem 0;">
+      <p style="font-family:var(--font-mono);font-size:0.875rem;letter-spacing:0.1em;color:var(--grey-400);margin-bottom:2rem;">YOUR CART IS EMPTY.</p>
+      <a href="/collections/all" class="btn btn--black">CONTINUE SHOPPING</a>
+    </div>
+  {%- else -%}
+    <form action="/cart" method="post">
+      {%- for item in cart.items -%}
+        <div style="display:grid;grid-template-columns:100px 1fr auto;gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid var(--grey-200);align-items:start;">
+          <a href="{{ item.url }}">
+            <img src="{{ item.image | image_url: width: 200 }}"
+                 alt="{{ item.title }}"
+                 style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">
+          </a>
+          <div>
+            <p style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;margin-bottom:0.25rem;">{{ item.product.title | upcase }}</p>
+            {%- unless item.product.has_only_default_variant -%}
+              <p style="font-size:0.8125rem;color:var(--grey-400);">{{ item.variant.title }}</p>
+            {%- endunless -%}
+            <p style="font-family:var(--font-mono);font-size:0.875rem;margin-top:0.5rem;">{{ item.final_price | money }}</p>
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem;">
+              <button type="button" onclick="updateCart({{ item.variant.id }}, {{ item.quantity | minus: 1 }})"
+                style="width:2rem;height:2rem;border:1px solid var(--grey-200);background:transparent;font-size:1rem;cursor:pointer;">−</button>
+              <span style="font-family:var(--font-mono);font-size:0.75rem;min-width:1.5rem;text-align:center;">{{ item.quantity }}</span>
+              <button type="button" onclick="updateCart({{ item.variant.id }}, {{ item.quantity | plus: 1 }})"
+                style="width:2rem;height:2rem;border:1px solid var(--grey-200);background:transparent;font-size:1rem;cursor:pointer;">+</button>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <p style="font-family:var(--font-mono);font-size:0.875rem;">{{ item.final_line_price | money }}</p>
+            <button type="button" onclick="updateCart({{ item.variant.id }}, 0)"
+              style="font-family:var(--font-mono);font-size:0.625rem;letter-spacing:0.1em;color:var(--grey-400);margin-top:0.5rem;background:none;border:none;cursor:pointer;text-decoration:underline;">
+              REMOVE
+            </button>
+          </div>
+        </div>
+      {%- endfor -%}
+
+      <div style="max-width:26rem;margin-left:auto;padding-top:2rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-top:1px solid var(--grey-200);">
+          <span style="font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;">SUBTOTAL</span>
+          <span style="font-family:var(--font-mono);font-size:1rem;">{{ cart.total_price | money }}</span>
+        </div>
+        <p style="font-size:0.8125rem;color:var(--grey-400);margin-bottom:1.5rem;">Shipping calculated at checkout</p>
+        <a href="/checkout" class="btn btn--black btn--full">CHECKOUT</a>
+        <a href="/collections/all" class="btn btn--outline btn--full" style="margin-top:0.5rem;">CONTINUE SHOPPING</a>
+      </div>
+    </form>
+  {%- endif -%}
+</div>
+
+<script>
+function updateCart(variantId, qty) {
+  fetch('/cart/change.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: variantId, quantity: qty })
+  }).then(function() { window.location.reload(); });
+}
+</script>
