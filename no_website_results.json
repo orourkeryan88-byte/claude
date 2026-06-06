@@ -1,12 +1,90 @@
 {
-  "generated_at": "2026-06-04T20:50:00",
-  "method": "Web search verification — businesses found on directories/Yelp/Nextdoor with no dedicated domain",
+  "generated_at": "2026-06-06T00:00:00",
+  "method": "Web search verification — businesses found on directories/Yelp/Nextdoor/Golden Pages with no dedicated domain",
   "summary": {
-    "total_found": 5,
+    "total_found": 10,
     "categories": ["plumbing", "electrical", "painting & cleaning"],
-    "states": ["NC", "NY", "CA", "RI"]
+    "regions": ["South Dublin, Ireland", "NC, USA", "NY, USA", "CA, USA", "RI, USA"]
   },
-  "businesses_without_websites": [
+  "south_dublin_electricians_without_websites": [
+    {
+      "name": "Tallaght Electrical Services",
+      "category": "Electrician",
+      "phone": "087 246 5187",
+      "phone_landline": "(01) 4527373",
+      "email": "tallaghtelectric@yahoo.ie",
+      "address": "15 Seskin View Drive",
+      "city": "Tallaght",
+      "county": "Dublin 24",
+      "country": "Ireland",
+      "years_in_business": 28,
+      "reci_registered": true,
+      "website": null,
+      "found_on": ["Golden Pages", "Facebook (facebook.com/tallaghtelectricalservices)", "Construction Ireland"],
+      "notes": "28 years experience. Domestic, commercial & industrial. RECI member. Facebook-only web presence."
+    },
+    {
+      "name": "Reilly Electrical",
+      "category": "Electrician",
+      "phone": "(083) 869 4929",
+      "email": "reillyelectrical@outlook.com",
+      "address": "Unit Q6b Greenogue Business Park",
+      "city": "Tallaght",
+      "county": "Dublin 24",
+      "country": "Ireland",
+      "years_in_business": null,
+      "reci_registered": null,
+      "website": null,
+      "found_on": ["Golden Pages", "Facebook (facebook.com/people/Reilly-Electrical/100077371991148)"],
+      "notes": "Home improvements & emergency electrical. Facebook and directory only — no website."
+    },
+    {
+      "name": "Bill Coghlan Electrical",
+      "category": "Electrician",
+      "phone": "(01) 4510384",
+      "email": "billcoghlanelectrical@eircom.net",
+      "address": "31 Fernwood Avenue",
+      "city": "Tallaght",
+      "county": "Dublin 24",
+      "country": "Ireland",
+      "years_in_business": 30,
+      "reci_registered": null,
+      "website": null,
+      "found_on": ["Golden Pages", "Phonebook.ie", "Homewise.ie", "Near-Me.ie"],
+      "notes": "30 years in business. Listed on multiple Irish directories but no website of their own."
+    },
+    {
+      "name": "Breen Electrical",
+      "category": "Electrician",
+      "phone": "(01) 603 8822",
+      "email": null,
+      "address": "Unit 16 Fonthill Industrial Park",
+      "city": "Clondalkin",
+      "county": "Dublin 22",
+      "country": "Ireland",
+      "years_in_business": null,
+      "reci_registered": null,
+      "website": null,
+      "found_on": ["Yelp", "MissedCallIreland.com", "SoloCheck company register"],
+      "notes": "Yelp listing updated Dec 2024. No website found across directories."
+    },
+    {
+      "name": "The Electricians",
+      "category": "Electrician",
+      "phone": null,
+      "email": null,
+      "address": "Fortunestown Shopping Centre",
+      "city": "Tallaght",
+      "county": "Dublin 24",
+      "country": "Ireland",
+      "years_in_business": null,
+      "reci_registered": null,
+      "website": null,
+      "found_on": ["Golden Pages"],
+      "notes": "Listed in Golden Pages — no phone or website surfaced in search. Worth calling shopping centre for contact."
+    }
+  ],
+  "other_businesses_without_websites": [
     {
       "name": "Bill Wall Plumbing Service",
       "category": "Plumbing",
@@ -17,80 +95,63 @@
       "zip": "28034",
       "years_in_business": 39,
       "website": null,
-      "found_on": ["Yellow Pages", "Nears.me", "The Plumbing Directory", "NC Home Service Pro"],
+      "found_on": ["Yellow Pages", "Nears.me", "The Plumbing Directory"],
       "notes": "39-year-old plumbing business. No website found across all major directories."
     },
     {
       "name": "Drain It, Inc. (Greg Fontana)",
       "category": "Plumbing & Electrical",
       "phone": "(914) 420-5125",
-      "address": null,
       "city": "Dobbs Ferry",
       "state": "NY",
-      "zip": null,
       "years_in_business": 30,
       "website": null,
-      "found_on": ["Nextdoor", "Rivertowners community blog"],
-      "notes": "30+ years experience. Recommended on Nextdoor and local community blogs. Phone-only business."
+      "found_on": ["Nextdoor", "Community blog"],
+      "notes": "30+ years experience. Phone-only business."
     },
     {
       "name": "Los Angeles Electrical & Plumbing",
       "category": "Electrical & Plumbing",
       "phone": "(323) 689-5418",
-      "address": null,
       "city": "Los Angeles",
       "state": "CA",
       "zip": "90019",
-      "years_in_business": null,
       "website": null,
       "found_on": ["Yelp"],
-      "notes": "Active Yelp listing (43 photos, updated 2026). No dedicated website found."
+      "notes": "43 photos, active Yelp listing (2026). No dedicated website."
     },
     {
       "name": "Kim's Electrical & Plumbing Services",
       "category": "Electrical & Plumbing",
-      "phone": null,
-      "address": null,
       "city": "Los Angeles",
       "state": "CA",
       "zip": "90019",
-      "years_in_business": null,
       "website": null,
       "found_on": ["Yelp"],
-      "notes": "Active Yelp listing (41 photos, 25 reviews, updated Oct 2025). No dedicated website found."
+      "notes": "41 photos, 25 reviews. No dedicated website."
     },
     {
       "name": "TLC Painting & Cleaning",
       "category": "Painting & Cleaning",
-      "phone": null,
-      "address": null,
       "city": "Providence",
       "state": "RI",
-      "zip": null,
       "years_in_business": 15,
       "website": null,
       "found_on": ["Yelp"],
-      "notes": "Founded 2011 by Randy Murhammer. Services: painting, cleaning, junk removal. No dedicated website found — Yelp-only presence."
+      "notes": "Founded 2011 by Randy Murhammer. Yelp-only presence."
     }
   ],
-  "industry_stats": {
-    "plumbers_without_website_pct": 42,
-    "hvac_contractors_without_website_pct": 43,
-    "auto_repair_without_website_count_usa": 2809,
-    "plumbers_without_website_count_usa": 2097,
-    "source": "MapsLeadExtractor, industry surveys 2026"
-  },
   "how_to_find_more": {
-    "free_tools": [
-      "find_no_website.py (OpenStreetMap / Overpass API — no API key needed)",
-      "checker.py (Google Maps Places API — requires GOOGLE_MAPS_API_KEY)"
+    "ireland_sources": [
+      "goldenpages.ie — search by area (Tallaght, Clondalkin, Rathfarnham, Dun Laoghaire)",
+      "yourlocal.ie — electricians section",
+      "safeelectric.ie/find-an-electrician — RECI registered contractors",
+      "irish-pages.ie — local business directory",
+      "Facebook local groups (South Dublin community pages)"
     ],
-    "manual_methods": [
-      "Google Maps search → look for listings with 'Add Website' button",
-      "Yelp category search → check individual listings for website link",
-      "Nextdoor Business pages → many small contractors list phone-only",
-      "State contractor license databases (public records)",
-      "Craigslist services section — many phone-only ads"
+    "free_tools": [
+      "find_no_website.py — OpenStreetMap Overpass API, no API key needed",
+      "checker.py — Google Maps Places API (needs GOOGLE_MAPS_API_KEY)"
     ]
   }
 }
