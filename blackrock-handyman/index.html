@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackrock Handyman — Peter & Alex | South Dublin</title>
+    <meta name="description" content="Local father and son carpenter and handyman team based in Blackrock, South Dublin. Flat pack assembly, carpentry, tiling, painting, flooring and more.">
+    <style>
+        /* ── Reset & tokens ─────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy:   #1a2540;
+            --navy2:  #243050;
+            --amber:  #f59e0b;
+            --amber2: #d97706;
+            --text:   #1e293b;
+            --muted:  #64748b;
+            --light:  #f8fafc;
+            --white:  #ffffff;
+            --border: #e2e8f0;
+            --radius: 14px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--text);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Utility ────────────────────────────── */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .section    { padding: 80px 0; }
+        .section-alt { background: var(--light); }
+
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--amber);
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .section-sub {
+            font-size: 1rem;
+            color: var(--muted);
+            max-width: 540px;
+        }
+
+        /* ── Nav ────────────────────────────────── */
+        nav {
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 62px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .nav-icon {
+            width: 36px; height: 36px;
+            background: var(--navy);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-icon svg { width: 18px; height: 18px; color: var(--amber); }
+        .nav-name {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--navy);
+            letter-spacing: -0.3px;
+        }
+        .nav-name span { color: var(--amber); }
+        .nav-cta {
+            background: var(--amber);
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 9px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 7px;
+            transition: background 0.18s, transform 0.12s;
+        }
+        .nav-cta:hover  { background: var(--amber2); }
+        .nav-cta:active { transform: scale(0.97); }
+        .nav-cta svg    { width: 15px; height: 15px; }
+
+        /* ── Hero ───────────────────────────────── */
+        .hero {
+            background: var(--navy);
+            padding: 80px 0 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 50%, rgba(245,158,11,0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero-inner {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 48px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(245,158,11,0.15);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: var(--amber);
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .hero-badge::before {
+            content: '';
+            width: 7px; height: 7px;
+            background: var(--amber);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.5; transform: scale(0.8); }
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--white);
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 18px;
+        }
+        .hero h1 span { color: var(--amber); }
+        .hero-sub {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 36px;
+            max-width: 480px;
+            line-height: 1.7;
+        }
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+        .btn-primary {
+            background: var(--amber);
+            color: var(--navy);
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: background 0.18s, transform 0.12s;
+        }
+        .btn-primary:hover  { background: var(--amber2); }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary svg    { width: 18px; height: 18px; }
+        .btn-outline {
+            background: transparent;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 14px 28px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.18s;
+        }
+        .btn-outline:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+        .btn-outline svg   { width: 18px; height: 18px; }
+
+        /* Hero stat card */
+        .hero-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            text-align: center;
+            min-width: 180px;
+            backdrop-filter: blur(8px);
+        }
+        .hero-card-num {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--amber);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .hero-card-label {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.55);
+            font-weight: 500;
+        }
+        .hero-cards { display: flex; flex-direction: column; gap: 12px; }
+
+        /* ── Trust bar ──────────────────────────── */
+        .trust-bar {
+            background: var(--navy2);
+            padding: 20px 0;
+        }
+        .trust-list {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 36px;
+            flex-wrap: wrap;
+        }
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .trust-item svg { width: 16px; height: 16px; color: var(--amber); flex-shrink: 0; }
+
+        /* ── Services ───────────────────────────── */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+            margin-top: 44px;
+        }
+        .service-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 26px 22px;
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+        }
+        .service-card:hover {
+            border-color: var(--amber);
+            box-shadow: 0 8px 32px rgba(245,158,11,0.12);
+            transform: translateY(-2px);
+        }
+        .service-icon {
+            width: 46px; height: 46px;
+            background: rgba(245,158,11,0.1);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px;
+        }
+        .service-icon svg { width: 22px; height: 22px; color: var(--amber2); }
+        .service-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+        .service-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+        /* ── Reviews ────────────────────────────── */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 44px;
+        }
+        .review-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 26px 24px;
+        }
+        .review-stars { color: var(--amber); font-size: 1rem; margin-bottom: 12px; }
+        .review-text  { font-size: 0.92rem; color: var(--text); line-height: 1.7; margin-bottom: 16px; font-style: italic; }
+        .review-text::before { content: '\201C'; }
+        .review-text::after  { content: '\201D'; }
+        .review-author { font-size: 0.82rem; font-weight: 700; color: var(--navy); }
+
+        /* ── Areas ──────────────────────────────── */
+        .areas-wrap { margin-top: 36px; }
+        .areas-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .area-tag {
+            background: var(--white);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.84rem;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 100px;
+            transition: all 0.15s;
+        }
+        .area-tag:hover { border-color: var(--amber); color: var(--navy); }
+        .area-tag.highlight {
+            background: var(--navy);
+            border-color: var(--navy);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        /* ── About ──────────────────────────────── */
+        .about-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+        .about-text p {
+            color: var(--muted);
+            font-size: 0.97rem;
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+        .about-text p:last-child { margin-bottom: 0; }
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .stat-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            text-align: center;
+        }
+        .stat-num   { font-size: 2.2rem; font-weight: 900; color: var(--navy); line-height: 1; margin-bottom: 5px; }
+        .stat-label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+
+        /* ── CTA ────────────────────────────────── */
+        .cta-section {
+            background: var(--navy);
+            padding: 80px 0;
+            text-align: center;
+        }
+        .cta-section .section-title { color: var(--white); }
+        .cta-section .section-sub   { color: rgba(255,255,255,0.6); margin: 0 auto 36px; }
+        .cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+
+        /* ── Footer ─────────────────────────────── */
+        footer {
+            background: #111827;
+            padding: 32px 24px;
+            text-align: center;
+            color: rgba(255,255,255,0.35);
+            font-size: 0.8rem;
+        }
+        footer a { color: var(--amber); text-decoration: none; }
+
+        /* ── Responsive ─────────────────────────── */
+        @media (max-width: 860px) {
+            .hero-inner   { grid-template-columns: 1fr; }
+            .hero-cards   { flex-direction: row; justify-content: flex-start; }
+            .hero-card    { min-width: 130px; }
+            .about-inner  { grid-template-columns: 1fr; gap: 36px; }
+            .hero h1      { font-size: 2.2rem; }
+        }
+        @media (max-width: 520px) {
+            .hero h1      { font-size: 1.75rem; }
+            .section      { padding: 56px 0; }
+            .section-title { font-size: 1.55rem; }
+            .hero-cards   { flex-wrap: wrap; }
+            .nav-cta span { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────── -->
+<nav>
+    <div class="container nav-inner">
+        <a href="#" class="nav-brand">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <span class="nav-name">Blackrock <span>Handyman</span></span>
+        </a>
+        <a href="https://www.facebook.com/Blackrockhandyman/" target="_blank" rel="noopener" class="nav-cta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <span>Message Us</span>
+        </a>
+    </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────── -->
+<section class="hero">
+    <div class="container hero-inner">
+        <div class="hero-content">
+            <div class="hero-badge">South Dublin's Trusted Handyman</div>
+            <h1>Peter &amp; Alex<br><span>Blackrock</span><br>Handyman</h1>
+            <p class="hero-sub">
+                Father and son team covering all of Dublin. From flat pack assembly
+                and carpentry to tiling, painting and general repairs — done right,
+                every time.
+            </p>
+            <div class="hero-btns">
+                <a href="https://www.facebook.com/Blackrockhandyman/" target="_blank" rel="noopener" class="btn-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    Get a Free Quote
+                </a>
+                <a href="#services" class="btn-outline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    Our Services
+                </a>
+            </div>
+        </div>
+        <div class="hero-cards">
+            <div class="hero-card">
+                <div class="hero-card-num">2</div>
+                <div class="hero-card-label">Skilled tradesmen</div>
+            </div>
+            <div class="hero-card">
+                <div class="hero-card-num">⭐⭐⭐⭐⭐</div>
+                <div class="hero-card-label">5-star rated</div>
+            </div>
+            <div class="hero-card">
+                <div class="hero-card-num">Dublin</div>
+                <div class="hero-card-label">City &amp; county wide</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Trust bar ─────────────────────────────────────── -->
+<div class="trust-bar">
+    <div class="container">
+        <ul class="trust-list">
+            <li class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Fully insured
+            </li>
+            <li class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Irish father &amp; son team
+            </li>
+            <li class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Free quotes
+            </li>
+            <li class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                All of Dublin covered
+            </li>
+            <li class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Clean &amp; tidy finish guaranteed
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- ── Services ──────────────────────────────────────── -->
+<section class="section" id="services">
+    <div class="container">
+        <div class="section-label">What We Do</div>
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-sub">Whatever the job — big or small — we show up on time, do it properly and leave the place clean.</p>
+
+        <div class="services-grid">
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                </div>
+                <div class="service-name">Flat Pack Assembly</div>
+                <div class="service-desc">IKEA, Argos, Harvey Norman and all brands. Wardrobes, beds, kitchens, shelving units — assembled quickly and correctly.</div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                </div>
+                <div class="service-name">Carpentry &amp; Joinery</div>
+                <div class="service-desc">Doors, frames, skirting, shelves, built-in furniture, flooring trims and bespoke woodwork to a high finish.</div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
+                </div>
+                <div class="service-name">Tiling</div>
+                <div class="service-desc">Bathroom, kitchen and floor tiling. New installations and repairs. All tile types including large format, mosaic and natural stone.</div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M12 2v20"/><circle cx="12" cy="12" r="4"/></svg>
+                </div>
+                <div class="service-name">TV &amp; Equipment Mounting</div>
+                <div class="service-desc">TVs, monitors, radiators and heavy wall-mounted equipment fitted safely and securely on all wall types.</div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <div class="service-name">Flooring</div>
+                <div class="service-desc">Laminate, vinyl, wood and engineered flooring supplied and fitted. Prep, laying and finishing to a professional standard.</div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                </div>
+                <div class="service-name">Painting &amp; Decorating</div>
+                <div class="service-desc">Interior and exterior painting. Walls, ceilings, woodwork, fences and gates. Neat, clean lines and a lasting finish.</div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                </div>
+                <div class="service-name">Cooker Hood &amp; Ventilation</div>
+                <div class="service-desc">Cooker hoods, extractor fans and ventilation systems installed correctly with ducting and finishing.</div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <div class="service-name">General Home Repairs</div>
+                <div class="service-desc">Odd jobs, fixes and maintenance around the home. If something needs doing, give us a shout — we'll get it sorted.</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ── Reviews ────────────────────────────────────────── -->
+<section class="section section-alt" id="reviews">
+    <div class="container">
+        <div class="section-label">What People Say</div>
+        <h2 class="section-title">Customer Reviews</h2>
+        <p class="section-sub">Real feedback from real customers across Dublin.</p>
+
+        <div class="reviews-grid">
+            <div class="review-card">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">Very dependable, reliable and both very personable and friendly guys. Flew through the work and got our equipment mounted and assembled to a very high professional standard.</p>
+                <div class="review-author">Dublin customer</div>
+            </div>
+            <div class="review-card">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">Extremely nice, kind, clean and professional. Would highly recommend Peter and Alex for any job — big or small. Brilliant work from start to finish.</p>
+                <div class="review-author">South Dublin customer</div>
+            </div>
+            <div class="review-card">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">Peter is very friendly, does great work and offers expert advice on the best ways to do things and the products to use. Will definitely be using again.</p>
+                <div class="review-author">Blackrock customer</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── About ──────────────────────────────────────────── -->
+<section class="section" id="about">
+    <div class="container about-inner">
+        <div class="about-text">
+            <div class="section-label">About Us</div>
+            <h2 class="section-title">A local team<br>you can trust</h2>
+            <p>
+                We're Peter and Alex — a father and son team of Irish carpenters and
+                handymen based in Blackrock, South Dublin. We've been working in and
+                around Dublin homes for years, building a reputation on doing the
+                job properly and treating every customer's home with respect.
+            </p>
+            <p>
+                Whether it's a single shelf that needs hanging or a full room of
+                flat pack furniture to build, we bring the same care and attention
+                to every job. We turn up when we say we will, we clean up after
+                ourselves, and we don't cut corners.
+            </p>
+            <p>
+                No job is too small. Get in touch on Facebook and we'll give you
+                a free, no-obligation quote.
+            </p>
+        </div>
+        <div class="about-stats">
+            <div class="stat-box">
+                <div class="stat-num">2</div>
+                <div class="stat-label">Skilled tradesmen</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">⭐ 5</div>
+                <div class="stat-label">Star rated</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">All</div>
+                <div class="stat-label">Dublin covered</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">Free</div>
+                <div class="stat-label">Quotes always</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Areas ─────────────────────────────────────────── -->
+<section class="section section-alt" id="areas">
+    <div class="container">
+        <div class="section-label">Where We Work</div>
+        <h2 class="section-title">Areas Covered</h2>
+        <p class="section-sub">Based in Blackrock, we cover all of Dublin city and county. Not sure if we cover your area? Just ask.</p>
+        <div class="areas-wrap">
+            <div class="areas-list">
+                <span class="area-tag highlight">Blackrock</span>
+                <span class="area-tag highlight">Stillorgan</span>
+                <span class="area-tag highlight">Dundrum</span>
+                <span class="area-tag highlight">Tallaght</span>
+                <span class="area-tag highlight">Rathfarnham</span>
+                <span class="area-tag">Ranelagh</span>
+                <span class="area-tag">Ballsbridge</span>
+                <span class="area-tag">Sandymount</span>
+                <span class="area-tag">Terenure</span>
+                <span class="area-tag">Rathmines</span>
+                <span class="area-tag">Clontarf</span>
+                <span class="area-tag">Drumcondra</span>
+                <span class="area-tag">Glasnevin</span>
+                <span class="area-tag">Castleknock</span>
+                <span class="area-tag">Blanchardstown</span>
+                <span class="area-tag">Howth</span>
+                <span class="area-tag">Malahide</span>
+                <span class="area-tag">Swords</span>
+                <span class="area-tag">Balbriggan</span>
+                <span class="area-tag">Donabate</span>
+                <span class="area-tag">Bray</span>
+                <span class="area-tag">Kilmainham</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────────────── -->
+<section class="cta-section" id="contact">
+    <div class="container">
+        <div class="section-label" style="color:var(--amber)">Get In Touch</div>
+        <h2 class="section-title">Need a hand?</h2>
+        <p class="section-sub">Drop us a message on Facebook and we'll get back to you with a free quote. No job too small.</p>
+        <div class="cta-btns">
+            <a href="https://www.facebook.com/Blackrockhandyman/" target="_blank" rel="noopener" class="btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                Message on Facebook
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────── -->
+<footer>
+    <p>© 2026 Blackrock Handyman · Peter &amp; Alex · Blackrock, South Dublin ·
+    <a href="https://www.facebook.com/Blackrockhandyman/" target="_blank" rel="noopener">Facebook</a></p>
+</footer>
+
+</body>
+</html>
