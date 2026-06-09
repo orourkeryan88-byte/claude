@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RELIER — Tradesman Finder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Hidden map node required by Places service -->
+    <div id="map-hidden" style="display:none;height:1px;width:1px;position:absolute;"></div>
+
+    <!-- ── API Key Modal ─────────────────────────────────── -->
+    <div id="api-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            </div>
+            <h2>Connect Google Places</h2>
+            <p>RELIER uses the Google Places API to surface local tradesmen. Your key is stored only in your browser.</p>
+            <p class="hint">
+                Need a key? Enable <strong>Places API</strong> in
+                <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" rel="noopener">Google Cloud Console</a>
+                — free tier covers ~200 searches/month.
+            </p>
+            <div class="input-group">
+                <input type="text" id="api-key-input" placeholder="AIza…" autocomplete="off" spellcheck="false" />
+                <button id="save-api-key-btn" class="btn-primary">Connect</button>
+            </div>
+            <p id="api-key-error" class="error-text hidden"></p>
+        </div>
+    </div>
+
+    <!-- ── Detail Modal ──────────────────────────────────── -->
+    <div id="detail-modal" class="modal-overlay hidden">
+        <div class="modal-box detail-box">
+            <button id="close-detail" class="close-btn" title="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+
+    <!-- ── Header ────────────────────────────────────────── -->
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-mark">R</span>
+                <span class="logo-text">ELIER</span>
+                <span class="logo-sep">|</span>
+                <span class="logo-sub">Tradesman Finder</span>
+            </div>
+            <button id="change-api-key" class="btn-ghost btn-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                API Key
+            </button>
+        </div>
+    </header>
+
+    <!-- ── Search ─────────────────────────────────────────── -->
+    <main>
+        <section class="search-section">
+            <div class="search-card">
+                <div class="search-hero">
+                    <h1>Find Tradesmen <span class="accent">Without Websites</span></h1>
+                    <p class="sub">Discover hidden local talent — phone numbers, addresses, reviews &amp; more</p>
+                </div>
+
+                <form id="search-form" class="search-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trade-type">Trade</label>
+                            <select id="trade-type">
+                                <option value="">Select a trade…</option>
+                                <optgroup label="Heating &amp; Utilities">
+                                    <option value="plumber">Plumber</option>
+                                    <option value="gas engineer">Gas Engineer</option>
+                                    <option value="electrician">Electrician</option>
+                                </optgroup>
+                                <optgroup label="Building &amp; Structure">
+                                    <option value="builder">Builder</option>
+                                    <option value="roofer">Roofer</option>
+                                    <option value="plasterer">Plasterer</option>
+                                    <option value="bricklayer">Bricklayer</option>
+                                    <option value="glazier">Glazier</option>
+                                    <option value="damp proofing specialist">Damp Proofing</option>
+                                </optgroup>
+                                <optgroup label="Interiors &amp; Finishing">
+                                    <option value="tiler">Tiler</option>
+                                    <option value="painter decorator">Painter &amp; Decorator</option>
+                                    <option value="carpenter">Carpenter / Joiner</option>
+                                    <option value="kitchen fitter">Kitchen Fitter</option>
+                                    <option value="bathroom fitter">Bathroom Fitter</option>
+                                    <option value="flooring specialist">Flooring Specialist</option>
+                                </optgroup>
+                                <optgroup label="Outdoor &amp; General">
+                                    <option value="landscaper">Landscaper / Gardener</option>
+                                    <option value="locksmith">Locksmith</option>
+                                    <option value="handyman">Handyman</option>
+                                    <option value="solar panel installer">Solar Panel Installer</option>
+                                    <option value="CCTV installer">CCTV Installer</option>
+                                    <option value="skip hire">Skip Hire</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group flex-grow">
+                            <label for="location">Location</label>
+                            <div class="location-wrap">
+                                <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <input type="text" id="location" placeholder="e.g. Manchester, UK" autocomplete="off" />
+                                <button type="button" id="use-location-btn" title="Use my current location">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group-sm">
+                            <label for="radius">Radius</label>
+                            <select id="radius">
+                                <option value="2000">2 km</option>
+                                <option value="5000" selected>5 km</option>
+                                <option value="10000">10 km</option>
+                                <option value="20000">20 km</option>
+                                <option value="50000">50 km</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="btn-primary btn-lg" id="search-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            Search
+                        </button>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" id="no-website-only" checked />
+                            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            <span class="toggle-label-text">No website only</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ── Results ──────────────────────────────────────── -->
+        <section class="results-section hidden" id="results-section">
+            <div class="results-header">
+                <div>
+                    <h2 id="results-title">Results</h2>
+                    <p id="results-count" class="results-meta"></p>
+                </div>
+                <div class="results-actions">
+                    <button id="export-csv-btn" class="btn-ghost btn-sm">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div id="progress-wrap" class="progress-wrap hidden">
+                <p id="progress-text">Fetching contact details…</p>
+                <div class="progress-bar"><div id="progress-fill"></div></div>
+            </div>
+
+            <div id="results-grid" class="results-grid"></div>
+
+            <div id="no-results" class="no-results hidden">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                <h3>No results found</h3>
+                <p>Try a different trade, expand the radius, or check the location spelling.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- ── Loading overlay ──────────────────────────────── -->
+    <div id="loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p id="loading-text">Loading…</p>
+    </div>
+
+    <!-- ── Footer ───────────────────────────────────────── -->
+    <footer>
+        <p>RELIER &mdash; Powered by Google Places API &bull; Data sourced from Google Maps</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
