@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RELIER — Tradesman Finder</title>
+    <style>
+/* ─────────────────────────────────────────────
+   RELIER — Tradesman Finder
+   Design tokens + component styles
+───────────────────────────────────────────── */
+:root {
+    --bg:         #0a0f1e;
+    --surface:    #111827;
+    --surface2:   #1a2540;
+    --border:     #1e2d47;
+    --border2:    #2a3d5e;
+    --text:       #e8edf5;
+    --muted:      #7c8fa8;
+    --primary:    #3b82f6;
+    --primary-h:  #2563eb;
+    --primary-glow: rgba(59,130,246,0.18);
+    --success:    #10b981;
+    --success-bg: rgba(16,185,129,0.12);
+    --success-bd: rgba(16,185,129,0.28);
+    --warning:    #f59e0b;
+    --warning-bg: rgba(245,158,11,0.12);
+    --warning-bd: rgba(245,158,11,0.28);
+    --danger:     #ef4444;
+    --radius:     14px;
+    --radius-sm:  8px;
+    --shadow:     0 8px 40px rgba(0,0,0,0.5);
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+a { color: inherit; }
+
+/* ── Buttons ───────────────────────────────── */
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    white-space: nowrap;
+}
+.btn-primary:hover  { background: var(--primary-h); box-shadow: 0 0 0 4px var(--primary-glow); }
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary svg    { width: 17px; height: 17px; flex-shrink: 0; }
+.btn-primary.btn-lg { padding: 13px 30px; font-size: 1rem; border-radius: 10px; }
+
+.btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: color 0.18s, border-color 0.18s;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+.btn-ghost svg    { width: 14px; height: 14px; }
+.btn-ghost.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+/* ── Modals ────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 900;
+    backdrop-filter: blur(6px);
+    padding: 16px;
+}
+.modal-overlay.hidden { display: none !important; }
+
+.modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 36px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow);
+    position: relative;
+    animation: modal-in 0.22s ease;
+}
+@keyframes modal-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-icon {
+    width: 48px; height: 48px;
+    background: var(--primary-glow);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+}
+.modal-icon svg { width: 22px; height: 22px; color: var(--primary); }
+
+.modal-box h2    { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+.modal-box > p   { color: var(--muted); font-size: 0.88rem; margin-bottom: 10px; line-height: 1.7; }
+.modal-box .hint { font-size: 0.82rem; }
+.modal-box .hint a { color: var(--primary); text-decoration: none; }
+.modal-box .hint a:hover { text-decoration: underline; }
+.modal-box .hint strong { color: var(--text); }
+
+.input-group         { display: flex; gap: 10px; margin-top: 16px; }
+.input-group input   {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-family: monospace;
+    outline: none;
+    transition: border-color 0.18s;
+}
+.input-group input:focus { border-color: var(--primary); }
+
+.close-btn {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color 0.18s;
+}
+.close-btn:hover { color: var(--text); }
+.close-btn svg   { width: 14px; height: 14px; }
+
+.detail-box {
+    max-width: 660px;
+    max-height: 88vh;
+    overflow-y: auto;
+}
+
+.error-text { color: var(--danger); font-size: 0.83rem; margin-top: 8px; }
+.hidden     { display: none !important; }
+
+/* ── Header ────────────────────────────────── */
+header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo { display: flex; align-items: center; gap: 0; }
+.logo-mark {
+    background: var(--primary);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 900;
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    margin-right: 3px;
+}
+.logo-text  { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
+.logo-sep   { color: var(--border2); margin: 0 10px; font-weight: 200; }
+.logo-sub   { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+
+/* ── Search section ────────────────────────── */
+.search-section {
+    max-width: 1240px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+}
+
+.search-card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 44px 44px 36px;
+    background-image: radial-gradient(ellipse at 70% 0%, rgba(59,130,246,0.06) 0%, transparent 60%);
+}
+
+.search-hero { margin-bottom: 36px; }
+.search-hero h1 { font-size: 2.1rem; font-weight: 800; line-height: 1.2; margin-bottom: 10px; letter-spacing: -0.5px; }
+.accent { color: var(--primary); }
+.sub    { color: var(--muted); font-size: 1rem; }
+
+/* Form */
+.form-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 160px;
+}
+.form-group.flex-grow  { flex: 2 1 220px; }
+.form-group.form-group-sm { flex: 0 0 130px; }
+
+.form-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+}
+
+.form-group select,
+.form-group input {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.93rem;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    width: 100%;
+    height: 44px;
+}
+.form-group select:focus,
+.form-group input:focus  { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+.form-group select option { background: var(--surface); }
+.form-group select optgroup { color: var(--muted); font-weight: 600; }
+
+.location-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.loc-icon {
+    position: absolute;
+    left: 12px;
+    width: 16px; height: 16px;
+    color: var(--muted);
+    pointer-events: none;
+    flex-shrink: 0;
+}
+.location-wrap input { padding-left: 36px; padding-right: 44px; }
+.location-wrap > button {
+    position: absolute;
+    right: 6px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    transition: color 0.18s;
+    flex-shrink: 0;
+}
+.location-wrap > button:hover { color: var(--primary); }
+.location-wrap > button svg   { width: 18px; height: 18px; }
+
+.form-footer {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+/* Custom toggle */
+.toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+.toggle-wrap input[type="checkbox"] { display: none; }
+.toggle-track {
+    width: 40px; height: 22px;
+    background: var(--border2);
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+.toggle-thumb {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: var(--muted);
+    border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+}
+.toggle-wrap input:checked ~ .toggle-track              { background: var(--primary); }
+.toggle-wrap input:checked ~ .toggle-track .toggle-thumb { background: #fff; transform: translateX(18px); }
+.toggle-label-text { font-size: 0.88rem; color: var(--muted); }
+.toggle-wrap:hover .toggle-label-text { color: var(--text); }
+
+/* ── Results section ───────────────────────── */
+.results-section {
+    max-width: 1240px;
+    margin: 36px auto 0;
+    padding: 0 24px;
+}
+
+.results-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.results-header h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 3px; }
+.results-meta      { color: var(--muted); font-size: 0.83rem; }
+.results-actions   { display: flex; gap: 8px; align-items: center; }
+
+/* Progress bar */
+.progress-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.progress-wrap p { font-size: 0.83rem; color: var(--muted); }
+.progress-bar    { background: var(--border); border-radius: 4px; height: 5px; overflow: hidden; }
+#progress-fill   {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #60a5fa);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.35s ease;
+}
+
+/* Results grid */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 18px;
+}
+
+/* ── Result card ────────────────────────────── */
+.result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+.result-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    border: 1px solid var(--primary);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+.result-card:hover {
+    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.4);
+}
+.result-card:hover::after { opacity: 1; }
+
+.card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.card-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.badge {
+    font-size: 0.67rem;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.badge-no-website {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid var(--success-bd);
+}
+.badge-has-website {
+    background: rgba(239,68,68,0.1);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,0.25);
+}
+
+.card-trade {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-transform: capitalize;
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+}
+
+.card-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+.stars         { color: var(--warning); font-size: 0.88rem; letter-spacing: 1px; }
+.rating-score  { font-weight: 700; font-size: 0.88rem; }
+.rating-count  { color: var(--muted); font-size: 0.8rem; }
+
+.card-info { display: flex; flex-direction: column; gap: 7px; }
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 0.84rem;
+    color: var(--muted);
+}
+.info-row svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; }
+.info-val { color: var(--text); line-height: 1.4; }
+.info-val.phone { color: var(--success); font-weight: 600; font-family: 'SF Mono', 'Fira Code', monospace; }
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    flex: 1;
+    min-width: 100px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 0.79rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    text-decoration: none;
+    transition: all 0.18s;
+    border: 1px solid transparent;
+    font-family: var(--font);
+}
+.btn-action svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+.btn-maps  { background: var(--primary-glow); color: var(--primary); border-color: rgba(59,130,246,0.3); }
+.btn-maps:hover  { background: rgba(59,130,246,0.28); }
+.btn-email { background: var(--warning-bg); color: var(--warning); border-color: var(--warning-bd); }
+.btn-email:hover { background: rgba(245,158,11,0.22); }
+.btn-copy  { background: rgba(148,163,184,0.08); color: var(--muted); border-color: var(--border); }
+.btn-copy:hover  { color: var(--text); border-color: var(--muted); }
+.btn-copied { color: var(--success) !important; border-color: var(--success-bd) !important; background: var(--success-bg) !important; }
+
+/* ── No results ─────────────────────────────── */
+.no-results {
+    text-align: center;
+    padding: 72px 24px;
+    color: var(--muted);
+}
+.no-results svg { width: 52px; height: 52px; margin-bottom: 18px; opacity: 0.25; display: block; margin-left: auto; margin-right: auto; }
+.no-results h3  { font-size: 1.2rem; margin-bottom: 8px; color: var(--text); }
+.no-results p   { font-size: 0.9rem; }
+
+/* ── Loading overlay ────────────────────────── */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,15,30,0.82);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 800;
+    backdrop-filter: blur(6px);
+}
+.loading-overlay p { color: var(--muted); margin-top: 18px; font-size: 0.9rem; }
+
+.spinner {
+    width: 42px; height: 42px;
+    border: 3px solid var(--border2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Detail modal content ───────────────────── */
+.detail-header    { margin-bottom: 22px; padding-right: 36px; }
+.detail-name      { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; line-height: 1.25; letter-spacing: -0.3px; }
+.detail-badges    { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.detail-rating    { display: flex; align-items: center; gap: 8px; }
+.detail-stars     { color: var(--warning); font-size: 1.1rem; }
+.detail-score     { font-size: 1.3rem; font-weight: 800; }
+.detail-rcount    { color: var(--muted); font-size: 0.88rem; }
+
+.detail-actions   { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
+.detail-actions .btn-action { flex: none; min-width: 160px; padding: 10px 18px; font-size: 0.86rem; }
+
+.detail-section   { margin-bottom: 24px; }
+.detail-section h3 {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.contact-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.contact-item.full { grid-column: 1 / -1; }
+.contact-item svg { width: 18px; height: 18px; color: var(--primary); flex-shrink: 0; margin-top: 1px; }
+.contact-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.contact-value { font-size: 0.9rem; font-weight: 600; word-break: break-word; }
+.contact-value a       { color: var(--primary); text-decoration: none; }
+.contact-value a:hover { text-decoration: underline; }
+.contact-value.is-phone { color: var(--success); font-family: 'SF Mono', 'Fira Code', monospace; }
+
+/* Reviews */
+.review-list { display: flex; flex-direction: column; gap: 10px; }
+.review-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+.review-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.review-author  { font-weight: 700; font-size: 0.88rem; }
+.review-stars   { color: var(--warning); font-size: 0.8rem; flex-shrink: 0; }
+.review-time    { color: var(--muted); font-size: 0.75rem; margin-bottom: 7px; }
+.review-text    { color: var(--muted); font-size: 0.85rem; line-height: 1.65; }
+.no-reviews     { color: var(--muted); font-size: 0.87rem; font-style: italic; padding: 12px 0; }
+
+/* Email finder */
+.email-finder-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+}
+.email-finder-box > p { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
+.email-link-list { display: flex; flex-direction: column; gap: 7px; }
+.email-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 13px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 500;
+    transition: border-color 0.18s, color 0.18s;
+}
+.email-link:hover { border-color: var(--primary); color: var(--primary); }
+.email-link svg   { width: 15px; height: 15px; flex-shrink: 0; color: var(--muted); }
+.email-link:hover svg { color: var(--primary); }
+.email-link .source-badge {
+    margin-left: auto;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    background: var(--border);
+    padding: 2px 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+/* ── Footer ─────────────────────────────────── */
+footer {
+    text-align: center;
+    padding: 36px 24px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    border-top: 1px solid var(--border);
+    margin-top: 64px;
+}
+
+/* ── Responsive ─────────────────────────────── */
+@media (max-width: 840px) {
+    .search-card  { padding: 28px 22px 22px; }
+    .search-hero h1 { font-size: 1.55rem; }
+    .form-row     { flex-direction: column; gap: 12px; }
+    .form-group.form-group-sm { flex: 1; }
+    .results-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .detail-actions .btn-action { flex: 1; min-width: 130px; }
+}
+@media (max-width: 480px) {
+    .input-group { flex-direction: column; }
+    .search-hero h1 { font-size: 1.3rem; }
+    .modal-box { padding: 24px 18px; }
+    .card-actions .btn-action { min-width: 80px; font-size: 0.74rem; }
+}
+    </style>
+</head>
+<body>
+    <!-- Hidden map node required by Places service -->
+    <div id="map-hidden" style="display:none;height:1px;width:1px;position:absolute;"></div>
+
+    <!-- ── API Key Modal ─────────────────────────────────── -->
+    <div id="api-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            </div>
+            <h2>Connect Google Places</h2>
+            <p>RELIER uses the Google Places API to surface local tradesmen. Your key is stored only in your browser.</p>
+            <p class="hint">
+                Need a key? Enable <strong>Places API</strong> in
+                <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" rel="noopener">Google Cloud Console</a>
+                — free tier covers ~200 searches/month.
+            </p>
+            <div class="input-group">
+                <input type="text" id="api-key-input" placeholder="AIza…" autocomplete="off" spellcheck="false" />
+                <button id="save-api-key-btn" class="btn-primary">Connect</button>
+            </div>
+            <p id="api-key-error" class="error-text hidden"></p>
+        </div>
+    </div>
+
+    <!-- ── Detail Modal ──────────────────────────────────── -->
+    <div id="detail-modal" class="modal-overlay hidden">
+        <div class="modal-box detail-box">
+            <button id="close-detail" class="close-btn" title="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+
+    <!-- ── Header ────────────────────────────────────────── -->
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-mark">R</span>
+                <span class="logo-text">ELIER</span>
+                <span class="logo-sep">|</span>
+                <span class="logo-sub">Tradesman Finder</span>
+            </div>
+            <button id="change-api-key" class="btn-ghost btn-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                API Key
+            </button>
+        </div>
+    </header>
+
+    <!-- ── Search ─────────────────────────────────────────── -->
+    <main>
+        <section class="search-section">
+            <div class="search-card">
+                <div class="search-hero">
+                    <h1>Find Tradesmen <span class="accent">Without Websites</span></h1>
+                    <p class="sub">Discover hidden local talent — phone numbers, addresses, reviews &amp; more</p>
+                </div>
+
+                <form id="search-form" class="search-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trade-type">Trade</label>
+                            <select id="trade-type">
+                                <option value="">Select a trade…</option>
+                                <optgroup label="Heating &amp; Utilities">
+                                    <option value="plumber">Plumber</option>
+                                    <option value="gas engineer">Gas Engineer</option>
+                                    <option value="electrician">Electrician</option>
+                                </optgroup>
+                                <optgroup label="Building &amp; Structure">
+                                    <option value="builder">Builder</option>
+                                    <option value="roofer">Roofer</option>
+                                    <option value="plasterer">Plasterer</option>
+                                    <option value="bricklayer">Bricklayer</option>
+                                    <option value="glazier">Glazier</option>
+                                    <option value="damp proofing specialist">Damp Proofing</option>
+                                </optgroup>
+                                <optgroup label="Interiors &amp; Finishing">
+                                    <option value="tiler">Tiler</option>
+                                    <option value="painter decorator">Painter &amp; Decorator</option>
+                                    <option value="carpenter">Carpenter / Joiner</option>
+                                    <option value="kitchen fitter">Kitchen Fitter</option>
+                                    <option value="bathroom fitter">Bathroom Fitter</option>
+                                    <option value="flooring specialist">Flooring Specialist</option>
+                                </optgroup>
+                                <optgroup label="Outdoor &amp; General">
+                                    <option value="landscaper">Landscaper / Gardener</option>
+                                    <option value="locksmith">Locksmith</option>
+                                    <option value="handyman">Handyman</option>
+                                    <option value="solar panel installer">Solar Panel Installer</option>
+                                    <option value="CCTV installer">CCTV Installer</option>
+                                    <option value="skip hire">Skip Hire</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group flex-grow">
+                            <label for="location">Location</label>
+                            <div class="location-wrap">
+                                <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <input type="text" id="location" placeholder="e.g. Manchester, UK" autocomplete="off" />
+                                <button type="button" id="use-location-btn" title="Use my current location">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group-sm">
+                            <label for="radius">Radius</label>
+                            <select id="radius">
+                                <option value="2000">2 km</option>
+                                <option value="5000" selected>5 km</option>
+                                <option value="10000">10 km</option>
+                                <option value="20000">20 km</option>
+                                <option value="50000">50 km</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="btn-primary btn-lg" id="search-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            Search
+                        </button>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" id="no-website-only" checked />
+                            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            <span class="toggle-label-text">No website only</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ── Results ──────────────────────────────────────── -->
+        <section class="results-section hidden" id="results-section">
+            <div class="results-header">
+                <div>
+                    <h2 id="results-title">Results</h2>
+                    <p id="results-count" class="results-meta"></p>
+                </div>
+                <div class="results-actions">
+                    <button id="export-csv-btn" class="btn-ghost btn-sm">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div id="progress-wrap" class="progress-wrap hidden">
+                <p id="progress-text">Fetching contact details…</p>
+                <div class="progress-bar"><div id="progress-fill"></div></div>
+            </div>
+
+            <div id="results-grid" class="results-grid"></div>
+
+            <div id="no-results" class="no-results hidden">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                <h3>No results found</h3>
+                <p>Try a different trade, expand the radius, or check the location spelling.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- ── Loading overlay ──────────────────────────────── -->
+    <div id="loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p id="loading-text">Loading…</p>
+    </div>
+
+    <!-- ── Footer ───────────────────────────────────────── -->
+    <footer>
+        <p>RELIER &mdash; Powered by Google Places API &bull; Data sourced from Google Maps</p>
+    </footer>
+
+    <script>
+/* ─────────────────────────────────────────────
+   RELIER — Tradesman Finder
+   Google Places API integration
+───────────────────────────────────────────── */
+
+const STORAGE_KEY = 'relier_gapi_key';
+
+let placesService = null;
+let geocoder      = null;
+let allPlaces     = [];
+let shownPlaces   = [];
+let lastTradeType = '';
+
+// ── Boot ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    bindUI();
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        loadGoogleMapsAPI(saved);
+    } else {
+        document.getElementById('api-modal').classList.remove('hidden');
+    }
+});
+
+function bindUI() {
+    document.getElementById('save-api-key-btn').addEventListener('click', handleSaveKey);
+    document.getElementById('api-key-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleSaveKey();
+    });
+    document.getElementById('change-api-key').addEventListener('click', () => {
+        document.getElementById('api-modal').classList.remove('hidden');
+        setTimeout(() => document.getElementById('api-key-input').focus(), 80);
+    });
+
+    document.getElementById('search-form').addEventListener('submit', handleSearch);
+    document.getElementById('use-location-btn').addEventListener('click', useMyLocation);
+    document.getElementById('close-detail').addEventListener('click', closeDetail);
+    document.getElementById('export-csv-btn').addEventListener('click', exportCSV);
+
+    document.getElementById('detail-modal').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeDetail();
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeDetail();
+    });
+}
+
+// ── API Key ───────────────────────────────────
+function handleSaveKey() {
+    const key   = document.getElementById('api-key-input').value.trim();
+    const errEl = document.getElementById('api-key-error');
+
+    if (!key.startsWith('AIza') || key.length < 25) {
+        errEl.textContent = 'Enter a valid Google API key (begins with AIza…).';
+        errEl.classList.remove('hidden');
+        return;
+    }
+    errEl.classList.add('hidden');
+    localStorage.setItem(STORAGE_KEY, key);
+    loadGoogleMapsAPI(key);
+}
+
+function loadGoogleMapsAPI(apiKey) {
+    showLoading('Connecting to Google Places…');
+
+    // Remove stale script if key changed
+    const old = document.getElementById('gmap-script');
+    if (old) old.remove();
+
+    window._relierGmapsReady = () => {
+        try {
+            const mapEl = document.getElementById('map-hidden');
+            const map   = new google.maps.Map(mapEl, { center: { lat: 0, lng: 0 }, zoom: 10 });
+            placesService = new google.maps.places.PlacesService(map);
+            geocoder      = new google.maps.Geocoder();
+            hideLoading();
+            document.getElementById('api-modal').classList.add('hidden');
+        } catch (err) {
+            hideLoading();
+            showApiKeyError('Failed to initialise Google Maps. Check your API key has Places API enabled.');
+        }
+    };
+
+    const script   = document.createElement('script');
+    script.id      = 'gmap-script';
+    script.src     = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=_relierGmapsReady`;
+    script.async   = true;
+    script.defer   = true;
+    script.onerror = () => {
+        hideLoading();
+        showApiKeyError('Could not load Google Maps API. Check your key and internet connection.');
+        document.getElementById('api-modal').classList.remove('hidden');
+    };
+    document.head.appendChild(script);
+}
+
+function showApiKeyError(msg) {
+    const el = document.getElementById('api-key-error');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    document.getElementById('api-modal').classList.remove('hidden');
+}
+
+// ── Geolocation ───────────────────────────────
+function useMyLocation() {
+    if (!navigator.geolocation) return;
+    const btn = document.getElementById('use-location-btn');
+    btn.style.color = 'var(--primary)';
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const { latitude: lat, longitude: lng } = pos.coords;
+            if (geocoder) {
+                geocoder.geocode({ location: { lat, lng } }, (res, status) => {
+                    document.getElementById('location').value =
+                        (status === 'OK' && res[0]) ? res[0].formatted_address : `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    btn.style.color = '';
+                });
+            } else {
+                document.getElementById('location').value = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                btn.style.color = '';
+            }
+        },
+        () => { btn.style.color = ''; }
+    );
+}
+
+// ── Search ────────────────────────────────────
+async function handleSearch(e) {
+    e.preventDefault();
+
+    if (!placesService) {
+        document.getElementById('api-modal').classList.remove('hidden');
+        return;
+    }
+
+    const tradeType    = document.getElementById('trade-type').value;
+    const locationStr  = document.getElementById('location').value.trim();
+    const radius       = parseInt(document.getElementById('radius').value);
+    const noWebOnly    = document.getElementById('no-website-only').checked;
+
+    if (!tradeType)    { alert('Please select a trade type.'); return; }
+    if (!locationStr)  { alert('Please enter a location.'); return; }
+
+    lastTradeType = tradeType;
+    allPlaces     = [];
+    shownPlaces   = [];
+
+    document.getElementById('results-section').classList.add('hidden');
+    document.getElementById('results-grid').innerHTML = '';
+    document.getElementById('no-results').classList.add('hidden');
+
+    showLoading('Searching for tradesmen…');
+
+    let coords;
+    try {
+        coords = await geocodeLocation(locationStr);
+    } catch (err) {
+        hideLoading();
+        alert('Could not find that location. Please try a more specific address.');
+        return;
+    }
+
+    let raw = [];
+    try {
+        raw = await doTextSearch(`${tradeType} near ${locationStr}`, coords, radius);
+    } catch (err) {
+        hideLoading();
+        if (err.message && err.message.includes('REQUEST_DENIED')) {
+            showApiKeyError('API key denied. Make sure Places API is enabled in Google Cloud Console.');
+        } else {
+            alert('Search failed: ' + (err.message || 'Unknown error'));
+        }
+        return;
+    }
+
+    hideLoading();
+
+    if (!raw.length) {
+        renderResults([], noWebOnly);
+        return;
+    }
+
+    showProgress(0, raw.length, `Fetching details 0 / ${raw.length}…`);
+
+    const detailed = [];
+    for (let i = 0; i < raw.length; i++) {
+        setProgress(i + 1, raw.length, `Fetching details ${i + 1} / ${raw.length} — ${raw[i].name}`);
+        const detail = await fetchDetails(raw[i].place_id);
+        if (detail) detailed.push(mergePlace(raw[i], detail));
+        await pause(120);
+    }
+
+    hideProgress();
+    allPlaces   = detailed;
+    shownPlaces = noWebOnly ? detailed.filter(p => !p.website) : detailed;
+    renderResults(shownPlaces, noWebOnly);
+}
+
+function geocodeLocation(str) {
+    return new Promise((resolve, reject) => {
+        const coords = str.match(/^(-?\d+\.?\d*),\s*(-?\d+\.?\d*)$/);
+        if (coords) {
+            resolve({ lat: parseFloat(coords[1]), lng: parseFloat(coords[2]) });
+            return;
+        }
+        geocoder.geocode({ address: str }, (res, status) => {
+            if (status === 'OK' && res[0]) {
+                const loc = res[0].geometry.location;
+                resolve({ lat: loc.lat(), lng: loc.lng() });
+            } else {
+                reject(new Error('Location not found'));
+            }
+        });
+    });
+}
+
+function doTextSearch(query, location, radius) {
+    return new Promise((resolve, reject) => {
+        placesService.textSearch({
+            query,
+            location: new google.maps.LatLng(location.lat, location.lng),
+            radius
+        }, (results, status) => {
+            const S = google.maps.places.PlacesServiceStatus;
+            if      (status === S.OK)            resolve(results || []);
+            else if (status === S.ZERO_RESULTS)  resolve([]);
+            else                                 reject(new Error(status));
+        });
+    });
+}
+
+function fetchDetails(placeId) {
+    return new Promise(resolve => {
+        placesService.getDetails({
+            placeId,
+            fields: [
+                'name', 'place_id',
+                'formatted_phone_number', 'international_phone_number',
+                'formatted_address', 'website', 'url',
+                'rating', 'user_ratings_total', 'reviews',
+                'business_status', 'opening_hours', 'types', 'geometry'
+            ]
+        }, (place, status) => {
+            resolve(status === google.maps.places.PlacesServiceStatus.OK ? place : null);
+        });
+    });
+}
+
+function mergePlace(base, detail) {
+    return { ...base, ...detail };
+}
+
+// ── Render ────────────────────────────────────
+function renderResults(places, noWebOnly) {
+    const section = document.getElementById('results-section');
+    const grid    = document.getElementById('results-grid');
+    const noRes   = document.getElementById('no-results');
+    const title   = document.getElementById('results-title');
+    const meta    = document.getElementById('results-count');
+
+    section.classList.remove('hidden');
+    grid.innerHTML = '';
+
+    title.textContent = cap(lastTradeType) + ' Results';
+
+    if (!places.length) {
+        noRes.classList.remove('hidden');
+        meta.textContent = noWebOnly
+            ? `All ${allPlaces.length} results have a website — try unchecking "No website only"`
+            : '0 results found';
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+    }
+
+    noRes.classList.add('hidden');
+    const label = noWebOnly ? 'tradesmen without a website' : 'tradesmen';
+    meta.textContent = `${places.length} ${label} found`;
+
+    places.forEach(p => grid.appendChild(buildCard(p)));
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildCard(place) {
+    const phone   = place.formatted_phone_number || place.international_phone_number || null;
+    const rating  = place.rating ?? null;
+    const count   = place.user_ratings_total ?? 0;
+    const addr    = place.formatted_address || 'Address unavailable';
+    const noWeb   = !place.website;
+
+    const card = document.createElement('div');
+    card.className = 'result-card';
+
+    card.innerHTML = `
+        <div class="card-top">
+            <div class="card-name">${esc(place.name)}</div>
+            <span class="badge ${noWeb ? 'badge-no-website' : 'badge-has-website'}">${noWeb ? 'No Website' : 'Has Website'}</span>
+        </div>
+        <div class="card-trade">${cap(lastTradeType)}</div>
+        <div class="card-rating">
+            ${rating !== null
+                ? `<span class="stars">${stars(rating)}</span>
+                   <span class="rating-score">${rating.toFixed(1)}</span>
+                   <span class="rating-count">(${count.toLocaleString()} review${count !== 1 ? 's' : ''})</span>`
+                : `<span class="rating-count">No ratings yet</span>`}
+        </div>
+        <div class="card-info">
+            <div class="info-row">
+                ${iconPhone()}
+                ${phone
+                    ? `<span class="info-val phone">${esc(phone)}</span>`
+                    : `<span class="info-val" style="color:var(--muted)">Phone not listed</span>`}
+            </div>
+            <div class="info-row">
+                ${iconPin()}
+                <span class="info-val">${esc(addr)}</span>
+            </div>
+        </div>
+        <div class="card-actions">
+            ${place.url
+                ? `<a href="${esc(place.url)}" target="_blank" rel="noopener noreferrer"
+                      class="btn-action btn-maps" onclick="event.stopPropagation()">
+                       ${iconMap()} Google Maps
+                   </a>`
+                : ''}
+            <a href="${emailSearchUrl(place.name, addr)}" target="_blank" rel="noopener noreferrer"
+               class="btn-action btn-email" onclick="event.stopPropagation()">
+               ${iconEmail()} Find Email
+            </a>
+            ${phone
+                ? `<button class="btn-action btn-copy"
+                           data-phone="${esc(phone)}"
+                           onclick="event.stopPropagation(); copyPhone(this)">
+                       ${iconCopy()} Copy Phone
+                   </button>`
+                : ''}
+        </div>`;
+
+    card.addEventListener('click', e => {
+        if (e.target.closest('a, button')) return;
+        openDetail(place);
+    });
+
+    return card;
+}
+
+// ── Detail modal ──────────────────────────────
+function openDetail(place) {
+    const modal   = document.getElementById('detail-modal');
+    const content = document.getElementById('detail-content');
+
+    const phone  = place.formatted_phone_number || place.international_phone_number || null;
+    const rating = place.rating ?? null;
+    const addr   = place.formatted_address || 'N/A';
+    const noWeb  = !place.website;
+    const revs   = Array.isArray(place.reviews) ? place.reviews : [];
+
+    content.innerHTML = `
+        <div class="detail-header">
+            <div class="detail-name">${esc(place.name)}</div>
+            <div class="detail-badges">
+                <span class="badge ${noWeb ? 'badge-no-website' : 'badge-has-website'}">${noWeb ? 'No Website' : 'Has Website'}</span>
+                <span class="badge" style="background:var(--primary-glow);color:var(--primary);border:1px solid rgba(59,130,246,0.3)">${cap(lastTradeType)}</span>
+            </div>
+            ${rating !== null ? `
+            <div class="detail-rating">
+                <span class="detail-stars">${stars(rating)}</span>
+                <span class="detail-score">${rating.toFixed(1)}</span>
+                <span class="detail-rcount">&nbsp;(${(place.user_ratings_total || 0).toLocaleString()} reviews)</span>
+            </div>` : ''}
+        </div>
+
+        <div class="detail-actions">
+            ${place.url
+                ? `<a href="${esc(place.url)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-maps">
+                       ${iconMap()} Open in Google Maps
+                   </a>`
+                : ''}
+            ${phone
+                ? `<a href="tel:${esc(phone.replace(/\s+/g, ''))}" class="btn-action"
+                      style="background:var(--success-bg);color:var(--success);border-color:var(--success-bd)">
+                       ${iconPhone()} Call Now
+                   </a>`
+                : ''}
+        </div>
+
+        <div class="detail-section">
+            <h3>Contact Information</h3>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    ${iconPhone()}
+                    <div>
+                        <div class="contact-label">Phone</div>
+                        <div class="contact-value ${phone ? 'is-phone' : ''}">${phone ? esc(phone) : 'Not listed'}</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    ${iconEmail()}
+                    <div>
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value" style="color:var(--muted)">Not in public API</div>
+                    </div>
+                </div>
+                <div class="contact-item full">
+                    ${iconPin()}
+                    <div>
+                        <div class="contact-label">Address</div>
+                        <div class="contact-value">${esc(addr)}</div>
+                    </div>
+                </div>
+                ${place.website
+                    ? `<div class="contact-item full">
+                           ${iconGlobe()}
+                           <div>
+                               <div class="contact-label">Website</div>
+                               <div class="contact-value">
+                                   <a href="${esc(place.website)}" target="_blank" rel="noopener noreferrer">${esc(place.website)}</a>
+                               </div>
+                           </div>
+                       </div>`
+                    : ''}
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Find Their Email</h3>
+            <div class="email-finder-box">
+                <p>Email isn't provided by Google Places. Use these tools to track it down:</p>
+                <div class="email-link-list">
+                    ${buildEmailLinks(place.name, addr)}
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Customer Reviews ${revs.length ? `(${revs.length})` : ''}</h3>
+            ${revs.length
+                ? `<div class="review-list">${revs.map(renderReview).join('')}</div>`
+                : `<p class="no-reviews">No reviews available for this tradesman.</p>`}
+        </div>`;
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+    document.getElementById('detail-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function renderReview(r) {
+    return `
+        <div class="review-item">
+            <div class="review-top">
+                <span class="review-author">${esc(r.author_name || 'Anonymous')}</span>
+                <span class="review-stars">${stars(r.rating || 0)}</span>
+            </div>
+            <div class="review-time">${esc(r.relative_time_description || '')}</div>
+            <div class="review-text">${esc(r.text || '(no text)')}</div>
+        </div>`;
+}
+
+// ── Email finder links ────────────────────────
+function emailSearchUrl(name, addr) {
+    const city  = addr.split(',').slice(-3, -1).join(',').trim();
+    return `https://www.google.com/search?q=${encodeURIComponent(`"${name}" ${city} email contact`)}`;
+}
+
+function buildEmailLinks(name, addr) {
+    const city    = addr.split(',').slice(-3, -1).join(',').trim();
+    const nameEnc = encodeURIComponent(name);
+    const qEnc    = encodeURIComponent(`"${name}" ${city} email`);
+    const fbEnc   = encodeURIComponent(name);
+
+    const links = [
+        {
+            label:  'Google — search for their email',
+            badge:  'Google',
+            url:    `https://www.google.com/search?q=${qEnc}`,
+            icon:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>`
+        },
+        {
+            label:  'Yell.com — UK business directory',
+            badge:  'Yell',
+            url:    `https://www.yell.com/s/${encodeURIComponent(name)}/`,
+            icon:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3l-4 4-4-4"/></svg>`
+        },
+        {
+            label:  'Checkatrade — trade profile',
+            badge:  'Checkatrade',
+            url:    `https://www.checkatrade.com/search?q=${nameEnc}`,
+            icon:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
+        },
+        {
+            label:  'Facebook — find their page',
+            badge:  'Facebook',
+            url:    `https://www.facebook.com/search/pages/?q=${fbEnc}`,
+            icon:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>`
+        },
+        {
+            label:  'Hunter.io — email finder',
+            badge:  'Hunter',
+            url:    `https://hunter.io/search/${encodeURIComponent(name.toLowerCase().replace(/[^a-z0-9]/g, ''))}`,
+            icon:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`
+        }
+    ];
+
+    return links.map(l =>
+        `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="email-link">
+            ${l.icon}
+            ${esc(l.label)}
+            <span class="source-badge">${esc(l.badge)}</span>
+        </a>`
+    ).join('');
+}
+
+// ── CSV Export ────────────────────────────────
+function exportCSV() {
+    if (!shownPlaces.length) return;
+
+    const headers = ['Name', 'Trade', 'Phone', 'Address', 'Rating', 'Review Count', 'Website', 'Google Maps URL'];
+    const rows    = shownPlaces.map(p => [
+        p.name || '',
+        lastTradeType,
+        p.formatted_phone_number || p.international_phone_number || '',
+        p.formatted_address || '',
+        p.rating || '',
+        p.user_ratings_total || '',
+        p.website || '',
+        p.url || ''
+    ]);
+
+    const csv  = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = Object.assign(document.createElement('a'), {
+        href:     url,
+        download: `relier-${lastTradeType.replace(/\s+/g, '-')}-${Date.now()}.csv`
+    });
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ── Copy phone ────────────────────────────────
+function copyPhone(btn) {
+    const phone = btn.dataset.phone;
+    if (!phone) return;
+    navigator.clipboard.writeText(phone).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = `${iconCheck()} Copied!`;
+        btn.classList.add('btn-copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('btn-copied');
+        }, 1800);
+    });
+}
+
+// ── UI helpers ────────────────────────────────
+function showLoading(text) {
+    document.getElementById('loading-text').textContent = text || 'Loading…';
+    document.getElementById('loading').classList.remove('hidden');
+}
+function hideLoading() {
+    document.getElementById('loading').classList.add('hidden');
+}
+
+function showProgress(cur, total, text) {
+    const wrap = document.getElementById('progress-wrap');
+    wrap.classList.remove('hidden');
+    document.getElementById('progress-text').textContent  = text;
+    document.getElementById('progress-fill').style.width  = `${total ? (cur / total) * 100 : 0}%`;
+}
+function setProgress(cur, total, text) {
+    document.getElementById('progress-text').textContent = text;
+    document.getElementById('progress-fill').style.width = `${(cur / total) * 100}%`;
+}
+function hideProgress() {
+    document.getElementById('progress-wrap').classList.add('hidden');
+    document.getElementById('progress-fill').style.width = '0%';
+}
+
+// ── Misc helpers ──────────────────────────────
+function pause(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function esc(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+}
+
+function cap(str) {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+}
+
+function stars(rating) {
+    const full  = Math.round(rating);
+    const empty = 5 - full;
+    return '★'.repeat(Math.max(0, full)) + '☆'.repeat(Math.max(0, empty));
+}
+
+// ── SVG icon snippets ─────────────────────────
+function iconPhone() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.71 4.87 2 2 0 0 1 3.69 2.71h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 10.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`; }
+function iconEmail() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`; }
+function iconPin()   { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`; }
+function iconMap()   { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`; }
+function iconCopy()  { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`; }
+function iconCheck() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`; }
+function iconGlobe() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`; }
+    </script>
+</body>
+</html>
