@@ -4,144 +4,137 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RELIER — Website Builder</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:#f8fafc;color:#1a202c;min-height:100vh}
+html,body{height:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#f5f5f3;color:#18181b;min-height:100vh;-webkit-font-smoothing:antialiased}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:inherit;border:none;background:none}
 input,textarea,select{font-family:inherit}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:#f1f5f9}
-::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
-
-/* ── LAYOUT ── */
-#app{min-height:100vh}
-.topbar{background:#fff;border-bottom:1px solid #e2e8f0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;box-shadow:0 1px 8px rgba(0,0,0,.05);position:sticky;top:0;z-index:100}
-.brand{display:flex;align-items:center;gap:.75rem}
-.brand-icon{width:36px;height:36px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1rem}
-.brand-name{font-weight:800;font-size:1rem;color:#1a202c;line-height:1}
-.brand-sub{font-size:.7rem;color:#94a3b8;font-weight:500}
-.page{padding:2.5rem 5%}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#d4d4d8;border-radius:2px}
 
 /* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.25rem;border-radius:8px;font-size:.875rem;font-weight:600;transition:all .15s;cursor:pointer;border:none}
-.btn-primary{background:linear-gradient(135deg,#1e3a8a,#1e40af);color:#fff;box-shadow:0 4px 14px rgba(30,64,175,.25)}
-.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
-.btn-secondary{background:#f1f5f9;color:#334155;border:1.5px solid #e2e8f0}
-.btn-secondary:hover{background:#e2e8f0}
-.btn-green{background:linear-gradient(135deg,#166534,#16a34a);color:#fff;box-shadow:0 4px 14px rgba(22,163,74,.25)}
-.btn-green:hover{opacity:.9}
-.btn-danger{background:#fff;color:#ef4444;border:1.5px solid #fecaca}
+.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.58rem 1rem;border-radius:5px;font-size:.82rem;font-weight:600;transition:background .12s,opacity .12s;cursor:pointer;border:none;line-height:1.2;white-space:nowrap}
+.btn-black{background:#09090b;color:#fafafa}
+.btn-black:hover{background:#27272a}
+.btn-black:disabled{background:#d4d4d8;color:#a1a1aa;cursor:not-allowed}
+.btn-outline{background:#fff;color:#18181b;border:1.5px solid #e4e4e7}
+.btn-outline:hover{background:#f4f4f5}
+.btn-green{background:#166534;color:#fff}
+.btn-green:hover{background:#15803d}
+.btn-ghost{background:transparent;color:#71717a;border:1.5px solid #e4e4e7}
+.btn-ghost:hover{background:#f4f4f5;color:#18181b}
+.btn-danger{background:transparent;color:#dc2626;border:1.5px solid #fecaca}
 .btn-danger:hover{background:#fef2f2}
-.btn-sm{padding:.45rem .9rem;font-size:.8rem}
+.btn-sm{padding:.38rem .75rem;font-size:.75rem}
 
-/* ── CARDS ── */
-.card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}
-.card:hover{box-shadow:0 8px 30px rgba(0,0,0,.1);transform:translateY(-3px)}
-
-/* ── GRID ── */
-.site-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;margin-top:1.5rem}
-
-/* ── FORM ── */
-.field{margin-bottom:1.25rem}
-.field label{display:block;font-size:.78rem;font-weight:700;color:#374151;margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.06em}
-.field .hint{font-size:.73rem;color:#9ca3af;margin-top:.3rem}
-.input{width:100%;padding:.75rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.95rem;color:#1a202c;outline:none;transition:border-color .2s;background:#fff}
-.input:focus{border-color:#1e40af}
-.input-sm{padding:.6rem .85rem;font-size:.875rem;border-radius:7px}
-textarea.input{resize:vertical;min-height:80px}
+/* ── INPUTS ── */
+.inp{width:100%;padding:.68rem .9rem;border:1.5px solid #e4e4e7;border-radius:5px;font-size:.88rem;color:#18181b;outline:none;transition:border-color .15s;background:#fff;line-height:1.4}
+.inp:focus{border-color:#18181b}
+.inp::placeholder{color:#a1a1aa}
+.inp-sm{padding:.52rem .8rem;font-size:.82rem}
+textarea.inp{resize:vertical;min-height:72px}
+select.inp{appearance:auto}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.68rem;font-weight:700;color:#52525b;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em}
+.field .hint{font-size:.7rem;color:#a1a1aa;margin-top:.28rem;line-height:1.4}
 
 /* ── TAGS ── */
-.tag{display:inline-flex;align-items:center;gap:.3rem;background:#dbeafe;color:#1e40af;padding:.3rem .75rem;border-radius:20px;font-size:.78rem;font-weight:600}
-.tag button{font-size:1rem;line-height:1;color:#1e40af;opacity:.7}
-.tag button:hover{opacity:1}
-
-/* ── PROGRESS ── */
-.wizard-progress{display:flex;gap:.5rem;max-width:560px;margin:0 auto 0}
-.step-dot{flex:1;text-align:center}
-.step-circle{width:36px;height:36px;border-radius:50%;margin:0 auto .3rem;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;transition:all .3s}
-.step-circle.done{background:#16a34a;color:#fff}
-.step-circle.active{background:#1e40af;color:#fff}
-.step-circle.todo{background:#f1f5f9;color:#94a3b8}
-.step-label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-.step-label.active{color:#1e40af}
-.step-label.done{color:#16a34a}
-.step-label.todo{color:#94a3b8}
-
-/* ── WIZARD CARD ── */
-.wizard-wrap{display:flex;justify-content:center;padding:2rem 5%;align-items:flex-start}
-.wizard-card{width:100%;max-width:560px;background:#fff;border-radius:16px;border:1px solid #e2e8f0;box-shadow:0 4px 24px rgba(0,0,0,.07);overflow:hidden}
-.wizard-head{background:linear-gradient(135deg,#1e3a8a,#1e40af);padding:1.75rem 2rem;color:#fff}
-.wizard-head .icon{font-size:28px;margin-bottom:.5rem}
-.wizard-head h2{font-size:1.25rem;font-weight:800}
-.wizard-head p{opacity:.8;font-size:.875rem;margin-top:.25rem}
-.wizard-body{padding:2rem}
-.wizard-nav{display:flex;gap:.75rem;margin-top:1.75rem}
-.wizard-nav .btn{flex:1;justify-content:center;padding:.875rem}
-
-/* ── COLOR THEMES ── */
-.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
-.color-opt{padding:.75rem;border-radius:9px;cursor:pointer;border:2px solid #e2e8f0;display:flex;align-items:center;gap:.6rem;transition:all .15s}
-.color-opt.selected{border-width:2.5px}
-.color-swatch{width:20px;height:20px;border-radius:5px;flex-shrink:0}
-.color-opt-name{font-size:.82rem;font-weight:700;color:#1a202c}
-.color-opt-desc{font-size:.72rem;color:#94a3b8}
-
-/* ── EDITOR ── */
-.editor-wrap{display:flex;height:calc(100vh - 64px);overflow:hidden}
-.editor-panel{width:310px;flex-shrink:0;background:#fff;border-right:1px solid #e2e8f0;overflow-y:auto}
-.editor-preview{flex:1;background:#e2e8f0;display:flex;flex-direction:column;overflow:hidden}
-.editor-section{border-bottom:1px solid #f1f5f9}
-.editor-section-toggle{width:100%;padding:.9rem 1.25rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;text-align:left;background:none;border:none;font-family:inherit}
-.editor-section-toggle span:first-child{font-size:.78rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.06em}
-.editor-section-toggle .chevron{color:#94a3b8;font-size:.8rem}
-.editor-section-body{padding:0 1.25rem 1.25rem}
-.browser-bar{background:#f1f5f9;border-bottom:1px solid #cbd5e1;padding:.5rem 1rem;display:flex;align-items:center;gap:.5rem;flex-shrink:0}
-.browser-dots{display:flex;gap:.35rem}
-.browser-dot{width:12px;height:12px;border-radius:50%}
-.browser-url{flex:1;background:#fff;border-radius:5px;padding:.25rem .75rem;font-size:.78rem;color:#94a3b8;font-weight:500}
-.preview-iframe{flex:1;border:none;width:100%}
-
-/* ── TOPBAR EDITOR ── */
-.editor-topbar{background:#fff;border-bottom:1px solid #e2e8f0;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;flex-shrink:0}
-.editor-topbar-left{display:flex;align-items:center;gap:.85rem}
-.editor-title{font-weight:700;font-size:.95rem;color:#1a202c}
-.sep{width:1px;height:20px;background:#e2e8f0}
-.saved-msg{font-size:.8rem;color:#16a34a;font-weight:600}
-
-/* ── SUMMARY ── */
-.summary-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1.25rem;margin-bottom:1.25rem}
-.summary-box h3{font-size:.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem}
-.summary-row{display:flex;gap:1rem;padding:.4rem 0;border-bottom:1px solid #f1f5f9;font-size:.875rem}
-.summary-row:last-child{border:none}
-.summary-label{color:#94a3b8;font-weight:500;min-width:110px;flex-shrink:0}
-.summary-value{color:#1a202c;font-weight:500}
+.tag{display:inline-flex;align-items:center;gap:.3rem;background:#f4f4f5;color:#18181b;border:1px solid #e4e4e7;padding:.22rem .6rem;border-radius:4px;font-size:.72rem;font-weight:500}
+.tag button{color:#a1a1aa;font-size:.9rem;line-height:1;padding:0 2px}
+.tag button:hover{color:#18181b}
 
 /* ── DASHBOARD ── */
-.db-stats{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem}
-.stat-pill{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:.85rem 1.25rem;display:flex;gap:.6rem;align-items:center}
-.stat-num{font-size:1.4rem;font-weight:800}
-.stat-lbl{font-size:.78rem;color:#94a3b8;font-weight:500}
-.db-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.db-head h1{font-size:1.35rem;font-weight:800;color:#1a202c}
-.empty-state{text-align:center;padding:4.5rem 2rem;background:#fff;border-radius:16px;border:2px dashed #e2e8f0}
-.empty-state .icon{font-size:52px;margin-bottom:1rem}
-.empty-state h2{font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
-.empty-state p{color:#94a3b8;margin-bottom:1.5rem}
-.site-card-header{height:90px;display:flex;align-items:center;justify-content:center;font-size:38px}
-.site-card-body{padding:1.25rem}
-.site-card-trade{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.25rem}
-.site-card-name{font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;line-height:1.3}
-.site-card-date{font-size:.75rem;color:#94a3b8;margin-bottom:1rem}
-.site-card-actions{display:flex;gap:.5rem}
+.dash-header{background:#09090b;padding:0 2.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.dash-wordmark{color:#fafafa;font-size:.95rem;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:.6rem}
+.dash-wordmark-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0}
+.dash-wordmark-sub{color:#52525b;font-size:.72rem;font-weight:400;letter-spacing:0}
+.dash-body{padding:2.25rem 2.5rem;max-width:1100px}
+.dash-section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:1px solid #e4e4e7}
+.dash-section-head h1{font-size:1.1rem;font-weight:700;color:#09090b;letter-spacing:-.3px}
+.dash-section-head span{font-size:.78rem;color:#a1a1aa}
+.empty{text-align:center;padding:4rem 2rem;border:1.5px dashed #e4e4e7;border-radius:8px;background:#fff}
+.empty-icon{font-size:2rem;margin-bottom:.75rem;opacity:.4}
+.empty h2{font-size:1rem;font-weight:700;color:#18181b;margin-bottom:.4rem}
+.empty p{font-size:.85rem;color:#71717a;margin-bottom:1.25rem}
+
+/* SITE LIST */
+.site-list{display:flex;flex-direction:column;gap:.6rem}
+.site-row{background:#fff;border:1.5px solid #e4e4e7;border-radius:7px;display:flex;align-items:center;gap:1.25rem;padding:.9rem 1.1rem;transition:border-color .15s,box-shadow .15s;position:relative;overflow:hidden}
+.site-row:hover{border-color:#d4d4d8;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.site-row-accent{width:4px;height:100%;position:absolute;left:0;top:0;border-radius:7px 0 0 7px}
+.site-row-info{flex:1;padding-left:.4rem}
+.site-row-trade{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#a1a1aa;margin-bottom:.15rem}
+.site-row-name{font-size:.95rem;font-weight:700;color:#09090b;margin-bottom:.18rem}
+.site-row-meta{font-size:.72rem;color:#a1a1aa}
+.site-row-actions{display:flex;gap:.4rem;flex-shrink:0}
+
+/* ── WIZARD ── */
+.wiz-wrap{display:flex;min-height:100vh}
+.wiz-left{width:340px;flex-shrink:0;background:#09090b;padding:2.5rem;display:flex;flex-direction:column;position:relative}
+.wiz-left-top{flex:1}
+.wiz-back{color:#52525b;font-size:.78rem;font-weight:500;display:inline-flex;align-items:center;gap:.35rem;margin-bottom:2.5rem;transition:color .15s}
+.wiz-back:hover{color:#a1a1aa;cursor:pointer}
+.wiz-step-counter{font-size:.68rem;font-weight:700;color:#52525b;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.6rem}
+.wiz-step-title{font-size:1.6rem;font-weight:800;color:#fafafa;line-height:1.2;letter-spacing:-.5px;margin-bottom:.75rem}
+.wiz-step-desc{font-size:.85rem;color:#71717a;line-height:1.6}
+.wiz-progress-wrap{margin-top:2.5rem}
+.wiz-progress-bar{height:2px;background:#27272a;border-radius:2px;overflow:hidden}
+.wiz-progress-fill{height:100%;background:#4ade80;border-radius:2px;transition:width .4s ease}
+.wiz-progress-label{font-size:.68rem;color:#52525b;margin-top:.5rem;font-weight:500}
+.wiz-right{flex:1;background:#fff;display:flex;flex-direction:column}
+.wiz-right-body{flex:1;padding:2.5rem 3rem;overflow-y:auto;max-width:520px}
+.wiz-right-body h2{font-size:1.1rem;font-weight:700;color:#09090b;margin-bottom:.3rem;letter-spacing:-.3px}
+.wiz-right-body .sub{font-size:.82rem;color:#71717a;margin-bottom:1.75rem}
+.wiz-right-footer{padding:1.25rem 3rem;border-top:1px solid #f4f4f5;display:flex;gap:.6rem;justify-content:flex-end;background:#fff}
+
+/* Color picker */
+.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:1rem}
+.color-opt{padding:.7rem .85rem;border-radius:6px;cursor:pointer;border:1.5px solid #e4e4e7;display:flex;align-items:center;gap:.65rem;transition:border-color .12s,background .12s}
+.color-opt:hover{border-color:#d4d4d8;background:#fafaf9}
+.color-opt.sel{border-width:2px}
+.color-swatch{width:18px;height:18px;border-radius:4px;flex-shrink:0}
+.color-name{font-size:.78rem;font-weight:600;color:#18181b}
+.color-desc{font-size:.68rem;color:#a1a1aa;margin-top:.1rem}
+.check-mark{margin-left:auto;font-size:.85rem;font-weight:700}
+
+/* Review */
+.review-table{border:1.5px solid #e4e4e7;border-radius:6px;overflow:hidden;margin-bottom:1.25rem}
+.review-row{display:flex;padding:.65rem .9rem;font-size:.82rem;border-bottom:1px solid #f4f4f5}
+.review-row:last-child{border-bottom:none}
+.review-row:nth-child(even){background:#fafaf9}
+.review-key{color:#71717a;font-weight:500;width:110px;flex-shrink:0}
+.review-val{color:#18181b;font-weight:500}
+
+/* ── EDITOR ── */
+.ed-wrap{display:flex;flex-direction:column;height:100vh}
+.ed-topbar{background:#09090b;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;flex-shrink:0;gap:1rem}
+.ed-topbar-left{display:flex;align-items:center;gap:.85rem}
+.ed-title{color:#fafafa;font-size:.88rem;font-weight:600;letter-spacing:-.2px}
+.ed-sep{width:1px;height:18px;background:#27272a}
+.ed-body{display:flex;flex:1;overflow:hidden}
+.ed-panel{width:280px;flex-shrink:0;background:#fafaf9;border-right:1px solid #e4e4e7;overflow-y:auto}
+.ed-section{border-bottom:1px solid #f0f0ee}
+.ed-sec-head{width:100%;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:none;border:none;font-family:inherit;text-align:left}
+.ed-sec-head span:first-child{font-size:.68rem;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.08em}
+.ed-sec-head .chev{color:#a1a1aa;font-size:.75rem}
+.ed-sec-body{padding:0 .9rem .9rem}
+.ed-preview{flex:1;background:#e9e9e6;display:flex;flex-direction:column;overflow:hidden}
+.ed-browser{background:#f0f0ee;border-bottom:1px solid #e4e4e7;padding:.45rem .9rem;display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.ed-dots{display:flex;gap:.3rem}
+.ed-dot{width:11px;height:11px;border-radius:50%}
+.ed-urlbar{flex:1;background:#fff;border-radius:4px;padding:.22rem .7rem;font-size:.72rem;color:#a1a1aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ed-iframe{flex:1;border:none;width:100%}
+.saved-badge{font-size:.75rem;color:#16a34a;font-weight:600;display:flex;align-items:center;gap:.25rem}
 </style>
 </head>
 <body>
 <div id="app"></div>
-
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
+// ─── DATA ────────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'relier_builder_v2';
 
 const TRADES = ['Plumber','Plumber / Heating','Electrician','Painter & Decorator',
@@ -177,15 +170,8 @@ const SERVICES_MAP = {
   'Gas / Heating':['Gas Boiler Service','Boiler Installation','Gas Leak Detection','Central Heating','Underfloor Heating','Annual Service'],
 };
 
-const TRADE_EMOJI = {
-  'Plumber':'🔧','Plumber / Heating':'🔥','Electrician':'⚡','Painter & Decorator':'🎨',
-  'Builder':'🏗️','Plasterer':'🪣','Roofer':'🏠','Carpenter':'🪚','Carpenter / Builder':'🪚',
-  'Handyman':'🔨','Handyman / Carpenter':'🔨','Gardener / Landscaper':'🌿',
-  'Power Washing':'💧','Power Washing / Garden Maintenance':'💧','Glazier':'🪟','Gas / Heating':'🔥',
-};
-
 const TRADE_COLOR = {
-  'Plumber':'#1e40af','Plumber / Heating':'#1e40af','Electrician':'#92400e',
+  'Plumber':'#1d4ed8','Plumber / Heating':'#b45309','Electrician':'#92400e',
   'Painter & Decorator':'#6d28d9','Builder':'#166534','Plasterer':'#0e7490',
   'Roofer':'#9a3412','Carpenter':'#7c2d12','Carpenter / Builder':'#7c2d12',
   'Handyman':'#374151','Handyman / Carpenter':'#374151','Gardener / Landscaper':'#166534',
@@ -195,490 +181,306 @@ const TRADE_COLOR = {
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let state = {
-  view: 'dashboard', // dashboard | create | edit
+  view: 'dashboard',
   sites: {},
   editId: null,
-  // wizard
   step: 0,
   form: emptyForm(),
-  openSections: {business:true, contact:true, content:true, services:false, theme:false},
+  openSections: {business:true,contact:true,content:true,services:false,theme:false},
   savedFlash: false,
 };
 
 function emptyForm() {
-  return {
-    businessName:'', ownerName:'', trade:'', yearsExperience:'',
-    area:'', phone:'', email:'',
-    certifications:'', services:[], tagline:'', extra:'',
-    colorTheme:'blue',
-  };
+  return {businessName:'',ownerName:'',trade:'',yearsExperience:'',area:'',phone:'',email:'',certifications:'',services:[],tagline:'',extra:'',colorTheme:'blue'};
 }
-
 function loadSites() {
-  try { state.sites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
-  catch { state.sites = {}; }
+  try { state.sites = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); } catch { state.sites={}; }
 }
+function saveSites() { localStorage.setItem(STORAGE_KEY,JSON.stringify(state.sites)); }
 
-function saveSites() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.sites));
-}
-
-// ─── ROUTER ──────────────────────────────────────────────────────────────────
-function go(view, opts={}) {
-  state.view = view;
-  if (view === 'create') { state.step = 0; state.form = emptyForm(); }
-  if (view === 'edit') { state.editId = opts.id; }
+function go(view,opts={}) {
+  state.view=view;
+  if(view==='create'){state.step=0;state.form=emptyForm();}
+  if(view==='edit'){state.editId=opts.id;}
   render();
 }
 
-// ─── GENERATE SITE HTML ──────────────────────────────────────────────────────
+// ─── HTML GENERATOR ──────────────────────────────────────────────────────────
 function getIcon(s) {
-  const icons = {
-    'Emergency':'🚨','Boiler':'🔥','Bathroom':'🛁','Leak':'💧','Drain':'🪠',
-    'Central Heating':'🌡️','Rewiring':'⚡','Fuse':'⚡','Socket':'🔌','CCTV':'📹',
-    'EV':'🚗','Lighting':'💡','Interior':'🖌️','Exterior':'🏠','Wallpaper':'🎨',
-    'Feature':'✨','Extension':'🏗️','Renovation':'🔨','Attic':'🏠','Garage':'🚗',
-    'Structural':'🏗️','Plastering':'🪣','Skim':'🪣','Dry Lining':'📐','Coving':'✨',
-    'Patch':'🔧','Rendering':'🪣','Roof Repair':'🏠','New Roof':'🏠','Flat Roof':'🏠',
-    'Chimney':'🏡','Guttering':'🌧️','Bespoke':'🪚','Wardrobe':'🪚','Kitchen':'🍳',
-    'Skirting':'📏','Flooring':'🪵','Staircase':'🪜','Furniture':'🛋️','TV':'📺',
-    'Shelving':'📚','Tiling':'🔲','Door':'🚪','Garden Design':'🌺','Lawn':'🌿',
-    'Decking':'🪵','Hedge':'🌳','Tree':'🌲','Clearance':'🧹','Driveway':'🧹',
-    'Patio':'🧹','Commercial Pressure':'💧','Graffiti':'🧽','Window':'🪟','Glass':'🪟',
-    'Double Glazing':'🪟','Shower':'🚿','Gas':'🔥','Underfloor':'🌡️','Annual':'📋',
-  };
-  for (const [k, v] of Object.entries(icons)) if (s.includes(k)) return v;
+  const icons={'Emergency':'🚨','Boiler':'🔥','Bathroom':'🛁','Leak':'💧','Drain':'🪠','Central Heating':'🌡️','Rewiring':'⚡','Fuse':'⚡','Socket':'🔌','CCTV':'📹','EV':'🚗','Lighting':'💡','Interior':'🖌️','Exterior':'🏠','Wallpaper':'🎨','Feature':'✨','Extension':'🏗️','Renovation':'🔨','Attic':'🏠','Garage':'🚗','Structural':'🏗️','Plastering':'🪣','Skim':'🪣','Dry Lining':'📐','Coving':'✨','Patch':'🔧','Rendering':'🪣','Roof Repair':'🏠','New Roof':'🏠','Flat Roof':'🏠','Chimney':'🏡','Guttering':'🌧️','Bespoke':'🪚','Wardrobe':'🪚','Kitchen':'🍳','Skirting':'📏','Flooring':'🪵','Staircase':'🪜','Furniture':'🛋️','TV':'📺','Shelving':'📚','Tiling':'🔲','Door':'🚪','Garden Design':'🌺','Lawn':'🌿','Decking':'🪵','Hedge':'🌳','Tree':'🌲','Clearance':'🧹','Driveway':'🧹','Patio':'🧹','Commercial Pressure':'💧','Graffiti':'🧽','Window':'🪟','Glass':'🪟','Double Glazing':'🪟','Shower':'🚿','Gas':'🔥','Underfloor':'🌡️','Annual':'📋'};
+  for(const[k,v]of Object.entries(icons))if(s.includes(k))return v;
   return '✅';
 }
 
 function generateHTML(d) {
-  const theme = THEMES[d.colorTheme || 'blue'];
-  const services = (d.services && d.services.length > 0)
-    ? d.services.slice(0,6)
-    : (SERVICES_MAP[d.trade] || SERVICES_MAP['Handyman']);
-
-  const certs = d.certifications
-    ? d.certifications.split(/[,\n]/).map(s=>s.trim()).filter(Boolean) : [];
-
-  const headline = d.tagline ||
-    `Trusted ${d.trade || 'Trade'} Services in ${d.area || 'Dublin'}`;
-
-  const phoneHref = (d.phone||'').replace(/\s/g,'');
-  const serviceCards = services.map(s => `
-    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;">
-      <div style="font-size:2rem;margin-bottom:.75rem;">${getIcon(s)}</div>
-      <h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">${s}</h3>
-      <p style="font-size:.85rem;color:#718096;line-height:1.5;">Professional ${s.toLowerCase()} service with quality workmanship and competitive pricing.</p>
-    </div>`).join('');
-
-  const certBadges = certs.map(c =>
-    `<span style="background:${theme.primary};color:#fff;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600;margin:.2rem;">${c}</span>`
-  ).join('');
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>${d.businessName} | ${d.trade} in ${d.area}</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;color:#1a202c;line-height:1.6}
-a{text-decoration:none;color:inherit}
-nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e2e8f0;padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;box-shadow:0 1px 8px rgba(0,0,0,.06)}
-.nav-brand{font-size:1.05rem;font-weight:800;color:${theme.dark};max-width:220px;line-height:1.2}
-.nav-links{display:flex;gap:2rem}
-.nav-links a{font-size:.875rem;font-weight:500;color:#4a5568}
-.nav-links a:hover{color:${theme.primary}}
-.nav-cta{background:${theme.primary};color:#fff!important;padding:.5rem 1.25rem;border-radius:6px;font-size:.85rem;font-weight:600}
-@media(max-width:640px){.nav-links{display:none}}
-</style>
-</head>
-<body>
-<nav>
-  <div class="nav-brand">${d.businessName}</div>
-  <div class="nav-links">
-    <a href="#services">Services</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </div>
-  ${d.phone ? `<a href="tel:${phoneHref}" class="nav-cta">📞 Call Now</a>` : '<a href="#contact" class="nav-cta">Get a Quote</a>'}
-</nav>
-
-<!-- HERO -->
-<section style="background:linear-gradient(135deg,${theme.dark} 0%,${theme.primary} 60%,${theme.mid} 100%);color:#fff;padding:90px 5% 80px;position:relative;overflow:hidden;">
-  <div style="position:absolute;right:-100px;top:-100px;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,.05);"></div>
-  <div style="max-width:700px;position:relative;z-index:1;">
-    <div style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .9rem;border-radius:20px;margin-bottom:1.2rem;">${d.trade} · ${d.area}</div>
-    <h1 style="font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:1rem;">${headline}</h1>
-    <p style="font-size:1.1rem;opacity:.9;margin-bottom:2rem;max-width:520px;">${d.ownerName ? d.ownerName + ' — ' : ''}${d.yearsExperience ? d.yearsExperience + ' years experience. ' : ''}Serving ${d.area} and surrounding areas.${d.extra ? ' ' + d.extra : ''}</p>
-    <div style="display:flex;flex-wrap:wrap;gap:.85rem;margin-bottom:2rem;">
-      ${d.phone ? `<a href="tel:${phoneHref}" style="background:#fff;color:${theme.dark};font-weight:700;padding:.85rem 1.75rem;border-radius:8px;font-size:.95rem;display:inline-flex;align-items:center;gap:.4rem;box-shadow:0 4px 14px rgba(0,0,0,.15);">📞 Call ${d.phone}</a>` : ''}
-      <a href="#contact" style="background:rgba(255,255,255,.12);color:#fff;font-weight:600;padding:.85rem 1.75rem;border-radius:8px;font-size:.95rem;border:2px solid rgba(255,255,255,.4);">Get a Free Quote →</a>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:.6rem;">
-      <span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ Fully Insured</span>
-      <span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ Free Quotes</span>
-      ${d.yearsExperience ? `<span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ ${d.yearsExperience} Years Experience</span>` : ''}
-      <span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ No Call-Out Charge</span>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICES -->
-<section id="services" style="padding:80px 5%;background:#fff;">
-  <div style="text-align:center;margin-bottom:3rem;">
-    <div style="display:inline-block;background:${theme.light};color:${theme.dark};font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:.85rem;">What We Do</div>
-    <h2 style="font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;letter-spacing:-.5px;color:#1a202c;">Our Services</h2>
-    <p style="color:#718096;margin-top:.5rem;font-size:1rem;max-width:480px;margin-left:auto;margin-right:auto;">Professional, reliable and fully insured across all services.</p>
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto;">
-    ${serviceCards}
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" style="padding:80px 5%;background:${theme.light};">
-  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
-    <div>
-      <div style="display:inline-block;background:${theme.primary};color:#fff;font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:1rem;">About Us</div>
-      <h2 style="font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;letter-spacing:-.5px;color:#1a202c;margin-bottom:1rem;">Why ${d.businessName}?</h2>
-      <p style="color:#4a5568;font-size:1rem;line-height:1.75;margin-bottom:1rem;">${d.ownerName ? d.ownerName + ' and the team at ' : ''}${d.businessName} ${d.yearsExperience ? 'have been serving ' + d.area + ' for over ' + d.yearsExperience + ' years' : 'are based in ' + d.area}. We're trusted by homeowners and businesses alike for quality workmanship and fair pricing.</p>
-      <p style="color:#4a5568;font-size:1rem;line-height:1.75;">Every job — big or small — gets the same level of care and attention to detail. We always leave the site clean and the customer happy.</p>
-      ${certBadges ? `<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.25rem;">${certBadges}</div>` : ''}
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
-      ${d.yearsExperience ? `<div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">${d.yearsExperience}</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Years Experience</span></div>` : `<div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:1.5rem;font-weight:900;color:${theme.primary};display:block;">★★★★★</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">5 Star Rated</span></div>`}
-      <div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">100%</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Satisfaction</span></div>
-      <div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">Free</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Quotes & Estimates</span></div>
-      <div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">24/7</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Emergency Callouts</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- WHY -->
-<section style="padding:80px 5%;background:#fff;">
-  <div style="text-align:center;">
-    <div style="display:inline-block;background:${theme.light};color:${theme.dark};font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:.85rem;">Why Choose Us</div>
-    <h2 style="font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;letter-spacing:-.5px;color:#1a202c;">The ${d.businessName} Promise</h2>
-  </div>
-  <div style="max-width:1000px;margin:2.5rem auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;">
-    <div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">⚡</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Fast Response</h3><p style="font-size:.875rem;color:#718096;">We get back to every enquiry the same day and can often attend the same week.</p></div>
-    <div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">💰</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Fair Pricing</h3><p style="font-size:.875rem;color:#718096;">No hidden charges. Clear, upfront quotes before any work starts.</p></div>
-    <div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">🛡️</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Fully Insured</h3><p style="font-size:.875rem;color:#718096;">Full public liability insurance on every job for your complete peace of mind.</p></div>
-    <div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">🏆</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Quality Work</h3><p style="font-size:.875rem;color:#718096;">We stand behind everything we do. If you're not happy, we'll make it right.</p></div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" style="padding:80px 5%;background:${theme.dark};color:#fff;">
-  <div style="text-align:center;margin-bottom:2.5rem;">
-    <div style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:.85rem;">Get In Touch</div>
-    <h2 style="font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;letter-spacing:-.5px;color:#fff;">Contact Us</h2>
-    <p style="color:rgba(255,255,255,.75);margin-top:.5rem;">Get a free, no-obligation quote today.</p>
-  </div>
-  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;">
-    <div>
-      <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">Reach Us Directly</h3>
-      ${d.phone ? `<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;font-size:1rem;"><a href="tel:${phoneHref}" style="color:rgba(255,255,255,.9);">📞 ${d.phone}</a></div>` : ''}
-      ${d.email ? `<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;font-size:1rem;"><a href="mailto:${d.email}" style="color:rgba(255,255,255,.9);">✉️ ${d.email}</a></div>` : ''}
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;font-size:1rem;color:rgba(255,255,255,.9);">📍 Serving ${d.area} and surrounding areas</div>
-      ${certBadges ? `<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.5rem;">${certBadges}</div>` : ''}
-    </div>
-    <form style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:2rem;" onsubmit="return false;">
-      <div style="margin-bottom:1rem;"><label style="display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em;">Your Name</label><input type="text" placeholder="John Murphy" style="width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.75rem 1rem;color:#fff;font-size:.95rem;font-family:inherit;outline:none;" /></div>
-      <div style="margin-bottom:1rem;"><label style="display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em;">Phone Number</label><input type="tel" placeholder="087 000 0000" style="width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.75rem 1rem;color:#fff;font-size:.95rem;font-family:inherit;outline:none;" /></div>
-      <div style="margin-bottom:1rem;"><label style="display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em;">What Do You Need?</label><textarea rows="3" placeholder="Describe the job..." style="width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.75rem 1rem;color:#fff;font-size:.95rem;font-family:inherit;outline:none;resize:vertical;"></textarea></div>
-      <button type="submit" style="background:#fff;color:${theme.dark};border:none;padding:.85rem 2rem;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;font-family:inherit;">Send Enquiry →</button>
-    </form>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer style="background:#0f172a;color:rgba(255,255,255,.6);padding:1.75rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;font-size:.85rem;">
-  <span style="color:#fff;font-weight:700;font-size:.95rem;">${d.businessName}</span>
-  <span>${d.trade} · ${d.area}</span>
-  ${d.phone ? `<a href="tel:${phoneHref}" style="color:rgba(255,255,255,.6);">${d.phone}</a>` : ''}
-</footer>
-</body>
-</html>`;
+  const theme=THEMES[d.colorTheme||'blue'];
+  const services=(d.services&&d.services.length>0)?d.services.slice(0,6):(SERVICES_MAP[d.trade]||SERVICES_MAP['Handyman']);
+  const certs=d.certifications?d.certifications.split(/[,\n]/).map(s=>s.trim()).filter(Boolean):[];
+  const headline=d.tagline||`Trusted ${d.trade||'Trade'} Services in ${d.area||'Dublin'}`;
+  const phoneHref=(d.phone||'').replace(/\s/g,'');
+  const serviceCards=services.map(s=>`<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">${getIcon(s)}</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">${s}</h3><p style="font-size:.85rem;color:#718096;line-height:1.5;">Professional ${s.toLowerCase()} service with quality workmanship and competitive pricing.</p></div>`).join('');
+  const certBadges=certs.map(c=>`<span style="background:${theme.primary};color:#fff;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600;margin:.2rem;">${c}</span>`).join('');
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${d.businessName} | ${d.trade} in ${d.area}</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',system-ui,sans-serif;color:#1a202c;line-height:1.6}a{text-decoration:none;color:inherit}nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e2e8f0;padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;box-shadow:0 1px 8px rgba(0,0,0,.06)}.nav-brand{font-size:1.05rem;font-weight:800;color:${theme.dark};max-width:220px;line-height:1.2}.nav-links{display:flex;gap:2rem}.nav-links a{font-size:.875rem;font-weight:500;color:#4a5568}.nav-links a:hover{color:${theme.primary}}.nav-cta{background:${theme.primary};color:#fff!important;padding:.5rem 1.25rem;border-radius:6px;font-size:.85rem;font-weight:600}@media(max-width:640px){.nav-links{display:none}}</style></head><body><nav><div class="nav-brand">${d.businessName}</div><div class="nav-links"><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a></div>${d.phone?`<a href="tel:${phoneHref}" class="nav-cta">📞 Call Now</a>`:'<a href="#contact" class="nav-cta">Get a Quote</a>'}</nav><section style="background:linear-gradient(135deg,${theme.dark} 0%,${theme.primary} 60%,${theme.mid} 100%);color:#fff;padding:90px 5% 80px;position:relative;overflow:hidden;"><div style="position:absolute;right:-100px;top:-100px;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,.05);"></div><div style="max-width:700px;position:relative;z-index:1;"><div style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .9rem;border-radius:20px;margin-bottom:1.2rem;">${d.trade} · ${d.area}</div><h1 style="font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:1rem;">${headline}</h1><p style="font-size:1.1rem;opacity:.9;margin-bottom:2rem;max-width:520px;">${d.ownerName?d.ownerName+' — ':''}${d.yearsExperience?d.yearsExperience+' years experience. ':''}Serving ${d.area} and surrounding areas.${d.extra?' '+d.extra:''}</p><div style="display:flex;flex-wrap:wrap;gap:.85rem;margin-bottom:2rem;">${d.phone?`<a href="tel:${phoneHref}" style="background:#fff;color:${theme.dark};font-weight:700;padding:.85rem 1.75rem;border-radius:8px;font-size:.95rem;display:inline-flex;align-items:center;gap:.4rem;box-shadow:0 4px 14px rgba(0,0,0,.15);">📞 Call ${d.phone}</a>`:''}<a href="#contact" style="background:rgba(255,255,255,.12);color:#fff;font-weight:600;padding:.85rem 1.75rem;border-radius:8px;font-size:.95rem;border:2px solid rgba(255,255,255,.4);">Get a Free Quote →</a></div><div style="display:flex;flex-wrap:wrap;gap:.6rem;"><span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ Fully Insured</span><span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ Free Quotes</span>${d.yearsExperience?`<span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ ${d.yearsExperience} Years Experience</span>`:''}<span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:500;">✓ No Call-Out Charge</span></div></div></section><section id="services" style="padding:80px 5%;background:#fff;"><div style="text-align:center;margin-bottom:3rem;"><div style="display:inline-block;background:${theme.light};color:${theme.dark};font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:.85rem;">What We Do</div><h2 style="font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;letter-spacing:-.5px;color:#1a202c;">Our Services</h2><p style="color:#718096;margin-top:.5rem;font-size:1rem;max-width:480px;margin-left:auto;margin-right:auto;">Professional, reliable and fully insured across all services.</p></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto;">${serviceCards}</div></section><section id="about" style="padding:80px 5%;background:${theme.light};"><div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;"><div><div style="display:inline-block;background:${theme.primary};color:#fff;font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:1rem;">About Us</div><h2 style="font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;letter-spacing:-.5px;color:#1a202c;margin-bottom:1rem;">Why ${d.businessName}?</h2><p style="color:#4a5568;font-size:1rem;line-height:1.75;margin-bottom:1rem;">${d.ownerName?d.ownerName+' and the team at ':''}${d.businessName} ${d.yearsExperience?'have been serving '+d.area+' for over '+d.yearsExperience+' years':'are based in '+d.area}. We're trusted by homeowners and businesses alike for quality workmanship and fair pricing.</p><p style="color:#4a5568;font-size:1rem;line-height:1.75;">Every job — big or small — gets the same level of care and attention to detail. We always leave the site clean and the customer happy.</p>${certBadges?`<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.25rem;">${certBadges}</div>`:''}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">${d.yearsExperience?`<div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">${d.yearsExperience}</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Years Experience</span></div>`:`<div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:1.5rem;font-weight:900;color:${theme.primary};display:block;">★★★★★</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">5 Star Rated</span></div>`}<div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">100%</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Satisfaction</span></div><div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">Free</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Quotes & Estimates</span></div><div style="background:#fff;border-radius:12px;padding:1.75rem 1.25rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><span style="font-size:2rem;font-weight:900;color:${theme.primary};display:block;letter-spacing:-1px;">24/7</span><span style="font-size:.78rem;color:#718096;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;display:block;">Emergency Callouts</span></div></div></div></section><section style="padding:80px 5%;background:#fff;"><div style="text-align:center;"><div style="display:inline-block;background:${theme.light};color:${theme.dark};font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:.85rem;">Why Choose Us</div><h2 style="font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;letter-spacing:-.5px;color:#1a202c;">The ${d.businessName} Promise</h2></div><div style="max-width:1000px;margin:2.5rem auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;"><div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">⚡</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Fast Response</h3><p style="font-size:.875rem;color:#718096;">We get back to every enquiry the same day.</p></div><div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">💰</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Fair Pricing</h3><p style="font-size:.875rem;color:#718096;">Clear, upfront quotes before any work starts.</p></div><div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">🛡️</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Fully Insured</h3><p style="font-size:.875rem;color:#718096;">Full public liability insurance on every job.</p></div><div style="text-align:center;"><div style="font-size:2rem;margin-bottom:.75rem;">🏆</div><h3 style="font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:.4rem;">Quality Work</h3><p style="font-size:.875rem;color:#718096;">We stand behind everything we do.</p></div></div></section><section id="contact" style="padding:80px 5%;background:${theme.dark};color:#fff;"><div style="text-align:center;margin-bottom:2.5rem;"><div style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:.85rem;">Get In Touch</div><h2 style="font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;letter-spacing:-.5px;color:#fff;">Contact Us</h2><p style="color:rgba(255,255,255,.75);margin-top:.5rem;">Get a free, no-obligation quote today.</p></div><div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;"><div><h3 style="font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">Reach Us Directly</h3>${d.phone?`<div style="margin-bottom:.85rem;font-size:1rem;"><a href="tel:${phoneHref}" style="color:rgba(255,255,255,.9);">📞 ${d.phone}</a></div>`:''}${d.email?`<div style="margin-bottom:.85rem;font-size:1rem;"><a href="mailto:${d.email}" style="color:rgba(255,255,255,.9);">✉️ ${d.email}</a></div>`:''}<div style="margin-bottom:.85rem;font-size:1rem;color:rgba(255,255,255,.9);">📍 Serving ${d.area} and surrounding areas</div>${certBadges?`<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.5rem;">${certBadges}</div>`:''}</div><form style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:2rem;" onsubmit="return false;"><div style="margin-bottom:1rem;"><label style="display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em;">Your Name</label><input type="text" placeholder="John Murphy" style="width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.75rem 1rem;color:#fff;font-size:.95rem;font-family:inherit;outline:none;"/></div><div style="margin-bottom:1rem;"><label style="display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em;">Phone Number</label><input type="tel" placeholder="087 000 0000" style="width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.75rem 1rem;color:#fff;font-size:.95rem;font-family:inherit;outline:none;"/></div><div style="margin-bottom:1rem;"><label style="display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em;">What Do You Need?</label><textarea rows="3" placeholder="Describe the job..." style="width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.75rem 1rem;color:#fff;font-size:.95rem;font-family:inherit;outline:none;resize:vertical;"></textarea></div><button type="submit" style="background:#fff;color:${theme.dark};border:none;padding:.85rem 2rem;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;font-family:inherit;">Send Enquiry →</button></form></div></section><footer style="background:#0f172a;color:rgba(255,255,255,.6);padding:1.75rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;font-size:.85rem;"><span style="color:#fff;font-weight:700;font-size:.95rem;">${d.businessName}</span><span>${d.trade} · ${d.area}</span>${d.phone?`<a href="tel:${phoneHref}" style="color:rgba(255,255,255,.6);">${d.phone}</a>`:''}</footer></body></html>`;
 }
 
-// ─── RENDER ENGINE ────────────────────────────────────────────────────────────
+// ─── RENDER ──────────────────────────────────────────────────────────────────
 function render() {
   const app = document.getElementById('app');
-  if (state.view === 'dashboard') app.innerHTML = renderDashboard();
-  else if (state.view === 'create') app.innerHTML = renderCreate();
-  else if (state.view === 'edit') app.innerHTML = renderEdit();
+  if(state.view==='dashboard') app.innerHTML = renderDashboard();
+  else if(state.view==='create') app.innerHTML = renderCreate();
+  else if(state.view==='edit') app.innerHTML = renderEdit();
   bindEvents();
 }
 
-// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
 function renderDashboard() {
-  const sites = Object.values(state.sites).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-  const siteCount = sites.length;
+  const sites = Object.values(state.sites).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
-  const cards = sites.map(s => {
-    const color = TRADE_COLOR[s.trade] || '#334155';
-    const emoji = TRADE_EMOJI[s.trade] || '🏢';
+  const rows = sites.map(s => {
+    const color = TRADE_COLOR[s.trade] || '#374151';
     const date = new Date(s.created_at).toLocaleDateString('en-IE',{day:'numeric',month:'short',year:'numeric'});
     return `
-      <div class="card" style="transition:all .2s;" onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,.12)'" onmouseleave="this.style.transform='none';this.style.boxShadow=''">
-        <div class="site-card-header" style="background:${color};">${emoji}</div>
-        <div class="site-card-body">
-          <div class="site-card-trade">${s.trade}</div>
-          <div class="site-card-name">${s.name}</div>
-          <div class="site-card-date">Created ${date}</div>
-          <div class="site-card-actions">
-            <button class="btn btn-primary btn-sm" onclick="previewSite('${s.id}')">👁 Preview</button>
-            <button class="btn btn-secondary btn-sm" onclick="editSite('${s.id}')">✏️ Edit</button>
-            <button class="btn btn-secondary btn-sm" onclick="exportSite('${s.id}')">⬇ Export</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteSite('${s.id}')">🗑</button>
-          </div>
-        </div>
-      </div>`;
+    <div class="site-row">
+      <div class="site-row-accent" style="background:${color};"></div>
+      <div class="site-row-info">
+        <div class="site-row-trade">${s.trade}</div>
+        <div class="site-row-name">${s.name}</div>
+        <div class="site-row-meta">Created ${date}</div>
+      </div>
+      <div class="site-row-actions">
+        <button class="btn btn-outline btn-sm" onclick="previewSite('${s.id}')">Preview</button>
+        <button class="btn btn-outline btn-sm" onclick="editSite('${s.id}')">Edit</button>
+        <button class="btn btn-outline btn-sm" onclick="exportSite('${s.id}')">Export</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSite('${s.id}')">Delete</button>
+      </div>
+    </div>`;
   }).join('');
 
   return `
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-icon">R</div>
-        <div><div class="brand-name">RELIER</div><div class="brand-sub">Website Builder</div></div>
-      </div>
-      <button class="btn btn-primary" onclick="go('create')">+ Create New Website</button>
+  <div class="dash-header">
+    <div class="dash-wordmark">
+      <div class="dash-wordmark-dot"></div>
+      RELIER Builder
+      <span class="dash-wordmark-sub">/ Southline Agency</span>
     </div>
-    <div class="page">
-      <div class="db-stats">
-        <div class="stat-pill"><div class="stat-num" style="color:#1e40af;">${siteCount}</div><div class="stat-lbl">Total Websites</div></div>
-        <div class="stat-pill"><div class="stat-num" style="color:#166534;">${siteCount}</div><div class="stat-lbl">Ready to Export</div></div>
-        <div class="stat-pill"><div class="stat-num" style="color:#6d28d9;font-size:1rem;">✓</div><div class="stat-lbl">Southline Agency</div></div>
-      </div>
-      <div class="db-head">
-        <h1>Your Websites</h1>
-        ${siteCount > 0 ? `<span style="font-size:.85rem;color:#94a3b8;">${siteCount} site${siteCount !== 1 ? 's' : ''}</span>` : ''}
-      </div>
-      ${siteCount === 0 ? `
-        <div class="empty-state">
-          <div class="icon">🏗️</div>
-          <h2>No websites yet</h2>
-          <p>Create your first tradesman website in under 2 minutes.</p>
-          <button class="btn btn-primary" onclick="go('create')">+ Create First Website</button>
-        </div>` : `<div class="site-grid">${cards}</div>`}
-    </div>`;
+    <button class="btn btn-black" onclick="go('create')">+ New Website</button>
+  </div>
+  <div class="dash-body">
+    <div class="dash-section-head">
+      <h1>Your Websites</h1>
+      <span>${sites.length} site${sites.length!==1?'s':''}</span>
+    </div>
+    ${sites.length===0 ? `
+    <div class="empty">
+      <div class="empty-icon">◻</div>
+      <h2>No websites yet</h2>
+      <p>Build a professional tradesman website in under 2 minutes.</p>
+      <button class="btn btn-black" onclick="go('create')">+ New Website</button>
+    </div>` : `<div class="site-list">${rows}</div>`}
+  </div>`;
 }
 
 // ─── WIZARD ──────────────────────────────────────────────────────────────────
 const STEPS = [
-  {id:'business', icon:'🏢', title:'Tell us about the business', sub:'Company name, trade type, and experience.'},
-  {id:'contact',  icon:'📞', title:'Contact details',            sub:'How can customers reach them?'},
-  {id:'services', icon:'🔧', title:'Services & credentials',     sub:'What do they offer? Any certifications?'},
-  {id:'design',   icon:'🎨', title:'Choose a design style',      sub:'Pick a colour theme that fits the brand.'},
-  {id:'review',   icon:'✨', title:'Ready to generate',          sub:"We'll build a professional website right now."},
+  {title:'Business info',      desc:'Company name, trade type and years of experience.'},
+  {title:'Contact details',    desc:'How can customers reach this business?'},
+  {title:'Services & creds',   desc:'What do they offer? Any certifications to show?'},
+  {title:'Design & colour',    desc:'Pick a colour theme that fits the brand.'},
+  {title:'Review & generate',  desc:"Everything looks good? Generate the site now."},
 ];
 
 function renderCreate() {
   const s = state.step;
   const f = state.form;
-
-  const progress = STEPS.map((step, i) => {
-    const cls = i < s ? 'done' : i === s ? 'active' : 'todo';
-    return `<div class="step-dot">
-      <div class="step-circle ${cls}">${i < s ? '✓' : step.icon}</div>
-      <div class="step-label ${cls}">${step.id}</div>
-    </div>`;
-  }).join('');
-
+  const pct = Math.round(((s) / (STEPS.length-1)) * 100);
   const canContinue = wizardCanContinue();
 
   let body = '';
 
-  if (s === 0) body = `
-    <div class="field"><label>Business Name *</label><input class="input" id="f-businessName" value="${esc(f.businessName)}" placeholder="e.g. Tyrrell Heating &amp; Plumbing"></div>
-    <div class="field"><label>Owner / Contact Name</label><input class="input" id="f-ownerName" value="${esc(f.ownerName)}" placeholder="e.g. John Tyrrell"><div class="hint">Optional — appears in the About section</div></div>
-    <div class="field"><label>Trade / Service *</label><select class="input" id="f-trade"><option value="">Select a trade...</option>${TRADES.map(t=>`<option value="${t}" ${f.trade===t?'selected':''}>${t}</option>`).join('')}</select></div>
-    <div class="field"><label>Years in Business</label><input class="input" id="f-yearsExperience" value="${esc(f.yearsExperience)}" placeholder="e.g. 15"><div class="hint">Adds credibility — optional</div></div>`;
+  if(s===0) body = `
+    <h2>Business info</h2>
+    <p class="sub">Start with the basics.</p>
+    <div class="field"><label>Business Name *</label><input class="inp" id="f-businessName" value="${esc(f.businessName)}" placeholder="e.g. Tyrrell Heating &amp; Plumbing"></div>
+    <div class="field"><label>Owner / Contact Name</label><input class="inp" id="f-ownerName" value="${esc(f.ownerName)}" placeholder="e.g. John Tyrrell"><div class="hint">Optional — used in the About section</div></div>
+    <div class="field"><label>Trade / Service *</label><select class="inp" id="f-trade"><option value="">Select a trade...</option>${TRADES.map(t=>`<option value="${t}" ${f.trade===t?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div class="field"><label>Years in Business</label><input class="inp" id="f-yearsExperience" value="${esc(f.yearsExperience)}" placeholder="e.g. 15"><div class="hint">Optional — adds credibility</div></div>`;
 
-  if (s === 1) body = `
-    <div class="field"><label>Area / Location Covered *</label><input class="input" id="f-area" value="${esc(f.area)}" placeholder="e.g. Dalkey, Co. Dublin"><div class="hint">e.g. Dalkey, South Dublin, Dun Laoghaire</div></div>
-    <div class="field"><label>Phone Number *</label><input class="input" id="f-phone" value="${esc(f.phone)}" placeholder="e.g. 087 708 5922"></div>
-    <div class="field"><label>Email Address</label><input class="input" id="f-email" value="${esc(f.email)}" placeholder="e.g. john@example.ie"></div>`;
+  if(s===1) body = `
+    <h2>Contact details</h2>
+    <p class="sub">How customers get in touch.</p>
+    <div class="field"><label>Area Covered *</label><input class="inp" id="f-area" value="${esc(f.area)}" placeholder="e.g. Dalkey, Co. Dublin"><div class="hint">e.g. Dalkey, South Dublin, Dun Laoghaire</div></div>
+    <div class="field"><label>Phone Number *</label><input class="inp" id="f-phone" value="${esc(f.phone)}" placeholder="e.g. 087 708 5922"></div>
+    <div class="field"><label>Email Address</label><input class="inp" id="f-email" value="${esc(f.email)}" placeholder="e.g. john@example.ie"></div>`;
 
-  if (s === 2) {
-    const tags = f.services.map(sv => `<span class="tag">${esc(sv)}<button onclick="removeService('${esc(sv)}')">×</button></span>`).join('');
+  if(s===2) {
+    const tags = f.services.map(sv=>`<span class="tag">${esc(sv)}<button onclick="removeService('${esc(sv)}')">×</button></span>`).join('');
     body = `
-    <div class="field"><label>Certifications / Registrations</label><input class="input" id="f-certifications" value="${esc(f.certifications)}" placeholder="e.g. RECI Registered, RGI Approved"><div class="hint">Comma-separated — shown as badges on the site</div></div>
-    <div class="field"><label>Specific Services</label>
-      <div style="display:flex;gap:.5rem;margin-bottom:.6rem;"><input class="input" id="new-service" placeholder="e.g. Emergency Boiler Repair" onkeydown="if(event.key==='Enter')addService()"><button class="btn btn-primary btn-sm" onclick="addService()">Add</button></div>
-      <div style="display:flex;flex-wrap:wrap;gap:.4rem;">${tags}</div>
-      <div class="hint">Leave blank to auto-generate services based on trade</div>
+    <h2>Services & credentials</h2>
+    <p class="sub">What they offer and any certifications.</p>
+    <div class="field"><label>Certifications</label><input class="inp" id="f-certifications" value="${esc(f.certifications)}" placeholder="e.g. RECI Registered, RGI Approved"><div class="hint">Comma-separated — shown as trust badges</div></div>
+    <div class="field"><label>Services <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#a1a1aa;font-size:.72rem;">(optional — auto-generated if left blank)</span></label>
+      <div style="display:flex;gap:.4rem;margin-bottom:.5rem;"><input class="inp" id="new-service" placeholder="e.g. Emergency Boiler Repair" onkeydown="if(event.key==='Enter')addService()"><button class="btn btn-black btn-sm" onclick="addService()">Add</button></div>
+      <div style="display:flex;flex-wrap:wrap;gap:.35rem;">${tags}</div>
     </div>
-    <div class="field"><label>Tagline / Headline</label><input class="input" id="f-tagline" value="${esc(f.tagline)}" placeholder="e.g. Reliable Plumbing in Dalkey Since 2005"></div>
-    <div class="field"><label>Anything else to highlight?</label><textarea class="input" id="f-extra" placeholder="e.g. Same-day service, family-run...">${esc(f.extra)}</textarea></div>`;
+    <div class="field"><label>Headline / Tagline</label><input class="inp" id="f-tagline" value="${esc(f.tagline)}" placeholder="e.g. Reliable Plumbing in Dalkey Since 2005"></div>
+    <div class="field"><label>Extra selling points</label><textarea class="inp" id="f-extra" placeholder="e.g. Same-day service, family-run business...">${esc(f.extra)}</textarea></div>`;
   }
 
-  if (s === 3) {
+  if(s===3) {
     const opts = Object.entries(THEMES).map(([id,t]) => `
-      <div class="color-opt ${f.colorTheme===id?'selected':''}" onclick="selectTheme('${id}')" style="${f.colorTheme===id?`border-color:${t.primary};background:${t.light};`:''}">
+      <div class="color-opt${f.colorTheme===id?' sel':''}" onclick="selectTheme('${id}')" style="${f.colorTheme===id?`border-color:${t.primary};background:${t.light};`:''}">
         <div class="color-swatch" style="background:${t.primary};"></div>
-        <div><div class="color-opt-name">${t.label}</div><div class="color-opt-desc">${t.desc}</div></div>
-        ${f.colorTheme===id?`<span style="margin-left:auto;color:${t.primary};font-weight:700;">✓</span>`:''}
+        <div><div class="color-name">${t.label}</div><div class="color-desc">${t.desc}</div></div>
+        ${f.colorTheme===id?`<span class="check-mark" style="color:${t.primary};">✓</span>`:''}
       </div>`).join('');
-    body = `<p style="font-size:.9rem;color:#64748b;margin-bottom:1.25rem;">Pick a colour theme for the website. You can change this later in the editor.</p><div class="color-grid">${opts}</div>`;
+    body = `
+    <h2>Design & colour</h2>
+    <p class="sub">Choose a colour theme. You can change this later.</p>
+    <div class="color-grid">${opts}</div>`;
   }
 
-  if (s === 4) {
-    const rows = [
-      ['Business', f.businessName], ['Trade', f.trade], ['Owner', f.ownerName || '—'],
-      ['Area', f.area], ['Phone', f.phone || '—'], ['Email', f.email || '—'],
-      ['Experience', f.yearsExperience ? f.yearsExperience + ' years' : '—'],
-      ['Certifications', f.certifications || 'None'],
-      ['Services', f.services.length > 0 ? f.services.join(', ') : 'Auto (from trade)'],
-      ['Colour Theme', THEMES[f.colorTheme]?.label || f.colorTheme],
-    ].map(([l,v]) => `<div class="summary-row"><span class="summary-label">${l}</span><span class="summary-value">${esc(v)}</span></div>`).join('');
+  if(s===4) {
+    const rows=[
+      ['Business',f.businessName],['Trade',f.trade],['Owner',f.ownerName||'—'],
+      ['Area',f.area],['Phone',f.phone||'—'],['Email',f.email||'—'],
+      ['Experience',f.yearsExperience?f.yearsExperience+' years':'—'],
+      ['Certifications',f.certifications||'None'],
+      ['Services',f.services.length>0?f.services.join(', '):'Auto (from trade)'],
+      ['Colour',THEMES[f.colorTheme]?.label||f.colorTheme],
+    ].map(([k,v])=>`<div class="review-row"><span class="review-key">${k}</span><span class="review-val">${esc(v)}</span></div>`).join('');
     body = `
-      <div class="summary-box"><h3>Summary</h3>${rows}</div>
-      <p style="font-size:.875rem;color:#64748b;text-align:center;">Your professional website will be generated instantly. You can edit everything after.</p>`;
+    <h2>Ready to generate</h2>
+    <p class="sub">Your website will be created instantly.</p>
+    <div class="review-table">${rows}</div>`;
   }
 
   return `
-    <div class="topbar">
-      <button class="btn btn-secondary btn-sm" onclick="go('dashboard')">← Back</button>
-      <div style="font-weight:800;font-size:1rem;color:#1e40af;">Create New Website</div>
-      <div style="font-size:.85rem;color:#94a3b8;">Step ${s+1} of ${STEPS.length}</div>
-    </div>
-    <div style="background:#fff;border-bottom:1px solid #f1f5f9;padding:1rem 5%;">
-      <div class="wizard-progress">${progress}</div>
-    </div>
-    <div class="wizard-wrap">
-      <div class="wizard-card">
-        <div class="wizard-head">
-          <div class="icon">${STEPS[s].icon}</div>
-          <h2>${STEPS[s].title}</h2>
-          <p>${STEPS[s].sub}</p>
-        </div>
-        <div class="wizard-body">
-          ${body}
-          <div class="wizard-nav">
-            ${s > 0 ? `<button class="btn btn-secondary" onclick="wizardBack()">← Back</button>` : ''}
-            ${s < STEPS.length - 1
-              ? `<button id="wizard-next-btn" class="btn ${canContinue?'btn-primary':'btn-secondary'}" ${canContinue?'':'disabled'} onclick="wizardNext()" style="${!canContinue?'cursor:not-allowed;opacity:.5;':''}">Continue →</button>`
-              : `<button class="btn btn-green" onclick="generateSiteNow()">✨ Generate Website</button>`}
-          </div>
-        </div>
+  <div class="wiz-wrap">
+    <div class="wiz-left">
+      <div class="wiz-left-top">
+        <div class="wiz-back" onclick="go('dashboard')">← Dashboard</div>
+        <div class="wiz-step-counter">Step 0${s+1} / 0${STEPS.length}</div>
+        <div class="wiz-step-title">${STEPS[s].title}</div>
+        <div class="wiz-step-desc">${STEPS[s].desc}</div>
       </div>
-    </div>`;
+      <div class="wiz-progress-wrap">
+        <div class="wiz-progress-bar"><div class="wiz-progress-fill" style="width:${pct}%;"></div></div>
+        <div class="wiz-progress-label">${pct}% complete</div>
+      </div>
+    </div>
+    <div class="wiz-right">
+      <div class="wiz-right-body">${body}</div>
+      <div class="wiz-right-footer">
+        ${s>0?`<button class="btn btn-ghost" onclick="wizardBack()">← Back</button>`:''}
+        ${s<STEPS.length-1
+          ?`<button id="wizard-next-btn" class="btn ${canContinue?'btn-black':'btn-outline'}" ${canContinue?'':'disabled style="cursor:not-allowed;opacity:.45;"'} onclick="wizardNext()">Continue →</button>`
+          :`<button class="btn btn-green" onclick="generateSiteNow()">Generate Website →</button>`}
+      </div>
+    </div>
+  </div>`;
 }
 
 // ─── EDITOR ──────────────────────────────────────────────────────────────────
 function renderEdit() {
   const site = state.sites[state.editId];
-  if (!site) return '';
+  if(!site) return '';
   const f = JSON.parse(site.data);
 
-  const sec = (id, title, open, content) => {
-    const isOpen = state.openSections[id] !== false;
-    return `
-      <div class="editor-section">
-        <button class="editor-section-toggle" onclick="toggleSection('${id}')">
-          <span>${title}</span><span class="chevron">${isOpen ? '▲' : '▼'}</span>
-        </button>
-        ${isOpen ? `<div class="editor-section-body">${content}</div>` : ''}
-      </div>`;
+  const sec = (id, title, content) => {
+    const open = state.openSections[id] !== false;
+    return `<div class="ed-section">
+      <button class="ed-sec-head" onclick="toggleSection('${id}')">
+        <span>${title}</span><span class="chev">${open?'▲':'▼'}</span>
+      </button>
+      ${open?`<div class="ed-sec-body">${content}</div>`:''}
+    </div>`;
   };
 
-  const fi = (label, key, placeholder='') =>
-    `<div class="field"><label>${label}</label><input class="input input-sm" data-key="${key}" value="${esc(f[key]||'')}" placeholder="${placeholder}"></div>`;
+  const fi = (label,key,ph='') =>
+    `<div class="field"><label>${label}</label><input class="inp inp-sm" data-key="${key}" value="${esc(f[key]||'')}" placeholder="${ph}"></div>`;
 
-  const servicesTags = (f.services||[]).map(sv =>
-    `<span class="tag" style="font-size:.75rem;">${esc(sv)}<button onclick="editRemoveService('${esc(sv)}')">×</button></span>`
+  const tags = (f.services||[]).map(sv=>
+    `<span class="tag">${esc(sv)}<button onclick="editRemoveService('${esc(sv)}')">×</button></span>`
   ).join('');
 
-  const themeOpts = Object.entries(THEMES).map(([id,t]) => `
-    <div class="color-opt ${f.colorTheme===id?'selected':''}" onclick="editSelectTheme('${id}')" style="padding:.5rem .65rem;${f.colorTheme===id?`border-color:${t.primary};background:${t.light};`:''}">
-      <div class="color-swatch" style="background:${t.primary};width:16px;height:16px;border-radius:4px;"></div>
-      <span style="font-size:.75rem;font-weight:600;color:#374151;">${t.label}</span>
+  const themeOpts = Object.entries(THEMES).map(([id,t])=>`
+    <div class="color-opt${f.colorTheme===id?' sel':''}" onclick="editSelectTheme('${id}')" style="padding:.5rem .7rem;${f.colorTheme===id?`border-color:${t.primary};background:${t.light};`:''}">
+      <div class="color-swatch" style="background:${t.primary};width:14px;height:14px;border-radius:3px;flex-shrink:0;"></div>
+      <div class="color-name" style="font-size:.73rem;">${t.label}</div>
+      ${f.colorTheme===id?`<span class="check-mark" style="color:${t.primary};font-size:.75rem;margin-left:auto;">✓</span>`:''}
     </div>`).join('');
 
-  const businessSec = fi('Business Name','businessName','Company name') +
-    fi('Owner Name','ownerName','e.g. John Tyrrell') +
-    `<div class="field"><label>Trade</label><select class="input input-sm" data-key="trade">${TRADES.map(t=>`<option value="${t}" ${f.trade===t?'selected':''}>${t}</option>`).join('')}</select></div>` +
+  const bizSec = fi('Business Name','businessName') + fi('Owner Name','ownerName') +
+    `<div class="field"><label>Trade</label><select class="inp inp-sm" data-key="trade">${TRADES.map(t=>`<option value="${t}" ${f.trade===t?'selected':''}>${t}</option>`).join('')}</select></div>` +
     fi('Years Experience','yearsExperience','e.g. 15');
 
-  const contactSec = fi('Area Covered','area','e.g. Dalkey, Co. Dublin') +
-    fi('Phone','phone','087 000 0000') +
-    fi('Email','email','hello@example.ie');
+  const contactSec = fi('Area Covered','area') + fi('Phone','phone','087 000 0000') + fi('Email','email');
 
-  const contentSec = `<div class="field"><label>Tagline</label><textarea class="input input-sm" data-key="tagline" rows="2" placeholder="e.g. Trusted Plumbing Since 2005">${esc(f.tagline||'')}</textarea></div>` +
+  const contentSec =
+    `<div class="field"><label>Tagline</label><textarea class="inp inp-sm" data-key="tagline" rows="2" placeholder="Trusted Plumbing Since 2005">${esc(f.tagline||'')}</textarea></div>` +
     fi('Certifications','certifications','RECI, RGI, Gas Safe...') +
-    `<div class="field"><label>Extra Info</label><textarea class="input input-sm" data-key="extra" rows="2" placeholder="Same-day service...">${esc(f.extra||'')}</textarea></div>`;
+    `<div class="field"><label>Extra Info</label><textarea class="inp inp-sm" data-key="extra" rows="2" placeholder="Same-day service...">${esc(f.extra||'')}</textarea></div>`;
 
   const servicesSec = `
-    <div style="display:flex;gap:.4rem;margin-bottom:.6rem;">
-      <input class="input input-sm" id="edit-new-service" placeholder="Add a service..." onkeydown="if(event.key==='Enter')editAddService()" style="flex:1;">
-      <button class="btn btn-primary btn-sm" onclick="editAddService()">+</button>
+    <div style="display:flex;gap:.4rem;margin-bottom:.5rem;">
+      <input class="inp inp-sm" id="edit-new-service" placeholder="Add a service..." onkeydown="if(event.key==='Enter')editAddService()" style="flex:1;">
+      <button class="btn btn-black btn-sm" onclick="editAddService()">+</button>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:.35rem;">${servicesTags}</div>
-    <div class="hint" style="margin-top:.4rem;">Leave empty to auto-generate from trade type</div>`;
-
-  const themeSec = `<div class="color-grid">${themeOpts}</div>`;
+    <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.35rem;">${tags}</div>
+    <div class="hint">Empty = auto-generated from trade</div>`;
 
   return `
-    <div id="editor-root">
-      <div class="editor-topbar">
-        <div class="editor-topbar-left">
-          <button class="btn btn-secondary btn-sm" onclick="go('dashboard')">← Dashboard</button>
-          <div class="sep"></div>
-          <div class="editor-title">${esc(f.businessName || 'Untitled')}</div>
-        </div>
-        <div style="display:flex;gap:.6rem;align-items:center;">
-          ${state.savedFlash ? '<span class="saved-msg">✓ Saved</span>' : ''}
-          <button class="btn btn-secondary btn-sm" onclick="exportSite('${site.id}')">⬇ Export HTML</button>
-          <button class="btn btn-green btn-sm" onclick="saveSite()">💾 Save</button>
-        </div>
+  <div class="ed-wrap">
+    <div class="ed-topbar">
+      <div class="ed-topbar-left">
+        <button class="btn btn-ghost btn-sm" onclick="go('dashboard')" style="color:#a1a1aa;border-color:#27272a;">← Dashboard</button>
+        <div class="ed-sep"></div>
+        <div class="ed-title">${esc(f.businessName||'Untitled')}</div>
       </div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          ${sec('business','Business Info',true,businessSec)}
-          ${sec('contact','Contact',true,contactSec)}
-          ${sec('content','Content',true,contentSec)}
-          ${sec('services','Services',false,servicesSec)}
-          ${sec('theme','Colour Theme',false,themeSec)}
-        </div>
-        <div class="editor-preview">
-          <div class="browser-bar">
-            <div class="browser-dots">
-              <div class="browser-dot" style="background:#ef4444;"></div>
-              <div class="browser-dot" style="background:#f59e0b;"></div>
-              <div class="browser-dot" style="background:#22c55e;"></div>
-            </div>
-            <div class="browser-url">Live Preview · ${esc(f.businessName || '')}</div>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        ${state.savedFlash?'<span class="saved-badge">✓ Saved</span>':''}
+        <button class="btn btn-ghost btn-sm" onclick="exportSite('${site.id}')" style="color:#a1a1aa;border-color:#27272a;">Export HTML</button>
+        <button class="btn btn-green btn-sm" onclick="saveSite()">Save</button>
+      </div>
+    </div>
+    <div class="ed-body">
+      <div class="ed-panel">
+        ${sec('business','Business',bizSec)}
+        ${sec('contact','Contact',contactSec)}
+        ${sec('content','Content',contentSec)}
+        ${sec('services','Services',servicesSec)}
+        ${sec('theme','Colour Theme',`<div class="color-grid" style="grid-template-columns:1fr 1fr;">${themeOpts}</div>`)}
+      </div>
+      <div class="ed-preview">
+        <div class="ed-browser">
+          <div class="ed-dots">
+            <div class="ed-dot" style="background:#ef4444;"></div>
+            <div class="ed-dot" style="background:#f59e0b;"></div>
+            <div class="ed-dot" style="background:#22c55e;"></div>
           </div>
-          <iframe class="preview-iframe" id="preview-frame" srcdoc="${escAttr(site.html)}"></iframe>
+          <div class="ed-urlbar">${esc(f.businessName||'Preview')} — Live Preview</div>
         </div>
+        <iframe class="ed-iframe" id="preview-frame" srcdoc="${escAttr(site.html)}"></iframe>
       </div>
-    </div>`;
+    </div>
+  </div>`;
 }
 
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
 function bindEvents() {
-  // Wizard input sync
   document.querySelectorAll('[id^="f-"]').forEach(el => {
     const handler = () => {
-      const key = el.id.slice(2);
-      state.form[key] = el.value;
+      state.form[el.id.slice(2)] = el.value;
       refreshWizardNav();
     };
     el.addEventListener('input', handler);
     el.addEventListener('change', handler);
   });
-
-  // Editor input sync + live preview
   document.querySelectorAll('[data-key]').forEach(el => {
     el.addEventListener('input', () => {
       const key = el.getAttribute('data-key');
       const site = state.sites[state.editId];
-      if (!site) return;
+      if(!site) return;
       const d = JSON.parse(site.data);
       d[key] = el.value;
       site.data = JSON.stringify(d);
@@ -688,147 +490,115 @@ function bindEvents() {
   });
 }
 
-// Debounced preview update
 let previewTimer = null;
 function updatePreviewDebounced() {
   clearTimeout(previewTimer);
   previewTimer = setTimeout(() => {
     const frame = document.getElementById('preview-frame');
-    if (frame) {
-      const site = state.sites[state.editId];
-      if (site) frame.srcdoc = site.html;
-    }
+    if(frame){ const site=state.sites[state.editId]; if(site) frame.srcdoc=site.html; }
   }, 500);
 }
 
-// ─── ACTIONS ──────────────────────────────────────────────────────────────────
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
 function wizardCanContinue() {
-  const f = state.form, s = state.step;
-  if (s === 0) return !!(f.businessName.trim() && f.trade);
-  if (s === 1) return !!(f.area.trim() && (f.phone.trim() || f.email.trim()));
+  const f=state.form, s=state.step;
+  if(s===0) return !!(f.businessName.trim()&&f.trade);
+  if(s===1) return !!(f.area.trim()&&(f.phone.trim()||f.email.trim()));
   return true;
 }
-
 function refreshWizardNav() {
-  const btn = document.getElementById('wizard-next-btn');
-  if (!btn) return;
-  const ok = wizardCanContinue();
-  btn.disabled = !ok;
-  btn.className = 'btn ' + (ok ? 'btn-primary' : 'btn-secondary');
-  btn.style.cssText = ok ? '' : 'cursor:not-allowed;opacity:.5;';
+  const btn=document.getElementById('wizard-next-btn');
+  if(!btn) return;
+  const ok=wizardCanContinue();
+  btn.disabled=!ok;
+  btn.className='btn '+(ok?'btn-black':'btn-outline');
+  btn.style.cssText=ok?'':'cursor:not-allowed;opacity:.45;';
 }
-
 function wizardNext() {
-  if (!wizardCanContinue()) return;
-  if (state.step < STEPS.length - 1) { state.step++; render(); }
+  if(!wizardCanContinue()) return;
+  if(state.step<STEPS.length-1){state.step++;render();}
 }
-function wizardBack() {
-  if (state.step > 0) { state.step--; render(); }
-}
-function selectTheme(id) { state.form.colorTheme = id; render(); }
+function wizardBack() { if(state.step>0){state.step--;render();} }
+function selectTheme(id) { state.form.colorTheme=id; render(); }
 function addService() {
-  const el = document.getElementById('new-service');
-  if (!el) return;
-  const v = el.value.trim();
-  if (v && !state.form.services.includes(v)) { state.form.services.push(v); render(); }
+  const el=document.getElementById('new-service');
+  if(!el) return;
+  const v=el.value.trim();
+  if(v&&!state.form.services.includes(v)){state.form.services.push(v);render();}
 }
-function removeService(sv) {
-  state.form.services = state.form.services.filter(s => s !== sv); render();
-}
-
+function removeService(sv) { state.form.services=state.form.services.filter(s=>s!==sv); render(); }
 function generateSiteNow() {
-  const id = 'site_' + Date.now();
-  const html = generateHTML(state.form);
-  state.sites[id] = {
-    id, name: state.form.businessName || 'Untitled',
-    trade: state.form.trade, data: JSON.stringify(state.form), html,
-    created_at: new Date().toISOString(),
-  };
+  const id='site_'+Date.now();
+  const html=generateHTML(state.form);
+  state.sites[id]={id,name:state.form.businessName||'Untitled',trade:state.form.trade,data:JSON.stringify(state.form),html,created_at:new Date().toISOString()};
   saveSites();
-  state.editId = id;
+  state.editId=id;
   go('edit');
 }
-
-function editSite(id) { go('edit', {id}); }
+function editSite(id) { go('edit',{id}); }
 function previewSite(id) {
-  const site = state.sites[id];
-  if (!site) return;
-  const w = window.open('', '_blank');
+  const site=state.sites[id];
+  if(!site) return;
+  const w=window.open('','_blank');
   w.document.write(site.html);
   w.document.close();
 }
 function exportSite(id) {
-  const site = state.sites[id];
-  if (!site) return;
-  const blob = new Blob([site.html], {type:'text/html'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = (site.name || 'website').replace(/\s+/g,'-').toLowerCase() + '.html';
+  const site=state.sites[id];
+  if(!site) return;
+  const blob=new Blob([site.html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(site.name||'website').replace(/\s+/g,'-').toLowerCase()+'.html';
   a.click();
 }
 function deleteSite(id) {
-  if (!confirm('Delete this website?')) return;
+  if(!confirm('Delete this website?')) return;
   delete state.sites[id];
   saveSites();
   render();
 }
-
-function toggleSection(id) {
-  state.openSections[id] = !state.openSections[id];
-  render();
-}
+function toggleSection(id) { state.openSections[id]=!state.openSections[id]; render(); }
 function editSelectTheme(id) {
-  const site = state.sites[state.editId];
-  if (!site) return;
-  const d = JSON.parse(site.data);
-  d.colorTheme = id;
-  site.data = JSON.stringify(d);
-  site.html = generateHTML(d);
+  const site=state.sites[state.editId];
+  if(!site) return;
+  const d=JSON.parse(site.data);
+  d.colorTheme=id;
+  site.data=JSON.stringify(d);
+  site.html=generateHTML(d);
   render();
 }
 function editAddService() {
-  const el = document.getElementById('edit-new-service');
-  if (!el) return;
-  const v = el.value.trim();
-  if (!v) return;
-  const site = state.sites[state.editId];
-  if (!site) return;
-  const d = JSON.parse(site.data);
-  if (!d.services.includes(v)) {
-    d.services.push(v);
-    site.data = JSON.stringify(d);
-    site.html = generateHTML(d);
-    render();
-  }
+  const el=document.getElementById('edit-new-service');
+  if(!el) return;
+  const v=el.value.trim();
+  if(!v) return;
+  const site=state.sites[state.editId];
+  if(!site) return;
+  const d=JSON.parse(site.data);
+  if(!d.services.includes(v)){d.services.push(v);site.data=JSON.stringify(d);site.html=generateHTML(d);render();}
 }
 function editRemoveService(sv) {
-  const site = state.sites[state.editId];
-  if (!site) return;
-  const d = JSON.parse(site.data);
-  d.services = d.services.filter(s => s !== sv);
-  site.data = JSON.stringify(d);
-  site.html = generateHTML(d);
+  const site=state.sites[state.editId];
+  if(!site) return;
+  const d=JSON.parse(site.data);
+  d.services=d.services.filter(s=>s!==sv);
+  site.data=JSON.stringify(d);
+  site.html=generateHTML(d);
   render();
 }
 function saveSite() {
-  const site = state.sites[state.editId];
-  if (!site) return;
-  site.updated_at = new Date().toISOString();
+  const site=state.sites[state.editId];
+  if(!site) return;
+  site.updated_at=new Date().toISOString();
   saveSites();
-  state.savedFlash = true;
+  state.savedFlash=true;
   render();
-  setTimeout(() => { state.savedFlash = false; render(); }, 2500);
+  setTimeout(()=>{state.savedFlash=false;render();},2500);
 }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
 
-// ─── UTILS ───────────────────────────────────────────────────────────────────
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function escAttr(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-}
-
-// ─── BOOT ─────────────────────────────────────────────────────────────────────
 loadSites();
 render();
 </script>
