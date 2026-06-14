@@ -489,9 +489,7 @@ function renderCreate() {
     </div>`;
   }).join('');
 
-  const canContinue = s === 0 ? (f.businessName.trim() && f.trade)
-    : s === 1 ? (f.area.trim() && (f.phone.trim() || f.email.trim()))
-    : true;
+  const canContinue = wizardCanContinue();
 
   let body = '';
 
@@ -564,7 +562,7 @@ function renderCreate() {
           <div class="wizard-nav">
             ${s > 0 ? `<button class="btn btn-secondary" onclick="wizardBack()">← Back</button>` : ''}
             ${s < STEPS.length - 1
-              ? `<button class="btn ${canContinue?'btn-primary':'btn-secondary'}" ${canContinue?'':'disabled'} onclick="wizardNext()" style="${!canContinue?'cursor:not-allowed;opacity:.5;':''}">Continue →</button>`
+              ? `<button id="wizard-next-btn" class="btn ${canContinue?'btn-primary':'btn-secondary'}" ${canContinue?'':'disabled'} onclick="wizardNext()" style="${!canContinue?'cursor:not-allowed;opacity:.5;':''}">Continue →</button>`
               : `<button class="btn btn-green" onclick="generateSiteNow()">✨ Generate Website</button>`}
           </div>
         </div>
@@ -666,10 +664,13 @@ function renderEdit() {
 function bindEvents() {
   // Wizard input sync
   document.querySelectorAll('[id^="f-"]').forEach(el => {
-    el.addEventListener('input', () => {
+    const handler = () => {
       const key = el.id.slice(2);
       state.form[key] = el.value;
-    });
+      refreshWizardNav();
+    };
+    el.addEventListener('input', handler);
+    el.addEventListener('change', handler);
   });
 
   // Editor input sync + live preview
@@ -701,7 +702,24 @@ function updatePreviewDebounced() {
 }
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
+function wizardCanContinue() {
+  const f = state.form, s = state.step;
+  if (s === 0) return !!(f.businessName.trim() && f.trade);
+  if (s === 1) return !!(f.area.trim() && (f.phone.trim() || f.email.trim()));
+  return true;
+}
+
+function refreshWizardNav() {
+  const btn = document.getElementById('wizard-next-btn');
+  if (!btn) return;
+  const ok = wizardCanContinue();
+  btn.disabled = !ok;
+  btn.className = 'btn ' + (ok ? 'btn-primary' : 'btn-secondary');
+  btn.style.cssText = ok ? '' : 'cursor:not-allowed;opacity:.5;';
+}
+
 function wizardNext() {
+  if (!wizardCanContinue()) return;
   if (state.step < STEPS.length - 1) { state.step++; render(); }
 }
 function wizardBack() {
