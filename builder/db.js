@@ -1,41 +1,63 @@
-const Database = require('better-sqlite3');
+const fs = require('fs');
 const path = require('path');
 
-const db = new Database(path.join(__dirname, 'sites.db'));
+const DB_FILE = path.join(__dirname, 'sites.json');
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS sites (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    trade TEXT,
-    data TEXT,
-    html TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+function read() {
+  try {
+    return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+function write(data) {
+  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+}
 
 module.exports = {
-  getAll: () =>
-    db.prepare('SELECT id, name, trade, created_at, updated_at FROM sites ORDER BY created_at DESC').all(),
+  getAll: () => {
+    const db = read();
+    return Object.values(db)
+      .map(({ id, name, trade, created_at, updated_at }) => ({ id, name, trade, created_at, updated_at }))
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
 
-  get: (id) =>
-    db.prepare('SELECT * FROM sites WHERE id = ?').get(id),
+  get: (id) => read()[id] || null,
 
   create: ({ id, data, html }) => {
     const d = JSON.parse(data);
-    db.prepare(
-      'INSERT INTO sites (id, name, trade, data, html) VALUES (?, ?, ?, ?, ?)'
-    ).run(id, d.businessName || 'Untitled', d.trade || '', data, html);
+    const db = read();
+    db[id] = {
+      id,
+      name: d.businessName || 'Untitled',
+      trade: d.trade || '',
+      data,
+      html,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    write(db);
   },
 
   update: (id, data, html) => {
     const d = JSON.parse(data);
-    db.prepare(
-      'UPDATE sites SET name=?, trade=?, data=?, html=?, updated_at=CURRENT_TIMESTAMP WHERE id=?'
-    ).run(d.businessName || 'Untitled', d.trade || '', data, html, id);
+    const db = read();
+    if (!db[id]) return;
+    db[id] = {
+      ...db[id],
+      name: d.businessName || 'Untitled',
+      trade: d.trade || '',
+      data,
+      html,
+      updated_at: new Date().toISOString(),
+    };
+    write(db);
   },
 
-  delete: (id) =>
-    db.prepare('DELETE FROM sites WHERE id = ?').run(id),
+  delete: (id) => {
+    const db = read();
+    delete db[id];
+    write(db);
+  },
 };

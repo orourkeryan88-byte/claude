@@ -3,3 +3,4 @@ client/node_modules/
 *.db
 *.db-shm
 *.db-wal
+sites.json
