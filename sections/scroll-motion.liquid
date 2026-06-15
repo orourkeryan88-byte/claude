@@ -1,0 +1,506 @@
+<!-- ============================================================
+     SCROLL MOTION
+     Apple-style scroll-driven stop motion.
+     Outer container is tall (frames × scroll_per_frame vh).
+     Inner panel is sticky — JS swaps frames as you scroll.
+     ============================================================ -->
+{%- liquid
+  assign frame_count = section.blocks | where: 'type', 'frame' | size
+  if frame_count == 0
+    assign frame_count = 1
+  endif
+  assign scroll_vh = section.settings.scroll_per_frame
+  assign total_vh  = frame_count | times: scroll_vh
+-%}
+
+<div
+  class="sm-outer"
+  style="height:{{ total_vh }}vh;"
+  data-scroll-motion
+  data-frame-count="{{ frame_count }}"
+>
+  <div class="sm-sticky">
+
+    <!-- Frames -->
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'frame' -%}
+        <div
+          class="sm-frame{% if forloop.first %} sm-frame--active{% endif %}"
+          data-frame="{{ forloop.index0 }}"
+          {{ block.shopify_attributes }}
+        >
+          {%- if block.settings.image != blank -%}
+            <img
+              class="sm-frame-img"
+              src="{{ block.settings.image | image_url: width: 1920 }}"
+              srcset="{{ block.settings.image | image_url: width: 900 }} 900w,
+                      {{ block.settings.image | image_url: width: 1400 }} 1400w,
+                      {{ block.settings.image | image_url: width: 1920 }} 1920w"
+              sizes="100vw"
+              alt="{{ block.settings.image.alt | default: block.settings.heading }}"
+              loading="{{ forloop.first | iif: 'eager', 'lazy' }}"
+            >
+          {%- else -%}
+            <div class="sm-frame-placeholder" style="background:{{ section.settings.bg_color }};"></div>
+          {%- endif -%}
+
+          <!-- Per-frame text -->
+          {%- if block.settings.heading != blank or block.settings.subheading != blank -%}
+            <div class="sm-frame-text">
+              {%- if block.settings.label != blank -%}
+                <p class="sm-label" style="color:{{ section.settings.label_color }};">
+                  {{ block.settings.label }}
+                </p>
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                <h2 class="sm-heading" style="color:{{ section.settings.heading_color }};">
+                  {{ block.settings.heading }}
+                </h2>
+              {%- endif -%}
+              {%- if block.settings.subheading != blank -%}
+                <p class="sm-sub" style="color:{{ section.settings.sub_color }};">
+                  {{ block.settings.subheading }}
+                </p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <!-- Fallback if no blocks -->
+    {%- if section.blocks.size == 0 -%}
+      <div class="sm-frame sm-frame--active" data-frame="0">
+        <div class="sm-frame-placeholder"></div>
+      </div>
+    {%- endif -%}
+
+    <!-- Dark overlay -->
+    <div class="sm-overlay" style="background:{{ section.settings.overlay_color }};opacity:{{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+
+    <!-- Frame counter -->
+    {%- if section.settings.show_counter and frame_count > 1 -%}
+      <div class="sm-counter" style="color:{{ section.settings.label_color }};">
+        <span class="sm-counter-current">01</span>
+        <span class="sm-counter-sep">/</span>
+        <span class="sm-counter-total">{{ frame_count | prepend: '0' | slice: -2, 2 }}</span>
+      </div>
+    {%- endif -%}
+
+    <!-- Scroll progress bar -->
+    {%- if section.settings.show_progress -%}
+      <div class="sm-progress-track">
+        <div class="sm-progress-fill" style="background:{{ section.settings.heading_color }};"></div>
+      </div>
+    {%- endif -%}
+
+    <!-- Scroll hint (shows only on first frame) -->
+    <div class="sm-scroll-hint" style="color:{{ section.settings.label_color }};">
+      <span>SCROLL</span>
+      <svg width="1" height="32" viewBox="0 0 1 32" fill="none">
+        <line x1="0.5" y1="0" x2="0.5" y2="32" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4"/>
+      </svg>
+    </div>
+
+  </div><!-- /sm-sticky -->
+</div><!-- /sm-outer -->
+
+<style>
+/* ── Scroll Motion ── */
+.sm-outer {
+  position: relative;
+  width: 100%;
+}
+
+.sm-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: {{ section.settings.bg_color }};
+}
+
+/* ── Frames ── */
+.sm-frame {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sm-frame--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Film-gate flash on switch — handled in JS by briefly adding .sm-flash */
+.sm-sticky.sm-flash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.06);
+  z-index: 20;
+  pointer-events: none;
+  animation: sm-gate 0.08s linear forwards;
+}
+
+@keyframes sm-gate {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.sm-frame-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sm-frame-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #111;
+}
+
+/* ── Overlay ── */
+.sm-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Per-frame text ── */
+.sm-frame-text {
+  position: absolute;
+  bottom: 80px;
+  left: 80px;
+  z-index: 10;
+  max-width: 520px;
+}
+
+.sm-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s ease 0.05s, transform 0.35s ease 0.05s;
+}
+
+.sm-heading {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 300;
+  font-size: {{ section.settings.heading_size }}px;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+}
+
+.sm-sub {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 380px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s ease 0.15s, transform 0.35s ease 0.15s;
+}
+
+.sm-frame--active .sm-label,
+.sm-frame--active .sm-heading,
+.sm-frame--active .sm-sub {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Frame counter ── */
+.sm-counter {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  z-index: 10;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.55;
+}
+
+/* ── Progress bar ── */
+.sm-progress-track {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 120px;
+  background: rgba(255,255,255,0.15);
+  z-index: 10;
+}
+
+.sm-progress-fill {
+  width: 100%;
+  height: 0%;
+  transition: height 0.1s linear;
+  opacity: 0.8;
+}
+
+/* ── Scroll hint ── */
+.sm-scroll-hint {
+  position: absolute;
+  bottom: 36px;
+  right: 40px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  opacity: 0.45;
+  transition: opacity 0.4s ease;
+}
+
+.sm-scroll-hint.hidden { opacity: 0; }
+
+@media (max-width: 768px) {
+  .sm-frame-text { left: 24px; bottom: 60px; }
+  .sm-counter { top: 24px; right: 24px; }
+  .sm-progress-track { right: 16px; }
+  .sm-scroll-hint { right: 24px; }
+  .sm-heading { font-size: {{ section.settings.heading_size | times: 0.65 | round }}px !important; }
+}
+</style>
+
+<script>
+(function() {
+  const outer    = document.querySelector('[data-scroll-motion]');
+  if (!outer) return;
+
+  const sticky   = outer.querySelector('.sm-sticky');
+  const frames   = outer.querySelectorAll('.sm-frame');
+  const counter  = outer.querySelector('.sm-counter-current');
+  const fill     = outer.querySelector('.sm-progress-fill');
+  const hint     = outer.querySelector('.sm-scroll-hint');
+  const total    = parseInt(outer.dataset.frameCount, 10) || 1;
+  let   current  = 0;
+
+  function pad(n) { return String(n + 1).padStart(2, '0'); }
+
+  function update() {
+    const rect     = outer.getBoundingClientRect();
+    const scrolled = -rect.top;
+    const max      = outer.offsetHeight - window.innerHeight;
+    const progress = Math.max(0, Math.min(1, scrolled / max));
+    const index    = Math.min(total - 1, Math.floor(progress * total));
+
+    /* Progress bar */
+    if (fill) fill.style.height = (progress * 100) + '%';
+
+    /* Scroll hint fades after first frame passed */
+    if (hint) hint.classList.toggle('hidden', progress > 0.05);
+
+    if (index === current) return;
+
+    /* Swap frame */
+    frames[current]?.classList.remove('sm-frame--active');
+    frames[index]?.classList.add('sm-frame--active');
+
+    /* Film-gate flash */
+    sticky.classList.remove('sm-flash');
+    void sticky.offsetWidth; /* reflow to re-trigger animation */
+    sticky.classList.add('sm-flash');
+
+    /* Counter */
+    if (counter) counter.textContent = pad(index);
+
+    current = index;
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Scroll Motion",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Scroll Speed"
+    },
+    {
+      "type": "range",
+      "id": "scroll_per_frame",
+      "min": 50,
+      "max": 200,
+      "step": 10,
+      "unit": "vh",
+      "label": "Scroll distance per frame",
+      "info": "How far the user scrolls before the next frame appears. Higher = slower, more deliberate.",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 32,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Colours"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#0c0b09"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay colour",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading colour",
+      "default": "#ece5d8"
+    },
+    {
+      "type": "color",
+      "id": "sub_color",
+      "label": "Subheading colour",
+      "default": "#a39a8b"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label / counter colour",
+      "default": "#6a6258"
+    },
+    {
+      "type": "header",
+      "content": "UI"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_counter",
+      "label": "Show frame counter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress",
+      "label": "Show progress bar",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "frame",
+      "name": "Frame",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label (mono, small caps)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "subheading",
+          "label": "Subheading"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "Scroll Motion",
+      "category": "Image",
+      "blocks": [
+        {
+          "type": "frame",
+          "settings": {
+            "label": "The Cap",
+            "heading": "Vol. 01",
+            "subheading": "Three colorways. Built for the club."
+          }
+        },
+        {
+          "type": "frame",
+          "settings": {
+            "label": "Craftsmanship",
+            "heading": "Every\nDetail.",
+            "subheading": "Structured brim. Premium mesh. Embroidered logo."
+          }
+        },
+        {
+          "type": "frame",
+          "settings": {
+            "label": "Colorways",
+            "heading": "Navy.\nBlue.\nPink.",
+            "subheading": "Limited run. Drop yours before they're gone."
+          }
+        },
+        {
+          "type": "frame",
+          "settings": {
+            "label": "Relier Club",
+            "heading": "Built\nfor the\nClub.",
+            "subheading": "Confidence, style, and everyday essentials."
+          }
+        },
+        {
+          "type": "frame",
+          "settings": {
+            "label": "Now Available",
+            "heading": "Shop\nthe Drop.",
+            "subheading": ""
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

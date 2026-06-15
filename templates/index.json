@@ -12,26 +12,11 @@
     "new_drop_hero": {
       "type": "new-drop-hero",
       "blocks": {
-        "slide1": {
-          "type": "slide",
-          "settings": {}
-        },
-        "slide2": {
-          "type": "slide",
-          "settings": {}
-        },
-        "slide3": {
-          "type": "slide",
-          "settings": {}
-        },
-        "slide4": {
-          "type": "slide",
-          "settings": {}
-        },
-        "slide5": {
-          "type": "slide",
-          "settings": {}
-        }
+        "slide1": { "type": "slide", "settings": {} },
+        "slide2": { "type": "slide", "settings": {} },
+        "slide3": { "type": "slide", "settings": {} },
+        "slide4": { "type": "slide", "settings": {} },
+        "slide5": { "type": "slide", "settings": {} }
       },
       "block_order": ["slide1", "slide2", "slide3", "slide4", "slide5"],
       "settings": {
@@ -51,6 +36,29 @@
         "cta_text": "See the Drop",
         "btn_style": "primary-light",
         "show_dots": true
+      }
+    },
+    "scroll_motion": {
+      "type": "scroll-motion",
+      "blocks": {
+        "frame1": { "type": "frame", "settings": { "label": "The Cap", "heading": "Vol. 01", "subheading": "Three colorways. Built for the club." } },
+        "frame2": { "type": "frame", "settings": { "label": "Craftsmanship", "heading": "Every\nDetail.", "subheading": "Structured brim. Premium mesh. Embroidered logo." } },
+        "frame3": { "type": "frame", "settings": { "label": "Colorways", "heading": "Navy.\nBlue.\nPink.", "subheading": "Limited run. Drop yours before they're gone." } },
+        "frame4": { "type": "frame", "settings": { "label": "Relier Club", "heading": "Built\nfor the\nClub.", "subheading": "Confidence, style, and everyday essentials." } },
+        "frame5": { "type": "frame", "settings": { "label": "Now Available", "heading": "Shop\nthe Drop.", "subheading": "" } }
+      },
+      "block_order": ["frame1", "frame2", "frame3", "frame4", "frame5"],
+      "settings": {
+        "scroll_per_frame": 100,
+        "heading_size": 72,
+        "bg_color": "#0c0b09",
+        "overlay_color": "#000000",
+        "overlay_opacity": 30,
+        "heading_color": "#ece5d8",
+        "sub_color": "#a39a8b",
+        "label_color": "#6a6258",
+        "show_counter": true,
+        "show_progress": true
       }
     },
     "new_drop": {
@@ -109,30 +117,9 @@
     "features": {
       "type": "features-bar",
       "blocks": {
-        "feat1": {
-          "type": "feature",
-          "settings": {
-            "icon": "shipping",
-            "title": "Fast Shipping",
-            "description": "Quick & reliable delivery"
-          }
-        },
-        "feat2": {
-          "type": "feature",
-          "settings": {
-            "icon": "quality",
-            "title": "Premium Quality",
-            "description": "Built to last. Made to wear."
-          }
-        },
-        "feat3": {
-          "type": "feature",
-          "settings": {
-            "icon": "lock",
-            "title": "Secure Checkout",
-            "description": "100% safe & secure"
-          }
-        }
+        "feat1": { "type": "feature", "settings": { "icon": "shipping", "title": "Fast Shipping", "description": "Quick & reliable delivery" } },
+        "feat2": { "type": "feature", "settings": { "icon": "quality", "title": "Premium Quality", "description": "Built to last. Made to wear." } },
+        "feat3": { "type": "feature", "settings": { "icon": "lock", "title": "Secure Checkout", "description": "100% safe & secure" } }
       },
       "block_order": ["feat1", "feat2", "feat3"],
       "settings": {
@@ -201,5 +188,5 @@
       }
     }
   },
-  "order": ["new_drop_hero", "brand_marquee", "new_drop", "features", "featured_collection", "brand_story", "newsletter"]
+  "order": ["new_drop_hero", "brand_marquee", "scroll_motion", "new_drop", "features", "featured_collection", "brand_story", "newsletter"]
 }
