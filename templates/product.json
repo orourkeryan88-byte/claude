@@ -1,0 +1,36 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "shipping_tab": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "content": "<p>Free shipping on orders over $75. Standard delivery in 3-7 business days. Returns accepted within 30 days of purchase.</p>"
+          }
+        },
+        "sizing_tab": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Sizing & Fit",
+            "content": "<p>Our caps feature an adjustable snapback closure, fitting most head sizes. One size fits most.</p>"
+          }
+        }
+      },
+      "block_order": ["description", "shipping_tab", "sizing_tab"],
+      "settings": {
+        "show_vendor": false,
+        "title_size": 48,
+        "show_quantity": false,
+        "add_to_cart_text": "Add to Cart",
+        "sold_out_text": "Sold Out"
+      }
+    }
+  },
+  "order": ["main"]
+}

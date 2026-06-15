@@ -1,6 +1,16 @@
 {% if section.settings.show_announcement %}
-<div class="announcement-bar" role="banner">
-  {{ section.settings.text | default: 'FREE SHIPPING ON ORDERS OVER $75' }}
+<div
+  class="announcement-bar"
+  role="banner"
+  style="background:{{ section.settings.bg_color }};color:{{ section.settings.text_color }};"
+>
+  {%- if section.settings.link != blank -%}
+    <a href="{{ section.settings.link }}" style="color:inherit;">
+      {{ section.settings.text }}
+    </a>
+  {%- else -%}
+    {{ section.settings.text }}
+  {%- endif -%}
 </div>
 {% endif %}
 
@@ -19,6 +29,23 @@
       "id": "text",
       "label": "Announcement text",
       "default": "FREE SHIPPING ON ORDERS OVER $75"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link (optional)"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
     }
   ]
 }

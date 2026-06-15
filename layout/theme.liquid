@@ -23,39 +23,41 @@
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
   {%- endif -%}
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Theme CSS -->
   {{ 'theme.css' | asset_url | stylesheet_tag }}
-
   {{ content_for_header }}
 </head>
 
 <body class="template-{{ request.page_type }}{% if customer %} customer-logged-in{% endif %}">
 
-  {%- sections 'announcement-bar' -%}
-  {%- sections 'header' -%}
+  {%- section 'announcement-bar' -%}
+  {%- section 'header' -%}
 
   <main id="main-content" role="main">
     {{ content_for_layout }}
   </main>
 
-  {%- sections 'footer' -%}
+  {%- section 'footer' -%}
 
-  <!-- Mobile Navigation Overlay -->
   <nav class="mobile-nav" aria-label="Mobile navigation">
     <button class="mobile-nav-close" aria-label="Close menu">&times;</button>
-    <a href="/">Home</a>
-    <a href="/collections/all">Shop</a>
-    <a href="/collections/caps">Caps</a>
-    <a href="/pages/about">About</a>
-    <a href="/pages/contact">Contact</a>
+    {%- for block in sections['header'].blocks -%}
+      {%- if block.type == 'nav_link' -%}
+        <a href="{{ block.settings.link }}">{{ block.settings.label }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if sections['header'].blocks.size == 0 -%}
+      <a href="/">Home</a>
+      <a href="/collections/all">Shop</a>
+      <a href="/collections/caps">Caps</a>
+      <a href="/pages/about">About</a>
+      <a href="/pages/contact">Contact</a>
+    {%- endif -%}
   </nav>
 
-  <!-- Theme JS -->
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 </body>
 </html>

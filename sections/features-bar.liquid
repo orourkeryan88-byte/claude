@@ -1,46 +1,58 @@
-<div class="features-bar">
+<div class="features-bar" style="background:{{ section.settings.bg_color }};">
   <div class="features-inner">
 
-    <div class="feature-item" data-reveal="up" data-reveal-delay="100">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="4" y="16" width="40" height="20" rx="2"/>
-        <path d="M12 16V12a4 4 0 0 1 8 0v4"/>
-        <circle cx="36" cy="32" r="2"/>
-        <path d="M4 24h40"/>
-      </svg>
-      <div class="feature-text">
-        <strong>{{ section.settings.feat1_title | default: 'Fast Shipping' }}</strong>
-        <span>{{ section.settings.feat1_desc | default: 'Quick & reliable delivery' }}</span>
+    {%- for block in section.blocks -%}
+      {%- unless forloop.first -%}
+        <div class="features-divider" aria-hidden="true" style="background:{{ section.settings.divider_color }};"></div>
+      {%- endunless -%}
+
+      <div class="feature-item" data-reveal="up" data-reveal-delay="{{ forloop.index | times: 150 }}" {{ block.shopify_attributes }}>
+
+        {%- if block.settings.icon == 'shipping' -%}
+          <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="{{ section.settings.icon_color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="15" width="30" height="22" rx="2"/>
+            <path d="M31 20h8l6 8v9h-14V20z"/>
+            <circle cx="11" cy="40" r="3"/><circle cx="38" cy="40" r="3"/>
+          </svg>
+        {%- elsif block.settings.icon == 'quality' -%}
+          <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="{{ section.settings.icon_color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M24 4L6 12v14c0 10 8 18 18 22 10-4 18-12 18-22V12L24 4z"/>
+            <polyline points="16 24 21 29 32 18"/>
+          </svg>
+        {%- elsif block.settings.icon == 'lock' -%}
+          <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="{{ section.settings.icon_color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="10" y="20" width="28" height="22" rx="2"/>
+            <path d="M16 20V14a8 8 0 0 1 16 0v6"/>
+            <circle cx="24" cy="31" r="2"/>
+            <line x1="24" y1="33" x2="24" y2="37"/>
+          </svg>
+        {%- elsif block.settings.icon == 'returns' -%}
+          <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="{{ section.settings.icon_color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 16 13 16"/>
+            <path d="M4.4 28a18 18 0 1 0 1.1-9.2"/>
+          </svg>
+        {%- elsif block.settings.icon == 'star' -%}
+          <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="{{ section.settings.icon_color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="24 4 29.5 18.3 45 20.3 34 31 37 46 24 38.8 11 46 14 31 3 20.3 18.5 18.3 24 4"/>
+          </svg>
+        {%- else -%}
+          <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="{{ section.settings.icon_color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="24" cy="24" r="20"/>
+            <polyline points="16 24 21 29 32 18"/>
+          </svg>
+        {%- endif -%}
+
+        <div class="feature-text">
+          <strong style="color:{{ section.settings.title_color }};">{{ block.settings.title }}</strong>
+          <span style="color:{{ section.settings.desc_color }};">{{ block.settings.description }}</span>
+        </div>
+
       </div>
-    </div>
+    {%- endfor -%}
 
-    <div class="features-divider" aria-hidden="true"></div>
-
-    <div class="feature-item" data-reveal="up" data-reveal-delay="250">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M24 4L6 12v14c0 10 8 18 18 22 10-4 18-12 18-22V12L24 4z"/>
-        <polyline points="16 24 21 29 32 18"/>
-      </svg>
-      <div class="feature-text">
-        <strong>{{ section.settings.feat2_title | default: 'Premium Quality' }}</strong>
-        <span>{{ section.settings.feat2_desc | default: 'Built to last. Made to wear.' }}</span>
-      </div>
-    </div>
-
-    <div class="features-divider" aria-hidden="true"></div>
-
-    <div class="feature-item" data-reveal="up" data-reveal-delay="400">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="10" y="20" width="28" height="22" rx="2"/>
-        <path d="M16 20V14a8 8 0 0 1 16 0v6"/>
-        <circle cx="24" cy="31" r="2"/>
-        <line x1="24" y1="33" x2="24" y2="37"/>
-      </svg>
-      <div class="feature-text">
-        <strong>{{ section.settings.feat3_title | default: 'Secure Checkout' }}</strong>
-        <span>{{ section.settings.feat3_desc | default: '100% safe & secure' }}</span>
-      </div>
-    </div>
+    {%- if section.blocks.size == 0 -%}
+      <p style="color:rgba(255,255,255,0.5);font-size:13px;">Add features using the theme editor.</p>
+    {%- endif -%}
 
   </div>
 </div>
@@ -49,15 +61,103 @@
 {
   "name": "Features Bar",
   "settings": [
-    { "type": "text", "id": "feat1_title", "label": "Feature 1 title", "default": "Fast Shipping" },
-    { "type": "text", "id": "feat1_desc",  "label": "Feature 1 description", "default": "Quick & reliable delivery" },
-    { "type": "text", "id": "feat2_title", "label": "Feature 2 title", "default": "Premium Quality" },
-    { "type": "text", "id": "feat2_desc",  "label": "Feature 2 description", "default": "Built to last. Made to wear." },
-    { "type": "text", "id": "feat3_title", "label": "Feature 3 title", "default": "Secure Checkout" },
-    { "type": "text", "id": "feat3_desc",  "label": "Feature 3 description", "default": "100% safe & secure" }
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#999999"
+    }
   ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping truck" },
+            { "value": "quality",  "label": "Quality shield" },
+            { "value": "lock",     "label": "Security lock" },
+            { "value": "returns",  "label": "Returns arrow" },
+            { "value": "star",     "label": "Star" },
+            { "value": "check",    "label": "Checkmark" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature Title"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "Short description here."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
   "presets": [
-    { "name": "Features Bar", "category": "Content" }
+    {
+      "name": "Features Bar",
+      "category": "Content",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shipping",
+            "title": "Fast Shipping",
+            "description": "Quick & reliable delivery"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "quality",
+            "title": "Premium Quality",
+            "description": "Built to last. Made to wear."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure Checkout",
+            "description": "100% safe & secure"
+          }
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

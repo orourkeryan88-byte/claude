@@ -1,0 +1,133 @@
+<div class="empty-state" style="padding:{{ section.settings.padding_top }}px 40px {{ section.settings.padding_bottom }}px;background:{{ section.settings.bg_color }};">
+  <h1 style="font-family:'Bebas Neue',sans-serif;font-size:{{ section.settings.code_size }}px;color:{{ section.settings.code_color }};margin-bottom:16px;">
+    {{ section.settings.code_text | default: '404' }}
+  </h1>
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:{{ section.settings.heading_size }}px;color:{{ section.settings.heading_color }};margin-bottom:16px;letter-spacing:0.04em;">
+    {{ section.settings.heading | default: "Page Not Found" }}
+  </h2>
+  <p style="font-size:16px;color:{{ section.settings.text_color }};margin-bottom:36px;max-width:400px;margin-left:auto;margin-right:auto;">
+    {{ section.settings.message | default: "The page you're looking for doesn't exist." }}
+  </p>
+  <a href="{{ section.settings.btn_link | default: '/' }}" class="btn btn--{{ section.settings.btn_style }}">
+    {{ section.settings.btn_text | default: 'Back to Home' }}
+  </a>
+</div>
+
+{% schema %}
+{
+  "name": "404 Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "code_text",
+      "label": "Error code",
+      "default": "404"
+    },
+    {
+      "type": "range",
+      "id": "code_size",
+      "min": 40,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Code font size",
+      "default": 96
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Page Not Found"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Message",
+      "default": "The page you're looking for doesn't exist."
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "Back to Home"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "btn_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary", "label": "Filled" },
+        { "value": "outline", "label": "Outlined" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "code_color",
+      "label": "Error code color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 40,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 40,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 120
+    }
+  ]
+}
+{% endschema %}

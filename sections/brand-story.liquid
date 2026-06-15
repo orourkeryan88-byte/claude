@@ -1,37 +1,61 @@
-<section class="brand-story" aria-label="Brand story">
+{%- liquid
+  assign layout = section.settings.layout
+  assign content_order = 'brand-story-content'
+  assign image_order = 'brand-story-image'
+  if layout == 'image_first'
+    assign content_order = 'brand-story-content'
+    assign image_order = 'brand-story-image'
+  endif
+-%}
 
-  <div class="brand-story-content">
-    <p class="brand-story-eyebrow" data-reveal="fade">
-      {{ section.settings.eyebrow | default: 'Join the Club' }}
-    </p>
-    <h2 class="brand-story-title" data-reveal="up" data-reveal-delay="100">
-      {{ section.settings.heading | default: 'Built for the Club.' }}
-    </h2>
-    <p class="brand-story-desc" data-reveal="up" data-reveal-delay="200">
-      {{ section.settings.description | default: "Relier is more than clothing. It's a community built around confidence, style, and everyday essentials designed to stand out without trying too hard." }}
-    </p>
-    <div data-reveal="up" data-reveal-delay="350">
-      <a href="{{ section.settings.cta_link | default: '/pages/about' }}" class="btn btn--primary-light">
-        {{ section.settings.cta_text | default: 'Learn More' }}
-      </a>
-    </div>
+<section
+  class="brand-story"
+  style="{%- if layout == 'image_first' -%}direction:rtl;{%- endif -%}"
+>
+
+  <div class="{{ content_order }}" style="background:{{ section.settings.bg_color }};direction:ltr;">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="brand-story-eyebrow" data-reveal="fade" style="color:{{ section.settings.eyebrow_color }};">
+        {{ section.settings.eyebrow }}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="brand-story-title" data-reveal="up" data-reveal-delay="100" style="color:{{ section.settings.heading_color }};">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.description != blank -%}
+      <p class="brand-story-desc" data-reveal="up" data-reveal-delay="200" style="color:{{ section.settings.desc_color }};">
+        {{ section.settings.description }}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.cta_text != blank -%}
+      <div data-reveal="up" data-reveal-delay="350">
+        <a href="{{ section.settings.cta_link | default: '#' }}" class="btn btn--{{ section.settings.btn_style }}">
+          {{ section.settings.cta_text }}
+        </a>
+      </div>
+    {%- endif -%}
   </div>
 
-  <div class="brand-story-image" data-reveal="scale">
+  <div class="{{ image_order }}" data-reveal="scale" style="direction:ltr;">
     {%- if section.settings.image != blank -%}
       <img
         src="{{ section.settings.image | image_url: width: 1200 }}"
         srcset="{{ section.settings.image | image_url: width: 800 }} 800w,
                 {{ section.settings.image | image_url: width: 1200 }} 1200w"
         sizes="50vw"
-        alt="{{ section.settings.image.alt | default: 'Relier Clothing' }}"
+        alt="{{ section.settings.image.alt | default: shop.name }}"
         loading="lazy"
         width="800"
         height="640"
       >
     {%- else -%}
       <div style="width:100%;height:100%;min-height:480px;background:linear-gradient(135deg,#1a1a1a,#333);display:flex;align-items:center;justify-content:center;">
-        <span style="font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(255,255,255,0.1);letter-spacing:0.1em;">RELIER</span>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(255,255,255,0.08);letter-spacing:0.1em;">RELIER</span>
       </div>
     {%- endif -%}
   </div>
@@ -42,6 +66,24 @@
 {
   "name": "Brand Story",
   "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "text_first", "label": "Text left, image right" },
+        { "value": "image_first", "label": "Image left, text right" }
+      ],
+      "default": "text_first"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
     {
       "type": "text",
       "id": "eyebrow",
@@ -72,9 +114,47 @@
       "label": "Button link"
     },
     {
+      "type": "select",
+      "id": "btn_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary-light", "label": "White filled" },
+        { "value": "outline",       "label": "White outlined" }
+      ],
+      "default": "primary-light"
+    },
+    {
       "type": "image_picker",
       "id": "image",
       "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Content background",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#aaaaaa"
     }
   ],
   "presets": [

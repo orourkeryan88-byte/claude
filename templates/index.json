@@ -3,22 +3,60 @@
     "hero": {
       "type": "hero",
       "settings": {
+        "fallback_color": "#0a0a0a",
+        "min_height": 90,
+        "overlay_opacity": 70,
+        "overlay_direction": "right",
+        "content_position": "left",
         "eyebrow": "Premium Headwear",
+        "eyebrow_color": "#aaaaaa",
         "heading": "RELIER CLUB",
+        "heading_size": 100,
+        "heading_color": "#ffffff",
         "description": "Premium headwear designed for everyday wear. Built for the club.",
+        "desc_color": "#cccccc",
         "cta_text": "Shop Caps",
-        "cta_link": "/collections/caps"
+        "cta_link": "/collections/caps",
+        "btn_style": "primary-light",
+        "show_scroll_indicator": true,
+        "scroll_color": "#888888"
       }
     },
     "features": {
       "type": "features-bar",
+      "blocks": {
+        "feat1": {
+          "type": "feature",
+          "settings": {
+            "icon": "shipping",
+            "title": "Fast Shipping",
+            "description": "Quick & reliable delivery"
+          }
+        },
+        "feat2": {
+          "type": "feature",
+          "settings": {
+            "icon": "quality",
+            "title": "Premium Quality",
+            "description": "Built to last. Made to wear."
+          }
+        },
+        "feat3": {
+          "type": "feature",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure Checkout",
+            "description": "100% safe & secure"
+          }
+        }
+      },
+      "block_order": ["feat1", "feat2", "feat3"],
       "settings": {
-        "feat1_title": "Fast Shipping",
-        "feat1_desc": "Quick & reliable delivery",
-        "feat2_title": "Premium Quality",
-        "feat2_desc": "Built to last. Made to wear.",
-        "feat3_title": "Secure Checkout",
-        "feat3_desc": "100% safe & secure"
+        "bg_color": "#0a0a0a",
+        "divider_color": "#333333",
+        "icon_color": "#ffffff",
+        "title_color": "#ffffff",
+        "desc_color": "#999999"
       }
     },
     "featured_collection": {
@@ -29,17 +67,31 @@
         "description": "Classic trucker cap with our signature embroidered logo.",
         "cta_text": "Shop All Caps",
         "cta_link": "/collections/caps",
-        "products_to_show": 3
+        "btn_style": "outline",
+        "products_to_show": 3,
+        "columns": "3",
+        "bg_color": "#ffffff",
+        "label_color": "#999999",
+        "heading_color": "#0a0a0a",
+        "desc_color": "#666666",
+        "padding_top": 100,
+        "padding_bottom": 100
       }
     },
     "brand_story": {
       "type": "brand-story",
       "settings": {
+        "layout": "text_first",
         "eyebrow": "Join the Club",
         "heading": "Built for the Club.",
         "description": "Relier is more than clothing. It's a community built around confidence, style, and everyday essentials designed to stand out without trying too hard.",
         "cta_text": "Learn More",
-        "cta_link": "/pages/about"
+        "cta_link": "/pages/about",
+        "btn_style": "primary-light",
+        "bg_color": "#0a0a0a",
+        "eyebrow_color": "#666666",
+        "heading_color": "#ffffff",
+        "desc_color": "#aaaaaa"
       }
     },
     "newsletter": {
@@ -48,7 +100,20 @@
         "label": "Join the Club",
         "heading": "Be the First to Know",
         "description": "Get early access to new drops, restocks and exclusive offers.",
-        "submit_text": "Subscribe"
+        "placeholder": "Enter your email",
+        "submit_text": "Subscribe",
+        "success_message": "Thanks for subscribing!",
+        "bg_color": "#ffffff",
+        "border_color": "#e0e0e0",
+        "label_color": "#999999",
+        "heading_color": "#0a0a0a",
+        "desc_color": "#666666",
+        "input_bg_color": "#ffffff",
+        "input_border_color": "#0a0a0a",
+        "btn_bg_color": "#0a0a0a",
+        "btn_text_color": "#ffffff",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     }
   },

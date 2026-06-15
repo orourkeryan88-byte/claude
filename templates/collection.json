@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_label": false,
+        "show_description": true,
+        "show_sort": true,
+        "products_per_page": 12,
+        "columns": "3",
+        "grid_gap": 32,
+        "empty_text": "No products found.",
+        "header_bg": "#ffffff",
+        "label_color": "#999999",
+        "heading_color": "#0a0a0a",
+        "desc_color": "#666666",
+        "header_padding_top": 80,
+        "header_padding_bottom": 40,
+        "grid_padding_top": 60,
+        "grid_padding_bottom": 60
+      }
+    }
+  },
+  "order": ["main"]
+}

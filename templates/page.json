@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "show_title": true,
+        "title_margin": 40,
+        "content_width": 800,
+        "text_width": 680,
+        "heading_color": "#0a0a0a",
+        "text_color": "#444444",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": ["main"]
+}

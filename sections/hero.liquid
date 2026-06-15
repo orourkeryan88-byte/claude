@@ -1,10 +1,17 @@
 <!-- ============================================================
-     HERO SECTION
-     Animation 1: Cinematic text reveal — CSS clip-path slide
-     Each word in the headline slides up from behind a mask.
-     Eyebrow, description, and CTA stagger in after.
+     HERO — Animation 1: Cinematic word-by-word text reveal
      ============================================================ -->
-<section class="hero-section" aria-label="Hero">
+{%- liquid
+  assign min_height = section.settings.min_height | append: 'vh'
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+  assign text_align = section.settings.content_position
+-%}
+
+<section
+  class="hero-section"
+  aria-label="Hero"
+  style="min-height:{{ min_height }};background:{{ section.settings.fallback_color }};"
+>
 
   {%- if section.settings.bg_image != blank -%}
     <img
@@ -14,49 +21,64 @@
               {{ section.settings.bg_image | image_url: width: 1280 }} 1280w,
               {{ section.settings.bg_image | image_url: width: 1920 }} 1920w"
       sizes="100vw"
-      alt="{{ section.settings.bg_image.alt | default: 'Relier Clothing hero' }}"
+      alt="{{ section.settings.bg_image.alt | default: shop.name }}"
       loading="eager"
       fetchpriority="high"
     >
-  {%- else -%}
-    <!-- Placeholder gradient when no image is set -->
-    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);"></div>
   {%- endif -%}
 
-  <div class="hero-overlay"></div>
+  <div class="hero-overlay" style="background:linear-gradient(
+    to {{ section.settings.overlay_direction }},
+    rgba(0,0,0,{{ overlay_opacity }}) 0%,
+    rgba(0,0,0,{{ overlay_opacity | times: 0.5 }}) 55%,
+    rgba(0,0,0,0.05) 100%
+  );"></div>
 
-  <div class="hero-content">
-    <p class="hero-eyebrow">
-      <span>{{ section.settings.eyebrow | default: 'Premium Headwear' }}</span>
-    </p>
+  <div class="hero-content" style="text-align:{{ text_align }}; {%- if text_align == 'center' -%}margin:0 auto;{%- endif -%}">
 
-    <h1 class="hero-title" aria-label="{{ section.settings.heading | default: 'Relier Club' }}">
-      {%- assign words = section.settings.heading | default: 'RELIER CLUB' | split: ' ' -%}
-      {%- for word in words -%}
-        <span class="word-wrap"><span class="word">{{ word }}</span></span>
-        {%- unless forloop.last -%}&nbsp;{%- endunless -%}
-      {%- endfor -%}
-    </h1>
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="hero-eyebrow">
+        <span style="color:{{ section.settings.eyebrow_color }};">{{ section.settings.eyebrow }}</span>
+      </p>
+    {%- endif -%}
 
-    <div class="hero-desc">
-      <span>{{ section.settings.description | default: 'Premium headwear designed for everyday wear. Built for the club.' }}</span>
-    </div>
+    {%- if section.settings.heading != blank -%}
+      <h1 class="hero-title" style="font-size:{{ section.settings.heading_size }}px;" aria-label="{{ section.settings.heading }}">
+        {%- assign words = section.settings.heading | split: ' ' -%}
+        {%- for word in words -%}
+          <span class="word-wrap"><span class="word" style="color:{{ section.settings.heading_color }};">{{ word }}</span></span>
+          {%- unless forloop.last -%}&nbsp;{%- endunless -%}
+        {%- endfor -%}
+      </h1>
+    {%- endif -%}
 
-    <div class="hero-cta">
-      <a
-        href="{{ section.settings.cta_link | default: '/collections/caps' }}"
-        class="btn btn--primary-light"
-      >
-        {{ section.settings.cta_text | default: 'Shop Caps' }}
-      </a>
-    </div>
+    {%- if section.settings.description != blank -%}
+      <div class="hero-desc">
+        <span style="color:{{ section.settings.desc_color }};">{{ section.settings.description }}</span>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_text != blank -%}
+      <div class="hero-cta">
+        <a href="{{ section.settings.cta_link | default: '#' }}" class="btn btn--{{ section.settings.btn_style }}">
+          {{ section.settings.cta_text }}
+        </a>
+        {%- if section.settings.cta2_text != blank -%}
+          <a href="{{ section.settings.cta2_link | default: '#' }}" class="btn btn--outline" style="color:{{ section.settings.heading_color }};border-color:{{ section.settings.heading_color }};margin-left:12px;">
+            {{ section.settings.cta2_text }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
   </div>
 
-  <!-- Scroll indicator -->
-  <div class="hero-scroll" aria-hidden="true">
-    <span>Scroll</span>
-    <div class="hero-scroll-line"></div>
-  </div>
+  {%- if section.settings.show_scroll_indicator -%}
+    <div class="hero-scroll" aria-hidden="true">
+      <span style="color:{{ section.settings.scroll_color }};">Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  {%- endif -%}
 
 </section>
 
@@ -65,9 +87,66 @@
   "name": "Hero",
   "settings": [
     {
+      "type": "header",
+      "content": "Background"
+    },
+    {
       "type": "image_picker",
       "id": "bg_image",
       "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "fallback_color",
+      "label": "Fallback background color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Minimum height",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 95,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay darkness",
+      "default": 70
+    },
+    {
+      "type": "select",
+      "id": "overlay_direction",
+      "label": "Overlay direction",
+      "options": [
+        { "value": "right", "label": "Left to right" },
+        { "value": "left",  "label": "Right to left" },
+        { "value": "top",   "label": "Bottom to top" },
+        { "value": "bottom","label": "Top to bottom" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "left"
     },
     {
       "type": "text",
@@ -76,16 +155,48 @@
       "default": "Premium Headwear"
     },
     {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#aaaaaa"
+    },
+    {
       "type": "text",
       "id": "heading",
-      "label": "Heading (space-separated words animate individually)",
+      "label": "Heading (each space-separated word animates independently)",
       "default": "RELIER CLUB"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 40,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
     },
     {
       "type": "textarea",
       "id": "description",
       "label": "Description",
       "default": "Premium headwear designed for everyday wear. Built for the club."
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
     },
     {
       "type": "text",
@@ -97,6 +208,47 @@
       "type": "url",
       "id": "cta_link",
       "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "btn_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary-light", "label": "White filled" },
+        { "value": "outline",       "label": "Outlined" },
+        { "value": "primary",       "label": "Black filled" }
+      ],
+      "default": "primary-light"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button (optional)"
+    },
+    {
+      "type": "text",
+      "id": "cta2_text",
+      "label": "Button 2 text"
+    },
+    {
+      "type": "url",
+      "id": "cta2_link",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "header",
+      "content": "Scroll indicator"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show scroll indicator",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "scroll_color",
+      "label": "Scroll indicator color",
+      "default": "#888888"
     }
   ],
   "presets": [

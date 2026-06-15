@@ -1,0 +1,237 @@
+<div class="cart-page">
+  <h1 style="font-size:{{ section.settings.title_size }}px;">
+    {{ section.settings.title | default: 'Your Cart' }}
+  </h1>
+
+  {%- if cart.item_count > 0 -%}
+    {%- form 'cart', cart, id: 'cart-form' -%}
+      <div id="cart-items">
+        {%- for item in cart.items -%}
+          <div class="cart-item" data-reveal="up" data-reveal-delay="{{ forloop.index | times: 80 }}">
+
+            <div class="cart-item-image">
+              {%- if item.image -%}
+                <a href="{{ item.url }}">
+                  <img
+                    src="{{ item.image | image_url: width: 200 }}"
+                    alt="{{ item.image.alt | default: item.title | escape }}"
+                    loading="lazy"
+                    width="100"
+                    height="100"
+                  >
+                </a>
+              {%- endif -%}
+            </div>
+
+            <div class="cart-item-details">
+              <p class="cart-item-name">
+                <a href="{{ item.url }}">{{ item.product.title }}</a>
+              </p>
+              {%- unless item.variant.title == 'Default Title' -%}
+                <p class="cart-item-variant">{{ item.variant.title }}</p>
+              {%- endunless -%}
+              {%- if item.selling_plan_allocation -%}
+                <p class="cart-item-variant">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+              {%- endif -%}
+
+              {%- if section.settings.show_quantity -%}
+                <div style="display:flex;align-items:center;gap:16px;margin-top:12px;">
+                  <div class="qty-control">
+                    <button type="button" class="qty-btn" data-action="dec"
+                      onclick="updateCartQty({{ forloop.index }}, -1, this)">−</button>
+                    <span class="qty-value" data-line="{{ forloop.index }}">{{ item.quantity }}</span>
+                    <button type="button" class="qty-btn" data-action="inc"
+                      onclick="updateCartQty({{ forloop.index }}, 1, this)">+</button>
+                  </div>
+                  <a href="/cart/change?line={{ forloop.index }}&quantity=0"
+                     style="font-size:11px;color:#999;text-decoration:underline;">
+                    {{ section.settings.remove_text | default: 'Remove' }}
+                  </a>
+                </div>
+              {%- else -%}
+                <a href="/cart/change?line={{ forloop.index }}&quantity=0"
+                   style="font-size:11px;color:#999;text-decoration:underline;display:inline-block;margin-top:10px;">
+                  {{ section.settings.remove_text | default: 'Remove' }}
+                </a>
+              {%- endif -%}
+            </div>
+
+            <div style="text-align:right;">
+              <p style="font-weight:700;font-size:17px;">{{ item.final_line_price | money }}</p>
+              {%- if item.original_line_price != item.final_line_price -%}
+                <s style="font-size:13px;color:#999;">{{ item.original_line_price | money }}</s>
+              {%- endif -%}
+            </div>
+
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.show_note -%}
+        <div style="margin:32px 0;">
+          <label for="cart-note" style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:8px;">
+            {{ section.settings.note_label | default: 'Order note' }}
+          </label>
+          <textarea
+            name="note"
+            id="cart-note"
+            rows="3"
+            placeholder="{{ section.settings.note_placeholder | default: 'Add a note for your order...' }}"
+            style="width:100%;border:1.5px solid #e0e0e0;padding:12px;font-family:inherit;font-size:14px;resize:vertical;"
+          >{{ cart.note }}</textarea>
+        </div>
+      {%- endif -%}
+
+      <div class="cart-summary">
+        {%- if cart.cart_level_discount_applications.size > 0 -%}
+          <div style="margin-bottom:12px;">
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <div style="display:flex;justify-content:space-between;font-size:14px;color:#1a6b3c;margin-bottom:6px;">
+                <span>{{ discount.title }}</span>
+                <span>−{{ discount.total_allocated_amount | money }}</span>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        <div class="cart-total">
+          <span>{{ section.settings.total_label | default: 'Total' }}</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+
+        <p style="font-size:13px;color:#666;margin-bottom:24px;">
+          {{ section.settings.tax_shipping_text | default: 'Taxes and shipping calculated at checkout.' }}
+        </p>
+
+        <button type="submit" name="checkout" class="btn btn--primary" style="width:100%;justify-content:center;padding:18px;font-size:14px;margin-bottom:12px;">
+          {{ section.settings.checkout_text | default: 'Checkout' }}
+        </button>
+        <a href="{{ section.settings.continue_link | default: '/collections/all' }}" class="btn btn--outline" style="width:100%;justify-content:center;padding:16px;">
+          {{ section.settings.continue_text | default: 'Continue Shopping' }}
+        </a>
+      </div>
+    {%- endform -%}
+
+  {%- else -%}
+    <div class="empty-state" style="padding:80px 0;">
+      <p style="font-size:16px;color:#666;margin-bottom:32px;">{{ section.settings.empty_text | default: 'Your cart is empty.' }}</p>
+      <a href="{{ section.settings.continue_link | default: '/collections/all' }}" class="btn btn--primary">
+        {{ section.settings.continue_text | default: 'Continue Shopping' }}
+      </a>
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+function updateCartQty(line, delta, btn) {
+  var display = btn.closest('.qty-control').querySelector('.qty-value');
+  var current = parseInt(display.textContent) || 1;
+  var newQty = Math.max(1, current + delta);
+  display.textContent = newQty;
+  /* Shopify cart AJAX */
+  fetch('/cart/change.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ line: line, quantity: newQty })
+  }).then(function(r) { return r.json(); }).then(function() {
+    window.location.reload();
+  });
+}
+</script>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Page title",
+      "default": "Your Cart"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 28,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 48
+    },
+    {
+      "type": "text",
+      "id": "remove_text",
+      "label": "Remove link text",
+      "default": "Remove"
+    },
+    {
+      "type": "text",
+      "id": "total_label",
+      "label": "Total label",
+      "default": "Total"
+    },
+    {
+      "type": "text",
+      "id": "tax_shipping_text",
+      "label": "Tax/shipping note",
+      "default": "Taxes and shipping calculated at checkout."
+    },
+    {
+      "type": "text",
+      "id": "checkout_text",
+      "label": "Checkout button text",
+      "default": "Checkout"
+    },
+    {
+      "type": "text",
+      "id": "continue_text",
+      "label": "Continue shopping text",
+      "default": "Continue Shopping"
+    },
+    {
+      "type": "url",
+      "id": "continue_link",
+      "label": "Continue shopping link"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty cart message",
+      "default": "Your cart is empty."
+    },
+    {
+      "type": "header",
+      "content": "Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "Show quantity controls",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show order note field",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "note_label",
+      "label": "Note field label",
+      "default": "Order note"
+    },
+    {
+      "type": "text",
+      "id": "note_placeholder",
+      "label": "Note placeholder",
+      "default": "Add a note for your order..."
+    }
+  ]
+}
+{% endschema %}

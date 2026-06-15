@@ -1,0 +1,214 @@
+<div class="collection-header" style="background:{{ section.settings.header_bg }};padding-top:{{ section.settings.header_padding_top }}px;padding-bottom:{{ section.settings.header_padding_bottom }}px;">
+  {%- if section.settings.show_label -%}
+    <p class="section-label" data-reveal="fade" style="color:{{ section.settings.label_color }};">
+      {{ section.settings.label | default: collection.title }}
+    </p>
+  {%- endif -%}
+  <h1 class="section-title" data-reveal="up" data-reveal-delay="100" style="color:{{ section.settings.heading_color }};">
+    {{ collection.title }}
+  </h1>
+  {%- if collection.description != blank and section.settings.show_description -%}
+    <p class="section-desc" data-reveal="up" data-reveal-delay="200" style="color:{{ section.settings.desc_color }};">
+      {{ collection.description }}
+    </p>
+  {%- endif -%}
+
+  {%- if section.settings.show_sort -%}
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center;margin-top:24px;" data-reveal="up" data-reveal-delay="300">
+      <label for="sort-by" style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:{{ section.settings.label_color }};">Sort by</label>
+      <select id="sort-by" onchange="window.location.href = '{{ collection.url }}?sort_by=' + this.value;"
+        style="padding:8px 16px;border:1.5px solid #0a0a0a;font-family:inherit;font-size:13px;background:#fff;cursor:pointer;">
+        <option value="manual"{% if collection.sort_by == 'manual' %} selected{% endif %}>Featured</option>
+        <option value="price-ascending"{% if collection.sort_by == 'price-ascending' %} selected{% endif %}>Price: Low to High</option>
+        <option value="price-descending"{% if collection.sort_by == 'price-descending' %} selected{% endif %}>Price: High to Low</option>
+        <option value="created-descending"{% if collection.sort_by == 'created-descending' %} selected{% endif %}>Newest</option>
+        <option value="best-selling"{% if collection.sort_by == 'best-selling' %} selected{% endif %}>Best Selling</option>
+      </select>
+    </div>
+  {%- endif -%}
+</div>
+
+<div class="collection-body" style="padding-top:{{ section.settings.grid_padding_top }}px;padding-bottom:{{ section.settings.grid_padding_bottom }}px;">
+  {%- paginate collection.products by section.settings.products_per_page -%}
+
+    {%- if collection.products.size == 0 -%}
+      <div class="empty-state" style="padding:80px 20px;">
+        <p>{{ section.settings.empty_text | default: 'No products found.' }}</p>
+        <a href="/collections/all" class="btn btn--primary" style="margin-top:24px;">Browse all</a>
+      </div>
+    {%- else -%}
+      <div class="collection-grid" style="grid-template-columns:repeat({{ section.settings.columns }},1fr);gap:{{ section.settings.grid_gap }}px;">
+        {%- for product in collection.products -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if paginate.pages > 1 -%}
+      <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:60px;">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="btn btn--outline" style="padding:10px 20px;">← Prev</a>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="btn btn--outline" style="min-width:44px;justify-content:center;padding:10px;">{{ part.title }}</a>
+          {%- else -%}
+            <span class="btn btn--primary" style="min-width:44px;justify-content:center;padding:10px;">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="btn btn--outline" style="padding:10px 20px;">Next →</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Show label",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label (override)",
+      "info": "Leave blank to hide"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sort dropdown",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 6,
+      "max": 48,
+      "step": 6,
+      "label": "Products per page",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Grid gap",
+      "default": 32
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty collection message",
+      "default": "No products found."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "header_bg",
+      "label": "Header background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "header_padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Header padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "header_padding_bottom",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Header padding bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "grid_padding_top",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Grid padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "grid_padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Grid padding bottom",
+      "default": 60
+    }
+  ]
+}
+{% endschema %}

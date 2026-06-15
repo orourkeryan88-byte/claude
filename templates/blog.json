@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "show_label": false,
+        "articles_per_page": 9,
+        "columns": "3",
+        "grid_gap": 40,
+        "show_image": true,
+        "image_ratio": "16/9",
+        "article_title_size": 28,
+        "show_date": true,
+        "date_format": "%B %d, %Y",
+        "show_excerpt": true,
+        "excerpt_length": 120,
+        "show_read_more": true,
+        "read_more_text": "Read More",
+        "label_color": "#999999",
+        "heading_color": "#0a0a0a",
+        "meta_color": "#aaaaaa",
+        "text_color": "#666666",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "header_margin": 48
+      }
+    }
+  },
+  "order": ["main"]
+}

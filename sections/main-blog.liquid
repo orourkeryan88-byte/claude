@@ -1,0 +1,264 @@
+<div style="max-width:var(--max-width);margin:0 auto;padding:{{ section.settings.padding_top }}px 40px {{ section.settings.padding_bottom }}px;">
+
+  <div class="section-header" style="margin-bottom:{{ section.settings.header_margin }}px;">
+    {%- if section.settings.show_label -%}
+      <p class="section-label" data-reveal="fade" style="color:{{ section.settings.label_color }};">
+        {{ section.settings.label | default: blog.title }}
+      </p>
+    {%- endif -%}
+    <h1 class="section-title" data-reveal="up" data-reveal-delay="100" style="color:{{ section.settings.heading_color }};">
+      {{ blog.title }}
+    </h1>
+  </div>
+
+  {%- paginate blog.articles by section.settings.articles_per_page -%}
+    <div style="display:grid;grid-template-columns:repeat({{ section.settings.columns }},1fr);gap:{{ section.settings.grid_gap }}px;">
+      {%- for article in blog.articles -%}
+        <article data-reveal="up" data-reveal-delay="{{ forloop.index | times: 100 }}">
+          {%- if section.settings.show_image and article.image -%}
+            <a href="{{ article.url }}">
+              <div style="aspect-ratio:{{ section.settings.image_ratio }};overflow:hidden;background:#f0f0f0;margin-bottom:16px;border-radius:4px;">
+                <img
+                  src="{{ article.image | image_url: width: 600 }}"
+                  alt="{{ article.image.alt }}"
+                  style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;"
+                  loading="lazy"
+                  onmouseover="this.style.transform='scale(1.04)'"
+                  onmouseout="this.style.transform='scale(1)'"
+                >
+              </div>
+            </a>
+          {%- endif -%}
+
+          {%- if section.settings.show_date -%}
+            <p style="font-size:11px;letter-spacing:0.15em;color:{{ section.settings.meta_color }};text-transform:uppercase;margin-bottom:8px;">
+              {{ article.published_at | date: section.settings.date_format }}
+            </p>
+          {%- endif -%}
+
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:{{ section.settings.article_title_size }}px;letter-spacing:0.03em;margin-bottom:10px;color:{{ section.settings.heading_color }};">
+            <a href="{{ article.url }}" style="color:inherit;">{{ article.title }}</a>
+          </h2>
+
+          {%- if section.settings.show_excerpt and article.excerpt != blank -%}
+            <p style="font-size:14px;color:{{ section.settings.text_color }};line-height:1.7;margin-bottom:16px;">
+              {{ article.excerpt | strip_html | truncate: section.settings.excerpt_length }}
+            </p>
+          {%- endif -%}
+
+          {%- if section.settings.show_read_more -%}
+            <a href="{{ article.url }}" class="btn btn--outline" style="padding:9px 18px;font-size:11px;">
+              {{ section.settings.read_more_text | default: 'Read More' }}
+            </a>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <div style="display:flex;justify-content:center;gap:8px;margin-top:60px;">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="btn btn--outline" style="padding:10px 20px;">← Prev</a>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="btn btn--outline" style="min-width:44px;justify-content:center;padding:10px;">{{ part.title }}</a>
+          {%- else -%}
+            <span class="btn btn--primary" style="min-width:44px;justify-content:center;padding:10px;">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="btn btn--outline" style="padding:10px 20px;">Next →</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  {%- endpaginate -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Show label",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label"
+    },
+    {
+      "type": "header",
+      "content": "Articles"
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "label": "Articles per page",
+      "default": 9
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Grid gap",
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show article image",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "16/9",  "label": "Landscape (16:9)" },
+        { "value": "4/3",   "label": "Standard (4:3)" },
+        { "value": "1/1",   "label": "Square (1:1)" },
+        { "value": "3/4",   "label": "Portrait (3:4)" }
+      ],
+      "default": "16/9"
+    },
+    {
+      "type": "range",
+      "id": "article_title_size",
+      "min": 20,
+      "max": 52,
+      "step": 2,
+      "unit": "px",
+      "label": "Article title size",
+      "default": 28
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show publish date",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "%B %d, %Y",
+      "info": "Uses Liquid date filters. Default: %B %d, %Y"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "excerpt_length",
+      "min": 60,
+      "max": 300,
+      "step": 20,
+      "label": "Excerpt character limit",
+      "default": 120
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_more",
+      "label": "Show read more button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "read_more_text",
+      "label": "Read more text",
+      "default": "Read More"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta/date color",
+      "default": "#aaaaaa"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "header_margin",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Header bottom margin",
+      "default": 48
+    }
+  ]
+}
+{% endschema %}

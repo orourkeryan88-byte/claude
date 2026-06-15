@@ -1,12 +1,30 @@
-<header class="site-header" role="banner">
+<header
+  class="site-header"
+  role="banner"
+  style="background:{{ section.settings.bg_color }};border-bottom-color:{{ section.settings.border_color }};"
+>
   <div class="header-inner">
+
     <!-- Left Nav -->
     <nav class="header-nav" aria-label="Primary navigation">
-      <a href="/">Home</a>
-      <a href="/collections/all">Shop</a>
-      <a href="/collections/caps">Caps</a>
-      <a href="/pages/about">About</a>
-      <a href="/pages/contact">Contact</a>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'nav_link' -%}
+          <a
+            href="{{ block.settings.link }}"
+            style="color:{{ section.settings.nav_color }};"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.label }}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if section.blocks.size == 0 -%}
+        <a href="/" style="color:{{ section.settings.nav_color }};">Home</a>
+        <a href="/collections/all" style="color:{{ section.settings.nav_color }};">Shop</a>
+        <a href="/collections/caps" style="color:{{ section.settings.nav_color }};">Caps</a>
+        <a href="/pages/about" style="color:{{ section.settings.nav_color }};">About</a>
+        <a href="/pages/contact" style="color:{{ section.settings.nav_color }};">Contact</a>
+      {%- endif -%}
     </nav>
 
     <!-- Logo -->
@@ -14,16 +32,20 @@
       <a href="/" class="header-logo-link" aria-label="{{ shop.name }}">
         {%- if section.settings.logo != blank -%}
           <img
-            src="{{ section.settings.logo | image_url: width: 200 }}"
-            alt="{{ shop.name }}"
-            width="140"
+            src="{{ section.settings.logo | image_url: width: 300 }}"
+            alt="{{ section.settings.logo.alt | default: shop.name }}"
+            width="{{ section.settings.logo_width }}"
             height="auto"
             loading="eager"
           >
         {%- else -%}
           <span class="header-logo-text">
-            <span class="brand-name">RELIER</span>
-            <span class="brand-sub">Clothing</span>
+            <span class="brand-name" style="color:{{ section.settings.logo_color }};">
+              {{ section.settings.brand_name | default: 'RELIER' }}
+            </span>
+            <span class="brand-sub" style="color:{{ section.settings.logo_sub_color }};">
+              {{ section.settings.brand_sub | default: 'Clothing' }}
+            </span>
           </span>
         {%- endif -%}
       </a>
@@ -31,35 +53,40 @@
 
     <!-- Right Actions -->
     <div class="header-actions">
-      <a href="/search" class="header-action-btn" aria-label="Search">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-      </a>
+      {%- if section.settings.show_search -%}
+        <a href="/search" class="header-action-btn" aria-label="Search" style="color:{{ section.settings.icon_color }};">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </a>
+      {%- endif -%}
 
-      {%- if shop.customer_accounts_enabled -%}
-        <a href="{%- if customer -%}/account{%- else -%}/account/login{%- endif -%}" class="header-action-btn" aria-label="Account">
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a href="{%- if customer -%}/account{%- else -%}/account/login{%- endif -%}" class="header-action-btn" aria-label="Account" style="color:{{ section.settings.icon_color }};">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
         </a>
       {%- endif -%}
 
-      <a href="/cart" class="header-action-btn" aria-label="Cart ({{ cart.item_count }} items)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-        </svg>
-        {%- if cart.item_count > 0 -%}
-          <span class="cart-count">{{ cart.item_count }}</span>
-        {%- endif -%}
-      </a>
+      {%- if section.settings.show_cart -%}
+        <a href="/cart" class="header-action-btn" aria-label="Cart ({{ cart.item_count }} items)" style="color:{{ section.settings.icon_color }};">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          {%- if cart.item_count > 0 -%}
+            <span class="cart-count">{{ cart.item_count }}</span>
+          {%- endif -%}
+        </a>
+      {%- endif -%}
 
-      <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false" style="color:{{ section.settings.icon_color }};">
+        <span></span><span></span><span></span>
       </button>
     </div>
+
   </div>
 </header>
 
@@ -68,10 +95,118 @@
   "name": "Header",
   "settings": [
     {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
       "type": "image_picker",
       "id": "logo",
       "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 140
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name (if no logo image)",
+      "default": "RELIER"
+    },
+    {
+      "type": "text",
+      "id": "brand_sub",
+      "label": "Brand tagline (below name)",
+      "default": "Clothing"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Header background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "nav_color",
+      "label": "Nav link color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "logo_color",
+      "label": "Logo text color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "logo_sub_color",
+      "label": "Logo tagline color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search icon",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account icon",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart",
+      "label": "Show cart icon",
+      "default": true
     }
-  ]
+  ],
+  "blocks": [
+    {
+      "type": "nav_link",
+      "name": "Navigation link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Link label",
+          "default": "Shop"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10
 }
 {% endschema %}
