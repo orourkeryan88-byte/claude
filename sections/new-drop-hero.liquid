@@ -1,10 +1,14 @@
 <!-- ============================================================
      NEW DROP HERO
-     - CSS-animated image carousel (Ken Burns per slide)
+     - Video background (loops seamlessly) OR image slideshow fallback
      - Staggered cinematic text reveal
      - Click-to-scroll CTA → #new-drop anchor
      ============================================================ -->
 {%- liquid
+  assign has_video = false
+  if section.settings.hero_video != blank
+    assign has_video = true
+  endif
   assign slide_count = section.blocks | where: 'type', 'slide' | size
   if slide_count == 0
     assign slide_count = 1
@@ -14,47 +18,62 @@
 
 <section class="ndh-section" id="new-drop-hero" aria-label="New drop hero">
 
-  <!-- Slideshow -->
-  <div class="ndh-slides" aria-hidden="true">
-    {%- for block in section.blocks -%}
-      {%- if block.type == 'slide' -%}
-        <div
-          class="ndh-slide"
-          style="--slide-index:{{ forloop.index0 }};--total:{{ slide_count }};--cycle:{{ cycle_duration }}s;"
-          {{ block.shopify_attributes }}
-        >
-          {%- if block.settings.image != blank -%}
-            <img
-              class="ndh-slide-img"
-              src="{{ block.settings.image | image_url: width: 1920 }}"
-              srcset="{{ block.settings.image | image_url: width: 900 }} 900w,
-                      {{ block.settings.image | image_url: width: 1400 }} 1400w,
-                      {{ block.settings.image | image_url: width: 1920 }} 1920w"
-              sizes="100vw"
-              alt="{{ block.settings.image.alt | default: 'Relier cap' }}"
-              loading="{{ forloop.first | iif: 'eager', 'lazy' }}"
-            >
-          {%- else -%}
-            <div class="ndh-slide-placeholder"></div>
-          {%- endif -%}
+  <!-- ── Video background (when video is set) ── -->
+  {%- if has_video -%}
+    <div class="ndh-video-bg" aria-hidden="true">
+      <video
+        class="ndh-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+      >
+        {%- for source in section.settings.hero_video.sources -%}
+          <source src="{{ source.url }}" type="{{ source.mime_type }}">
+        {%- endfor -%}
+      </video>
+    </div>
+
+  <!-- ── Image slideshow fallback ── -->
+  {%- else -%}
+    <div class="ndh-slides" aria-hidden="true">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'slide' -%}
+          <div
+            class="ndh-slide"
+            style="--slide-index:{{ forloop.index0 }};--total:{{ slide_count }};--cycle:{{ cycle_duration }}s;"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.image != blank -%}
+              <img
+                class="ndh-slide-img"
+                src="{{ block.settings.image | image_url: width: 1920 }}"
+                srcset="{{ block.settings.image | image_url: width: 900 }} 900w,
+                        {{ block.settings.image | image_url: width: 1400 }} 1400w,
+                        {{ block.settings.image | image_url: width: 1920 }} 1920w"
+                sizes="100vw"
+                alt="{{ block.settings.image.alt | default: 'Relier cap' }}"
+                loading="{{ forloop.first | iif: 'eager', 'lazy' }}"
+              >
+            {%- else -%}
+              <div class="ndh-slide-placeholder"></div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if section.blocks.size == 0 -%}
+        <div class="ndh-slide" style="--slide-index:0;--total:1;--cycle:6s;">
+          <div class="ndh-slide-placeholder"></div>
         </div>
       {%- endif -%}
-    {%- endfor -%}
-
-    <!-- Fallback if no blocks -->
-    {%- if section.blocks.size == 0 -%}
-      <div class="ndh-slide" style="--slide-index:0;--total:1;--cycle:6s;">
-        <div class="ndh-slide-placeholder"></div>
-      </div>
-    {%- endif -%}
-  </div>
+    </div>
+  {%- endif -%}
 
   <!-- Overlay layers -->
-  <!-- Top-left darkener covers any baked-in image text -->
   <div class="ndh-overlay-topleft"></div>
-  <!-- Main gradient overlay -->
   <div class="ndh-overlay" style="background:{{ section.settings.overlay_color }};opacity:{{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
-  <!-- Vignette -->
   <div class="ndh-vignette"></div>
 
   <!-- Content -->
@@ -97,7 +116,6 @@
       </p>
     {%- endif -%}
 
-    <!-- CTA — smooth scroll to #new-drop -->
     {%- if section.settings.cta_text != blank -%}
       <div class="ndh-cta-wrap" style="animation-delay:1.7s;">
         <a
@@ -107,7 +125,7 @@
         >
           {{ section.settings.cta_text }}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;">
-            <polyline points="6 9 12 15 18 9" transform="rotate(0)"/>
+            <polyline points="6 9 12 15 18 9"/>
           </svg>
         </a>
       </div>
@@ -115,20 +133,22 @@
 
   </div>
 
-  <!-- Slide dots -->
-  {%- if slide_count > 1 and section.settings.show_dots -%}
-    <div class="ndh-dots" role="list" aria-label="Slide indicators">
-      {%- for block in section.blocks -%}
-        {%- if block.type == 'slide' -%}
-          <span
-            class="ndh-dot"
-            style="--slide-index:{{ forloop.index0 }};--total:{{ slide_count }};--cycle:{{ cycle_duration }}s;"
-            role="listitem"
-          ></span>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
-  {%- endif -%}
+  <!-- Slide dots (only when using image slideshow) -->
+  {%- unless has_video -%}
+    {%- if slide_count > 1 and section.settings.show_dots -%}
+      <div class="ndh-dots" role="list" aria-label="Slide indicators">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'slide' -%}
+            <span
+              class="ndh-dot"
+              style="--slide-index:{{ forloop.index0 }};--total:{{ slide_count }};--cycle:{{ cycle_duration }}s;"
+              role="listitem"
+            ></span>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endunless -%}
 
   <!-- Scroll arrow -->
   <a
@@ -158,7 +178,21 @@
   justify-content: {%- if section.settings.content_align == 'center' -%}center{%- elsif section.settings.content_align == 'right' -%}flex-end{%- else -%}flex-start{%- endif -%};
 }
 
-/* ── Slides ── */
+/* ── Video background ── */
+.ndh-video-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.ndh-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ── Image slideshow ── */
 .ndh-slides {
   position: absolute;
   inset: 0;
@@ -187,17 +221,13 @@
   background: linear-gradient(135deg, #111 0%, #222 100%);
 }
 
-/* Ken Burns: alternates direction per slide for variety */
 .ndh-slide:nth-child(odd)  .ndh-slide-img { animation-name: ndh-kenburns-a; }
 .ndh-slide:nth-child(even) .ndh-slide-img { animation-name: ndh-kenburns-b; }
 
 @keyframes ndh-slide-anim {
   0%                               { opacity: 0; }
-  /* Fade in */
   calc(4% / var(--total) * 100%)   { opacity: 1; }
-  /* Hold */
   calc((100% / var(--total)) - 6%) { opacity: 1; }
-  /* Fade out */
   calc(100% / var(--total))        { opacity: 0; }
   100%                             { opacity: 0; }
 }
@@ -219,24 +249,15 @@
   pointer-events: none;
 }
 
-/* Covers baked-in text in top-left of images */
 .ndh-overlay-topleft {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 30%;
+  top: 0; left: 0;
+  width: 50%; height: 30%;
   pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    rgba(0,0,0,0.92) 0%,
-    rgba(0,0,0,0.5) 60%,
-    transparent 100%
-  );
+  background: linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
   z-index: 2;
 }
 
-/* Covers baked-in "STAY TUNED" etc. in bottom */
 .ndh-vignette {
   position: absolute;
   inset: 0;
@@ -256,7 +277,6 @@
 .ndh-content--center { text-align: center; margin: 0 auto; }
 .ndh-content--right  { text-align: right; }
 
-/* ── Eyebrow ── */
 .ndh-eyebrow-wrap {
   overflow: hidden;
   margin-bottom: 20px;
@@ -273,7 +293,6 @@
   gap: 0;
 }
 
-/* ── Title ── */
 .ndh-title {
   font-family: 'Fraunces',Georgia,serif;
   line-height: 0.9;
@@ -286,7 +305,6 @@
   overflow: hidden;
 }
 
-/* ── Character-by-character reveal ── */
 .ndh-char {
   display: inline-block;
   opacity: 0;
@@ -294,21 +312,13 @@
   animation: ndh-char-in 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-.ndh-char--title {
-  animation-duration: 0.7s;
-}
-
-/* Spaces */
-.ndh-char:empty { display: inline; }
+.ndh-char--title { animation-duration: 0.7s; }
+.ndh-char:empty  { display: inline; }
 
 @keyframes ndh-char-in {
-  to {
-    opacity: 1;
-    transform: translateY(0) skewY(0deg);
-  }
+  to { opacity: 1; transform: translateY(0) skewY(0deg); }
 }
 
-/* ── Subheading ── */
 .ndh-sub {
   font-size: 15px;
   line-height: 1.7;
@@ -321,7 +331,6 @@
 
 .ndh-content--center .ndh-sub { margin: 0 auto 36px; }
 
-/* ── CTA ── */
 .ndh-cta-wrap {
   opacity: 0;
   transform: translateY(16px);
@@ -332,11 +341,9 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Scroll arrow ── */
 .ndh-scroll-arrow {
   position: absolute;
-  bottom: 36px;
-  left: 50%;
+  bottom: 36px; left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
@@ -355,24 +362,20 @@
   50%       { transform: translateX(-50%) translateY(6px); }
 }
 
-/* ── Slide dots ── */
 .ndh-dots {
   position: absolute;
-  bottom: 40px;
-  right: 40px;
+  bottom: 40px; right: 40px;
   z-index: 10;
   display: flex;
   gap: 8px;
 }
 
 .ndh-dot {
-  width: 6px;
-  height: 6px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: rgba(255,255,255,0.3);
   animation: ndh-dot-anim var(--cycle) ease-in-out infinite;
   animation-delay: calc(var(--slide-index) * (var(--cycle) / var(--total)));
-  transition: background 0.3s;
 }
 
 @keyframes ndh-dot-anim {
@@ -383,7 +386,6 @@
   100%                             { background: rgba(255,255,255,0.3); transform: scale(1); }
 }
 
-/* ── Responsive ── */
 @media (max-width: 768px) {
   .ndh-content { padding: 40px 24px; }
   .ndh-scroll-arrow { bottom: 20px; }
@@ -395,6 +397,16 @@
 {
   "name": "New Drop Hero",
   "settings": [
+    {
+      "type": "header",
+      "content": "Video Background"
+    },
+    {
+      "type": "video",
+      "id": "hero_video",
+      "label": "Background video",
+      "info": "Upload an MP4 under 50MB. Video replaces the image slideshow when set. Plays muted and loops automatically."
+    },
     {
       "type": "header",
       "content": "Layout & Size"
@@ -425,7 +437,7 @@
       "label": "Content alignment",
       "options": [
         { "value": "left",   "label": "Left" },
-        { "value": "center", "label": "Center" },
+        { "value": "center", "label": "Centre" },
         { "value": "right",  "label": "Right" }
       ],
       "default": "left"
@@ -433,7 +445,7 @@
     {
       "type": "color",
       "id": "bg_color",
-      "label": "Background color",
+      "label": "Background colour",
       "default": "#0a0a0a"
     },
     {
@@ -443,7 +455,7 @@
     {
       "type": "color",
       "id": "overlay_color",
-      "label": "Overlay color",
+      "label": "Overlay colour",
       "default": "#000000"
     },
     {
@@ -469,13 +481,13 @@
     {
       "type": "color",
       "id": "eyebrow_color",
-      "label": "Eyebrow color",
+      "label": "Eyebrow colour",
       "default": "#aaaaaa"
     },
     {
       "type": "textarea",
       "id": "heading",
-      "label": "Heading (use line breaks for multi-line animation)",
+      "label": "Heading (line breaks = separate animation lines)",
       "default": "SOMETHING\nCOOL IS\nCOMING."
     },
     {
@@ -491,7 +503,7 @@
     {
       "type": "color",
       "id": "heading_color",
-      "label": "Heading color",
+      "label": "Heading colour",
       "default": "#ffffff"
     },
     {
@@ -503,7 +515,7 @@
     {
       "type": "color",
       "id": "sub_color",
-      "label": "Subheading color",
+      "label": "Subheading colour",
       "default": "#aaaaaa"
     },
     {
@@ -534,14 +546,14 @@
     {
       "type": "checkbox",
       "id": "show_dots",
-      "label": "Show slide dots",
+      "label": "Show slide dots (image mode only)",
       "default": true
     }
   ],
   "blocks": [
     {
       "type": "slide",
-      "name": "Slide",
+      "name": "Slide (image fallback)",
       "settings": [
         {
           "type": "image_picker",
