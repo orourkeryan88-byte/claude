@@ -1,0 +1,28 @@
+<div style="max-width:var(--max-width);margin:0 auto;padding:80px 40px;">
+  <div class="section-header" style="margin-bottom:60px;">
+    <h1 class="section-title" data-reveal="up">{{ blog.title }}</h1>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:40px;">
+    {%- for article in blog.articles -%}
+      <article data-reveal="up" data-reveal-delay="{{ forloop.index | times: 100 }}">
+        {%- if article.image -%}
+          <a href="{{ article.url }}">
+            <div style="aspect-ratio:16/9;overflow:hidden;background:#f0f0f0;margin-bottom:16px;">
+              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt }}" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+          </a>
+        {%- endif -%}
+        <p style="font-size:11px;letter-spacing:0.15em;color:#999;text-transform:uppercase;margin-bottom:8px;">
+          {{ article.published_at | date: '%B %d, %Y' }}
+        </p>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.03em;margin-bottom:12px;">
+          <a href="{{ article.url }}">{{ article.title }}</a>
+        </h2>
+        <p style="font-size:14px;color:#666;line-height:1.7;">{{ article.excerpt | strip_html | truncate: 120 }}</p>
+        <a href="{{ article.url }}" class="btn btn--outline" style="margin-top:16px;padding:10px 20px;font-size:11px;">
+          Read More
+        </a>
+      </article>
+    {%- endfor -%}
+  </div>
+</div>

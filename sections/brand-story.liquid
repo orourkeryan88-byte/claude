@@ -1,0 +1,87 @@
+<section class="brand-story" aria-label="Brand story">
+
+  <div class="brand-story-content">
+    <p class="brand-story-eyebrow" data-reveal="fade">
+      {{ section.settings.eyebrow | default: 'Join the Club' }}
+    </p>
+    <h2 class="brand-story-title" data-reveal="up" data-reveal-delay="100">
+      {{ section.settings.heading | default: 'Built for the Club.' }}
+    </h2>
+    <p class="brand-story-desc" data-reveal="up" data-reveal-delay="200">
+      {{ section.settings.description | default: "Relier is more than clothing. It's a community built around confidence, style, and everyday essentials designed to stand out without trying too hard." }}
+    </p>
+    <div data-reveal="up" data-reveal-delay="350">
+      <a href="{{ section.settings.cta_link | default: '/pages/about' }}" class="btn btn--primary-light">
+        {{ section.settings.cta_text | default: 'Learn More' }}
+      </a>
+    </div>
+  </div>
+
+  <div class="brand-story-image" data-reveal="scale">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1200 }}"
+        srcset="{{ section.settings.image | image_url: width: 800 }} 800w,
+                {{ section.settings.image | image_url: width: 1200 }} 1200w"
+        sizes="50vw"
+        alt="{{ section.settings.image.alt | default: 'Relier Clothing' }}"
+        loading="lazy"
+        width="800"
+        height="640"
+      >
+    {%- else -%}
+      <div style="width:100%;height:100%;min-height:480px;background:linear-gradient(135deg,#1a1a1a,#333);display:flex;align-items:center;justify-content:center;">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(255,255,255,0.1);letter-spacing:0.1em;">RELIER</span>
+      </div>
+    {%- endif -%}
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Join the Club"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built for the Club."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Relier is more than clothing. It's a community built around confidence, style, and everyday essentials designed to stand out without trying too hard."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Story",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,79 @@
+<!-- Product card snippet — used in collection + featured grids -->
+{%- liquid
+  assign delay = index | default: 0 | times: 150
+  assign card_image = product.featured_image
+  assign first_variant = product.first_available_variant
+  assign card_price = first_variant.price | money
+-%}
+
+<div class="product-card" data-reveal="up" data-reveal-delay="{{ delay }}">
+  <div class="product-card-inner">
+
+    <div class="product-card-image">
+      {%- if card_image -%}
+        <a href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+          <img
+            src="{{ card_image | image_url: width: 600 }}"
+            srcset="{{ card_image | image_url: width: 400 }} 400w,
+                    {{ card_image | image_url: width: 600 }} 600w,
+                    {{ card_image | image_url: width: 800 }} 800w"
+            sizes="(max-width: 768px) 50vw, 33vw"
+            alt="{{ card_image.alt | default: product.title | escape }}"
+            loading="lazy"
+            width="600"
+            height="600"
+          >
+        </a>
+      {%- else -%}
+        <a href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </a>
+      {%- endif -%}
+
+      <div class="product-card-overlay">
+        <a href="{{ product.url }}" class="btn btn--primary-light">
+          View Product
+        </a>
+      </div>
+    </div>
+
+    <div class="product-card-info">
+      <a href="{{ product.url }}">
+        <p class="product-card-name">{{ product.title }}</p>
+      </a>
+      <p class="product-card-price">
+        {%- if product.compare_at_price > product.price -%}
+          <s style="opacity:0.5;margin-right:8px;">{{ product.compare_at_price | money }}</s>
+        {%- endif -%}
+        {{ product.price | money }}
+      </p>
+
+      {%- assign color_option = product.options_with_values | where: 'name', 'Color' | first -%}
+      {%- if color_option -%}
+        <div class="product-card-swatches" role="list" aria-label="Available colors">
+          {%- for value in color_option.values limit: 5 -%}
+            {%- liquid
+              assign swatch_color = value | downcase | replace: ' ', '-'
+              assign is_first = forloop.first
+            -%}
+            <span
+              class="swatch{% if is_first %} active{% endif %}"
+              role="listitem"
+              title="{{ value }}"
+              aria-label="{{ value }}"
+              style="background: {{ value | downcase }};"
+            ></span>
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <!-- Fallback swatches for caps with no color option -->
+        <div class="product-card-swatches">
+          <span class="swatch active" style="background:#0a0a0a;" title="Black"></span>
+          <span class="swatch" style="background:#f4e0e2;" title="Pink"></span>
+          <span class="swatch" style="background:#c8dae8;" title="Blue"></span>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>

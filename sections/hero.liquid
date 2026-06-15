@@ -1,0 +1,109 @@
+<!-- ============================================================
+     HERO SECTION
+     Animation 1: Cinematic text reveal — CSS clip-path slide
+     Each word in the headline slides up from behind a mask.
+     Eyebrow, description, and CTA stagger in after.
+     ============================================================ -->
+<section class="hero-section" aria-label="Hero">
+
+  {%- if section.settings.bg_image != blank -%}
+    <img
+      class="hero-bg"
+      src="{{ section.settings.bg_image | image_url: width: 1920 }}"
+      srcset="{{ section.settings.bg_image | image_url: width: 768 }} 768w,
+              {{ section.settings.bg_image | image_url: width: 1280 }} 1280w,
+              {{ section.settings.bg_image | image_url: width: 1920 }} 1920w"
+      sizes="100vw"
+      alt="{{ section.settings.bg_image.alt | default: 'Relier Clothing hero' }}"
+      loading="eager"
+      fetchpriority="high"
+    >
+  {%- else -%}
+    <!-- Placeholder gradient when no image is set -->
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);"></div>
+  {%- endif -%}
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">
+      <span>{{ section.settings.eyebrow | default: 'Premium Headwear' }}</span>
+    </p>
+
+    <h1 class="hero-title" aria-label="{{ section.settings.heading | default: 'Relier Club' }}">
+      {%- assign words = section.settings.heading | default: 'RELIER CLUB' | split: ' ' -%}
+      {%- for word in words -%}
+        <span class="word-wrap"><span class="word">{{ word }}</span></span>
+        {%- unless forloop.last -%}&nbsp;{%- endunless -%}
+      {%- endfor -%}
+    </h1>
+
+    <div class="hero-desc">
+      <span>{{ section.settings.description | default: 'Premium headwear designed for everyday wear. Built for the club.' }}</span>
+    </div>
+
+    <div class="hero-cta">
+      <a
+        href="{{ section.settings.cta_link | default: '/collections/caps' }}"
+        class="btn btn--primary-light"
+      >
+        {{ section.settings.cta_text | default: 'Shop Caps' }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="hero-scroll" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Premium Headwear"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (space-separated words animate individually)",
+      "default": "RELIER CLUB"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Premium headwear designed for everyday wear. Built for the club."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Caps"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

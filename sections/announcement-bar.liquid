@@ -1,0 +1,25 @@
+{% if section.settings.show_announcement %}
+<div class="announcement-bar" role="banner">
+  {{ section.settings.text | default: 'FREE SHIPPING ON ORDERS OVER $75' }}
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Announcement text",
+      "default": "FREE SHIPPING ON ORDERS OVER $75"
+    }
+  ]
+}
+{% endschema %}

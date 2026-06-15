@@ -1,0 +1,47 @@
+<section class="newsletter-section">
+  <div class="newsletter-inner">
+
+    <div class="newsletter-content" data-reveal="left">
+      <p class="section-label">{{ section.settings.label | default: 'Join the Club' }}</p>
+      <h2>{{ section.settings.heading | default: 'Be the First to Know' }}</h2>
+      <p>{{ section.settings.description | default: 'Get early access to new drops, restocks and exclusive offers.' }}</p>
+    </div>
+
+    <form class="newsletter-form" data-reveal="right" action="/contact#contact_form" method="post" novalidate>
+      <input type="hidden" name="form_type" value="customer">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="contact[tags]" value="newsletter">
+
+      <label for="newsletter-email" class="visually-hidden">Email address</label>
+      <input
+        id="newsletter-email"
+        class="newsletter-input"
+        type="email"
+        name="contact[email]"
+        placeholder="{{ section.settings.placeholder | default: 'Enter your email' }}"
+        autocomplete="email"
+        required
+      >
+      <button type="submit" class="newsletter-submit">
+        {{ section.settings.submit_text | default: 'Subscribe' }}
+      </button>
+    </form>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "label",       "label": "Label",          "default": "Join the Club" },
+    { "type": "text", "id": "heading",     "label": "Heading",        "default": "Be the First to Know" },
+    { "type": "text", "id": "description", "label": "Description",    "default": "Get early access to new drops, restocks and exclusive offers." },
+    { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "Enter your email" },
+    { "type": "text", "id": "submit_text", "label": "Button text",    "default": "Subscribe" }
+  ],
+  "presets": [
+    { "name": "Newsletter", "category": "Promotional" }
+  ]
+}
+{% endschema %}
