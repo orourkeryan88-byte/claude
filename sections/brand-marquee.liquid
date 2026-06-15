@@ -1,0 +1,48 @@
+<!-- Scrolling brand marquee — editorial divider -->
+<div class="brand-marquee" style="background:{{ section.settings.bg_color }};border-color:{{ section.settings.line_color }};">
+  <div class="brand-marquee-track">
+    {%- assign words = section.settings.words | split: ',' -%}
+    {%- for pass in (1..2) -%}
+      {%- for word in words -%}
+        <span {% if forloop.index | modulo: 2 == 0 %}class="ghost"{% endif %} style="color:{% if forloop.index | modulo: 2 == 0 %}transparent{% else %}{{ section.settings.text_color }}{% endif %};">
+          {{ word | strip }}<i></i>
+        </span>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "words",
+      "label": "Words (comma-separated, alternating filled/outline)",
+      "default": "Relier, Headwear, Built for the Club, Vol. 01"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#0c0b09"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ece5d8"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Border color",
+      "default": "#262017"
+    }
+  ],
+  "presets": [
+    { "name": "Brand Marquee", "category": "Content" }
+  ]
+}
+{% endschema %}

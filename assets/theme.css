@@ -6,35 +6,42 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --black:   #0a0a0a;
-  --white:   #ffffff;
-  --gray-50: #f9f9f9;
-  --gray-100:#f0f0f0;
-  --gray-200:#e0e0e0;
-  --gray-400:#999999;
-  --gray-600:#666666;
-  --gray-800:#333333;
-  --accent:  #0a0a0a;
+  --black:   #0c0b09;   /* warm near-black */
+  --white:   #ece5d8;   /* bone / cream (primary "light") */
+  --pure-white:#ffffff;
+  --gray-50: #f4efe6;
+  --gray-100:#e8e1d5;
+  --gray-200:rgba(12,11,9,.14);
+  --gray-400:#a39a8b;
+  --gray-600:#6a6258;
+  --gray-800:#15120e;
+  --accent:  #0c0b09;
 
-  --font-heading: 'Bebas Neue', 'Impact', sans-serif;
-  --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --bone:    #ece5d8;
+  --line:    rgba(236,229,216,.14);
 
-  --max-width: 1280px;
+  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:    'Space Grotesk', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    'Space Mono', 'SF Mono', ui-monospace, monospace;
+
+  --max-width: 1320px;
   --section-pad: 80px 40px;
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-in-expo:   cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-out-quart: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-expo:   cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
 body {
   font-family: var(--font-body);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.55;
   color: var(--black);
-  background: var(--white);
+  background: var(--pure-white);
   overflow-x: hidden;
 }
+
+::selection { background: var(--black); color: var(--bone); }
 
 img { display: block; max-width: 100%; height: auto; }
 a  { color: inherit; text-decoration: none; }
@@ -48,73 +55,80 @@ ul, ol { list-style: none; }
   padding: 0 40px;
 }
 
-/* ── Typography ── */
+/* ── Typography — editorial serif display ── */
 h1, h2, h3, h4, h5 {
   font-family: var(--font-heading);
-  line-height: 1;
-  letter-spacing: 0.02em;
+  font-weight: 300;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
 }
 
-/* ── Buttons ── */
+/* ── Buttons — pill with sweep fill ── */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 28px;
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  gap: 12px;
+  padding: 17px 30px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  transition: background 0.25s, color 0.25s, transform 0.2s;
-  position: relative;
+  border-radius: 100px;
+  border: 1px solid currentColor;
   overflow: hidden;
+  z-index: 0;
+  transition: color 0.5s var(--ease-out-quart), transform 0.4s var(--ease-out-quart);
 }
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateY(101%);
+  transition: transform 0.6s var(--ease-out-quart);
+}
+
+.btn:hover::before { transform: translateY(0); }
 
 .btn--primary {
   background: var(--black);
-  color: var(--white);
-  border: 2px solid var(--black);
+  color: var(--bone);
+  border-color: var(--black);
 }
-
-.btn--primary:hover {
-  background: transparent;
-  color: var(--black);
-}
+.btn--primary::before { background: var(--bone); }
+.btn--primary:hover { color: var(--black); }
 
 .btn--primary-light {
-  background: var(--white);
+  background: var(--bone);
   color: var(--black);
-  border: 2px solid var(--white);
+  border-color: var(--bone);
 }
-
-.btn--primary-light:hover {
-  background: transparent;
-  color: var(--white);
-}
+.btn--primary-light::before { background: var(--black); }
+.btn--primary-light:hover { color: var(--bone); }
 
 .btn--outline {
   background: transparent;
   color: var(--black);
-  border: 2px solid var(--black);
+  border-color: var(--black);
 }
-
-.btn--outline:hover {
-  background: var(--black);
-  color: var(--white);
-}
+.btn--outline::before { background: var(--black); }
+.btn--outline:hover { color: var(--bone); }
 
 /* ============================================================
    ANNOUNCEMENT BAR
    ============================================================ */
 .announcement-bar {
   background: var(--black);
-  color: var(--white);
+  color: var(--bone);
   text-align: center;
-  padding: 10px 20px;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  font-weight: 500;
+  padding: 11px 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  font-weight: 400;
   text-transform: uppercase;
 }
 
@@ -149,13 +163,16 @@ h1, h2, h3, h4, h5 {
 }
 
 .header-nav a {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--black);
+  color: var(--gray-600);
   position: relative;
+  transition: color 0.3s;
 }
+.header-nav a:hover { color: var(--black); }
 
 .header-nav a::after {
   content: '';
@@ -183,14 +200,17 @@ h1, h2, h3, h4, h5 {
 
 .header-logo-text .brand-name {
   font-family: var(--font-heading);
-  font-size: 28px;
-  letter-spacing: 0.2em;
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
   color: var(--black);
 }
 
 .header-logo-text .brand-sub {
-  font-size: 9px;
-  letter-spacing: 0.35em;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.5em;
   font-weight: 500;
   color: var(--gray-600);
   text-transform: uppercase;
@@ -523,21 +543,25 @@ h1, h2, h3, h4, h5 {
 }
 
 .section-label {
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
+  font-weight: 400;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gray-400);
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
 .section-title {
   font-family: var(--font-heading);
-  font-size: clamp(36px, 5vw, 56px);
-  letter-spacing: 0.04em;
+  font-weight: 300;
+  font-size: clamp(40px, 6vw, 88px);
+  letter-spacing: -0.02em;
+  line-height: 0.92;
   color: var(--black);
   margin-bottom: 16px;
 }
+.section-title em { font-style: italic; }
 
 .section-desc {
   font-size: 15px;
@@ -624,16 +648,17 @@ h1, h2, h3, h4, h5 {
 }
 
 .product-card-name {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
   color: var(--black);
   margin-bottom: 6px;
 }
 
 .product-card-price {
-  font-size: 15px;
+  font-family: var(--font-mono);
+  font-size: 13px;
   color: var(--gray-600);
   margin-bottom: 12px;
 }
@@ -1265,3 +1290,66 @@ h1, h2, h3, h4, h5 {
 
   .hero-title { font-size: clamp(52px, 14vw, 72px); }
 }
+
+/* ============================================================
+   EDITORIAL ENHANCEMENTS (Vol.01 redesign)
+   ============================================================ */
+
+/* ── Film grain overlay ── */
+.film-grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 8s steps(6) infinite;
+}
+@keyframes grain-shift {
+  0%{transform:translate(0,0)}10%{transform:translate(-4%,-4%)}
+  30%{transform:translate(3%,-2%)}50%{transform:translate(-2%,3%)}
+  70%{transform:translate(4%,2%)}90%{transform:translate(-3%,4%)}
+}
+
+/* ── Brand marquee (section) ── */
+.brand-marquee {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  padding: 22px 0;
+  background: var(--black);
+}
+.brand-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-run 40s linear infinite;
+}
+.brand-marquee-track span {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(32px, 5vw, 64px);
+  padding: 0 34px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 34px;
+  color: var(--bone);
+}
+.brand-marquee-track span::after {
+  content: '✦';
+  font-size: 0.4em;
+  color: var(--gray-600);
+  font-style: normal;
+}
+.brand-marquee-track .ghost {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gray-600);
+}
+@keyframes marquee-run { to { transform: translateX(-50%); } }
+
+/* ── Editorial section titles support italic accents everywhere ── */
+.new-drop-title em,
+.brand-story-title em,
+.hero-title em { font-style: italic; }

@@ -1,5 +1,14 @@
 {
   "sections": {
+    "brand_marquee": {
+      "type": "brand-marquee",
+      "settings": {
+        "words": "Relier, Headwear, Built for the Club, Vol. 01",
+        "bg_color": "#0c0b09",
+        "text_color": "#ece5d8",
+        "line_color": "#262017"
+      }
+    },
     "new_drop_hero": {
       "type": "new-drop-hero",
       "blocks": {
@@ -192,5 +201,5 @@
       }
     }
   },
-  "order": ["new_drop_hero", "new_drop", "features", "featured_collection", "brand_story", "newsletter"]
+  "order": ["new_drop_hero", "brand_marquee", "new_drop", "features", "featured_collection", "brand_story", "newsletter"]
 }
