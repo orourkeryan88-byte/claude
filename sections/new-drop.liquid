@@ -1,0 +1,458 @@
+<!-- ============================================================
+     NEW DROP SECTION — scroll anchor target from hero CTA
+     ============================================================ -->
+<section
+  id="new-drop"
+  class="new-drop-section"
+  style="background:{{ section.settings.bg_color }};padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="new-drop-inner">
+
+    <!-- Header -->
+    <div class="new-drop-header" data-reveal="up">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="new-drop-eyebrow" style="color:{{ section.settings.eyebrow_color }};">
+          {{ section.settings.eyebrow }}
+        </p>
+      {%- endif -%}
+      <h2 class="new-drop-title" style="color:{{ section.settings.heading_color }};font-size:{{ section.settings.heading_size }}px;">
+        {{ section.settings.heading }}
+      </h2>
+      {%- if section.settings.description != blank -%}
+        <p class="new-drop-desc" style="color:{{ section.settings.desc_color }};" data-reveal="up" data-reveal-delay="150">
+          {{ section.settings.description }}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <!-- Color showcase cards -->
+    <div class="new-drop-colors" data-reveal="up" data-reveal-delay="200">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'colorway' -%}
+          <div class="ndc-card" {{ block.shopify_attributes }}>
+            <div class="ndc-card-image" style="background:{{ block.settings.swatch_color }};">
+              {%- if block.settings.image != blank -%}
+                <img
+                  src="{{ block.settings.image | image_url: width: 700 }}"
+                  alt="{{ block.settings.image.alt | default: block.settings.name }}"
+                  loading="lazy"
+                  width="700"
+                  height="700"
+                >
+              {%- else -%}
+                <div class="ndc-placeholder">
+                  <span>{{ block.settings.name }}</span>
+                </div>
+              {%- endif -%}
+              {%- if block.settings.badge != blank -%}
+                <span class="ndc-badge">{{ block.settings.badge }}</span>
+              {%- endif -%}
+            </div>
+            <div class="ndc-info">
+              <p class="ndc-name" style="color:{{ section.settings.card_text_color }};">{{ block.settings.name }}</p>
+              {%- if block.settings.price != blank -%}
+                <p class="ndc-price" style="color:{{ section.settings.card_meta_color }};">{{ block.settings.price }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <!-- Fallback placeholder cards -->
+      {%- if section.blocks.size == 0 -%}
+        <div class="ndc-card">
+          <div class="ndc-card-image" style="background:#1a2440;">
+            <div class="ndc-placeholder"><span>Navy</span></div>
+          </div>
+          <div class="ndc-info">
+            <p class="ndc-name" style="color:{{ section.settings.card_text_color }};">Relier Club Cap — Navy</p>
+            <p class="ndc-price" style="color:{{ section.settings.card_meta_color }};">$45.00</p>
+          </div>
+        </div>
+        <div class="ndc-card">
+          <div class="ndc-card-image" style="background:#8eaac4;">
+            <div class="ndc-placeholder"><span>Blue</span></div>
+          </div>
+          <div class="ndc-info">
+            <p class="ndc-name" style="color:{{ section.settings.card_text_color }};">Relier Club Cap — Blue</p>
+            <p class="ndc-price" style="color:{{ section.settings.card_meta_color }};">$45.00</p>
+          </div>
+        </div>
+        <div class="ndc-card">
+          <div class="ndc-card-image" style="background:#c47e8a;">
+            <div class="ndc-placeholder"><span>Pink</span></div>
+          </div>
+          <div class="ndc-info">
+            <p class="ndc-name" style="color:{{ section.settings.card_text_color }};">Relier Club Cap — Pink</p>
+            <p class="ndc-price" style="color:{{ section.settings.card_meta_color }};">$45.00</p>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- CTA row -->
+    <div class="new-drop-cta" data-reveal="up" data-reveal-delay="350">
+      {%- if section.settings.cta_text != blank -%}
+        <a href="{{ section.settings.cta_link | default: '/collections/all' }}" class="btn btn--{{ section.settings.btn_style }}">
+          {{ section.settings.cta_text }}
+        </a>
+      {%- endif -%}
+      {%- if section.settings.cta2_text != blank -%}
+        <a href="{{ section.settings.cta2_link | default: '#' }}" class="btn btn--{{ section.settings.btn2_style }}" style="margin-left:12px;">
+          {{ section.settings.cta2_text }}
+        </a>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+<style>
+.new-drop-section { position: relative; }
+
+.new-drop-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.new-drop-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.new-drop-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.new-drop-title {
+  font-family: 'Bebas Neue', sans-serif;
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+}
+
+.new-drop-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ── Color cards ── */
+.new-drop-colors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 56px;
+}
+
+.ndc-card {
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.25,1,0.5,1);
+}
+
+.ndc-card:hover { transform: translateY(-8px); }
+
+.ndc-card-image {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.ndc-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25,1,0.5,1);
+}
+
+.ndc-card:hover .ndc-card-image img { transform: scale(1.06); }
+
+.ndc-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ndc-placeholder span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25);
+}
+
+.ndc-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+}
+
+.ndc-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ndc-price {
+  font-size: 15px;
+}
+
+/* ── CTA row ── */
+.new-drop-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .new-drop-inner { padding: 0 20px; }
+  .new-drop-colors { grid-template-columns: 1fr; gap: 16px; }
+  .ndc-card-image { aspect-ratio: 4/3; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "New Drop",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Now Available"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The New Drop"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 40,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 80
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Three colorways. One cap. Built for the club — drop yours before they're gone."
+    },
+    {
+      "type": "header",
+      "content": "Primary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop the Drop"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "btn_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary",       "label": "Black filled" },
+        { "value": "primary-light", "label": "White filled" },
+        { "value": "outline",       "label": "Outlined" }
+      ],
+      "default": "primary-light"
+    },
+    {
+      "type": "header",
+      "content": "Secondary CTA (optional)"
+    },
+    {
+      "type": "text",
+      "id": "cta2_text",
+      "label": "Button 2 text"
+    },
+    {
+      "type": "url",
+      "id": "cta2_link",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "select",
+      "id": "btn2_style",
+      "label": "Button 2 style",
+      "options": [
+        { "value": "outline",       "label": "Outlined" },
+        { "value": "primary",       "label": "Black filled" },
+        { "value": "primary-light", "label": "White filled" }
+      ],
+      "default": "outline"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#aaaaaa"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Card name color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_meta_color",
+      "label": "Card price color",
+      "default": "#888888"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 40,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 40,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "colorway",
+      "name": "Colorway card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Cap image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Relier Club Cap"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "$45.00"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge text (e.g. New, Limited)",
+          "info": "Leave blank to hide"
+        },
+        {
+          "type": "color",
+          "id": "swatch_color",
+          "label": "Placeholder background color",
+          "default": "#1a2440"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "New Drop",
+      "category": "Promotional",
+      "blocks": [
+        {
+          "type": "colorway",
+          "settings": {
+            "name": "Relier Club Cap — Navy",
+            "price": "$45.00",
+            "badge": "New",
+            "swatch_color": "#1a2440"
+          }
+        },
+        {
+          "type": "colorway",
+          "settings": {
+            "name": "Relier Club Cap — Blue",
+            "price": "$45.00",
+            "swatch_color": "#8eaac4"
+          }
+        },
+        {
+          "type": "colorway",
+          "settings": {
+            "name": "Relier Club Cap — Pink",
+            "price": "$45.00",
+            "swatch_color": "#c4828e"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

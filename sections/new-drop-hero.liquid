@@ -1,0 +1,567 @@
+<!-- ============================================================
+     NEW DROP HERO
+     - CSS-animated image carousel (Ken Burns per slide)
+     - Staggered cinematic text reveal
+     - Click-to-scroll CTA → #new-drop anchor
+     ============================================================ -->
+{%- liquid
+  assign slide_count = section.blocks | where: 'type', 'slide' | size
+  if slide_count == 0
+    assign slide_count = 1
+  endif
+  assign cycle_duration = slide_count | times: 6
+-%}
+
+<section class="ndh-section" id="new-drop-hero" aria-label="New drop hero">
+
+  <!-- Slideshow -->
+  <div class="ndh-slides" aria-hidden="true">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'slide' -%}
+        <div
+          class="ndh-slide"
+          style="--slide-index:{{ forloop.index0 }};--total:{{ slide_count }};--cycle:{{ cycle_duration }}s;"
+          {{ block.shopify_attributes }}
+        >
+          {%- if block.settings.image != blank -%}
+            <img
+              class="ndh-slide-img"
+              src="{{ block.settings.image | image_url: width: 1920 }}"
+              srcset="{{ block.settings.image | image_url: width: 900 }} 900w,
+                      {{ block.settings.image | image_url: width: 1400 }} 1400w,
+                      {{ block.settings.image | image_url: width: 1920 }} 1920w"
+              sizes="100vw"
+              alt="{{ block.settings.image.alt | default: 'Relier cap' }}"
+              loading="{{ forloop.first | iif: 'eager', 'lazy' }}"
+            >
+          {%- else -%}
+            <div class="ndh-slide-placeholder"></div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <!-- Fallback if no blocks -->
+    {%- if section.blocks.size == 0 -%}
+      <div class="ndh-slide" style="--slide-index:0;--total:1;--cycle:6s;">
+        <div class="ndh-slide-placeholder"></div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <!-- Overlay layers -->
+  <!-- Top-left darkener covers any baked-in image text -->
+  <div class="ndh-overlay-topleft"></div>
+  <!-- Main gradient overlay -->
+  <div class="ndh-overlay" style="background:{{ section.settings.overlay_color }};opacity:{{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+  <!-- Vignette -->
+  <div class="ndh-vignette"></div>
+
+  <!-- Content -->
+  <div class="ndh-content ndh-content--{{ section.settings.content_align }}">
+
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="ndh-eyebrow-wrap">
+        <p class="ndh-eyebrow" style="color:{{ section.settings.eyebrow_color }};">
+          {%- assign eyebrow_words = section.settings.eyebrow | split: ' ' -%}
+          {%- for w in eyebrow_words -%}
+            <span class="ndh-char" style="animation-delay:{{ forloop.index0 | times: 0.05 | plus: 0.3 }}s;">{{ w }}&nbsp;</span>
+          {%- endfor -%}
+        </p>
+      </div>
+    {%- endif -%}
+
+    <h1 class="ndh-title" aria-label="{{ section.settings.heading }}">
+      {%- assign lines = section.settings.heading | newline_to_br | split: '<br />' -%}
+      {%- assign char_offset = 0 -%}
+      {%- for line in lines -%}
+        <span class="ndh-title-line">
+          {%- assign chars = line | strip | split: '' -%}
+          {%- for char in chars -%}
+            {%- assign delay = char_offset | times: 0.03 | plus: 0.6 -%}
+            <span
+              class="ndh-char ndh-char--title"
+              style="color:{{ section.settings.heading_color }};animation-delay:{{ delay }}s;font-size:{{ section.settings.heading_size }}px;"
+              aria-hidden="true"
+            >{{ char }}</span>
+            {%- assign char_offset = char_offset | plus: 1 -%}
+          {%- endfor -%}
+        </span>
+        {%- unless forloop.last -%}<br>{%- endunless -%}
+      {%- endfor -%}
+    </h1>
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="ndh-sub" style="color:{{ section.settings.sub_color }};animation-delay:1.4s;">
+        {{ section.settings.subheading }}
+      </p>
+    {%- endif -%}
+
+    <!-- CTA — smooth scroll to #new-drop -->
+    {%- if section.settings.cta_text != blank -%}
+      <div class="ndh-cta-wrap" style="animation-delay:1.7s;">
+        <a
+          href="#new-drop"
+          class="ndh-cta btn btn--{{ section.settings.btn_style }}"
+          onclick="event.preventDefault();document.getElementById('new-drop').scrollIntoView({behavior:'smooth'});"
+        >
+          {{ section.settings.cta_text }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;">
+            <polyline points="6 9 12 15 18 9" transform="rotate(0)"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  <!-- Slide dots -->
+  {%- if slide_count > 1 and section.settings.show_dots -%}
+    <div class="ndh-dots" role="list" aria-label="Slide indicators">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'slide' -%}
+          <span
+            class="ndh-dot"
+            style="--slide-index:{{ forloop.index0 }};--total:{{ slide_count }};--cycle:{{ cycle_duration }}s;"
+            role="listitem"
+          ></span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <!-- Scroll arrow -->
+  <a
+    class="ndh-scroll-arrow"
+    href="#new-drop"
+    aria-label="Scroll to new drop"
+    onclick="event.preventDefault();document.getElementById('new-drop').scrollIntoView({behavior:'smooth'});"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </a>
+
+</section>
+
+<style>
+/* ── New Drop Hero ── */
+.ndh-section {
+  position: relative;
+  width: 100%;
+  height: {{ section.settings.height }}vh;
+  min-height: {{ section.settings.min_height }}px;
+  overflow: hidden;
+  background: {{ section.settings.bg_color }};
+  display: flex;
+  align-items: center;
+  justify-content: {%- if section.settings.content_align == 'center' -%}center{%- elsif section.settings.content_align == 'right' -%}flex-end{%- else -%}flex-start{%- endif -%};
+}
+
+/* ── Slides ── */
+.ndh-slides {
+  position: absolute;
+  inset: 0;
+}
+
+.ndh-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: ndh-slide-anim var(--cycle) ease-in-out infinite;
+  animation-delay: calc(var(--slide-index) * (var(--cycle) / var(--total)));
+}
+
+.ndh-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  animation: ndh-kenburns var(--cycle) ease-in-out infinite;
+  animation-delay: calc(var(--slide-index) * (var(--cycle) / var(--total)));
+}
+
+.ndh-slide-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #111 0%, #222 100%);
+}
+
+/* Ken Burns: alternates direction per slide for variety */
+.ndh-slide:nth-child(odd)  .ndh-slide-img { animation-name: ndh-kenburns-a; }
+.ndh-slide:nth-child(even) .ndh-slide-img { animation-name: ndh-kenburns-b; }
+
+@keyframes ndh-slide-anim {
+  0%                               { opacity: 0; }
+  /* Fade in */
+  calc(4% / var(--total) * 100%)   { opacity: 1; }
+  /* Hold */
+  calc((100% / var(--total)) - 6%) { opacity: 1; }
+  /* Fade out */
+  calc(100% / var(--total))        { opacity: 0; }
+  100%                             { opacity: 0; }
+}
+
+@keyframes ndh-kenburns-a {
+  0%   { transform: scale(1.08) translate(1%, 1%); }
+  100% { transform: scale(1.0)  translate(-1%, -1%); }
+}
+
+@keyframes ndh-kenburns-b {
+  0%   { transform: scale(1.0)  translate(0, 0); }
+  100% { transform: scale(1.08) translate(-2%, 1%); }
+}
+
+/* ── Overlays ── */
+.ndh-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Covers baked-in text in top-left of images */
+.ndh-overlay-topleft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 30%;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(0,0,0,0.92) 0%,
+    rgba(0,0,0,0.5) 60%,
+    transparent 100%
+  );
+  z-index: 2;
+}
+
+/* Covers baked-in "STAY TUNED" etc. in bottom */
+.ndh-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.55) 100%);
+  z-index: 2;
+}
+
+/* ── Content ── */
+.ndh-content {
+  position: relative;
+  z-index: 10;
+  padding: 60px 80px;
+  max-width: 800px;
+}
+
+.ndh-content--center { text-align: center; margin: 0 auto; }
+.ndh-content--right  { text-align: right; }
+
+/* ── Eyebrow ── */
+.ndh-eyebrow-wrap {
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.ndh-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+/* ── Title ── */
+.ndh-title {
+  font-family: 'Bebas Neue', sans-serif;
+  line-height: 0.9;
+  margin: 0 0 28px;
+  letter-spacing: 0.04em;
+}
+
+.ndh-title-line {
+  display: block;
+  overflow: hidden;
+}
+
+/* ── Character-by-character reveal ── */
+.ndh-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%) skewY(4deg);
+  animation: ndh-char-in 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.ndh-char--title {
+  animation-duration: 0.7s;
+}
+
+/* Spaces */
+.ndh-char:empty { display: inline; }
+
+@keyframes ndh-char-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+}
+
+/* ── Subheading ── */
+.ndh-sub {
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 440px;
+  margin: 0 0 36px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: ndh-fade-up 0.7s cubic-bezier(0.25,1,0.5,1) forwards;
+}
+
+.ndh-content--center .ndh-sub { margin: 0 auto 36px; }
+
+/* ── CTA ── */
+.ndh-cta-wrap {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: ndh-fade-up 0.7s cubic-bezier(0.25,1,0.5,1) forwards;
+}
+
+@keyframes ndh-fade-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scroll arrow ── */
+.ndh-scroll-arrow {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: ndh-fade-up 1s ease 2s forwards, ndh-bounce 2s ease-in-out 3s infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.ndh-scroll-arrow:hover { opacity: 0.8 !important; }
+
+@keyframes ndh-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ── Slide dots ── */
+.ndh-dots {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.ndh-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  animation: ndh-dot-anim var(--cycle) ease-in-out infinite;
+  animation-delay: calc(var(--slide-index) * (var(--cycle) / var(--total)));
+  transition: background 0.3s;
+}
+
+@keyframes ndh-dot-anim {
+  0%                               { background: rgba(255,255,255,0.3); transform: scale(1); }
+  calc(4% / var(--total) * 100%)   { background: rgba(255,255,255,1);   transform: scale(1.5); }
+  calc((100% / var(--total)) - 6%) { background: rgba(255,255,255,1);   transform: scale(1.5); }
+  calc(100% / var(--total))        { background: rgba(255,255,255,0.3); transform: scale(1); }
+  100%                             { background: rgba(255,255,255,0.3); transform: scale(1); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ndh-content { padding: 40px 24px; }
+  .ndh-scroll-arrow { bottom: 20px; }
+  .ndh-dots { bottom: 20px; right: 20px; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "New Drop Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout & Size"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Section height",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 400,
+      "max": 900,
+      "step": 50,
+      "unit": "px",
+      "label": "Minimum height",
+      "default": 600
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 45
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "New Drop"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#aaaaaa"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading (use line breaks for multi-line animation)",
+      "default": "SOMETHING\nCOOL IS\nCOMING."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 48,
+      "max": 180,
+      "step": 4,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 120
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "The next chapter of Relier Club. Three colorways. One statement."
+    },
+    {
+      "type": "color",
+      "id": "sub_color",
+      "label": "Subheading color",
+      "default": "#aaaaaa"
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "See the Drop"
+    },
+    {
+      "type": "select",
+      "id": "btn_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary-light", "label": "White filled" },
+        { "value": "outline",       "label": "White outlined" },
+        { "value": "primary",       "label": "Black filled" }
+      ],
+      "default": "primary-light"
+    },
+    {
+      "type": "header",
+      "content": "Extras"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show slide dots",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Slide image"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "New Drop Hero",
+      "category": "Image",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" },
+        { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

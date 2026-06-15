@@ -1,25 +1,100 @@
 {
   "sections": {
-    "hero": {
-      "type": "hero",
+    "new_drop_hero": {
+      "type": "new-drop-hero",
+      "blocks": {
+        "slide1": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide2": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide3": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide4": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide5": {
+          "type": "slide",
+          "settings": {}
+        }
+      },
+      "block_order": ["slide1", "slide2", "slide3", "slide4", "slide5"],
       "settings": {
-        "fallback_color": "#0a0a0a",
-        "min_height": 90,
-        "overlay_opacity": 70,
-        "overlay_direction": "right",
-        "content_position": "left",
-        "eyebrow": "Premium Headwear",
+        "height": 100,
+        "min_height": 600,
+        "content_align": "left",
+        "bg_color": "#0a0a0a",
+        "overlay_color": "#000000",
+        "overlay_opacity": 45,
+        "eyebrow": "New Drop",
         "eyebrow_color": "#aaaaaa",
-        "heading": "RELIER CLUB",
-        "heading_size": 100,
+        "heading": "SOMETHING\nCOOL IS\nCOMING.",
+        "heading_size": 120,
         "heading_color": "#ffffff",
-        "description": "Premium headwear designed for everyday wear. Built for the club.",
-        "desc_color": "#cccccc",
-        "cta_text": "Shop Caps",
+        "subheading": "The next chapter of Relier Club. Three colorways. One statement.",
+        "sub_color": "#aaaaaa",
+        "cta_text": "See the Drop",
+        "btn_style": "primary-light",
+        "show_dots": true
+      }
+    },
+    "new_drop": {
+      "type": "new-drop",
+      "blocks": {
+        "navy": {
+          "type": "colorway",
+          "settings": {
+            "name": "Relier Club Cap — Navy",
+            "price": "$45.00",
+            "badge": "New",
+            "swatch_color": "#1a2440"
+          }
+        },
+        "blue": {
+          "type": "colorway",
+          "settings": {
+            "name": "Relier Club Cap — Blue",
+            "price": "$45.00",
+            "badge": "",
+            "swatch_color": "#8eaac4"
+          }
+        },
+        "pink": {
+          "type": "colorway",
+          "settings": {
+            "name": "Relier Club Cap — Pink",
+            "price": "$45.00",
+            "badge": "",
+            "swatch_color": "#c4828e"
+          }
+        }
+      },
+      "block_order": ["navy", "blue", "pink"],
+      "settings": {
+        "eyebrow": "Now Available",
+        "heading": "The New Drop",
+        "heading_size": 80,
+        "description": "Three colorways. One cap. Built for the club — drop yours before they're gone.",
+        "cta_text": "Shop the Drop",
         "cta_link": "/collections/caps",
         "btn_style": "primary-light",
-        "show_scroll_indicator": true,
-        "scroll_color": "#888888"
+        "cta2_text": "View All Caps",
+        "cta2_link": "/collections/all",
+        "btn2_style": "outline",
+        "bg_color": "#0a0a0a",
+        "eyebrow_color": "#666666",
+        "heading_color": "#ffffff",
+        "desc_color": "#aaaaaa",
+        "card_text_color": "#ffffff",
+        "card_meta_color": "#888888",
+        "padding_top": 120,
+        "padding_bottom": 120
       }
     },
     "features": {
@@ -52,7 +127,7 @@
       },
       "block_order": ["feat1", "feat2", "feat3"],
       "settings": {
-        "bg_color": "#0a0a0a",
+        "bg_color": "#111111",
         "divider_color": "#333333",
         "icon_color": "#ffffff",
         "title_color": "#ffffff",
@@ -117,5 +192,5 @@
       }
     }
   },
-  "order": ["hero", "features", "featured_collection", "brand_story", "newsletter"]
+  "order": ["new_drop_hero", "new_drop", "features", "featured_collection", "brand_story", "newsletter"]
 }
