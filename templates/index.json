@@ -1,14 +1,5 @@
 {
   "sections": {
-    "brand_marquee": {
-      "type": "brand-marquee",
-      "settings": {
-        "words": "Relier, Headwear, Built for the Club, Vol. 01",
-        "bg_color": "#0c0b09",
-        "text_color": "#ece5d8",
-        "line_color": "#262017"
-      }
-    },
     "new_drop_hero": {
       "type": "new-drop-hero",
       "blocks": {
@@ -25,40 +16,26 @@
         "content_align": "left",
         "bg_color": "#0a0a0a",
         "overlay_color": "#000000",
-        "overlay_opacity": 45,
-        "eyebrow": "New Drop",
-        "eyebrow_color": "#aaaaaa",
-        "heading": "SOMETHING\nCOOL IS\nCOMING.",
+        "overlay_opacity": 50,
+        "eyebrow": "Vol. 01 — New Drop",
+        "eyebrow_color": "#888888",
+        "heading": "RELIER\nCLUB\nCAP.",
         "heading_size": 120,
         "heading_color": "#ffffff",
-        "subheading": "The next chapter of Relier Club. Three colorways. One statement.",
+        "subheading": "Three colorways. Built for the club.",
         "sub_color": "#aaaaaa",
-        "cta_text": "See the Drop",
+        "cta_text": "Shop the Drop",
         "btn_style": "primary-light",
         "show_dots": true
       }
     },
-    "scroll_motion": {
-      "type": "scroll-motion",
-      "blocks": {
-        "frame1": { "type": "frame", "settings": { "label": "The Cap", "heading": "Vol. 01", "subheading": "Three colorways. Built for the club." } },
-        "frame2": { "type": "frame", "settings": { "label": "Craftsmanship", "heading": "Every\nDetail.", "subheading": "Structured brim. Premium mesh. Embroidered logo." } },
-        "frame3": { "type": "frame", "settings": { "label": "Colorways", "heading": "Navy.\nBlue.\nPink.", "subheading": "Limited run. Drop yours before they're gone." } },
-        "frame4": { "type": "frame", "settings": { "label": "Relier Club", "heading": "Built\nfor the\nClub.", "subheading": "Confidence, style, and everyday essentials." } },
-        "frame5": { "type": "frame", "settings": { "label": "Now Available", "heading": "Shop\nthe Drop.", "subheading": "" } }
-      },
-      "block_order": ["frame1", "frame2", "frame3", "frame4", "frame5"],
+    "brand_marquee": {
+      "type": "brand-marquee",
       "settings": {
-        "scroll_per_frame": 100,
-        "heading_size": 72,
+        "words": "Relier, Headwear, Built for the Club, Vol. 01",
         "bg_color": "#0c0b09",
-        "overlay_color": "#000000",
-        "overlay_opacity": 30,
-        "heading_color": "#ece5d8",
-        "sub_color": "#a39a8b",
-        "label_color": "#6a6258",
-        "show_counter": true,
-        "show_progress": true
+        "text_color": "#ece5d8",
+        "line_color": "#262017"
       }
     },
     "new_drop": {
@@ -95,14 +72,14 @@
       "block_order": ["navy", "blue", "pink"],
       "settings": {
         "eyebrow": "Now Available",
-        "heading": "The New Drop",
+        "heading": "The Drop.",
         "heading_size": 80,
         "description": "Three colorways. One cap. Built for the club — drop yours before they're gone.",
-        "cta_text": "Shop the Drop",
-        "cta_link": "/collections/caps",
+        "cta_text": "Shop All Caps",
+        "cta_link": "/collections/all",
         "btn_style": "primary-light",
-        "cta2_text": "View All Caps",
-        "cta2_link": "/collections/all",
+        "cta2_text": "Learn More",
+        "cta2_link": "/pages/about",
         "btn2_style": "outline",
         "bg_color": "#0a0a0a",
         "eyebrow_color": "#666666",
@@ -130,33 +107,14 @@
         "desc_color": "#999999"
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
-      "settings": {
-        "label": "Featured Collection",
-        "title": "The Relier Club Cap",
-        "description": "Classic trucker cap with our signature embroidered logo.",
-        "cta_text": "Shop All Caps",
-        "cta_link": "/collections/caps",
-        "btn_style": "outline",
-        "products_to_show": 3,
-        "columns": "3",
-        "bg_color": "#ffffff",
-        "label_color": "#999999",
-        "heading_color": "#0a0a0a",
-        "desc_color": "#666666",
-        "padding_top": 100,
-        "padding_bottom": 100
-      }
-    },
     "brand_story": {
       "type": "brand-story",
       "settings": {
         "layout": "text_first",
-        "eyebrow": "Join the Club",
+        "eyebrow": "About Relier",
         "heading": "Built for the Club.",
-        "description": "Relier is more than clothing. It's a community built around confidence, style, and everyday essentials designed to stand out without trying too hard.",
-        "cta_text": "Learn More",
+        "description": "Relier is more than headwear. It's a community built around confidence, style, and everyday essentials designed to stand out without trying too hard.",
+        "cta_text": "Our Story",
         "cta_link": "/pages/about",
         "btn_style": "primary-light",
         "bg_color": "#0a0a0a",
@@ -169,11 +127,11 @@
       "type": "newsletter",
       "settings": {
         "label": "Join the Club",
-        "heading": "Be the First to Know",
+        "heading": "Be the First to Know.",
         "description": "Get early access to new drops, restocks and exclusive offers.",
         "placeholder": "Enter your email",
         "submit_text": "Subscribe",
-        "success_message": "Thanks for subscribing!",
+        "success_message": "Thanks for joining the club!",
         "bg_color": "#ffffff",
         "border_color": "#e0e0e0",
         "label_color": "#999999",
@@ -188,5 +146,5 @@
       }
     }
   },
-  "order": ["new_drop_hero", "brand_marquee", "scroll_motion", "new_drop", "features", "featured_collection", "brand_story", "newsletter"]
+  "order": ["new_drop_hero", "brand_marquee", "new_drop", "features", "brand_story", "newsletter"]
 }
