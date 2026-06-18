@@ -68,58 +68,79 @@ for r in rows:
 title_block_h = 2.3
 header_h = 0.62
 footer_h = 0.6
-fig_h = title_block_h + header_h + sum(row_heights) + footer_h
+MAX_PAGE_CONTENT_H = 26.0
 
-fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=150)
-fig.patch.set_facecolor(bg)
-ax.set_facecolor(bg)
-ax.set_xlim(0, fig_w)
-ax.set_ylim(0, fig_h)
-ax.axis('off')
+pages = []
+page_rows, page_h = [], 0.0
+for item in zip(rows, row_data, row_heights):
+    h = item[2]
+    if page_rows and page_h + h > MAX_PAGE_CONTENT_H:
+        pages.append(page_rows)
+        page_rows, page_h = [], 0.0
+    page_rows.append(item)
+    page_h += h
+if page_rows:
+    pages.append(page_rows)
 
-title_y = fig_h - 0.9
-ax.text(fig_w / 2, title_y, 'SOUTHLINE — DUBLIN TRADESMEN COLD CALL LIST (NO WEBSITE)',
-        color=header_color, fontsize=26, fontweight='bold', ha='center',
-        family='monospace')
-ax.text(fig_w / 2, title_y - 0.55, f'{n} verified leads — wealthy South & North Dublin areas',
-        color='#888888', fontsize=14, ha='center', family='monospace')
+num_pages = len(pages)
+row_no = 0
+for page_idx, page in enumerate(pages, start=1):
+    fig_h = title_block_h + header_h + sum(h for _, _, h in page) + footer_h
 
-table_top = title_y - 1.3
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=150)
+    fig.patch.set_facecolor(bg)
+    ax.set_facecolor(bg)
+    ax.set_xlim(0, fig_w)
+    ax.set_ylim(0, fig_h)
+    ax.axis('off')
 
-for label, x, w in cols:
-    ax.text(x + 0.05, table_top - header_h / 2, label, color=header_color,
-            fontsize=16, fontweight='bold', va='center', family='monospace')
+    title_y = fig_h - 0.9
+    ax.text(fig_w / 2, title_y, 'SOUTHLINE — DUBLIN TRADESMEN COLD CALL LIST (NO WEBSITE)',
+            color=header_color, fontsize=26, fontweight='bold', ha='center',
+            family='monospace')
+    ax.text(fig_w / 2, title_y - 0.55,
+            f'{n} verified leads — wealthy South & North Dublin areas — page {page_idx} of {num_pages}',
+            color='#888888', fontsize=14, ha='center', family='monospace')
 
-ax.plot([0.2, fig_w - 0.2], [table_top - header_h, table_top - header_h],
-        color=header_color, linewidth=1.5)
+    table_top = title_y - 1.3
 
-y_cursor = table_top - header_h
-for i, (r, wrapped_cells, h) in enumerate(zip(rows, row_data, row_heights)):
-    y_top = y_cursor
-    y_bottom = y_top - h
-    y_mid = (y_top + y_bottom) / 2
-    bg_color = '#141414' if i % 2 == 0 else '#0d0d0d'
-    ax.add_patch(FancyBboxPatch((0.2, y_bottom), fig_w - 0.4, h,
-                                 boxstyle="square,pad=0", facecolor=bg_color,
-                                 edgecolor='none', zorder=0))
-    tcolor = trade_color(r['Trade'])
-    colors = ['#666666', '#ffffff', '#bbbbbb', tcolor, '#7ee787', '#7ee787',
-              '#bbbbbb', '#bbbbbb', '#8ecae6',
-              '#ff6b6b' if 'NO WEBSITE' in r['Website Status'].upper() else '#ffd166',
-              '#dddddd']
-    for (label, x, w), lines, color in zip(cols, wrapped_cells, colors):
-        n_lines = len(lines)
-        start_y = y_mid + (n_lines - 1) * LINE_H / 2
-        for li, line in enumerate(lines):
-            ax.text(x + 0.05, start_y - li * LINE_H, line, color=color,
-                    fontsize=14.5, va='center', family='monospace')
-    y_cursor = y_bottom
+    for label, x, w in cols:
+        ax.text(x + 0.05, table_top - header_h / 2, label, color=header_color,
+                fontsize=16, fontweight='bold', va='center', family='monospace')
 
-ax.plot([0.2, fig_w - 0.2], [y_cursor - 0.05, y_cursor - 0.05], color='#333333', linewidth=1)
-ax.text(fig_w / 2, y_cursor - footer_h / 2 - 0.1,
-        "Southline Agency — websites for tradesmen who don't have one",
-        color='#555555', fontsize=12, ha='center', family='monospace')
+    ax.plot([0.2, fig_w - 0.2], [table_top - header_h, table_top - header_h],
+            color=header_color, linewidth=1.5)
 
-plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
-plt.savefig('southline-50-businesses.png', facecolor=bg, bbox_inches='tight', pad_inches=0.3)
-print(f"Generated table with {n} rows, fig size {fig_w}x{fig_h:.1f}")
+    y_cursor = table_top - header_h
+    for r, wrapped_cells, h in page:
+        y_top = y_cursor
+        y_bottom = y_top - h
+        y_mid = (y_top + y_bottom) / 2
+        bg_color = '#141414' if row_no % 2 == 0 else '#0d0d0d'
+        ax.add_patch(FancyBboxPatch((0.2, y_bottom), fig_w - 0.4, h,
+                                     boxstyle="square,pad=0", facecolor=bg_color,
+                                     edgecolor='none', zorder=0))
+        tcolor = trade_color(r['Trade'])
+        colors = ['#666666', '#ffffff', '#bbbbbb', tcolor, '#7ee787', '#7ee787',
+                  '#bbbbbb', '#bbbbbb', '#8ecae6',
+                  '#ff6b6b' if 'NO WEBSITE' in r['Website Status'].upper() else '#ffd166',
+                  '#dddddd']
+        for (label, x, w_col), lines, color in zip(cols, wrapped_cells, colors):
+            n_lines = len(lines)
+            start_y = y_mid + (n_lines - 1) * LINE_H / 2
+            for li, line in enumerate(lines):
+                ax.text(x + 0.05, start_y - li * LINE_H, line, color=color,
+                        fontsize=14.5, va='center', family='monospace')
+        y_cursor = y_bottom
+        row_no += 1
+
+    ax.plot([0.2, fig_w - 0.2], [y_cursor - 0.05, y_cursor - 0.05], color='#333333', linewidth=1)
+    ax.text(fig_w / 2, y_cursor - footer_h / 2 - 0.1,
+            "Southline Agency — websites for tradesmen who don't have one",
+            color='#555555', fontsize=12, ha='center', family='monospace')
+
+    plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    out_name = 'southline-50-businesses.png' if num_pages == 1 else f'southline-50-businesses-p{page_idx}.png'
+    plt.savefig(out_name, facecolor=bg, bbox_inches='tight', pad_inches=0.3)
+    plt.close(fig)
+    print(f"Page {page_idx}/{num_pages}: {len(page)} rows, fig size {fig_w}x{fig_h:.1f} -> {out_name}")
