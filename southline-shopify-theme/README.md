@@ -26,7 +26,7 @@ All the operational bits are editable — no code needed:
 The theme ships two extra page templates:
 
 - **`case-study`** — the before/after comparison (a single box: 404 error → rebuild), "what we changed" breakdown, and CTA.
-- **`demo`** — the standalone live demo site (the "after" rebuild). It renders on its own with `{% layout none %}`, so it keeps its own design and doesn't pull in the Southline header, styles, or chatbot.
+- **`demo`** — the standalone live demo site (the "after" rebuild). It renders on its own with `{% layout none %}`, so it keeps its own design and doesn't pull in the Southline header, styles, or chatbot. It's a plain landing page — no Southline navigation, hero, or CTA buttons layered on top — just the small "Concept redesign by Southline" line in the footer.
 
 To put both live (each is just a Shopify Page with a template assigned):
 

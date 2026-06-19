@@ -51,24 +51,6 @@
     }
     .nav-logo span { font-size: 1.08rem; font-weight: 700; color: var(--white); letter-spacing: .3px; }
     .nav-logo small { display: block; font-size: .68rem; color: var(--light); font-weight: 500; letter-spacing: 1.5px; }
-    .nav-cta { display: flex; gap: 12px; align-items: center; }
-    .btn-call {
-      background: var(--accent); color: var(--navy);
-      border: none; cursor: pointer;
-      padding: 10px 20px; border-radius: 8px;
-      font-size: .88rem; font-weight: 700; text-decoration: none;
-      display: flex; align-items: center; gap: 6px;
-      transition: filter .15s, transform .1s;
-    }
-    .btn-call:hover { filter: brightness(1.08); transform: translateY(-1px); }
-    .btn-email {
-      color: var(--light); text-decoration: none; font-size: .82rem;
-      border: 1px solid rgba(255,255,255,.18); padding: 8px 16px; border-radius: 8px;
-      transition: border-color .2s, color .2s;
-    }
-    .btn-email:hover { border-color: var(--accent); color: var(--white); }
-    @media (max-width: 700px) { .btn-email { display: none; } }
-
     /* ── HERO ── */
     .hero {
       background:
@@ -102,25 +84,6 @@
     .hero h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.12; letter-spacing: -1px; }
     .hero h1 .accent { color: var(--accent); }
     .hero p.sub { font-size: 1.14rem; color: var(--light); max-width: 540px; margin: 22px auto 38px; }
-    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .btn-hero-primary {
-      background: var(--accent); color: var(--navy);
-      padding: 16px 32px; border-radius: 10px;
-      font-size: 1.02rem; font-weight: 700; text-decoration: none;
-      display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 6px 24px rgba(34,211,238,.3);
-      transition: transform .15s, box-shadow .15s;
-    }
-    .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(34,211,238,.4); }
-    .btn-hero-secondary {
-      background: rgba(255,255,255,.07); color: var(--white);
-      border: 1px solid rgba(255,255,255,.22);
-      padding: 16px 32px; border-radius: 10px;
-      font-size: 1.02rem; font-weight: 600; text-decoration: none;
-      display: flex; align-items: center; gap: 8px;
-      transition: background .15s;
-    }
-    .btn-hero-secondary:hover { background: rgba(255,255,255,.14); }
     .hero-stats { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; margin-top: 56px; padding-top: 38px; border-top: 1px solid rgba(255,255,255,.12); }
     .hero-stat strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
     .hero-stat span { font-size: .82rem; color: var(--light); }
@@ -178,25 +141,6 @@
     .why-card p { font-size: .9rem; color: var(--grey); }
     @media (max-width: 760px) { .why-grid { grid-template-columns: 1fr; } }
 
-    /* ── CTA ── */
-    .cta-section { background: linear-gradient(135deg, var(--accent2), var(--accent)); text-align: center; padding: 76px 24px; }
-    .cta-section h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 800; color: var(--navy); margin-bottom: 12px; }
-    .cta-section p { color: rgba(6,12,24,.75); font-size: 1.05rem; margin-bottom: 36px; }
-    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .btn-cta-dark {
-      background: var(--navy); color: var(--white);
-      padding: 16px 32px; border-radius: 10px; font-size: 1rem; font-weight: 700; text-decoration: none;
-      display: flex; align-items: center; gap: 8px; transition: transform .15s;
-    }
-    .btn-cta-dark:hover { transform: translateY(-2px); }
-    .btn-cta-outline {
-      background: transparent; color: var(--navy);
-      border: 2px solid rgba(6,12,24,.35);
-      padding: 16px 32px; border-radius: 10px; font-size: 1rem; font-weight: 700; text-decoration: none;
-      display: flex; align-items: center; gap: 8px; transition: border-color .15s;
-    }
-    .btn-cta-outline:hover { border-color: var(--navy); }
-
     /* ── FOOTER ── */
     footer { background: var(--navy); color: var(--light); text-align: center; padding: 30px 24px; font-size: .82rem; }
     footer a { color: var(--accent); text-decoration: none; }
@@ -219,13 +163,6 @@
       <small>CONCEPT REDESIGN</small>
     </div>
   </div>
-  <div class="nav-cta">
-    <a href="{{ routes.root_url }}" class="btn-email">← Back to Southline</a>
-    <a href="{{ routes.root_url }}#pricing" class="btn-call">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l.98-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      Get a site like this
-    </a>
-  </div>
 </nav>
 
 <!-- ── HERO ── -->
@@ -234,16 +171,6 @@
     <div class="badge"><span class="dot"></span> 24/7 On-Call Service</div>
     <h1>Fibre Optic &amp; Structured<br /><span class="accent">Cabling</span> You Can Rely On</h1>
     <p class="sub">Over 30 years' experience designing, installing and maintaining voice &amp; data networks for businesses across Dublin and nationwide.</p>
-    <div class="hero-btns">
-      <a href="{{ routes.root_url }}#pricing" class="btn-hero-primary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l.98-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        Get a site like this
-      </a>
-      <a href="{{ settings.case_study_url | default: '#' }}" class="btn-hero-secondary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        See the case study
-      </a>
-    </div>
     <div class="hero-stats">
       <div class="hero-stat"><strong>30+</strong><span>Years Experience</span></div>
       <div class="hero-stat"><strong>10+</strong><span>Years Established</span></div>
@@ -349,22 +276,6 @@
         <p>Network issues don't wait for office hours — neither do we. 24/7 support for every client.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ── CTA ── -->
-<section class="cta-section">
-  <h2>Like What You See?</h2>
-  <p>This is the kind of site Southline builds for Dublin tradesmen — see your own before you pay a cent.</p>
-  <div class="cta-btns">
-    <a href="{{ routes.root_url }}#pricing" class="btn-cta-dark">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l.98-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      Get my website
-    </a>
-    <a href="{{ settings.case_study_url | default: '#' }}" class="btn-cta-outline">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-      See the case study
-    </a>
   </div>
 </section>
 
