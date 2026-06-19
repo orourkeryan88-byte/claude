@@ -4,6 +4,7 @@ import os, re, json, shutil
 ROOT     = "/home/user/relier-"
 SRC      = os.path.join(ROOT, "southline.html")
 CASE_SRC = os.path.join(ROOT, "before-after.html")
+DEMO_SRC = os.path.join(ROOT, "case-study-demo", "index.html")
 OUT      = os.path.join(ROOT, "southline-shopify-theme")
 
 WIDGET_MARKER   = "<!-- ════════════ CHATBOT ════════════ -->"
@@ -64,6 +65,16 @@ case_body = case_body.replace('href="case-study-demo/index.html"',
                     "href=\"{{ settings.case_study_demo_url | default: '#' }}\"")
 case_body = case_body.replace('<a href="mailto:orourkeryan88@gmail.com">orourkeryan88@gmail.com</a>',
                     '<a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>')
+
+# ── demo page (case-study-demo/index.html) — self-contained, no theme wrapper ──
+# Rendered with {% layout none %} so its navy/cyan styling stays isolated from
+# the Southline theme (no shared CSS, no chatbot overlay).
+demo_html = open(DEMO_SRC, encoding="utf-8").read()
+demo_html = demo_html.replace('href="../southline.html#pricing"', 'href="{{ routes.root_url }}#pricing"')
+demo_html = demo_html.replace('href="../southline.html"',          'href="{{ routes.root_url }}"')
+demo_html = demo_html.replace('href="../before-after.html"',
+                    "href=\"{{ settings.case_study_url | default: '#' }}\"")
+demo_page = "{% layout none %}\n" + demo_html
 
 # ── (re)create theme tree ──
 if os.path.isdir(OUT):
@@ -131,6 +142,9 @@ w("templates/index.liquid", body + "\n")
 # templates/page.case-study.liquid — before/after case study (assign to a Page in admin)
 w("templates/page.case-study.liquid", case_body + "\n")
 
+# templates/page.demo.liquid — standalone live demo site (assign to a Page in admin)
+w("templates/page.demo.liquid", demo_page)
+
 # minimal but valid stub templates so the theme imports/publishes cleanly
 stub = '<div style="max-width:800px;margin:0 auto;padding:60px 24px;font-family:-apple-system,Segoe UI,sans-serif;color:#e8e8e8;background:#0a0a0a;min-height:60vh">{body}</div>\n'
 w("templates/404.liquid",              stub.format(body='<h1>Page not found</h1><p><a style="color:#00ff88" href="/">Back to Southline</a></p>'))
@@ -174,7 +188,7 @@ schema = [
       {"type":"url","id":"demo1_url","label":"Demo site 1 link (Kelly Plumbing)"},
       {"type":"url","id":"demo2_url","label":"Demo site 2 link (Blackrock Handyman)"},
       {"type":"url","id":"case_study_url","label":"Case study page link","info":"Create a Page in admin, assign it the \"case-study\" template, then paste its link here."},
-      {"type":"url","id":"case_study_demo_url","label":"Case study live demo link","info":"Where the before/after demo site is hosted, e.g. a separate link sent to that prospect."}
+      {"type":"url","id":"case_study_demo_url","label":"Live demo page link","info":"Create a Page in admin, assign it the \"demo\" template, then paste its link here. Powers the \"View live demo\" button."}
     ]
   },
   {

@@ -18,20 +18,21 @@ All the operational bits are editable — no code needed:
   - *WhatsApp number* — international format, no `+` or spaces (e.g. `353851740783` for 085 174 0783).
   - *Lead API URL* — optional. Your builder app URL (e.g. a Railway link). Leave blank to use email/WhatsApp only.
   - *Demo site 1 / 2 links* — paste the live URLs of your example sites (e.g. Kelly Plumbing, Blackrock Handyman).
-  - *Case study page link* — see "Before/after case study" below.
-  - *Case study live demo link* — where the before/after demo site itself is hosted.
+  - *Case study page link* / *Live demo page link* — see below.
 - **SEO / Sharing** — meta description and the title/description shown when the link is shared on Facebook or WhatsApp.
 
-## Before/after case study
+## Before/after case study + live demo
 
-The theme ships a second page template, `page.case-study`, with a before/after comparison, a "what we changed" breakdown, and a final CTA — built from a previous redesign project.
+The theme ships two extra page templates:
 
-To put it live:
+- **`case-study`** — the before/after comparison, "what we changed" breakdown, and CTA.
+- **`demo`** — the standalone live demo site (the "after" rebuild). It renders on its own with `{% layout none %}`, so it keeps its own design and doesn't pull in the Southline header, styles, or chatbot.
 
-1. In Shopify admin go to **Online Store → Pages → Add page**. Give it a title (e.g. "Case Study").
-2. In the page editor, under **Theme template**, pick **`case-study`**.
-3. Save, then copy that page's URL into the **Case study page link** theme setting — this makes the "See the case study →" card on the homepage point to it.
-4. If the live before/after demo site is hosted somewhere (e.g. a separate link), paste that into **Case study live demo link** — this powers the "View live demo →" button on the case study page.
+To put both live (each is just a Shopify Page with a template assigned):
+
+1. **Demo page** — Admin → **Online Store → Pages → Add page**, title it (e.g. "Live Demo"). Under **Theme template**, pick **`demo`**. Save, then copy its URL into the **Live demo page link** theme setting.
+2. **Case study page** — Add another page (e.g. "Case Study"). Under **Theme template**, pick **`case-study`**. Save, then copy its URL into the **Case study page link** theme setting.
+3. That's it — the homepage "See the case study →" card now opens the case study, and its "View live demo →" button opens the demo page.
 
 ## How leads work
 
@@ -40,9 +41,9 @@ When a visitor finishes the chatbot (name → trade → area → phone):
 - If a **Lead API URL** is set, the lead is saved to your builder's `/leads` dashboard.
 - Either way they get a **WhatsApp** (and email) handoff button, pre-filled with their details, so the lead reaches you instantly.
 
-The chatbot widget itself is a single shared snippet (`snippets/chatbot-widget.liquid`), rendered site-wide from the layout — so it appears on every page, including the case study.
+The chatbot widget itself is a single shared snippet (`snippets/chatbot-widget.liquid`), rendered site-wide from the layout — so it appears on every page except the standalone demo.
 
 ## Notes
 
 - The homepage (`templates/index.liquid`) is the Southline landing page. The other templates are minimal stubs so the theme imports/publishes cleanly — this theme is built for a marketing page, not a product catalogue.
-- Edit copy directly in `templates/index.liquid` (homepage) or `templates/page.case-study.liquid` (case study); shared styles live in `assets/southline.css`, case-study-only styles in `assets/case-study.css`, and the chatbot logic is in `assets/southline.js`.
+- Edit copy directly in `templates/index.liquid` (homepage), `templates/page.case-study.liquid` (case study), or `templates/page.demo.liquid` (demo); shared styles live in `assets/southline.css`, case-study-only styles in `assets/case-study.css`, and the chatbot logic is in `assets/southline.js`.
