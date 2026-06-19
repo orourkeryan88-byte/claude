@@ -1,0 +1,74 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Southline",
+    "theme_version": "1.0.0",
+    "theme_author": "Southline Agency",
+    "theme_documentation_url": "https://southline.ie",
+    "theme_support_url": "https://southline.ie"
+  },
+  {
+    "name": "Southline \u2014 Contact & Leads",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "These power the chatbot and contact links. Phone must be international format with no + or spaces (Ireland 085\u2026 becomes 35385\u2026)."
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Contact email",
+        "default": "orourkeryan88@gmail.com"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp",
+        "label": "WhatsApp number (intl, e.g. 353851740783)",
+        "default": "353851740783"
+      },
+      {
+        "type": "text",
+        "id": "api_url",
+        "label": "Lead API URL (optional \u2014 your builder app)",
+        "info": "Leave blank to use email/WhatsApp only."
+      },
+      {
+        "type": "header",
+        "content": "Portfolio links"
+      },
+      {
+        "type": "url",
+        "id": "demo1_url",
+        "label": "Demo site 1 link (Kelly Plumbing)"
+      },
+      {
+        "type": "url",
+        "id": "demo2_url",
+        "label": "Demo site 2 link (Blackrock Handyman)"
+      }
+    ]
+  },
+  {
+    "name": "Southline \u2014 SEO / Sharing",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "meta_description",
+        "label": "Meta description",
+        "default": "Southline builds clean, professional websites for Dublin tradesmen. \u20ac400 to build, \u20ac50/month hosting. See your site before you pay a cent."
+      },
+      {
+        "type": "text",
+        "id": "og_title",
+        "label": "Social share title",
+        "default": "Southline \u2014 Websites for Tradesmen Who Don't Have One"
+      },
+      {
+        "type": "textarea",
+        "id": "og_description",
+        "label": "Social share description",
+        "default": "Clean, professional websites for Dublin tradesmen. \u20ac400 to build, \u20ac50/month. See your site free before you pay a cent."
+      }
+    ]
+  }
+]

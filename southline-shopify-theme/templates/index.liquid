@@ -1,0 +1,231 @@
+<!-- ── NAV ── -->
+<nav>
+  <div class="logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text mono">Southline<span class="dot">.</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#work">Our work</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#" onclick="openChat();return false;" class="nav-cta">Get my website</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge"><span class="pulse"></span> Dublin tradesmen · websites that win jobs</div>
+    <h1>The website your trade<br />has been <span class="accent">missing.</span></h1>
+    <p class="sub">If a customer Googles you and finds nothing, they call the next guy. Southline builds you a clean, professional site that turns searches into phone calls.</p>
+    <p class="price-line mono">€400 to build · €50/month hosting · see it before you pay</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openChat()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Get my free demo
+      </button>
+      <a href="#work" class="btn-ghost">See real examples</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>48hrs</strong><span>To your live site</span></div>
+      <div class="hero-stat"><strong>€0</strong><span>Until you say yes</span></div>
+      <div class="hero-stat"><strong>100%</strong><span>Built for your trade</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROBLEM ── -->
+<section class="block alt" id="why">
+  <div class="inner">
+    <div class="center">
+      <p class="label">Why it matters</p>
+      <h2 class="title">No website = invisible</h2>
+      <p class="sub">8 in 10 people search online before hiring a tradesman. If you're not there, you don't exist to them.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-col bad">
+        <h3>Without a website</h3>
+        <ul>
+          <li>Customers can't find you on Google</li>
+          <li>You look smaller than you are</li>
+          <li>Every lead comes from word-of-mouth only</li>
+          <li>Competitors with sites win the bigger jobs</li>
+          <li>No way to show off past work or reviews</li>
+        </ul>
+      </div>
+      <div class="problem-col good">
+        <h3>With a Southline site</h3>
+        <ul>
+          <li>Show up when locals search your trade</li>
+          <li>Look established and trustworthy</li>
+          <li>One link for your van, cards & Facebook</li>
+          <li>Win quotes before the call even happens</li>
+          <li>Reviews & services front and centre</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="block" id="how">
+  <div class="inner">
+    <div class="center">
+      <p class="label">Dead simple</p>
+      <h2 class="title">How it works</h2>
+      <p class="sub">No tech headaches. No long meetings. We do the work, you approve it.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num mono">1</div>
+        <h3>We build it first</h3>
+        <p>Tell us your trade and area. We build your full website upfront and send you the link — completely free.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">2</div>
+        <h3>You take a look</h3>
+        <p>Like it? Great. Want changes? We tweak the text, colours and photos until it's exactly right.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">3</div>
+        <h3>We make it live</h3>
+        <p>€400 to launch, €50/month to host and maintain it. Your site goes live and starts bringing in calls.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PORTFOLIO ── -->
+<section class="block alt" id="work">
+  <div class="inner">
+    <div class="center">
+      <p class="label">Real sites, real tradesmen</p>
+      <h2 class="title">Recent work</h2>
+      <p class="sub">Sites we've built for Dublin tradesmen. Click through and see for yourself.</p>
+    </div>
+    <div class="work-grid">
+      <div class="work-card">
+        <div class="work-preview blue">💧</div>
+        <div class="work-body">
+          <h3>Kelly Plumbing</h3>
+          <div class="trade">Plumber · Tallaght & South Dublin</div>
+          <p>A clean, trustworthy site with services, reviews and one-tap call buttons — built to turn Google searches into call-outs.</p>
+          <a class="work-link" href="{{ settings.demo1_url | default: '#' }}" target="_blank">View live site →</a>
+        </div>
+      </div>
+      <div class="work-card">
+        <div class="work-preview slate">🔨</div>
+        <div class="work-body">
+          <h3>Blackrock Handyman</h3>
+          <div class="trade">Handyman · Blackrock & South Dublin</div>
+          <p>A simple one-page site that makes a one-man operation look established, with services and contact front and centre.</p>
+          <a class="work-link" href="{{ settings.demo2_url | default: '#' }}" target="_blank">View live site →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section class="block" id="pricing">
+  <div class="inner center">
+    <p class="label">Straight pricing</p>
+    <h2 class="title">No surprises, no contracts</h2>
+    <p class="sub">One fair price to build, a small monthly fee to keep it running. Cancel anytime.</p>
+    <div class="price-card">
+      <span class="tag">Everything included</span>
+      <div class="price-big mono"><span class="cur">€</span>400</div>
+      <p class="price-then">to build &amp; launch · then <strong>€50/month</strong> hosting</p>
+      <ul class="price-list">
+        <li>Full custom website for your trade</li>
+        <li>Mobile-friendly &amp; fast loading</li>
+        <li>Click-to-call &amp; email buttons</li>
+        <li>Your services, areas &amp; reviews</li>
+        <li>Hosting, updates &amp; support included</li>
+        <li>See it free before you pay anything</li>
+      </ul>
+      <button class="btn-primary" onclick="openChat()">Start with a free demo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="block" id="faq">
+  <div class="inner">
+    <div class="center">
+      <p class="label">Common questions</p>
+      <h2 class="title">Good to know</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq">
+        <summary>Do I really see the site before paying?</summary>
+        <p>Yes. We build your full demo site first and send you the link — completely free. You only pay the €400 once you've seen it and you're happy.</p>
+      </details>
+      <details class="faq">
+        <summary>What's the €50 a month for?</summary>
+        <p>Hosting, keeping the site online and fast, plus updates and small changes when you need them. No long contract — cancel anytime.</p>
+      </details>
+      <details class="faq">
+        <summary>I'm not techy at all. Is that a problem?</summary>
+        <p>Not in the slightest. You don't touch anything technical. You tell us your trade and area, we build it, you approve it. That's it.</p>
+      </details>
+      <details class="faq">
+        <summary>How long until it's live?</summary>
+        <p>Usually a demo within 48 hours, and live the same day you approve it.</p>
+      </details>
+      <details class="faq">
+        <summary>Can people contact me through it?</summary>
+        <p>Yes — every site has one-tap call and email buttons, so a customer can ring you straight from their phone.</p>
+      </details>
+      <details class="faq">
+        <summary>What if I already have a Facebook page?</summary>
+        <p>Perfect — your website works alongside it. We can link them so your Facebook, van and cards all point to one professional site.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ── -->
+<section class="block alt final">
+  <div class="inner">
+    <h2>Let's get you online.</h2>
+    <p>Tell our assistant your trade and area — we'll build your demo and be in touch.</p>
+    <button class="btn-primary" onclick="openChat()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat to Southline
+    </button>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="flogo mono">Southline<span style="color:var(--accent)">.</span></span>
+  Websites for tradesmen who don't have one — Dublin, Ireland<br />
+  <a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>
+  &nbsp;·&nbsp; <a href="#" onclick="openChat();return false;">Chat with us</a>
+</footer>
+
+<!-- ════════════ CHATBOT ════════════ -->
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()" aria-label="Open chat">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <span class="chat-badge" id="chatBadge">1</span>
+</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-head">
+    <div class="chat-avatar">S</div>
+    <div class="ci">
+      <h4>Southline Assistant</h4>
+      <span>Online now</span>
+    </div>
+    <button class="chat-close" onclick="toggleChat()" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="quick-replies" id="quickReplies"></div>
+  <form class="chat-input" id="chatForm" onsubmit="return sendUserMsg()">
+    <input type="text" id="chatInput" placeholder="Type your message…" autocomplete="off" />
+    <button type="submit" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </form>
+</div>

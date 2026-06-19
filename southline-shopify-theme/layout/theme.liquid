@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <title>{{ page_title | default: shop.name }}</title>
+  {%- if settings.meta_description != blank -%}
+    <meta name="description" content="{{ settings.meta_description }}">
+  {%- endif -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ settings.og_title | default: shop.name }}">
+  <meta property="og:description" content="{{ settings.og_description }}">
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta name="twitter:card" content="summary_large_image">
+  {{ content_for_header }}
+  {{ 'southline.css' | asset_url | stylesheet_tag }}
+</head>
+<body>
+  {{ content_for_layout }}
+
+  <script>
+    window.SOUTHLINE_CONFIG = {
+      email:    {{ settings.contact_email | json }},
+      whatsapp: {{ settings.whatsapp | json }},
+      api:      {{ settings.api_url | json }},
+      demo1:    {{ settings.demo1_url | json }},
+      demo2:    {{ settings.demo2_url | json }}
+    };
+  </script>
+  {{ 'southline.js' | asset_url | script_tag }}
+</body>
+</html>
