@@ -10,7 +10,7 @@ PHASES = [
         'range': 'MONTH 1–2', 'title': 'CONVERT THE PIPELINE',
         'bullets': [
             'Call all 46 verified leads from the Southline list',
-            'Generate a live RELIER demo link before/during each call —',
+            'Generate a live demo link before/during each call —',
             '   "here\'s your site, already built"',
             'Close first clients at €400 upfront + €50/mo hosting',
             'Track answer rate, demo-sent rate, close rate to tune the script',
@@ -23,7 +23,7 @@ PHASES = [
             'Turn the verify-no-website + verify-phone workflow into a',
             '   repeatable SOP the whole team can run',
             'Research 150+ new verified leads beyond the current areas',
-            'Split roles clearly: researcher / caller-closer / RELIER builder',
+            'Split roles clearly: researcher / caller-closer / site builder',
         ],
         'target': '25–30 active clients  |  ~€1,400/mo recurring',
     },
@@ -31,7 +31,7 @@ PHASES = [
         'range': 'MONTH 5–6', 'title': 'SCALE OUTREACH',
         'bullets': [
             'Ramp weekly dial volume across the team using the verified list',
-            'Add more trade-specific RELIER themes to speed up demo turnaround',
+            'Add more trade-specific site templates to speed up demo turnaround',
             'Introduce upsells: Google Business Profile setup, basic local SEO',
         ],
         'target': '40–50 active clients  |  ~€2,250/mo recurring',
@@ -51,8 +51,8 @@ PHASES = [
         'bullets': [
             'Lock in steady-state close rate, churn rate, and team comp structure',
             'Reinvest €400 upfront fees into more lead research + team capacity',
-            'Open question to revisit: keep RELIER internal-only, or productize it',
-            '   later — not committed for this window',
+            'Open question to revisit: keep the site builder internal, or sell it',
+            '   as a product later — not committed for this window',
         ],
         'target': '90–100 active clients  |  ~€4,750/mo recurring',
     },
@@ -66,13 +66,13 @@ ax.set_ylim(0, fig_h)
 ax.axis('off')
 
 title_y = fig_h - 0.9
-ax.text(fig_w / 2, title_y, 'SOUTHLINE × RELIER — 6–12 MONTH ROADMAP',
+ax.text(fig_w / 2, title_y, 'SOUTHLINE — 6–12 MONTH ROADMAP',
         color=accent, fontsize=27, fontweight='bold', ha='center', family='monospace')
 ax.text(fig_w / 2, title_y - 0.55,
         'From 46 verified no-website leads to a recurring hosting business',
         color='#888888', fontsize=14, ha='center', family='monospace')
 ax.text(fig_w / 2, title_y - 0.95,
-        'Pricing: €400 upfront build + €50/month hosting  ·  Team: researcher / caller-closer / RELIER builder',
+        'Pricing: €400 upfront build + €50/month hosting  ·  Team: researcher / caller-closer / site builder',
         color='#555555', fontsize=11.5, ha='center', family='monospace')
 
 rail_x = 1.5
@@ -122,7 +122,7 @@ for i, p in enumerate(PHASES):
     y = y_bottom - card_gap
 
 ax.text(fig_w / 2, 0.45,
-        "Southline Agency × RELIER — websites for tradesmen who don't have one",
+        "Southline Agency — websites for tradesmen who don't have one",
         color='#555555', fontsize=12, ha='center', family='monospace')
 
 plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
