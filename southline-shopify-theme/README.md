@@ -16,10 +16,20 @@ All the operational bits are editable — no code needed:
 - **Contact & Leads**
   - *Contact email* — where email enquiries go.
   - *WhatsApp number* — international format, no `+` or spaces (e.g. `353851740783` for 085 174 0783).
-  - *Lead API URL* — optional. Your builder app URL (e.g. a Railway link). Leave blank to use email/WhatsApp only.
+  - *Lead API URL* — optional. Only needed if you run your own backend (e.g. the builder app in this repo, deployed to Railway). Leave blank — it's not required for notifications, see below.
   - *Demo site 1 / 2 links* — paste the live URLs of your example sites (e.g. Kelly Plumbing, Blackrock Handyman).
   - *Case study page link* / *Live demo page link* — see below.
 - **SEO / Sharing** — meta description and the title/description shown when the link is shared on Facebook or WhatsApp.
+
+## Getting notified of a new lead
+
+No setup needed — this works out of the box once the theme is installed. The moment the chatbot finishes capturing a lead (name → trade → area → phone), it submits Shopify's own native contact-form request in the background. Shopify sends that straight to your store's contact-form notification email — check/set the recipient under **Settings → Notifications** in your Shopify admin (it defaults to your store's general contact email).
+
+This needs no external server, API key, or the Lead API URL setting — it only works because the page is running on an actual Shopify storefront (it detects `window.Shopify`, which only exists there).
+
+One caveat: if you've turned on Google reCAPTCHA spam protection for contact forms (**Settings → Customer privacy**), Shopify may reject this background submission since there's no human-solved captcha. Turn that off if you stop seeing notifications.
+
+Visitors still also get a **WhatsApp**/**email** handoff button pre-filled with their details, as a backup way to reach you instantly.
 
 ## Before/after case study + live demo
 
@@ -33,15 +43,6 @@ To put both live (each is just a Shopify Page with a template assigned):
 1. **Demo page** — Admin → **Online Store → Pages → Add page**, title it (e.g. "Live Demo"). Under **Theme template**, pick **`demo`**. Save, then copy its URL into the **Live demo page link** theme setting.
 2. **Case study page** — Add another page (e.g. "Case Study"). Under **Theme template**, pick **`case-study`**. Save, then copy its URL into the **Case study page link** theme setting.
 3. That's it — the homepage "See the case study →" card now opens the case study, and its "View live demo →" button opens the demo page.
-
-## How leads work
-
-When a visitor finishes the chatbot (name → trade → area → phone):
-
-- If a **Lead API URL** is set, the lead is saved to your builder's `/leads` dashboard.
-- Either way they get a **WhatsApp** (and email) handoff button, pre-filled with their details, so the lead reaches you instantly.
-
-The chatbot widget itself is a single shared snippet (`snippets/chatbot-widget.liquid`), rendered site-wide from the layout — so it appears on every page except the standalone demo.
 
 ## Notes
 

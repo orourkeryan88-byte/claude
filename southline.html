@@ -693,6 +693,29 @@ function captureStep(val){
   }
 }
 
+/* On a real Shopify storefront, fire Shopify's own native contact-form
+   notification straight from the browser — no external backend or API
+   keys needed. window.Shopify is injected by every Shopify storefront,
+   so this quietly does nothing anywhere else (e.g. this static file). */
+function notifyShopify(lead){
+  if (typeof window === 'undefined' || !window.Shopify) return;
+  try {
+    const body = new URLSearchParams({
+      form_type: 'contact',
+      utf8: '✓',
+      'contact[name]': lead.name || '',
+      'contact[phone]': lead.phone || '',
+      'contact[email]': SOUTHLINE_EMAIL,
+      'contact[body]': "New chatbot lead\nTrade: " + lead.trade + "\nArea: " + lead.area + "\nPhone: " + lead.phone,
+    });
+    fetch(window.location.pathname, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+    }).catch(() => {});
+  } catch (e) {}
+}
+
 async function finishCapture(){
   capturing = null;
 
@@ -718,6 +741,9 @@ async function finishCapture(){
     "Here's what I've got:\n" +
     "• <b>" + escapeHtml(lead.trade) + "</b> in <b>" + escapeHtml(lead.area) + "</b>\n" +
     "• We'll call you on <b>" + escapeHtml(lead.phone) + "</b>\n\n";
+
+  /* native Shopify notification email — fires automatically, no setup needed */
+  notifyShopify(lead);
 
   /* try to save straight to the Southline backend */
   let saved = false;
