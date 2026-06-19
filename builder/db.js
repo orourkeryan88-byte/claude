@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DB_FILE = path.join(__dirname, 'sites.json');
+const LEADS_FILE = path.join(__dirname, 'leads.json');
 
 function read() {
   try {
@@ -13,6 +14,18 @@ function read() {
 
 function write(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+}
+
+function readLeads() {
+  try {
+    return JSON.parse(fs.readFileSync(LEADS_FILE, 'utf8'));
+  } catch {
+    return [];
+  }
+}
+
+function writeLeads(data) {
+  fs.writeFileSync(LEADS_FILE, JSON.stringify(data, null, 2));
 }
 
 module.exports = {
@@ -60,4 +73,25 @@ module.exports = {
     delete db[id];
     write(db);
   },
+
+  // ── Leads (chatbot enquiries from the Southline landing page) ──
+  createLead: ({ id, name, trade, area, phone, email, source }) => {
+    const leads = readLeads();
+    const entry = {
+      id,
+      name: name || '',
+      trade: trade || '',
+      area: area || '',
+      phone: phone || '',
+      email: email || '',
+      source: source || 'landing-chatbot',
+      status: 'new',
+      created_at: new Date().toISOString(),
+    };
+    leads.unshift(entry);
+    writeLeads(leads);
+    return entry;
+  },
+
+  getLeads: () => readLeads(),
 };

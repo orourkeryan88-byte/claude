@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Southline — Websites for Tradesmen Who Don't Have One</title>
 <meta name="description" content="Southline builds clean, professional websites for Dublin tradesmen. €400 to build, €50/month hosting. See your site before you pay a cent." />
+<!-- Social share (Facebook / WhatsApp link previews) -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Southline — Websites for Tradesmen Who Don't Have One" />
+<meta property="og:description" content="Clean, professional websites for Dublin tradesmen. €400 to build, €50/month. See your site free before you pay a cent." />
+<meta property="og:site_name" content="Southline" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#00ff88" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -160,6 +167,16 @@
   .price-list li { padding: 9px 0 9px 30px; position: relative; font-size: .96rem; }
   .price-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 800; }
   .price-card .btn-primary { width: 100%; justify-content: center; }
+
+  /* ── FAQ ── */
+  .faq-list { max-width: 720px; margin: 44px auto 0; display: flex; flex-direction: column; gap: 12px; }
+  .faq { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 4px 20px; transition: border-color .2s; }
+  .faq[open] { border-color: var(--accent); }
+  .faq summary { cursor: pointer; padding: 16px 0; font-weight: 700; font-size: 1rem; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; color: var(--accent); font-size: 1.5rem; font-weight: 400; line-height: 1; transition: transform .2s; }
+  .faq[open] summary::after { transform: rotate(45deg); }
+  .faq p { color: var(--muted); font-size: .95rem; padding: 0 0 18px; }
 
   /* ── FINAL CTA ── */
   .final { text-align: center; }
@@ -394,6 +411,42 @@
   </div>
 </section>
 
+<!-- ── FAQ ── -->
+<section class="block" id="faq">
+  <div class="inner">
+    <div class="center">
+      <p class="label">Common questions</p>
+      <h2 class="title">Good to know</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq">
+        <summary>Do I really see the site before paying?</summary>
+        <p>Yes. We build your full demo site first and send you the link — completely free. You only pay the €400 once you've seen it and you're happy.</p>
+      </details>
+      <details class="faq">
+        <summary>What's the €50 a month for?</summary>
+        <p>Hosting, keeping the site online and fast, plus updates and small changes when you need them. No long contract — cancel anytime.</p>
+      </details>
+      <details class="faq">
+        <summary>I'm not techy at all. Is that a problem?</summary>
+        <p>Not in the slightest. You don't touch anything technical. You tell us your trade and area, we build it, you approve it. That's it.</p>
+      </details>
+      <details class="faq">
+        <summary>How long until it's live?</summary>
+        <p>Usually a demo within 48 hours, and live the same day you approve it.</p>
+      </details>
+      <details class="faq">
+        <summary>Can people contact me through it?</summary>
+        <p>Yes — every site has one-tap call and email buttons, so a customer can ring you straight from their phone.</p>
+      </details>
+      <details class="faq">
+        <summary>What if I already have a Facebook page?</summary>
+        <p>Perfect — your website works alongside it. We can link them so your Facebook, van and cards all point to one professional site.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
 <!-- ── FINAL CTA ── -->
 <section class="block alt final">
   <div class="inner">
@@ -445,6 +498,8 @@
    ───────────────────────────────────────────── */
 const SOUTHLINE_EMAIL    = "orourkeryan88@gmail.com";
 const SOUTHLINE_WHATSAPP = "";   // e.g. "353871234567" (no +, no spaces). Leave "" to use email only.
+const SOUTHLINE_API      = "";   // builder URL to save leads, e.g. "https://your-app.up.railway.app".
+                                 // Leave "" to skip the database and use email/WhatsApp only.
 /* ───────────────────────────────────────────── */
 
 const chatWindow = document.getElementById('chatWindow');
@@ -626,18 +681,19 @@ function captureStep(val){
   }
 }
 
-function finishCapture(){
+async function finishCapture(){
+  capturing = null;
+
+  /* build the email / WhatsApp handoff (always available as a backup) */
   const summary =
     "Southline website enquiry%0A%0A" +
     "Name: " + encodeURIComponent(lead.name) + "%0A" +
     "Trade: " + encodeURIComponent(lead.trade) + "%0A" +
     "Area: " + encodeURIComponent(lead.area) + "%0A" +
     "Phone: " + encodeURIComponent(lead.phone);
-
   const mailto = "mailto:" + SOUTHLINE_EMAIL +
     "?subject=" + encodeURIComponent("New website lead: " + lead.name + " (" + lead.trade + ")") +
     "&body=" + summary;
-
   let handoff;
   if (SOUTHLINE_WHATSAPP){
     const wa = "https://wa.me/" + SOUTHLINE_WHATSAPP + "?text=" + summary;
@@ -646,15 +702,39 @@ function finishCapture(){
     handoff = "<a href='" + mailto + "'>✉️ Tap to send us your details</a>";
   }
 
-  botSay(
-    "You're all set, " + escapeHtml(lead.name.split(' ')[0]) + "! 🎉\n\n" +
+  const recap =
     "Here's what I've got:\n" +
     "• <b>" + escapeHtml(lead.trade) + "</b> in <b>" + escapeHtml(lead.area) + "</b>\n" +
-    "• We'll call you on <b>" + escapeHtml(lead.phone) + "</b>\n\n" +
-    "Tap below to fire it over to the team and we'll have your demo ready within 48 hours 👇\n\n" + handoff,
-    [{ label:'Start again', value:'restart' }]
-  );
-  capturing = null;
+    "• We'll call you on <b>" + escapeHtml(lead.phone) + "</b>\n\n";
+
+  /* try to save straight to the Southline backend */
+  let saved = false;
+  if (SOUTHLINE_API){
+    showTyping();
+    try {
+      const res = await fetch(SOUTHLINE_API.replace(/\/$/, '') + "/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...lead, source: "landing-chatbot" }),
+      });
+      saved = res.ok;
+    } catch (e){ saved = false; }
+    hideTyping();
+  }
+
+  if (saved){
+    botSay(
+      "You're all set, " + escapeHtml(lead.name.split(' ')[0]) + "! 🎉 Your details are in — we'll have your demo ready within 48 hours and give you a call.\n\n" + recap +
+      "Prefer to message us directly too? " + handoff,
+      [{ label:'Start again', value:'restart' }]
+    );
+  } else {
+    botSay(
+      "You're all set, " + escapeHtml(lead.name.split(' ')[0]) + "! 🎉\n\n" + recap +
+      "Tap below to fire it over to the team and we'll have your demo ready within 48 hours 👇\n\n" + handoff,
+      [{ label:'Start again', value:'restart' }]
+    );
+  }
 }
 
 function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }

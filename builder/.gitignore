@@ -4,3 +4,4 @@ client/node_modules/
 *.db-shm
 *.db-wal
 sites.json
+leads.json
