@@ -20,7 +20,29 @@ The three picks originally recommended below (hydrocolloid acne patch roll, scal
 
 ---
 
-## Current top pick: Misting/Spray Detangler Hairbrush ("AquaBrush"-style, manual/non-electric)
+## Current top pick: Face Ice Bath Bowl ("cold-plunge" bowl with breathing tube)
+
+**What it is:** A collapsible silicone bowl with a built-in ice tray and a breathing tube, letting you submerge your whole face in ice water — a TikTok-driven "face cold plunge" tool, distinct from old ice rollers/gua sha.
+
+**Why this beats the misting hairbrush pick:** that pick was rejected for solving too small a problem with only one marketing angle (convenience). This one targets facial puffiness, inflammation, and "looking tired" — the same core insecurity that makes under-eye patches a $500M+ category (Grace & Stella alone has 25,000+ reviews, proof people pay real money to fix exactly this). It also spans **four distinct sell angles** instead of one: (1) skincare — depuffing/pore-tightening/anti-aging, (2) wellness/biohacking — vagus-nerve stimulation, stress/anxiety relief, riding the broader cold-exposure trend, (3) recovery — hangover cure, post-workout, post-flight, (4) satisfying/ASMR face-dunk visual content.
+
+**Cost breakdown:**
+- AliExpress: confirmed available across multiple listings (foldable/collapsible silicone, with breathing tube variants); exact unit price not retrievable via search — comparable collapsible-silicone items run $2–5/unit, estimate **$3–7/unit landed**.
+- Generic Amazon competitor pricing: **$11.99–$18.99** (Solldgt and other generic foldable versions).
+- Premium-brand price anchor: the branded "FaceTub" sells for **$94.99–$119** on Amazon with only **46 reviews** — still early, and gives a strong "get the same benefit for a fraction of the price" marketing angle.
+- **Suggested retail: $24.99–$29.99 → estimated gross profit ≈ $16–23/unit.**
+
+**Demand evidence:** Genuinely 2025-2026 viral trend with celebrity amplification — Joe Jonas publicly credited himself with introducing it to his brothers, Kylie Jenner reported trying it; covered by Today.com and E! Online as a fresh trend distinct from older ice-rolling fads. Vagus-nerve/cold-exposure framing ties it to the broader biohacking wellness trend, broadening the buyer audience beyond core beauty shoppers.
+
+**Honest caveat — closing window, not wide-open:** 8–10 generic competing Amazon listings already exist (none yet review-flooded — appear to be low-to-mid hundreds of reviews at most). This is filling in fast; worth moving on now rather than treating it as a long-term moat.
+
+**Sourcing search terms:** "foldable face ice bath bowl silicone," "face ice bath bowl breathing tube," "collapsible silicone face cold plunge bowl."
+
+---
+
+## Runner-up: Misting/Spray Detangler Hairbrush ("AquaBrush"-style, manual/non-electric)
+
+**Rejected as the lead pick:** solves a real but minor convenience problem (tangled hair) with only one weak marketing angle — no before/after, no insecurity being relieved, no pain-point narrative. Kept here for reference since the underlying saturation data is still good (genuinely early-stage on Amazon), in case a stronger sell-angle framing for it emerges later.
 
 **What it is:** A 2-in-1 hairbrush with a built-in water/leave-in-conditioner reservoir and fine-mist sprayer, combined with detangling bristles. Source the **manual squeeze-trigger or pump-mister version**, not the battery-powered "Electric Spray Air Cushion Massage Comb" variant — the electric version adds customs/battery complexity and has already drawn scam-watchdog scrutiny (scamadviser.com).
 
