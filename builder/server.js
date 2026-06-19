@@ -14,6 +14,38 @@ app.use(express.json());
 // Tiny HTML escaper for the leads dashboard
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+// ── Email notification on new lead (sent via Resend, https://resend.com) ──
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'agencysouthline@gmail.com';
+const NOTIFY_FROM = process.env.NOTIFY_FROM || 'Southline Leads <onboarding@resend.dev>';
+
+async function notifyLead(lead) {
+  if (!RESEND_API_KEY) return; // not configured — skip silently
+  const html = `
+    <p><b>${esc(lead.name)}</b> just completed the Southline chatbot.</p>
+    <ul>
+      <li><b>Trade:</b> ${esc(lead.trade)}</li>
+      <li><b>Area:</b> ${esc(lead.area)}</li>
+      <li><b>Phone:</b> <a href="tel:${esc(lead.phone)}">${esc(lead.phone)}</a></li>
+      <li><b>Source:</b> ${esc(lead.source)}</li>
+    </ul>`;
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: NOTIFY_FROM,
+        to: NOTIFY_EMAIL,
+        subject: `New lead: ${lead.name} — ${lead.trade} (${lead.area})`,
+        html,
+      }),
+    });
+    if (!res.ok) console.error('Lead notification email failed:', res.status, await res.text());
+  } catch (e) {
+    console.error('Lead notification email error:', e.message);
+  }
+}
+
 // ── Southline landing page (served from repo root) ──
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'southline.html'));
@@ -26,6 +58,7 @@ app.post('/api/leads', (req, res) => {
     if (!name && !phone) return res.status(400).json({ error: 'name or phone required' });
     const lead = db.createLead({ id: uuidv4(), ...req.body });
     console.log(`📥 New lead: ${lead.name} — ${lead.trade} — ${lead.phone}`);
+    notifyLead(lead);
     res.json({ ok: true, id: lead.id });
   } catch (e) {
     res.status(400).json({ error: e.message });
