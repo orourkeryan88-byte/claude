@@ -25,7 +25,7 @@ All the operational bits are editable — no code needed:
 
 The theme ships two extra page templates:
 
-- **`case-study`** — the before/after comparison, "what we changed" breakdown, and CTA.
+- **`case-study`** — the before/after comparison (a single box: 404 error → rebuild), "what we changed" breakdown, and CTA.
 - **`demo`** — the standalone live demo site (the "after" rebuild). It renders on its own with `{% layout none %}`, so it keeps its own design and doesn't pull in the Southline header, styles, or chatbot.
 
 To put both live (each is just a Shopify Page with a template assigned):
@@ -47,3 +47,4 @@ The chatbot widget itself is a single shared snippet (`snippets/chatbot-widget.l
 
 - The homepage (`templates/index.liquid`) is the Southline landing page. The other templates are minimal stubs so the theme imports/publishes cleanly — this theme is built for a marketing page, not a product catalogue.
 - Edit copy directly in `templates/index.liquid` (homepage), `templates/page.case-study.liquid` (case study), or `templates/page.demo.liquid` (demo); shared styles live in `assets/southline.css`, case-study-only styles in `assets/case-study.css`, and the chatbot logic is in `assets/southline.js`.
+- All case-study/demo content is kept anonymous (no real business name, phone, email, or address) — it's described generically as "previous work" / "most recent work".

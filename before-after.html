@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Case Study: Before &amp; After — Southline</title>
-<meta name="description" content="See how Southline rebuilt a Dublin trade business's online presence — from an outdated web footprint to a site that matches decades of hands-on expertise." />
+<title>Most Recent Work: Before &amp; After — Southline</title>
+<meta name="description" content="See Southline's most recent rebuild — from a website returning a 404 error to a site that matches decades of hands-on expertise." />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -48,25 +48,23 @@
   .title { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 800; letter-spacing: -.5px; margin-bottom: 10px; }
   .center { text-align: center; }
 
-  /* ── BEFORE / AFTER ── */
-  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 44px; align-items: stretch; }
-  .ba-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; }
+  /* ── BEFORE / AFTER (single box) ── */
+  .ba-single { display: grid; grid-template-columns: 1fr auto 1fr; margin-top: 44px; align-items: stretch; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .ba-half { display: flex; flex-direction: column; }
+  .ba-arrow { display: flex; align-items: center; justify-content: center; padding: 0 16px; background: var(--bg2); color: var(--accent); }
   .ba-head { padding: 14px 20px; font-weight: 800; font-size: .85rem; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; }
   .ba-head .pill { font-size: .68rem; font-weight: 700; padding: 3px 10px; border-radius: 10px; letter-spacing: .5px; text-transform: none; }
 
-  .ba-card.before .ba-head { background: #1c1212; color: #ff8a8a; }
-  .ba-card.before .ba-head .pill { background: rgba(255,107,107,.15); border: 1px solid #ff6b6b; color: #ff8a8a; }
-  .ba-card.after .ba-head { background: #0e1c14; color: var(--accent2); }
-  .ba-card.after .ba-head .pill { background: rgba(0,255,136,.14); border: 1px solid var(--accent); color: var(--accent); }
+  .ba-half.before .ba-head { background: #1c1212; color: #ff8a8a; }
+  .ba-half.before .ba-head .pill { background: rgba(255,107,107,.15); border: 1px solid #ff6b6b; color: #ff8a8a; }
+  .ba-half.after .ba-head { background: #0e1c14; color: var(--accent2); }
+  .ba-half.after .ba-head .pill { background: rgba(0,255,136,.14); border: 1px solid var(--accent); color: var(--accent); }
 
   .ba-mock { height: 200px; position: relative; display: flex; align-items: center; justify-content: center; }
-  .ba-mock.before-mock { background: #e9e4d8; }
-  .before-mock .mock-inner { width: 88%; color: #3a3a3a; font-family: Georgia, 'Times New Roman', serif; }
-  .before-mock .mock-nav { display: flex; gap: 10px; font-size: .62rem; color: #6b6b6b; margin-bottom: 10px; flex-wrap: wrap; }
-  .before-mock .mock-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; color: #2a2a2a; }
-  .before-mock .mock-line { height: 6px; background: #cfc8b4; border-radius: 2px; margin-bottom: 6px; }
-  .before-mock .mock-line.w60 { width: 60%; } .before-mock .mock-line.w80 { width: 80%; } .before-mock .mock-line.w40 { width: 40%; }
-  .before-mock .mock-btn { display: inline-block; margin-top: 8px; font-size: .62rem; color: #8a8a8a; border: 1px solid #b8b09a; padding: 4px 10px; }
+  .ba-mock.notfound-mock { background: #120a0a; }
+  .notfound-mock .mock-inner { text-align: center; }
+  .notfound-mock .mock-404 { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 2.6rem; font-weight: 800; color: #ff6b6b; letter-spacing: 1px; }
+  .notfound-mock .mock-404-sub { font-size: .78rem; color: #6b6b6b; margin-top: 8px; letter-spacing: .5px; text-transform: uppercase; }
 
   .ba-mock.after-mock { background: linear-gradient(160deg, #060c18 0%, #102140 100%); position: relative; overflow: hidden; }
   .ba-mock.after-mock::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(34,211,238,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,.08) 1px, transparent 1px); background-size: 28px 28px; }
@@ -79,12 +77,12 @@
   .ba-body { padding: 22px 24px; background: var(--card); flex: 1; display: flex; flex-direction: column; }
   .ba-body ul { list-style: none; margin-bottom: 18px; flex: 1; }
   .ba-body li { padding: 7px 0 7px 26px; position: relative; font-size: .92rem; color: var(--text); }
-  .ba-card.before .ba-body li::before { content: '✕'; position: absolute; left: 0; color: #ff6b6b; font-weight: 700; }
-  .ba-card.after .ba-body li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .ba-half.before .ba-body li::before { content: '✕'; position: absolute; left: 0; color: #ff6b6b; font-weight: 700; }
+  .ba-half.after .ba-body li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
   .ba-body .ba-note { font-size: .78rem; color: var(--faint); font-style: italic; margin-bottom: 14px; }
   .ba-body .ba-link { color: var(--accent); text-decoration: none; font-weight: 700; font-size: .92rem; }
   .ba-body .ba-link:hover { text-decoration: underline; }
-  @media (max-width: 760px) { .ba-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .ba-single { grid-template-columns: 1fr; } .ba-arrow svg { transform: rotate(90deg); } }
 
   /* ── CHANGES STEPS ── */
   .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 44px; }
@@ -157,40 +155,40 @@
 
 <section class="hero">
   <div class="hero-inner">
-    <div class="badge">Case study</div>
-    <h1>Previous work: from invisible online to <span class="accent">looking like the experts they are.</span></h1>
-    <p class="sub">A Dublin fibre optic &amp; structured cabling business with 30+ years of experience — but a website that didn't show it. Here's the rebuild.</p>
+    <div class="badge">Most recent work</div>
+    <h1>From a 404 error to <span class="accent">looking like the experts they are.</span></h1>
+    <p class="sub">A Dublin trade business with 30+ years of experience — but a website that had stopped working entirely. Here's the rebuild.</p>
   </div>
 </section>
 
 <section class="block">
   <div class="inner">
-    <div class="ba-grid">
-      <div class="ba-card before">
-        <div class="ba-head">Before <span class="pill">Typical issue</span></div>
-        <div class="ba-mock before-mock">
+    <div class="ba-single">
+      <div class="ba-half before">
+        <div class="ba-head">Before <span class="pill">404 error</span></div>
+        <div class="ba-mock notfound-mock">
           <div class="mock-inner">
-            <div class="mock-nav"><span>HOME</span><span>SERVICES</span><span>ABOUT</span><span>CONTACT</span></div>
-            <div class="mock-title">Trade Co.</div>
-            <div class="mock-line w80"></div>
-            <div class="mock-line w60"></div>
-            <div class="mock-line w40"></div>
-            <span class="mock-btn">Contact Us</span>
+            <div class="mock-404">404</div>
+            <div class="mock-404-sub">Page Not Found</div>
           </div>
         </div>
         <div class="ba-body">
-          <p class="ba-note">Illustrative — common issues with older B2B trade sites like this one.</p>
+          <p class="ba-note">Illustrative — what a visitor actually found when they searched for this business.</p>
           <ul>
-            <li>No mobile-friendly layout for on-site / on-call enquiries</li>
-            <li>No clear call-to-action — phone number buried in text</li>
-            <li>Doesn't communicate 30+ years of experience at a glance</li>
-            <li>No way to capture a visitor before they leave the page</li>
-            <li>Dated visuals that undersell a technical, established business</li>
+            <li>Website was returning a 404 — completely inaccessible</li>
+            <li>Every enquiry that would've come through, lost instantly</li>
+            <li>30+ years of reputation, invisible online</li>
+            <li>First impression for any search was a dead page</li>
+            <li>Nothing to build on — had to start from scratch</li>
           </ul>
         </div>
       </div>
 
-      <div class="ba-card after">
+      <div class="ba-arrow" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+
+      <div class="ba-half after">
         <div class="ba-head">After <span class="pill">Southline rebuild</span></div>
         <div class="ba-mock after-mock">
           <div class="mock-inner">
@@ -203,7 +201,7 @@
         <div class="ba-body">
           <p class="ba-note">The actual rebuild — live and clickable.</p>
           <ul>
-            <li>Fully responsive, mobile-first design</li>
+            <li>Live, fully responsive site — no more dead link</li>
             <li>Click-to-call &amp; email buttons above the fold</li>
             <li>Services, credentials and stats laid out clearly</li>
             <li>Professional branding that matches the expertise on offer</li>
