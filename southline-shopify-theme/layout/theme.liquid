@@ -15,9 +15,14 @@
   <meta name="twitter:card" content="summary_large_image">
   {{ content_for_header }}
   {{ 'southline.css' | asset_url | stylesheet_tag }}
+  {%- if template == 'page.case-study' -%}
+  {{ 'case-study.css' | asset_url | stylesheet_tag }}
+  {%- endif -%}
 </head>
 <body>
   {{ content_for_layout }}
+
+  {% render 'chatbot-widget' %}
 
   <script>
     window.SOUTHLINE_CONFIG = {

@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 import os, re, json, shutil
 
-ROOT = "/home/user/relier-"
-SRC  = os.path.join(ROOT, "southline.html")
-OUT  = os.path.join(ROOT, "southline-shopify-theme")
+ROOT     = "/home/user/relier-"
+SRC      = os.path.join(ROOT, "southline.html")
+CASE_SRC = os.path.join(ROOT, "before-after.html")
+OUT      = os.path.join(ROOT, "southline-shopify-theme")
+
+WIDGET_MARKER   = "<!-- ════════════ CHATBOT ════════════ -->"
+CHAT_CSS_MARKER = "/* ════════════ CHATBOT (shared widget) ════════════ */"
 
 html = open(SRC, encoding="utf-8").read()
 
@@ -11,14 +15,20 @@ html = open(SRC, encoding="utf-8").read()
 css    = re.search(r"<style>(.*?)</style>", html, re.S).group(1).strip()
 script = re.search(r"<script>(.*?)</script>", html, re.S).group(1).strip()
 body_full = re.search(r"<body>(.*?)</body>", html, re.S).group(1)
-# body markup = everything up to the <script> block
-body = body_full[:body_full.index("<script>")].strip()
 
-# ── parameterise body (demo links + footer email) ──
+# body markup splits into: page content | chatbot widget markup | <script>
+pre_script = body_full[:body_full.index("<script>")]
+widget_idx = pre_script.index(WIDGET_MARKER)
+body        = pre_script[:widget_idx].strip()
+widget_html = pre_script[widget_idx:].strip()
+
+# ── parameterise homepage body (demo links, case study link, footer email) ──
 body = body.replace('href="kelly-plumbing/index.html"',
                     "href=\"{{ settings.demo1_url | default: '#' }}\"")
 body = body.replace('href="blackrock-handyman/index.html"',
                     "href=\"{{ settings.demo2_url | default: '#' }}\"")
+body = body.replace('href="before-after.html"',
+                    "href=\"{{ settings.case_study_url | default: '#' }}\"")
 body = body.replace('<a href="mailto:orourkeryan88@gmail.com">orourkeryan88@gmail.com</a>',
                     '<a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>')
 
@@ -38,6 +48,23 @@ script = script.replace(
 script = script.replace("kelly-plumbing/index.html",     '" + SOUTHLINE_DEMO1 + "')
 script = script.replace("blackrock-handyman/index.html", '" + SOUTHLINE_DEMO2 + "')
 
+# ── case study page (before-after.html) ──
+chtml = open(CASE_SRC, encoding="utf-8").read()
+case_css_full = re.search(r"<style>(.*?)</style>", chtml, re.S).group(1)
+# the chatbot widget CSS is already shipped site-wide in southline.css — drop the duplicate
+case_css = case_css_full[:case_css_full.index(CHAT_CSS_MARKER)].strip()
+
+case_body_full = re.search(r"<body>(.*?)</body>", chtml, re.S).group(1)
+case_pre_script = case_body_full[:case_body_full.index("<script>")]
+case_widget_idx = case_pre_script.index(WIDGET_MARKER)
+case_body = case_pre_script[:case_widget_idx].strip()
+
+case_body = case_body.replace('href="southline.html"', 'href="{{ routes.root_url }}"')
+case_body = case_body.replace('href="case-study-demo/index.html"',
+                    "href=\"{{ settings.case_study_demo_url | default: '#' }}\"")
+case_body = case_body.replace('<a href="mailto:orourkeryan88@gmail.com">orourkeryan88@gmail.com</a>',
+                    '<a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>')
+
 # ── (re)create theme tree ──
 if os.path.isdir(OUT):
     shutil.rmtree(OUT)
@@ -50,8 +77,12 @@ def w(rel, content):
         f.write(content)
 
 # assets
-w("assets/southline.css", css + "\n")
-w("assets/southline.js",  script + "\n")
+w("assets/southline.css",  css + "\n")
+w("assets/southline.js",   script + "\n")
+w("assets/case-study.css", case_css + "\n")
+
+# snippets — chatbot widget markup, rendered site-wide from the layout
+w("snippets/chatbot-widget.liquid", widget_html + "\n")
 
 # layout/theme.liquid
 w("layout/theme.liquid", """<!doctype html>
@@ -71,9 +102,14 @@ w("layout/theme.liquid", """<!doctype html>
   <meta name="twitter:card" content="summary_large_image">
   {{ content_for_header }}
   {{ 'southline.css' | asset_url | stylesheet_tag }}
+  {%- if template == 'page.case-study' -%}
+  {{ 'case-study.css' | asset_url | stylesheet_tag }}
+  {%- endif -%}
 </head>
 <body>
   {{ content_for_layout }}
+
+  {% render 'chatbot-widget' %}
 
   <script>
     window.SOUTHLINE_CONFIG = {
@@ -91,6 +127,9 @@ w("layout/theme.liquid", """<!doctype html>
 
 # templates/index.liquid — the landing page
 w("templates/index.liquid", body + "\n")
+
+# templates/page.case-study.liquid — before/after case study (assign to a Page in admin)
+w("templates/page.case-study.liquid", case_body + "\n")
 
 # minimal but valid stub templates so the theme imports/publishes cleanly
 stub = '<div style="max-width:800px;margin:0 auto;padding:60px 24px;font-family:-apple-system,Segoe UI,sans-serif;color:#e8e8e8;background:#0a0a0a;min-height:60vh">{body}</div>\n'
@@ -119,7 +158,7 @@ schema = [
   {
     "name": "theme_info",
     "theme_name": "Southline",
-    "theme_version": "1.0.0",
+    "theme_version": "1.1.0",
     "theme_author": "Southline Agency",
     "theme_documentation_url": "https://southline.ie",
     "theme_support_url": "https://southline.ie"
@@ -133,7 +172,9 @@ schema = [
       {"type":"text","id":"api_url","label":"Lead API URL (optional — your builder app)","info":"Leave blank to use email/WhatsApp only."},
       {"type":"header","content":"Portfolio links"},
       {"type":"url","id":"demo1_url","label":"Demo site 1 link (Kelly Plumbing)"},
-      {"type":"url","id":"demo2_url","label":"Demo site 2 link (Blackrock Handyman)"}
+      {"type":"url","id":"demo2_url","label":"Demo site 2 link (Blackrock Handyman)"},
+      {"type":"url","id":"case_study_url","label":"Case study page link","info":"Create a Page in admin, assign it the \"case-study\" template, then paste its link here."},
+      {"type":"url","id":"case_study_demo_url","label":"Case study live demo link","info":"Where the before/after demo site is hosted, e.g. a separate link sent to that prospect."}
     ]
   },
   {
@@ -157,6 +198,8 @@ data = {"current": {
   "api_url":"",
   "demo1_url":"",
   "demo2_url":"",
+  "case_study_url":"",
+  "case_study_demo_url":"",
   "meta_description":"Southline builds clean, professional websites for Dublin tradesmen. €400 to build, €50/month hosting. See your site before you pay a cent.",
   "og_title":"Southline — Websites for Tradesmen Who Don't Have One",
   "og_description":"Clean, professional websites for Dublin tradesmen. €400 to build, €50/month. See your site free before you pay a cent."
@@ -164,7 +207,7 @@ data = {"current": {
 w("config/settings_data.json", json.dumps(data, indent=2) + "\n")
 
 # keep empty dirs in git/zip
-for d in ["sections","snippets"]:
+for d in ["sections"]:
     w(os.path.join(d, ".keep"), "")
 
 print("Theme written to", OUT)

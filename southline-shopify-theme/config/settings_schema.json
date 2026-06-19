@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Southline",
-    "theme_version": "1.0.0",
+    "theme_version": "1.1.0",
     "theme_author": "Southline Agency",
     "theme_documentation_url": "https://southline.ie",
     "theme_support_url": "https://southline.ie"
@@ -45,6 +45,18 @@
         "type": "url",
         "id": "demo2_url",
         "label": "Demo site 2 link (Blackrock Handyman)"
+      },
+      {
+        "type": "url",
+        "id": "case_study_url",
+        "label": "Case study page link",
+        "info": "Create a Page in admin, assign it the \"case-study\" template, then paste its link here."
+      },
+      {
+        "type": "url",
+        "id": "case_study_demo_url",
+        "label": "Case study live demo link",
+        "info": "Where the before/after demo site is hosted, e.g. a separate link sent to that prospect."
       }
     ]
   },

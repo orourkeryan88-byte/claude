@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Case Study: Before &amp; After — Southline</title>
+<meta name="description" content="See how Southline rebuilt a Dublin trade business's online presence — from an outdated web footprint to a site that matches decades of hands-on expertise." />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #0a0a0a;
+    --bg2:     #101010;
+    --card:    #141414;
+    --border:  #262626;
+    --accent:  #00ff88;
+    --accent2: #7ee787;
+    --text:    #e8e8e8;
+    --muted:   #888888;
+    --faint:   #555555;
+    --radius:  14px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .mono { font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, monospace; }
+  a { color: inherit; }
+
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(10,10,10,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; }
+  .logo-text { font-weight: 800; font-size: 1.15rem; letter-spacing: .5px; color: var(--text); }
+  .logo-text .dot { color: var(--accent); }
+  .nav-back { color: var(--muted); text-decoration: none; font-size: .88rem; font-weight: 600; }
+  .nav-back:hover { color: var(--text); }
+  .nav-cta { background: var(--accent); color: var(--bg); text-decoration: none; font-weight: 700; font-size: .9rem; padding: 9px 18px; border-radius: 9px; border: none; cursor: pointer; transition: transform .12s; }
+  .nav-cta:hover { transform: translateY(-1px); }
+
+  .hero { padding: 70px 24px 56px; text-align: center; }
+  .hero-inner { max-width: 760px; margin: 0 auto; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--bg2); color: var(--accent2); font-size: .78rem; font-weight: 700; letter-spacing: 1px; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 800; line-height: 1.14; letter-spacing: -1px; }
+  .hero h1 .accent { color: var(--accent); }
+  .hero p.sub { font-size: clamp(1rem, 2.2vw, 1.18rem); color: var(--muted); max-width: 600px; margin: 22px auto 0; }
+
+  section.block { padding: 60px 24px; }
+  .inner { max-width: 1080px; margin: 0 auto; }
+  .label { font-size: .74rem; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
+  .title { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 800; letter-spacing: -.5px; margin-bottom: 10px; }
+  .center { text-align: center; }
+
+  /* ── BEFORE / AFTER ── */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 44px; align-items: stretch; }
+  .ba-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; }
+  .ba-head { padding: 14px 20px; font-weight: 800; font-size: .85rem; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; }
+  .ba-head .pill { font-size: .68rem; font-weight: 700; padding: 3px 10px; border-radius: 10px; letter-spacing: .5px; text-transform: none; }
+
+  .ba-card.before .ba-head { background: #1c1212; color: #ff8a8a; }
+  .ba-card.before .ba-head .pill { background: rgba(255,107,107,.15); border: 1px solid #ff6b6b; color: #ff8a8a; }
+  .ba-card.after .ba-head { background: #0e1c14; color: var(--accent2); }
+  .ba-card.after .ba-head .pill { background: rgba(0,255,136,.14); border: 1px solid var(--accent); color: var(--accent); }
+
+  .ba-mock { height: 200px; position: relative; display: flex; align-items: center; justify-content: center; }
+  .ba-mock.before-mock { background: #e9e4d8; }
+  .before-mock .mock-inner { width: 88%; color: #3a3a3a; font-family: Georgia, 'Times New Roman', serif; }
+  .before-mock .mock-nav { display: flex; gap: 10px; font-size: .62rem; color: #6b6b6b; margin-bottom: 10px; flex-wrap: wrap; }
+  .before-mock .mock-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; color: #2a2a2a; }
+  .before-mock .mock-line { height: 6px; background: #cfc8b4; border-radius: 2px; margin-bottom: 6px; }
+  .before-mock .mock-line.w60 { width: 60%; } .before-mock .mock-line.w80 { width: 80%; } .before-mock .mock-line.w40 { width: 40%; }
+  .before-mock .mock-btn { display: inline-block; margin-top: 8px; font-size: .62rem; color: #8a8a8a; border: 1px solid #b8b09a; padding: 4px 10px; }
+
+  .ba-mock.after-mock { background: linear-gradient(160deg, #060c18 0%, #102140 100%); position: relative; overflow: hidden; }
+  .ba-mock.after-mock::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(34,211,238,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,.08) 1px, transparent 1px); background-size: 28px 28px; }
+  .after-mock .mock-inner { position: relative; text-align: center; color: #fff; }
+  .after-mock .mock-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,211,238,.12); border: 1px solid rgba(34,211,238,.4); color: #22d3ee; font-size: .6rem; font-weight: 700; letter-spacing: 1px; padding: 3px 10px; border-radius: 14px; margin-bottom: 10px; text-transform: uppercase; }
+  .after-mock h4 { font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; }
+  .after-mock .mock-sub { font-size: .68rem; color: #9fc6db; margin-bottom: 12px; }
+  .after-mock .mock-cta { display: inline-block; background: #22d3ee; color: #060c18; font-size: .68rem; font-weight: 700; padding: 7px 16px; border-radius: 6px; }
+
+  .ba-body { padding: 22px 24px; background: var(--card); flex: 1; display: flex; flex-direction: column; }
+  .ba-body ul { list-style: none; margin-bottom: 18px; flex: 1; }
+  .ba-body li { padding: 7px 0 7px 26px; position: relative; font-size: .92rem; color: var(--text); }
+  .ba-card.before .ba-body li::before { content: '✕'; position: absolute; left: 0; color: #ff6b6b; font-weight: 700; }
+  .ba-card.after .ba-body li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .ba-body .ba-note { font-size: .78rem; color: var(--faint); font-style: italic; margin-bottom: 14px; }
+  .ba-body .ba-link { color: var(--accent); text-decoration: none; font-weight: 700; font-size: .92rem; }
+  .ba-body .ba-link:hover { text-decoration: underline; }
+  @media (max-width: 760px) { .ba-grid { grid-template-columns: 1fr; } }
+
+  /* ── CHANGES STEPS ── */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 44px; }
+  .step { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 20px; }
+  .step .step-num { font-family: ui-monospace, monospace; font-size: 1.6rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
+  .step h3 { font-size: .96rem; margin-bottom: 8px; }
+  .step p { color: var(--muted); font-size: .86rem; }
+  @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .steps { grid-template-columns: 1fr; } }
+
+  /* ── FINAL CTA ── */
+  .alt { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .final { text-align: center; }
+  .final h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; margin-bottom: 12px; letter-spacing: -.5px; }
+  .final p { color: var(--muted); font-size: 1.05rem; margin-bottom: 30px; }
+  .btn-primary { background: var(--accent); color: var(--bg); padding: 15px 30px; border-radius: 11px; font-size: 1.02rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; box-shadow: 0 6px 24px rgba(0,255,136,.28); transition: transform .15s; }
+  .btn-primary:hover { transform: translateY(-2px); }
+
+  footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; color: var(--faint); font-size: .86rem; }
+  footer a { color: var(--accent2); text-decoration: none; }
+
+  /* ════════════ CHATBOT (shared widget) ════════════ */
+  .chat-toggle { position: fixed; bottom: 24px; right: 24px; z-index: 90; width: 62px; height: 62px; border-radius: 50%; background: var(--accent); color: var(--bg); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 28px rgba(0,255,136,.4); transition: transform .15s; }
+  .chat-toggle:hover { transform: scale(1.06); }
+  .chat-toggle svg { width: 28px; height: 28px; }
+  .chat-badge { position: absolute; top: -3px; right: -3px; background: #ff6b6b; color: #fff; font-size: .68rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); }
+  .chat-window { position: fixed; bottom: 100px; right: 24px; z-index: 95; width: 380px; max-width: calc(100vw - 32px); height: 560px; max-height: calc(100vh - 140px); background: var(--bg2); border: 1px solid var(--border); border-radius: 18px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.6); opacity: 0; transform: translateY(20px) scale(.98); pointer-events: none; transition: opacity .2s, transform .2s; }
+  .chat-window.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+  .chat-head { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 18px; display: flex; align-items: center; gap: 12px; }
+  .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+  .chat-head .ci h4 { font-size: 1rem; font-weight: 700; }
+  .chat-head .ci span { font-size: .78rem; color: var(--accent2); display: flex; align-items: center; gap: 6px; }
+  .chat-head .ci span::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .chat-close { margin-left: auto; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 4px; }
+  .chat-close:hover { color: var(--text); }
+  .chat-body { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .chat-body::-webkit-scrollbar { width: 6px; }
+  .chat-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .msg { max-width: 82%; padding: 11px 15px; border-radius: 16px; font-size: .92rem; line-height: 1.5; white-space: pre-wrap; }
+  .msg.bot { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.user { background: var(--accent); color: var(--bg); align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 600; }
+  .msg.bot a { color: var(--accent); font-weight: 700; }
+  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; border-bottom-left-radius: 4px; }
+  .typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: blink 1.2s infinite both; }
+  .typing span:nth-child(2) { animation-delay: .2s; } .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+  .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 12px; }
+  .quick-reply { background: transparent; border: 1px solid var(--accent); color: var(--accent); border-radius: 16px; padding: 8px 14px; font-size: .84rem; font-weight: 600; cursor: pointer; transition: background .15s, color .15s; }
+  .quick-reply:hover { background: var(--accent); color: var(--bg); }
+  .chat-input { display: flex; gap: 8px; padding: 14px; border-top: 1px solid var(--border); background: var(--card); }
+  .chat-input input { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: .92rem; outline: none; font-family: inherit; }
+  .chat-input input:focus { border-color: var(--accent); }
+  .chat-input button { background: var(--accent); color: var(--bg); border: none; border-radius: 10px; width: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .chat-input button svg { width: 20px; height: 20px; }
+  @media (max-width: 480px) { .chat-window { bottom: 88px; right: 8px; left: 8px; width: auto; height: calc(100vh - 110px); } .chat-toggle { bottom: 16px; right: 16px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="southline.html">
+    <div class="logo-mark">S</div>
+    <div class="logo-text mono">Southline<span class="dot">.</span></div>
+  </a>
+  <div style="display:flex;align-items:center;gap:22px;">
+    <a class="nav-back" href="southline.html">← Back to Southline</a>
+    <button class="nav-cta" onclick="openChat()">Get my website</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">Case study</div>
+    <h1>Previous work: from invisible online to <span class="accent">looking like the experts they are.</span></h1>
+    <p class="sub">A Dublin fibre optic &amp; structured cabling business with 30+ years of experience — but a website that didn't show it. Here's the rebuild.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="inner">
+    <div class="ba-grid">
+      <div class="ba-card before">
+        <div class="ba-head">Before <span class="pill">Typical issue</span></div>
+        <div class="ba-mock before-mock">
+          <div class="mock-inner">
+            <div class="mock-nav"><span>HOME</span><span>SERVICES</span><span>ABOUT</span><span>CONTACT</span></div>
+            <div class="mock-title">Trade Co.</div>
+            <div class="mock-line w80"></div>
+            <div class="mock-line w60"></div>
+            <div class="mock-line w40"></div>
+            <span class="mock-btn">Contact Us</span>
+          </div>
+        </div>
+        <div class="ba-body">
+          <p class="ba-note">Illustrative — common issues with older B2B trade sites like this one.</p>
+          <ul>
+            <li>No mobile-friendly layout for on-site / on-call enquiries</li>
+            <li>No clear call-to-action — phone number buried in text</li>
+            <li>Doesn't communicate 30+ years of experience at a glance</li>
+            <li>No way to capture a visitor before they leave the page</li>
+            <li>Dated visuals that undersell a technical, established business</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ba-card after">
+        <div class="ba-head">After <span class="pill">Southline rebuild</span></div>
+        <div class="ba-mock after-mock">
+          <div class="mock-inner">
+            <div class="mock-badge">24/7 on-call</div>
+            <h4>Fibre Optic &amp; Structured Cabling</h4>
+            <div class="mock-sub">30+ years experience · Dublin &amp; nationwide</div>
+            <span class="mock-cta">Call Now</span>
+          </div>
+        </div>
+        <div class="ba-body">
+          <p class="ba-note">The actual rebuild — live and clickable.</p>
+          <ul>
+            <li>Fully responsive, mobile-first design</li>
+            <li>Click-to-call &amp; email buttons above the fold</li>
+            <li>Services, credentials and stats laid out clearly</li>
+            <li>Professional branding that matches the expertise on offer</li>
+            <li>Built-in chatbot to capture enquiries 24/7</li>
+          </ul>
+          <a class="ba-link" href="case-study-demo/index.html" target="_blank">View live demo →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="inner">
+    <div class="center">
+      <p class="label">What we changed</p>
+      <h2 class="title">Same business. Different first impression.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num mono">01</div>
+        <h3>Led with credibility</h3>
+        <p>30+ years and 24/7 on-call moved straight into the hero — the things that actually win trust.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">02</div>
+        <h3>One-tap contact</h3>
+        <p>Phone and email buttons visible the second the page loads, on any device.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">03</div>
+        <h3>Clear service breakdown</h3>
+        <p>Design, install, maintain, supply — laid out so a visitor knows exactly what's offered in seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">04</div>
+        <h3>Always-on enquiries</h3>
+        <p>A built-in chatbot captures details from visitors even outside office hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block final">
+  <div class="inner">
+    <h2>Want a rebuild like this for your business?</h2>
+    <p>Tell our assistant your trade and area — we'll build your demo free, you decide after.</p>
+    <button class="btn-primary" onclick="openChat()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat to Southline
+    </button>
+  </div>
+</section>
+
+<footer>
+  <span class="mono" style="font-weight:800;color:var(--text);display:block;margin-bottom:8px;">Southline<span style="color:var(--accent)">.</span></span>
+  Websites for tradesmen who don't have one — Dublin, Ireland<br />
+  <a href="mailto:orourkeryan88@gmail.com">orourkeryan88@gmail.com</a>
+  &nbsp;·&nbsp; <a href="#" onclick="openChat();return false;">Chat with us</a>
+</footer>
+
+<!-- ════════════ CHATBOT ════════════ -->
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()" aria-label="Open chat">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <span class="chat-badge" id="chatBadge">1</span>
+</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-head">
+    <div class="chat-avatar">S</div>
+    <div class="ci">
+      <h4>Southline Assistant</h4>
+      <span>Online now</span>
+    </div>
+    <button class="chat-close" onclick="toggleChat()" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="quick-replies" id="quickReplies"></div>
+  <form class="chat-input" id="chatForm" onsubmit="return sendUserMsg()">
+    <input type="text" id="chatInput" placeholder="Type your message…" autocomplete="off" />
+    <button type="submit" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </form>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────
+   SOUTHLINE CHATBOT  — edit these two lines only
+   ───────────────────────────────────────────── */
+const SOUTHLINE_EMAIL    = "orourkeryan88@gmail.com";
+const SOUTHLINE_WHATSAPP = "353851740783";
+const SOUTHLINE_API      = "";
+/* ───────────────────────────────────────────── */
+
+const chatWindow = document.getElementById('chatWindow');
+const chatBody   = document.getElementById('chatBody');
+const quickWrap  = document.getElementById('quickReplies');
+const chatInput  = document.getElementById('chatInput');
+const chatBadge  = document.getElementById('chatBadge');
+let   greeted    = false;
+
+const lead = { name:'', trade:'', area:'', phone:'' };
+let   capturing = null;
+
+function toggleChat(){
+  const open = chatWindow.classList.toggle('open');
+  document.getElementById('chatToggle').style.display = open ? 'none' : 'flex';
+  if (open){
+    chatBadge.style.display = 'none';
+    if (!greeted){ greeted = true; greet(); }
+    setTimeout(()=>chatInput.focus(), 250);
+  }
+}
+function openChat(){ if(!chatWindow.classList.contains('open')) toggleChat(); }
+
+function addMsg(text, who){
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.innerHTML = text;
+  chatBody.appendChild(d);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+function showTyping(){
+  const t = document.createElement('div');
+  t.className = 'typing'; t.id = 'typing';
+  t.innerHTML = '<span></span><span></span><span></span>';
+  chatBody.appendChild(t);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+function hideTyping(){ const t = document.getElementById('typing'); if(t) t.remove(); }
+
+function botSay(text, replies){
+  showTyping();
+  const delay = Math.min(900, 350 + text.length * 9);
+  setTimeout(()=>{
+    hideTyping();
+    addMsg(text, 'bot');
+    setQuickReplies(replies || []);
+  }, delay);
+}
+
+function setQuickReplies(list){
+  quickWrap.innerHTML = '';
+  list.forEach(q=>{
+    const b = document.createElement('button');
+    b.className = 'quick-reply';
+    b.textContent = q.label;
+    b.onclick = ()=>{ addMsg(q.label, 'user'); handle(q.value || q.label); };
+    quickWrap.appendChild(b);
+  });
+}
+
+const DEFAULT_REPLIES = [
+  { label:'💶 How much?',        value:'pricing' },
+  { label:'📦 What do I get?',   value:'included' },
+  { label:'⏱️ How long?',        value:'time' },
+  { label:'✅ I want a website', value:'start' },
+];
+
+function greet(){
+  botSay("Howaya 👋 I'm the Southline assistant.\n\nLike what you saw in that case study? We build the same kind of clean, professional site — €400 to build, €50/month after. You see it free before paying a cent.\n\nWhat can I help with?", DEFAULT_REPLIES);
+}
+
+function sendUserMsg(){
+  const txt = chatInput.value.trim();
+  if(!txt) return false;
+  addMsg(txt, 'user');
+  chatInput.value = '';
+  handle(txt);
+  return false;
+}
+
+function handle(raw){
+  const t = raw.toLowerCase();
+  if (capturing){ return captureStep(raw); }
+  if (t==='start' || /\b(want|sign up|get started|interested|yes please|book|sign me)\b/.test(t) || t==='yes'){
+    return startCapture();
+  }
+  if (t==='pricing' || /\b(price|cost|how much|fee|expensive|charge|pay|money|€|euro)\b/.test(t)){
+    return botSay("Straight pricing, no contracts:\n\n💶 <b>€400</b> once to build &amp; launch your site\n🔁 <b>€50/month</b> for hosting, updates &amp; support\n\nAnd you only pay once you've <b>seen the site and you're happy</b>. Want me to start your free demo?", [
+      { label:'✅ Yes, build my demo', value:'start' },
+      { label:'📦 What do I get?',     value:'included' },
+    ]);
+  }
+  if (t==='included' || /\b(include|get for|what do i|features?|what.?s in)\b/.test(t)){
+    return botSay("Every Southline site comes with:\n\n✓ A full custom site built for your trade\n✓ Works perfectly on phones\n✓ One-tap call &amp; email buttons\n✓ Your services, areas &amp; reviews\n✓ Hosting, updates &amp; support\n✓ A demo built free before you decide\n\nShall I get yours started?", [
+      { label:'✅ Start my demo', value:'start' },
+      { label:'💶 Remind me of price', value:'pricing' },
+    ]);
+  }
+  if (t==='time' || /\b(how long|how fast|when|quick|turnaround|days?|ready)\b/.test(t)){
+    return botSay("Fast ⚡ — we usually have your <b>demo site ready within 48 hours</b> of you giving us your details. Once you approve it, it goes live the same day.\n\nWant me to take your details now?", [
+      { label:'✅ Let\'s do it', value:'start' },
+    ]);
+  }
+  if (/\b(example|portfolio|see|work|sample|proof|show me)\b/.test(t)){
+    return botSay("You're looking at one right now — the case study rebuild above. We've also built sites for plumbers and handymen. Ready to start yours?", [
+      { label:'✅ Yes, start mine', value:'start' },
+      { label:'💶 How much?',       value:'pricing' },
+    ]);
+  }
+  if (/\b(plumb|electric|carpent|paint|roof|build|garden|handyman|plaster|tiler|landscap|gas|mechanic|trade|network|cabling|it )\b/.test(t)){
+    return botSay("Yes — we build sites for <b>every trade and B2B service</b>: plumbers, electricians, carpenters, roofers, IT &amp; networking firms, and more. Each one tailored to the business.\n\nWant to start your free demo?", [
+      { label:'✅ Start my demo', value:'start' },
+    ]);
+  }
+  if (/\b(area|where|dublin|located|cover|location|county)\b/.test(t)){
+    return botSay("We're Dublin-based and work with businesses right across the city, county, and the commuter belt. Wherever you work, we can build for it.\n\nShall I get your demo started?", [
+      { label:'✅ Yes please', value:'start' },
+    ]);
+  }
+  if (/\b(hi|hey|hello|howaya|how are|good morning|good evening|yo)\b/.test(t)){
+    return botSay("Howaya! 👋 Happy to help. Want pricing, more examples, or a free demo built for your business?", DEFAULT_REPLIES);
+  }
+  if (/\b(thank|thanks|cheers|nice one|grand|sound)\b/.test(t)){
+    return botSay("No bother at all 🙂 Want me to start your free demo while you're here?", [
+      { label:'✅ Go on then', value:'start' },
+      { label:'Not right now', value:'later' },
+    ]);
+  }
+  if (t==='later' || /\b(not now|later|maybe|thinking)\b/.test(t)){
+    return botSay("No problem. Whenever you're ready, just drop your details here or email <a href='mailto:"+SOUTHLINE_EMAIL+"'>"+SOUTHLINE_EMAIL+"</a>. 👍", DEFAULT_REPLIES);
+  }
+  return botSay("Good question — I'll make sure Ryan gets back to you on that. In the meantime, the basics: <b>€400</b> to build, <b>€50/month</b> after, and you see it free first.\n\nWhat would you like to do?", DEFAULT_REPLIES);
+}
+
+function startCapture(){
+  capturing = 'name';
+  setQuickReplies([]);
+  botSay("Brilliant — let's get your free demo started 🙌\n\nFirst up, <b>what's your name?</b>");
+}
+function captureStep(val){
+  val = val.trim();
+  if (capturing === 'name'){
+    lead.name = val;
+    capturing = 'trade';
+    return botSay("Nice to meet you, " + escapeHtml(lead.name.split(' ')[0]) + "! 👋\n\nWhat's your <b>trade or business</b>?");
+  }
+  if (capturing === 'trade'){
+    lead.trade = val;
+    capturing = 'area';
+    return botSay("Perfect. And what <b>area(s)</b> do you cover?");
+  }
+  if (capturing === 'area'){
+    lead.area = val;
+    capturing = 'phone';
+    return botSay("Last thing — what's the best <b>phone number</b> to reach you on? We'll send your demo link and give you a quick call.");
+  }
+  if (capturing === 'phone'){
+    lead.phone = val;
+    capturing = 'done';
+    return finishCapture();
+  }
+}
+
+async function finishCapture(){
+  capturing = null;
+  const summary =
+    "Southline website enquiry%0A%0A" +
+    "Name: " + encodeURIComponent(lead.name) + "%0A" +
+    "Trade: " + encodeURIComponent(lead.trade) + "%0A" +
+    "Area: " + encodeURIComponent(lead.area) + "%0A" +
+    "Phone: " + encodeURIComponent(lead.phone);
+  const mailto = "mailto:" + SOUTHLINE_EMAIL +
+    "?subject=" + encodeURIComponent("New website lead: " + lead.name + " (" + lead.trade + ")") +
+    "&body=" + summary;
+  let handoff;
+  if (SOUTHLINE_WHATSAPP){
+    const wa = "https://wa.me/" + SOUTHLINE_WHATSAPP + "?text=" + summary;
+    handoff = "<a href='" + wa + "' target='_blank'>📲 Send on WhatsApp</a>  ·  <a href='" + mailto + "'>✉️ Send by email</a>";
+  } else {
+    handoff = "<a href='" + mailto + "'>✉️ Tap to send us your details</a>";
+  }
+  const recap =
+    "Here's what I've got:\n" +
+    "• <b>" + escapeHtml(lead.trade) + "</b> in <b>" + escapeHtml(lead.area) + "</b>\n" +
+    "• We'll call you on <b>" + escapeHtml(lead.phone) + "</b>\n\n";
+
+  let saved = false;
+  if (SOUTHLINE_API){
+    showTyping();
+    try {
+      const res = await fetch(SOUTHLINE_API.replace(/\/$/, '') + "/api/leads", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...lead, source: "case-study" }),
+      });
+      saved = res.ok;
+    } catch (e){ saved = false; }
+    hideTyping();
+  }
+
+  if (saved){
+    botSay("You're all set, " + escapeHtml(lead.name.split(' ')[0]) + "! 🎉 Your details are in — we'll have your demo ready within 48 hours and give you a call.\n\n" + recap + "Prefer to message us directly too? " + handoff, [{ label:'Start again', value:'restart' }]);
+  } else {
+    botSay("You're all set, " + escapeHtml(lead.name.split(' ')[0]) + "! 🎉\n\n" + recap + "Tap below to fire it over to the team and we'll have your demo ready within 48 hours 👇\n\n" + handoff, [{ label:'Start again', value:'restart' }]);
+  }
+}
+
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const _handle = handle;
+handle = function(raw){
+  if (String(raw).toLowerCase() === 'restart'){ capturing = null; greet(); return; }
+  return _handle(raw);
+};
+</script>
+
+</body>
+</html>
