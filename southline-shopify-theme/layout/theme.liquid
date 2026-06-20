@@ -33,6 +33,6 @@
       demo2:    {{ settings.demo2_url | json }}
     };
   </script>
-  {{ 'southline.js' | asset_url | script_tag }}
+  <script src="{{ 'southline.js' | asset_url }}" defer></script>
 </body>
 </html>
