@@ -387,13 +387,13 @@
         </div>
       </div>
       <div class="work-card">
-        <span class="work-tag">Before &amp; after</span>
-        <div class="work-preview cyan">📡</div>
+        <span class="work-tag">New service</span>
+        <div class="work-preview cyan">📈</div>
         <div class="work-body">
-          <h3>Previous Work</h3>
-          <div class="trade">Network &amp; Structured Cabling · Dublin</div>
-          <p>An established trade business, rebuilt into a site that actually looks like it. See the full before/after case study.</p>
-          <a class="work-link" href="before-after.html" target="_blank">See the case study →</a>
+          <h3>Digital Marketing</h3>
+          <div class="trade">Local SEO · Google &amp; Social Ads · From €110–€200/campaign</div>
+          <p>Already got a site, or just getting one built? We run targeted local campaigns — Google Ads, Facebook &amp; Instagram — that turn searches and scrolls into phone calls.</p>
+          <a class="work-link" href="#" onclick="openChat();return false;">Ask about a campaign →</a>
         </div>
       </div>
     </div>
@@ -578,6 +578,7 @@ const DEFAULT_REPLIES = [
   { label:'💶 How much?',        value:'pricing' },
   { label:'📦 What do I get?',   value:'included' },
   { label:'⏱️ How long?',        value:'time' },
+  { label:'📈 Digital marketing?', value:'marketing' },
   { label:'✅ I want a website', value:'start' },
 ];
 
@@ -606,6 +607,13 @@ function handle(raw){
     return startCapture();
   }
   /* pricing */
+  /* digital marketing */
+  if (t==='marketing' || /\b(digital marketing|marketing|campaign|advert(?:s|ising)?|seo|social media|google ads|promote|promotion)\b/.test(t)){
+    return botSay("Yep — we also run <b>digital marketing campaigns</b> once your site's live: Google Ads, Facebook &amp; Instagram, local SEO. Whatever gets your trade found first.\n\n💶 <b>€110–€200 per campaign</b>, no long contracts.\n\nWant to add one, or hear more about the website first?", [
+      { label:'✅ Add a campaign', value:'start' },
+      { label:'💶 Website pricing', value:'pricing' },
+    ]);
+  }
   if (t==='pricing' || /\b(price|cost|how much|fee|expensive|charge|pay|money|€|euro)\b/.test(t)){
     return botSay("Straight pricing, no contracts:\n\n💶 <b>€400</b> once to build &amp; launch your site\n🔁 <b>€50/month</b> for hosting, updates &amp; support\n\nAnd you only pay once you've <b>seen the site and you're happy</b>. Want me to start your free demo?", [
       { label:'✅ Yes, build my demo', value:'start' },

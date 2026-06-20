@@ -73,6 +73,7 @@ const DEFAULT_REPLIES = [
   { label:'💶 How much?',        value:'pricing' },
   { label:'📦 What do I get?',   value:'included' },
   { label:'⏱️ How long?',        value:'time' },
+  { label:'📈 Digital marketing?', value:'marketing' },
   { label:'✅ I want a website', value:'start' },
 ];
 
@@ -99,6 +100,13 @@ function handle(raw){
   /* intent: start / sign up */
   if (t==='start' || /\b(want|sign up|get started|interested|yes please|book|sign me)\b/.test(t) || t==='yes'){
     return startCapture();
+  }
+  /* digital marketing */
+  if (t==='marketing' || /\b(digital marketing|marketing|campaign|advert(?:s|ising)?|seo|social media|google ads|promote|promotion)\b/.test(t)){
+    return botSay("Yep — we also run <b>digital marketing campaigns</b> once your site's live: Google Ads, Facebook &amp; Instagram, local SEO. Whatever gets your trade found first.\n\n💶 <b>€110–€200 per campaign</b>, no long contracts.\n\nWant to add one, or hear more about the website first?", [
+      { label:'✅ Add a campaign', value:'start' },
+      { label:'💶 Website pricing', value:'pricing' },
+    ]);
   }
   /* pricing */
   if (t==='pricing' || /\b(price|cost|how much|fee|expensive|charge|pay|money|€|euro)\b/.test(t)){
