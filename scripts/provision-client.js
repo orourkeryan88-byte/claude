@@ -36,6 +36,7 @@ function buildAssistant(c) {
   const tplPath = path.join(__dirname, "..", "vapi", "assistant.template.json");
   let raw = fs.readFileSync(tplPath, "utf8");
 
+  const base = (c.webhookUrl || "").replace(/\/log-lead\/?$/, "");
   const replacements = {
     "{{BUSINESS_NAME}}": c.businessName,
     "{{BUSINESS_TYPE}}": c.businessType,
@@ -46,6 +47,8 @@ function buildAssistant(c) {
     "{{FAQ}}": c.faq || "Ask the team for anything not listed.",
     "{{VOICE_ID}}": c.voiceId,
     "{{WEBHOOK_URL}}": c.webhookUrl,
+    "{{AVAILABILITY_URL}}": base + "/availability",
+    "{{BOOK_URL}}": base + "/book",
   };
   for (const [k, v] of Object.entries(replacements)) {
     raw = raw.split(k).join(String(v).replace(/"/g, '\\"'));

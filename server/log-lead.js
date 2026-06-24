@@ -45,6 +45,10 @@ const leads = [];
 app.get("/", (_req, res) => res.send("Southline AI Receptionist webhook is running ✅"));
 app.get("/leads", (_req, res) => res.json(leads));
 
+// Appointment booking (Google Calendar) — adds GET /availability and POST /book.
+try { require("./calendar").mountCalendar(app); }
+catch (e) { console.warn("Calendar module not mounted:", e.message); }
+
 app.post("/log-lead", async (req, res) => {
   try {
     // Vapi wraps function calls. Support both the wrapped and flat shapes.

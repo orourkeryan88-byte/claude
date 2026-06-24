@@ -171,6 +171,30 @@ You wanted it to feel like a real person who has every answer — and to look th
 
 ---
 
+## Booking appointments into Google Calendar
+
+The receptionist can book real appointments. It calls two endpoints on your webhook server — `GET /availability` (reads the calendar for free slots) and `POST /book` (writes the event). One server handles every client.
+
+**Until you connect a calendar it runs in demo mode** (offers realistic slots and confirms a booking without writing anything) — so the summit demo works with zero setup.
+
+To make it write into a **real Google Calendar** (about 10 minutes, once):
+
+1. **Google Cloud Console** (console.cloud.google.com) → create a project → **APIs & Services → Enable APIs** → enable **Google Calendar API**.
+2. **Credentials → Create credentials → Service account.** Give it a name (e.g. "receptionist"). Create it.
+3. On the service account → **Keys → Add key → JSON.** A JSON file downloads. Inside it you'll find `client_email` and `private_key`.
+4. Open the **client's Google Calendar** → Settings → *Settings for my calendars* → pick the calendar → **Share with specific people** → add that `client_email` → permission **"Make changes to events."**
+5. Find the **Calendar ID** on that same settings page (looks like `...@group.calendar.google.com`, or the owner's email for their main calendar).
+6. Set these env vars on your webhook server (see `server/.env.example`):
+   - `GOOGLE_CALENDAR_ID` = the calendar id
+   - `GOOGLE_SA_EMAIL` = the `client_email`
+   - `GOOGLE_SA_PRIVATE_KEY` = the `private_key` (keep the `\n`s, wrap in quotes)
+   - `TIMEZONE` (e.g. `Europe/Dublin`), and optionally `OPEN_HOUR` / `CLOSE_HOUR` / `SLOT_MINS`
+7. Redeploy. Call the number, ask for an appointment — the AI reads out real free slots and books the one the caller picks. It appears in their Google Calendar and in the CRM's **Appointments** tab.
+
+> `npm install` in `server/` pulls in `googleapis`. Each new client = a new calendar id + sharing the calendar with the same service account. The booking tools are already in the assistant template (`check_availability`, `book_appointment`) and the provisioner wires the URLs automatically.
+
+---
+
 ## Costs at a glance (so you can price confidently)
 
 | Item | Rough cost | Who pays |
