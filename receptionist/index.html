@@ -209,7 +209,8 @@
           <div class="row"><span>Name</span><span id="ld-name">—</span></div>
           <div class="row"><span>Phone</span><span id="ld-phone">—</span></div>
           <div class="row"><span>Reason</span><span id="ld-reason">—</span></div>
-          <div class="row"><span>Preferred time</span><span id="ld-time">—</span></div>
+          <div class="row"><span>Appointment</span><span id="ld-time">—</span></div>
+          <div class="row" id="ld-cal-row" style="display:none"><span>📅 Calendar</span><span id="ld-cal" style="color:var(--good)">Added to Google Calendar</span></div>
           <div class="sms">SMS sent to owner:
             <code id="ld-sms">—</code>
           </div>
@@ -595,14 +596,17 @@ function fireLead(lead,c){
   $('ld-name').textContent=lead.name;
   $('ld-phone').textContent=lead.phone;
   $('ld-reason').textContent=lead.reason||'General enquiry';
+  const booked = !!(lead.time && lead.time!=='To be confirmed');
   $('ld-time').textContent=lead.time||'To be confirmed';
+  $('ld-cal-row').style.display = booked ? 'flex' : 'none';
   const urgentLine = lead.urgent ? '\n⚠ Marked URGENT' : '';
+  const calLine = booked ? '\n📅 Added to Google Calendar' : '';
   $('ld-sms').textContent =
 `🔔 NEW LEAD — ${c.name}
 Name: ${lead.name}
 Phone: ${lead.phone}
 Job: ${lead.reason||'General enquiry'}
-When: ${lead.time||'TBC'}${urgentLine}`;
+When: ${lead.time||'TBC'}${calLine}${urgentLine}`;
   $('lead').classList.add('show');
   $('lead').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -859,14 +863,33 @@ async function continueBooking(st,k,typed){
   st.asked = null;
   fireLead(normLead(st.have,k), k);
   st.closed = true;
-  await flow(`You're all booked in${st.have.name?(', '+st.have.name):''}. I'm texting the details to the team now and someone will confirm shortly. Anything else I can help with?`, typed);
+  const cal = st.have.time ? ` I've popped you into the calendar for ${st.have.time} and you'll get a confirmation.` : '';
+  await flow(`You're all booked in${st.have.name?(', '+st.have.name):''}.${cal} I'm letting the team know now. Anything else I can help with?`, typed);
 }
 
+/* generate real upcoming appointment slots (skips weekends) for the demo */
+function demoSlots(){
+  const out=[], now=new Date(); let d=0;
+  const times=[['10:00 am',10,0],['2:30 pm',14,30],['11:30 am',11,30],['4:00 pm',16,0]];
+  while(out.length<2 && d<7){
+    d++; const day=new Date(now); day.setDate(now.getDate()+d);
+    const wd=day.getDay(); if(wd===0||wd===6) continue;
+    const dayName = d===1?'tomorrow':day.toLocaleDateString('en-IE',{weekday:'long'});
+    const [lbl,h,m]=times[out.length % times.length];
+    const when=new Date(day); when.setHours(h,m,0,0);
+    out.push({ label:`${dayName} at ${lbl}`, iso:when.toISOString() });
+  }
+  return out;
+}
 function nextAsk(st,k){
   if(!st.have.reason) return {key:'reason', line:`Happy to help with that. What is it you need done?`};
   if(!st.have.name)   return {key:'name',   line:`Can I take your name?`};
   if(!st.have.phone)  return {key:'phone',  line:`Thanks${st.have.name?' '+st.have.name:''}. And the best phone number to reach you on?`};
-  if(!st.have.time)   return {key:'time',   line:`Perfect. When would suit you best — morning or afternoon?`};
+  if(!st.have.time){
+    if(!st.slots) st.slots = demoSlots();
+    const opts = st.slots.map(s=>s.label).join(', or ');
+    return {key:'time', line:`Let me check the calendar… I've ${opts} — which suits you best?`};
+  }
   return null;
 }
 function normLead(h,k){
