@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Southline AI Receptionist — Never miss a call again</title>
+<meta name="description" content="A 24/7 AI receptionist that answers every call, books appointments and captures every lead. Built by Southline." />
+<style>
+  :root{
+    --bg:#070b14; --bg2:#0d1424; --card:#111a2e; --line:#1e2a44;
+    --txt:#eaf0ff; --mut:#8da2c7; --brand:#3b82f6; --brand2:#22d3ee;
+    --good:#34d399; --warn:#fbbf24; --bad:#f87171; --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%,#16243f 0%,var(--bg) 55%) ,var(--bg);
+    color:var(--txt); line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--brand2);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+    color:var(--brand2);background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);
+    padding:6px 12px;border-radius:999px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(52,211,153,.7);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}70%{box-shadow:0 0 0 10px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+
+  /* NAV */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px;font-size:18px}
+  .logo .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;font-size:15px;color:#04122a;font-weight:900}
+  nav .links{display:flex;gap:22px;font-size:14px;color:var(--mut)}
+  nav .links a{color:var(--mut)} nav .links a:hover{color:var(--txt)}
+
+  /* HERO */
+  header.hero{padding:48px 0 20px;text-align:center}
+  h1{font-size:clamp(34px,6vw,60px);line-height:1.05;margin:18px 0 14px;font-weight:850;letter-spacing:-1px}
+  h1 .grad{background:linear-gradient(120deg,var(--brand2),var(--brand));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:clamp(16px,2.4vw,20px);color:var(--mut);max-width:620px;margin:0 auto}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .btn{cursor:pointer;border:none;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;transition:.15s transform,.15s box-shadow;display:inline-flex;align-items:center;gap:9px}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#04122a;box-shadow:0 8px 28px rgba(59,130,246,.35)}
+  .btn.primary:hover{box-shadow:0 12px 36px rgba(59,130,246,.5)}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--brand)}
+
+  /* DEMO */
+  .demo{margin:40px 0 24px}
+  .demo-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
+  @media(max-width:880px){.demo-grid{grid-template-columns:1fr}}
+  .panel{background:linear-gradient(180deg,var(--card),#0c1322);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .panel h3{margin:0 0 4px;font-size:15px;letter-spacing:.4px;text-transform:uppercase;color:var(--mut);font-weight:700}
+
+  /* Orb / call stage */
+  .stage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:18px;position:relative}
+  .orb{width:150px;height:150px;border-radius:50%;position:relative;display:grid;place-items:center;
+    background:radial-gradient(circle at 35% 30%,#2a4a8f,#0e1a33);border:1px solid #2b3f6b;
+    box-shadow:0 0 0 0 rgba(59,130,246,.45);transition:.3s}
+  .orb.speaking{animation:talk 1.1s ease-in-out infinite}
+  .orb.listening{box-shadow:0 0 0 14px rgba(34,211,238,.10),0 0 60px rgba(34,211,238,.35);border-color:var(--brand2)}
+  @keyframes talk{0%,100%{box-shadow:0 0 0 6px rgba(59,130,246,.10),0 0 50px rgba(59,130,246,.30)}50%{box-shadow:0 0 0 18px rgba(59,130,246,.05),0 0 70px rgba(59,130,246,.5)}}
+  .orb .bars{display:flex;gap:5px;align-items:flex-end;height:46px}
+  .orb .bars span{width:6px;height:12px;border-radius:4px;background:linear-gradient(var(--brand2),var(--brand));opacity:.9}
+  .orb.speaking .bars span{animation:eq .8s ease-in-out infinite}
+  .orb .bars span:nth-child(2){animation-delay:.1s}.orb .bars span:nth-child(3){animation-delay:.2s}
+  .orb .bars span:nth-child(4){animation-delay:.3s}.orb .bars span:nth-child(5){animation-delay:.15s}
+  @keyframes eq{0%,100%{height:12px}50%{height:42px}}
+  .status{font-size:14px;color:var(--mut);min-height:20px;font-weight:600}
+  .status b{color:var(--brand2)}
+
+  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+
+  /* transcript */
+  .transcript{height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:6px}
+  .transcript::-webkit-scrollbar{width:8px}.transcript::-webkit-scrollbar-thumb{background:#23304e;border-radius:8px}
+  .msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:14.5px;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .msg.ai{align-self:flex-start;background:#16233f;border:1px solid #25365c;border-bottom-left-radius:4px}
+  .msg.user{align-self:flex-end;background:linear-gradient(120deg,#1f4fa6,#1d6f8f);border-bottom-right-radius:4px;color:#eef6ff}
+  .msg .who{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-bottom:2px}
+  .empty{color:var(--mut);font-size:14px;text-align:center;margin:auto}
+
+  /* lead card */
+  .lead{margin-top:16px;border:1px dashed #2c5a44;background:rgba(52,211,153,.06);border-radius:14px;padding:16px;display:none}
+  .lead.show{display:block;animation:fade .35s}
+  .lead h4{margin:0 0 10px;color:var(--good);font-size:14px;letter-spacing:.4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+  .lead .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14.5px}
+  .lead .row:last-child{border:none}
+  .lead .row span:first-child{color:var(--mut)}
+  .lead .row span:last-child{font-weight:700}
+  .lead .sms{margin-top:10px;font-size:13px;color:var(--mut)}
+  .lead .sms code{background:#0b1426;border:1px solid var(--line);padding:8px 10px;border-radius:8px;display:block;margin-top:6px;color:#cfe0ff;white-space:pre-wrap}
+
+  /* config */
+  .cfg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  @media(max-width:560px){.cfg{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .field input,.field select{background:#0b1426;border:1px solid var(--line);color:var(--txt);padding:11px 12px;border-radius:10px;font-size:14px;font-family:inherit}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--brand)}
+  .typebar{display:flex;gap:8px;margin-top:12px}
+  .typebar input{flex:1;background:#0b1426;border:1px solid var(--line);color:var(--txt);padding:12px;border-radius:10px;font-size:14px}
+  .typebar input:focus{outline:none;border-color:var(--brand)}
+
+  /* sections */
+  section{padding:46px 0}
+  .eyebrow{color:var(--brand2);font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:13px;text-align:center}
+  h2{font-size:clamp(26px,4vw,38px);text-align:center;margin:8px 0 8px;font-weight:800;letter-spacing:-.5px}
+  .lead-sub{text-align:center;color:var(--mut);max-width:600px;margin:0 auto 30px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:780px){.cards{grid-template-columns:1fr}}
+  .feature{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .feature .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(59,130,246,.12);margin-bottom:12px}
+  .feature h4{margin:0 0 6px;font-size:17px}
+  .feature p{margin:0;color:var(--mut);font-size:14.5px}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:s}
+  @media(max-width:780px){.steps{grid-template-columns:1fr 1fr}}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative}
+  .step .n{width:30px;height:30px;border-radius:8px;background:linear-gradient(120deg,var(--brand),var(--brand2));color:#04122a;font-weight:900;display:grid;place-items:center;margin-bottom:10px}
+  .step h4{margin:0 0 4px;font-size:15px}.step p{margin:0;color:var(--mut);font-size:13.5px}
+
+  /* pricing */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+  @media(max-width:780px){.price-grid{grid-template-columns:1fr}}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column}
+  .plan.feat{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),0 16px 50px rgba(59,130,246,.18);position:relative}
+  .plan.feat::before{content:"Most popular";position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(120deg,var(--brand),var(--brand2));color:#04122a;font-size:11px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:.5px}
+  .plan .pname{font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);font-weight:700}
+  .plan .pp{font-size:38px;font-weight:850;margin:8px 0 2px}
+  .plan .pp small{font-size:15px;color:var(--mut);font-weight:600}
+  .plan ul{list-style:none;padding:0;margin:16px 0 22px;display:flex;flex-direction:column;gap:9px}
+  .plan li{font-size:14.5px;color:#cdd9f2;display:flex;gap:9px;align-items:flex-start}
+  .plan li::before{content:"✓";color:var(--good);font-weight:900}
+  .plan .btn{margin-top:auto;justify-content:center}
+
+  footer{border-top:1px solid var(--line);padding:34px 0;text-align:center;color:var(--mut);font-size:14px}
+  footer .big{color:var(--txt);font-weight:700;font-size:16px}
+  .hint{font-size:12.5px;color:#64779c;text-align:center;margin-top:10px}
+  .badge-row{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:22px;color:var(--mut);font-size:13.5px}
+  .badge-row b{color:var(--txt)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo"><div class="mark">S</div> SOUTHLINE</div>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#roi">Calculator</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#book">Book a demo</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="pill"><span class="dot"></span> Live demo — works right here in your browser</span>
+    <h1>Your business should<br><span class="grad">never miss a call.</span></h1>
+    <p class="sub">Southline's AI receptionist answers every call 24/7, books appointments, and texts you every lead — for a fraction of the cost of hiring.</p>
+    <div class="cta-row">
+      <button class="btn primary" onclick="startAuto()">▶ Play live demo call</button>
+      <button class="btn ghost" onclick="document.getElementById('book').scrollIntoView({behavior:'smooth'})">Book a demo</button>
+    </div>
+    <div class="badge-row">
+      <div>📞 <b>Answers in 1 ring</b></div>
+      <div>🕑 <b>24/7 / 365</b></div>
+      <div>💬 <b>Every lead texted to you</b></div>
+      <div>💶 <b>From €99/mo</b></div>
+    </div>
+  </header>
+
+  <!-- DEMO -->
+  <div class="demo" id="demo">
+    <div class="demo-grid">
+      <!-- left: call stage -->
+      <div class="panel">
+        <h3>The call</h3>
+        <div class="stage">
+          <div class="orb" id="orb">
+            <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="status" id="status">Tap <b>“Play live demo call”</b> to hear it answer.</div>
+          <div id="callmeta" style="font-size:12.5px;color:#64779c;min-height:16px;font-variant-numeric:tabular-nums"></div>
+          <div class="controls">
+            <button class="btn primary" id="autoBtn" onclick="startAuto()">▶ Auto demo</button>
+            <button class="btn ghost" id="talkBtn" onclick="toggleTalk()">🎙 Talk to it</button>
+            <button class="btn ghost" onclick="resetDemo()">↺ Reset</button>
+          </div>
+          <div class="typebar" id="typebar" style="display:none">
+            <input id="typeInput" placeholder="Type your reply and hit enter…" onkeydown="if(event.key==='Enter')sendTyped()"/>
+            <button class="btn primary" onclick="sendTyped()">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: transcript + lead -->
+      <div class="panel">
+        <h3>Live transcript</h3>
+        <div class="transcript" id="transcript">
+          <div class="empty" id="empty">The conversation will appear here in real time…</div>
+        </div>
+        <div class="lead" id="lead">
+          <h4>✅ Lead captured &amp; texted to the owner</h4>
+          <div class="row"><span>Name</span><span id="ld-name">—</span></div>
+          <div class="row"><span>Phone</span><span id="ld-phone">—</span></div>
+          <div class="row"><span>Reason</span><span id="ld-reason">—</span></div>
+          <div class="row"><span>Preferred time</span><span id="ld-time">—</span></div>
+          <div class="sms">SMS sent to owner:
+            <code id="ld-sms">—</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- config -->
+    <div class="panel" style="margin-top:20px">
+      <h3>Demo settings — rebrand it live for any prospect</h3>
+      <div class="cfg">
+        <div class="field"><label>Industry scenario</label>
+          <select id="cfg-scenario" onchange="applyScenario()">
+            <option value="plumber">🔧 Plumber / trade — emergency leak</option>
+            <option value="dentist">🦷 Dental clinic — book a check-up</option>
+            <option value="salon">💇 Salon / barber — book an appointment</option>
+            <option value="vet">🐾 Veterinary clinic — sick pet</option>
+            <option value="clinic">✨ Aesthetic / skin clinic — consultation</option>
+            <option value="generic">🏢 Generic business — new enquiry</option>
+          </select>
+        </div>
+        <div class="field"><label>Business name</label><input id="cfg-name" value="Joe's Plumbing" /></div>
+        <div class="field"><label>Business type</label><input id="cfg-type" value="plumbing company" /></div>
+        <div class="field"><label>Area</label><input id="cfg-area" value="Dublin" /></div>
+        <div class="field"><label>Voice</label><select id="cfg-voice"></select></div>
+        <div class="field"><label>Lead texts go to</label><input id="cfg-owner" value="+353 85 174 0783" /></div>
+      </div>
+      <div class="controls" style="justify-content:flex-start;margin-top:14px">
+        <button class="btn primary" onclick="exportConfig()">⬇ Export this client's Vapi config</button>
+        <button class="btn ghost" onclick="copyOnboarding()">📋 Copy client setup steps</button>
+      </div>
+      <div class="hint">Tip for the summit: pick the prospect's industry, type their real business name, hit <em>“Auto demo”</em> — it answers as <em>their</em> receptionist. Then hit <em>“Export”</em> to walk away with a deployable file for them. Live mic mode works best in Chrome.</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="eyebrow">Why it wins</div>
+    <h2>A receptionist that never sleeps, never calls in sick</h2>
+    <p class="lead-sub">Most tradespeople and clinics lose money the second a call goes to voicemail. This fixes that.</p>
+    <div class="cards">
+      <div class="feature"><div class="ic">📞</div><h4>Answers every call</h4><p>Picks up on the first ring, 24/7. No more missed calls, no more lost jobs going to the competitor.</p></div>
+      <div class="feature"><div class="ic">📅</div><h4>Books appointments</h4><p>Takes the job details, offers time slots and books straight into the calendar while you're on the tools.</p></div>
+      <div class="feature"><div class="ic">💬</div><h4>Texts you the lead</h4><p>Every caller's name, number and reason lands in your phone instantly — flagged urgent when it matters.</p></div>
+      <div class="feature"><div class="ic">🗣️</div><h4>Sounds human</h4><p>Natural voice, understands accents, handles interruptions. Callers often don't realise it's AI.</p></div>
+      <div class="feature"><div class="ic">🏷️</div><h4>Branded to you</h4><p>Greets with your business name, knows your hours, services and pricing. Feels like your own staff.</p></div>
+      <div class="feature"><div class="ic">📈</div><h4>Cheaper than hiring</h4><p>A fraction of a €30k/yr receptionist salary — and it handles unlimited calls at once.</p></div>
+    </div>
+  </section>
+
+  <!-- ROI CALCULATOR -->
+  <section id="roi">
+    <div class="eyebrow">The maths</div>
+    <h2>How much are missed calls costing you?</h2>
+    <p class="lead-sub">Slide these to a prospect's real numbers. Watch the lost revenue add up — then show them the €99 price.</p>
+    <div class="panel" style="max-width:760px;margin:0 auto">
+      <div class="cfg" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Missed calls per week: <b id="roi-calls-v" style="color:var(--brand2)">10</b></label>
+          <input type="range" id="roi-calls" min="1" max="60" value="10" oninput="calcROI()"></div>
+        <div class="field"><label>Average job value: <b id="roi-val-v" style="color:var(--brand2)">€180</b></label>
+          <input type="range" id="roi-val" min="20" max="2000" step="10" value="180" oninput="calcROI()"></div>
+        <div class="field"><label>Of missed callers, % who'd have booked: <b id="roi-conv-v" style="color:var(--brand2)">35%</b></label>
+          <input type="range" id="roi-conv" min="5" max="90" value="35" oninput="calcROI()"></div>
+        <div class="field"><label>&nbsp;</label>
+          <div style="background:#0b1426;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--mut)">Recovering even a slice of these pays for itself many times over.</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px">
+        <div style="background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.3);border-radius:14px;padding:18px;text-align:center">
+          <div style="color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.5px">Lost every month</div>
+          <div id="roi-lost" style="font-size:40px;font-weight:850;color:var(--bad);margin-top:4px">€2,772</div>
+          <div style="color:var(--mut);font-size:13px" id="roi-year">€33,264 a year walking out the door</div>
+        </div>
+        <div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.3);border-radius:14px;padding:18px;text-align:center">
+          <div style="color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.5px">AI receptionist costs</div>
+          <div style="font-size:40px;font-weight:850;color:var(--good);margin-top:4px">€99<span style="font-size:16px;color:var(--mut)">/mo</span></div>
+          <div style="color:var(--good);font-size:13px;font-weight:700" id="roi-x">That's a 28× return</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:18px"><button class="btn primary" onclick="book()">Stop losing this money →</button></div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <div class="eyebrow">Set up in a day</div>
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h4>We brand it</h4><p>Your name, services, hours and pricing go into the assistant.</p></div>
+      <div class="step"><div class="n">2</div><h4>You forward calls</h4><p>Unanswered calls forward to your AI number. Your existing number stays the same.</p></div>
+      <div class="step"><div class="n">3</div><h4>It answers &amp; books</h4><p>Callers get a warm, instant answer — day or night.</p></div>
+      <div class="step"><div class="n">4</div><h4>You get the lead</h4><p>Every job lands in your phone by text. You just show up.</p></div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="eyebrow">Simple pricing</div>
+    <h2>Pick a plan, go live this week</h2>
+    <p class="lead-sub">No long contracts. Cancel anytime. First 14 days free.</p>
+    <div class="price-grid">
+      <div class="plan">
+        <div class="pname">Starter</div>
+        <div class="pp">€99<small>/mo</small></div>
+        <ul><li>24/7 call answering</li><li>Lead capture + SMS to you</li><li>Up to 150 calls/mo</li><li>Your branding &amp; greeting</li></ul>
+        <button class="btn ghost" onclick="book()">Start free trial</button>
+      </div>
+      <div class="plan feat">
+        <div class="pname">Pro</div>
+        <div class="pp">€199<small>/mo</small></div>
+        <ul><li>Everything in Starter</li><li>Appointment booking</li><li>Up to 600 calls/mo</li><li>Calendar integration</li><li>Urgent-lead flagging</li></ul>
+        <button class="btn primary" onclick="book()">Start free trial</button>
+      </div>
+      <div class="plan">
+        <div class="pname">Multi-site</div>
+        <div class="pp">Custom</div>
+        <ul><li>Everything in Pro</li><li>Multiple locations / numbers</li><li>Unlimited calls</li><li>CRM &amp; webhook integrations</li><li>Priority support</li></ul>
+        <button class="btn ghost" onclick="book()">Talk to us</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section id="book" style="text-align:center">
+    <div class="eyebrow">Let's talk</div>
+    <h2>See it answer your business</h2>
+    <p class="lead-sub">Tell us your business name and we'll have a live AI receptionist answering as you within the day.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="tel:0851740783">📞 Call Southline — 085 174 0783</a>
+      <a class="btn ghost" href="mailto:agencysouthline@gmail.com?subject=I%20want%20an%20AI%20receptionist">✉ Email us</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="big">Southline</div>
+  Websites · Digital marketing · AI receptionists for tradespeople &amp; clinics<br>
+  085 174 0783 · agencysouthline@gmail.com
+  <div class="hint" style="margin-top:14px">This page is a live, offline-capable demo. The voice you hear is generated on-device — no calls are placed and no data leaves your browser.</div>
+</footer>
+
+<script>
+/* ============================================================
+   Southline AI Receptionist — browser demo engine
+   - Auto demo: scripted, voiced, works on any device (summit-safe)
+   - Talk mode: live mic via Web Speech API (best in Chrome)
+   ============================================================ */
+
+const $ = id => document.getElementById(id);
+const orb = $('orb'), statusEl = $('status'), transcript = $('transcript');
+let voices = [], chosenVoice = null, running = false, recog = null, listening = false;
+
+/* live call timer */
+let timerInt = null, timerStart = 0;
+function startTimer(){ timerStart = Date.now(); stopTimer(false);
+  timerInt = setInterval(()=>{ const s=Math.floor((Date.now()-timerStart)/1000);
+    $('callmeta').textContent = `● Live · ${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }, 500);
+}
+function stopTimer(clear=true){ if(timerInt){clearInterval(timerInt);timerInt=null;} if(clear) $('callmeta').textContent=''; }
+
+/* ---------- voice setup ---------- */
+function loadVoices(){
+  voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+  const sel = $('cfg-voice'); sel.innerHTML='';
+  const prefer = voices.filter(v=>/en-(GB|IE|US|AU)/i.test(v.lang));
+  (prefer.length?prefer:voices).forEach((v,i)=>{
+    const o=document.createElement('option'); o.value=voices.indexOf(v);
+    o.textContent=`${v.name} (${v.lang})`; sel.appendChild(o);
+  });
+  // default: prefer a UK/IE female-ish voice for warmth
+  const pick = voices.find(v=>/en-GB|en-IE/i.test(v.lang)) || voices[0];
+  if(pick){ sel.value=voices.indexOf(pick); chosenVoice=pick; }
+}
+if(window.speechSynthesis){
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+$('cfg-voice').addEventListener('change',e=>{ chosenVoice = voices[e.target.value]; });
+
+function speak(text){
+  return new Promise(res=>{
+    if(!window.speechSynthesis){ res(); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if(chosenVoice) u.voice = chosenVoice;
+    u.rate = 1.02; u.pitch = 1.0;
+    u.onstart = ()=> setOrb('speaking','Speaking…');
+    u.onend = ()=> { setOrb('','Connected'); res(); };
+    u.onerror = ()=> res();
+    speechSynthesis.speak(u);
+  });
+}
+
+/* ---------- ui helpers ---------- */
+function setOrb(state,txt){
+  orb.className = 'orb' + (state?(' '+state):'');
+  if(txt) statusEl.innerHTML = txt;
+}
+function addMsg(who,text){
+  $('empty')?.remove();
+  const m=document.createElement('div'); m.className='msg '+(who==='ai'?'ai':'user');
+  m.innerHTML=`<div class="who">${who==='ai'?'AI Receptionist':'Caller'}</div>${text}`;
+  transcript.appendChild(m); transcript.scrollTop=transcript.scrollHeight;
+}
+const wait = ms => new Promise(r=>setTimeout(r,ms));
+function cfg(){ return {
+  name:$('cfg-name').value.trim()||'your business',
+  type:$('cfg-type').value.trim()||'business',
+  area:$('cfg-area').value.trim()||'your area',
+  owner:$('cfg-owner').value.trim()||'+353 85 174 0783'
+};}
+
+/* ---------- industry scenarios (drive the auto demo + defaults) ---------- */
+const SCENARIOS = {
+  plumber:{
+    name:"Joe's Plumbing", type:"plumbing and heating company", area:"Dublin",
+    hours:"Mon-Fri 8am-6pm, Sat 9am-1pm. Emergency call-outs 24/7.",
+    services:"leak repairs, boiler servicing, blocked drains, bathroom installs, heating",
+    pricing:"Standard call-out 80 euro, emergency 150 euro. Free quotes on bigger jobs.",
+    lead:{name:'Sarah Byrne',phone:'087 555 0192'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, you're through to the reception desk. How can I help you today?`},
+      {user:`Hi, yeah — I've a leak under my kitchen sink and water's going everywhere.`,
+       ai:`Oh no, that doesn't sound good — let's get that sorted fast. Can I take your name?`, reason:'Leak under kitchen sink (water escaping)'},
+      {user:`It's Sarah Byrne.`, ai:`Thanks Sarah. And the best mobile number to reach you on?`},
+      {user:`It's 087 555 0192.`, ai:`Perfect, let me read that back — 087 555 0192, is that right?`},
+      {user:`That's the one.`, ai:`Because there's water escaping I'll flag this as urgent. We can have someone out between 2 and 4 today — does that suit?`, time:'Today, 2–4pm (URGENT)', urgent:true},
+      {user:`Yeah this afternoon would be great, thanks.`, ai:`You're all booked in, Sarah. I'm texting the team now and someone will call to confirm. Anything else?`},
+      {user:`No that's everything, thanks a million.`, ai:`No problem at all — talk soon, bye now.`, done:true}
+    ]
+  },
+  dentist:{
+    name:"Bright Smile Dental", type:"dental clinic", area:"Dublin",
+    hours:"Mon-Fri 8.30am-5.30pm, closed weekends.",
+    services:"check-ups, cleanings, fillings, whitening, emergency dental, Invisalign",
+    pricing:"Check-up and clean 65 euro. New patients welcome. Free Invisalign consults.",
+    lead:{name:'David Kelly',phone:'086 222 4471'},
+    script:[
+      {ai:b=>`Hello, thanks for calling ${b}, how can I help you today?`},
+      {user:`Hi, I'd like to book a check-up and clean, I'm a new patient.`,
+       ai:`Lovely, we'd be happy to see you. Can I take your name?`, reason:'New patient — check-up & clean'},
+      {user:`David Kelly.`, ai:`Thanks David. And the best number to reach you on?`},
+      {user:`086 222 4471.`, ai:`Got it — 086 222 4471, is that correct?`},
+      {user:`Yes.`, ai:`Perfect. We've space next Tuesday at 10am or Thursday at 2pm — which suits better?`, time:'Tuesday 10am'},
+      {user:`Tuesday at 10 is great.`, ai:`You're booked for Tuesday at 10, David. I'll text the details over now and a reminder the day before. Anything else?`},
+      {user:`No, that's perfect, thank you.`, ai:`Great, see you Tuesday — take care, bye now.`, done:true}
+    ]
+  },
+  salon:{
+    name:"Luxe Hair Studio", type:"hair salon", area:"Dublin",
+    hours:"Tue-Sat 9am-7pm, closed Sun & Mon.",
+    services:"cuts, colour, balayage, blow-dries, treatments, bridal",
+    pricing:"Cut & blow-dry from 45 euro. Colour consults free.",
+    lead:{name:'Aoife Murphy',phone:'085 661 3320'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, how can I help?`},
+      {user:`Hiya, I'm looking to book a cut and colour for the weekend.`,
+       ai:`Of course, we'd love to get you in. Can I take your name?`, reason:'Cut & colour booking'},
+      {user:`Aoife Murphy.`, ai:`Thanks Aoife. And the best number for you?`},
+      {user:`085 661 3320.`, ai:`Let me confirm that — 085 661 3320, correct?`},
+      {user:`Yep.`, ai:`Brilliant. Saturday we've 11am with Emma or 3pm with Niamh — any preference?`, time:'Saturday 11am with Emma'},
+      {user:`Eleven with Emma sounds perfect.`, ai:`You're booked, Aoife — Saturday at 11 with Emma. I'll text you the details now. Anything else?`},
+      {user:`No that's it, thanks so much.`, ai:`Lovely, see you Saturday — bye now!`, done:true}
+    ]
+  },
+  vet:{
+    name:"Pawsome Vets", type:"veterinary clinic", area:"Dublin",
+    hours:"Mon-Fri 9am-6pm, Sat 9am-1pm. Out-of-hours emergency line 24/7.",
+    services:"check-ups, vaccinations, neutering, dental, microchipping, emergencies",
+    pricing:"Consultation 55 euro. Vaccination packages available. New pets welcome.",
+    lead:{name:'Emma Walsh',phone:'083 447 1209'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, how can I help you and your pet today?`},
+      {user:`Hi, my dog's been off his food and a bit lethargic, I'd like to get him seen.`,
+       ai:`Sorry to hear that — let's get him booked in. Can I take your name?`, reason:'Dog off food & lethargic — needs to be seen'},
+      {user:`Emma Walsh.`, ai:`Thanks Emma. And the best number to reach you on?`},
+      {user:`083 447 1209.`, ai:`Let me read that back — 083 447 1209, correct?`},
+      {user:`Yes.`, ai:`We've an appointment at 4.30 today or 9.15 tomorrow morning — which would you prefer?`, time:'Today 4.30pm'},
+      {user:`Today at half four, please.`, ai:`You're booked for 4.30, Emma. I'll text the details now. If he gets worse before then, ring us straight away. Anything else?`},
+      {user:`No, thank you so much.`, ai:`Of course — see you at 4.30, bye now.`, done:true}
+    ]
+  },
+  clinic:{
+    name:"Glow Aesthetics", type:"aesthetic & skin clinic", area:"Dublin",
+    hours:"Tue-Sat 10am-7pm.",
+    services:"skin consultations, anti-wrinkle, dermal fillers, facials, laser",
+    pricing:"Consultations free. Treatment prices given after a consult.",
+    lead:{name:'Lucy Nolan',phone:'089 220 7714'},
+    script:[
+      {ai:b=>`Hello, thanks for calling ${b}, how can I help you today?`},
+      {user:`Hi, I'd like to book a consultation about a skin treatment.`,
+       ai:`Lovely, our consultations are free. Can I take your name?`, reason:'Free skin treatment consultation'},
+      {user:`Lucy Nolan.`, ai:`Thanks Lucy. And the best number for you?`},
+      {user:`089 220 7714.`, ai:`Let me confirm — 089 220 7714, is that right?`},
+      {user:`That's right.`, ai:`Perfect. We've Thursday at 5 or Saturday at 11 — which suits?`, time:'Saturday 11am'},
+      {user:`Saturday at eleven is great.`, ai:`You're booked, Lucy — Saturday at 11. I'll text you the details and a reminder. Anything else?`},
+      {user:`No that's everything, thanks.`, ai:`Wonderful — see you Saturday, bye now.`, done:true}
+    ]
+  },
+  generic:{
+    name:"Your Business", type:"business", area:"your area",
+    hours:"Mon-Fri 9am-5.30pm.",
+    services:"your main services",
+    pricing:"as discussed with the team",
+    lead:{name:'Mark Doyle',phone:'087 904 2218'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, how can I help you today?`},
+      {user:`Hi, I saw you online and wanted to ask about your services and get a quote.`,
+       ai:`Happy to help with that. Can I take your name?`, reason:'New enquiry — services & quote'},
+      {user:`Mark Doyle.`, ai:`Thanks Mark. And the best number to reach you on?`},
+      {user:`087 904 2218.`, ai:`Let me read that back — 087 904 2218, is that right?`},
+      {user:`That's right.`, ai:`Perfect. I'll have someone call you back today to talk through exactly what you need — does that work?`, time:'Callback today'},
+      {user:`Yeah that's great, thanks.`, ai:`You're all set, Mark — someone will be in touch shortly. Anything else?`},
+      {user:`No, that's everything.`, ai:`Great stuff — talk soon, bye now.`, done:true}
+    ]
+  }
+};
+function currentScenario(){ return SCENARIOS[$('cfg-scenario').value] || SCENARIOS.plumber; }
+function applyScenario(){
+  const s = currentScenario();
+  $('cfg-name').value = s.name; $('cfg-type').value = s.type; $('cfg-area').value = s.area;
+  resetDemo();
+}
+
+/* ---------- AUTO DEMO (summit-safe scripted call) ---------- */
+async function startAuto(){
+  if(running) return; resetDemo(); running=true;
+  $('autoBtn').textContent='● In call…';
+  document.getElementById('demo').scrollIntoView({behavior:'smooth',block:'center'});
+  const c = cfg();
+  const s = currentScenario();
+  const lead = { name:s.lead.name, phone:s.lead.phone, reason:'', time:'', urgent:false };
+
+  // incoming-call intro — makes it feel like a real ringing phone
+  setOrb('listening','📞 Incoming call from '+s.lead.phone+'…');
+  await wait(1400);
+  if(!running) return;
+  setOrb('','📞 Answering…'); await wait(550);
+  startTimer();
+
+  for(const t of s.script){
+    if(!running) return;
+    if(t.user){ addMsg('user',t.user); await wait(700); }
+    if(t.reason) lead.reason = t.reason;
+    if(t.time) lead.time = t.time;
+    if(t.urgent) lead.urgent = true;
+    setOrb('','<b>'+c.name+'</b> · thinking…'); await wait(450);
+    const line = typeof t.ai==='function' ? t.ai(c.name) : t.ai;
+    addMsg('ai',line); await speak(line);
+    await wait(250);
+    if(t.done){ fireLead(lead,c); }
+  }
+  running=false; $('autoBtn').textContent='▶ Auto demo';
+  const dur = Math.floor((Date.now()-timerStart)/1000);
+  stopTimer(false);
+  $('callmeta').textContent = `Call ended · ${String(Math.floor(dur/60)).padStart(2,'0')}:${String(dur%60).padStart(2,'0')}`;
+  setOrb('','Call ended · lead captured ✅');
+}
+
+function fireLead(lead,c){
+  $('ld-name').textContent=lead.name;
+  $('ld-phone').textContent=lead.phone;
+  $('ld-reason').textContent=lead.reason||'General enquiry';
+  $('ld-time').textContent=lead.time||'To be confirmed';
+  const urgentLine = lead.urgent ? '\n⚠ Marked URGENT' : '';
+  $('ld-sms').textContent =
+`🔔 NEW LEAD — ${c.name}
+Name: ${lead.name}
+Phone: ${lead.phone}
+Job: ${lead.reason||'General enquiry'}
+When: ${lead.time||'TBC'}${urgentLine}`;
+  $('lead').classList.add('show');
+  $('lead').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ---------- EXPORT: build a deployable Vapi config from the demo settings ---------- */
+function buildAssistantConfig(){
+  const c = cfg(); const s = currentScenario();
+  const ownerDigits = c.owner.replace(/[^\d+]/g,'');
+  const sys =
+`You are the friendly, professional virtual receptionist for ${c.name}, a ${c.type} based in ${c.area}. You answer phone calls on their behalf.
+
+OPENING HOURS: ${s.hours}
+SERVICES: ${s.services}.
+PRICING / NOTES: ${s.pricing}
+
+YOUR GOAL on every call:
+1. Greet warmly using the business name.
+2. Find out what the caller needs.
+3. Capture their FIRST NAME.
+4. Capture their BEST PHONE NUMBER and READ IT BACK to confirm.
+5. Capture a few job/appointment details.
+6. Offer to book them in or take a message, agree a rough time if relevant.
+7. When you have name + phone + reason, call the function log_lead.
+8. Confirm the team will be in touch, then close warmly.
+
+URGENCY: If anything is time-critical (leak, no heat/power, emergency, pain), set urgency to "urgent".
+
+STYLE: Warm and human, short sentences, one question at a time. Never invent prices or facts. Keep replies under ~30 words. Always read phone numbers back. Don't say you're an AI unless asked.`;
+
+  return {
+    name:`${c.name} — AI Receptionist`,
+    firstMessage:`Hi, thanks for calling ${c.name}, you're through to the reception desk. How can I help you today?`,
+    firstMessageMode:"assistant-speaks-first",
+    model:{
+      provider:"anthropic", model:"claude-opus-4-8", temperature:0.4, maxTokens:300,
+      messages:[{role:"system",content:sys}],
+      tools:[{
+        type:"function",
+        function:{ name:"log_lead",
+          description:"Save the caller's details as a lead and text the owner. Call once you have name + phone.",
+          parameters:{ type:"object",
+            properties:{
+              name:{type:"string"}, phone:{type:"string"}, reason:{type:"string"},
+              urgency:{type:"string",enum:["normal","urgent"]}, preferred_time:{type:"string"}
+            }, required:["name","phone","reason"] } },
+        server:{ url:"https://YOUR-WEBHOOK-URL/log-lead" }
+      }]
+    },
+    voice:{ provider:"11labs", voiceId:"21m00Tcm4TlvDq8ikWAM", model:"eleven_turbo_v2_5", stability:0.5, similarityBoost:0.75 },
+    transcriber:{ provider:"deepgram", model:"nova-2", language:"en" },
+    endCallMessage:`Thanks a million for calling ${c.name}. Someone will be in touch shortly. Take care, bye now!`,
+    silenceTimeoutSeconds:20, maxDurationSeconds:600, backgroundSound:"office", recordingEnabled:true,
+    metadata:{ businessName:c.name, ownerPhone:ownerDigits, provisionedBy:"Southline" }
+  };
+}
+function download(filename, text){
+  const blob = new Blob([text], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function exportConfig(){
+  const c = cfg();
+  const slug = c.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'client';
+  download(`${slug}-vapi-assistant.json`, JSON.stringify(buildAssistantConfig(), null, 2));
+  toast(`Downloaded ${slug}-vapi-assistant.json — paste it into Vapi (Assistants → Create → JSON), set your webhook URL, attach a number. See SETUP-GUIDE.md.`);
+}
+function copyOnboarding(){
+  const c = cfg();
+  const steps =
+`Your new AI Receptionist — ${c.name}
+
+WHAT IT DOES
+Answers every call 24/7, takes the caller's name, number and what they need, and texts it straight to you. Your number stays the same.
+
+THE ONE STEP — turn on call forwarding (about 2 minutes):
+• Forward when you don't answer:  **61*<AI-NUMBER>#  then call
+• Forward when busy:              **67*<AI-NUMBER>#  then call
+• Forward when unreachable:       **62*<AI-NUMBER>#  then call
+(Replace <AI-NUMBER> with the number we give you. Turn off with ##61#, ##67#, ##62#.)
+Prefer the AI to answer everything? Dial **21*<AI-NUMBER>#  (off: ##21#).
+
+WHAT YOU'LL GET — a text per lead:
+🔔 NEW LEAD — ${c.name}
+Name / Phone / Job / When (urgent jobs flagged)
+
+Need a hand? Southline — 085 174 0783 — agencysouthline@gmail.com`;
+  navigator.clipboard?.writeText(steps).then(
+    ()=>toast('Client setup steps copied — paste into an email/WhatsApp to the customer.'),
+    ()=>{ download(`${(c.name||'client').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-setup.txt`, steps); toast('Saved client setup steps as a text file.'); }
+  );
+}
+let toastTimer=null;
+function toast(msg){
+  let t=$('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast';
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);max-width:560px;background:#10213d;border:1px solid var(--brand);color:#eaf0ff;padding:14px 18px;border-radius:12px;font-size:14px;box-shadow:0 16px 50px rgba(0,0,0,.5);z-index:99;line-height:1.45';
+    document.body.appendChild(t); }
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.style.display='none', 7000);
+}
+
+/* ---------- TALK MODE (live mic) ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let convoState = 0, liveLead = {name:'',phone:'',reason:'',time:''};
+
+function toggleTalk(){
+  if(!SR){ alert("Live mic needs Chrome or Edge. Use ▶ Auto demo on this device — it works everywhere."); return; }
+  if(listening){ stopTalk(); return; }
+  resetDemo(); listening=true; convoState=0; liveLead={name:'',phone:'',reason:'',time:''};
+  $('talkBtn').textContent='■ Stop';
+  $('typebar').style.display='flex';
+  recog = new SR(); recog.lang='en-GB'; recog.interimResults=false; recog.continuous=false;
+  beginLive();
+}
+async function beginLive(){
+  const c=cfg();
+  startTimer();
+  await aiSay(`Hi, thanks for calling ${c.name}. How can I help you today?`);
+  listenOnce();
+}
+function listenOnce(){
+  if(!listening) return;
+  setOrb('listening','Listening… speak now');
+  try{ recog.start(); }catch(e){}
+  recog.onresult = e=>{
+    const said = e.results[0][0].transcript;
+    addMsg('user',said); handleLive(said);
+  };
+  recog.onerror = ()=> { if(listening){ setOrb('','Didn\'t catch that — type it below or try again'); } };
+  recog.onend = ()=>{};
+}
+async function sendTyped(){
+  const v=$('typeInput').value.trim(); if(!v) return;
+  $('typeInput').value=''; addMsg('user',v); handleLive(v,true);
+}
+async function handleLive(text,typed){
+  try{recog&&recog.stop();}catch(e){}
+  const c=cfg(); const t=text.toLowerCase();
+  let reply='';
+  switch(convoState){
+    case 0:
+      liveLead.reason = text;
+      reply = `Got it — I can help with that. Can I take your name?`; convoState=1; break;
+    case 1:
+      liveLead.name = cleanName(text);
+      reply = `Thanks ${liveLead.name||'there'}. And the best phone number to reach you on?`; convoState=2; break;
+    case 2:
+      liveLead.phone = (text.match(/[\d\s]{6,}/)||[text])[0].trim();
+      reply = `Perfect. When would suit you best for an appointment — morning or afternoon?`; convoState=3; break;
+    case 3:
+      liveLead.time = text;
+      reply = `You're all booked in${liveLead.name?(', '+liveLead.name):''}. I'm texting the details to the team now and someone will confirm shortly. Anything else?`;
+      convoState=4; break;
+    default:
+      reply = `No problem at all — thanks for calling ${c.name}, talk soon!`;
+      await aiSay(reply); fireLead({...liveLead, name:liveLead.name||'Caller', phone:liveLead.phone||'(not given)'}, c);
+      stopTalk(); return;
+  }
+  await aiSay(reply);
+  if(!typed) listenOnce(); else setOrb('','Type your next reply below ↓');
+}
+function cleanName(s){ return s.replace(/^(it'?s|i'?m|my name is|this is)\s+/i,'').replace(/\.$/,'').trim().split(' ').slice(0,2).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
+async function aiSay(t){ addMsg('ai',t); await speak(t); }
+function stopTalk(){ listening=false; try{recog&&recog.stop();}catch(e){} $('talkBtn').textContent='🎙 Talk to it'; setOrb('','Call ended'); }
+
+/* ---------- reset ---------- */
+function resetDemo(){
+  running=false; stopTalk(); stopTimer(true);
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  transcript.innerHTML='<div class="empty" id="empty">The conversation will appear here in real time…</div>';
+  $('lead').classList.remove('show');
+  $('typebar').style.display='none';
+  $('autoBtn').textContent='▶ Auto demo';
+  setOrb('','Ready when you are.');
+}
+function book(){ document.getElementById('book').scrollIntoView({behavior:'smooth'}); }
+
+/* ---------- ROI calculator ---------- */
+function calcROI(){
+  const calls = +$('roi-calls').value, val = +$('roi-val').value, conv = +$('roi-conv').value;
+  $('roi-calls-v').textContent = calls;
+  $('roi-val-v').textContent = '€'+val;
+  $('roi-conv-v').textContent = conv+'%';
+  const monthly = Math.round(calls * 4.33 * (conv/100) * val);
+  const fmt = n => '€'+n.toLocaleString('en-IE');
+  $('roi-lost').textContent = fmt(monthly);
+  $('roi-year').textContent = fmt(monthly*12)+' a year walking out the door';
+  const x = Math.max(1, Math.round(monthly/99));
+  $('roi-x').textContent = `That's a ${x}× return`;
+}
+calcROI();
+</script>
+</body>
+</html>
