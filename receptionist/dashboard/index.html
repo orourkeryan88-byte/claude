@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Southline CRM — Call Inbox</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --panel:#ffffff; --ink:#1b2333; --mut:#62708a; --line:#e6eaf2;
+    --brand:#2563eb; --brand2:#0ea5e9; --accent:#ff7a59; /* HubSpot-style orange CTA */
+    --new:#2563eb; --callback:#f59e0b; --booked:#10b981; --closed:#94a3b8; --urgent:#ef4444;
+    --shadow:0 1px 3px rgba(16,24,40,.06),0 1px 2px rgba(16,24,40,.04);
+    --shadow-lg:0 12px 40px rgba(16,24,40,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+  a{color:var(--brand);text-decoration:none}
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+
+  /* SIDEBAR */
+  aside{background:#0f1b34;color:#cdd8ef;padding:18px 14px;display:flex;flex-direction:column;gap:6px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.4px;color:#fff;padding:6px 8px 16px}
+  .brand .mk{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#04122a;font-weight:900}
+  .nav{display:flex;flex-direction:column;gap:2px}
+  .nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#aebbd6;font-weight:600;cursor:pointer}
+  .nav a.active,.nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+  .nav .ic{width:18px;text-align:center}
+  aside .foot{margin-top:auto;font-size:12px;color:#7e8db0;padding:10px 8px;line-height:1.5}
+
+  /* MAIN */
+  main{display:flex;flex-direction:column;min-width:0}
+  .topbar{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:5}
+  .topbar h1{font-size:18px;margin:0;font-weight:800}
+  .topbar .spacer{flex:1}
+  .search{position:relative}
+  .search input{width:280px;max-width:40vw;padding:9px 12px 9px 34px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;background:#fbfcfe}
+  .search input:focus{outline:none;border-color:var(--brand)}
+  .search .mag{position:absolute;left:11px;top:9px;color:var(--mut)}
+  .btn{cursor:pointer;border:none;font-weight:700;font-size:13.5px;padding:9px 15px;border-radius:9px;display:inline-flex;align-items:center;gap:7px;transition:.12s}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(255,122,89,.3)}
+  .btn.primary:hover{filter:brightness(1.04)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+
+  .content{padding:22px 24px;overflow:auto}
+
+  /* STAT CARDS */
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+  @media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px 16px;box-shadow:var(--shadow)}
+  .stat .lab{color:var(--mut);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:7px}
+  .stat .num{font-size:30px;font-weight:850;margin-top:6px;line-height:1}
+  .stat .sub{font-size:12px;color:var(--mut);margin-top:3px}
+  .stat.urgent .num{color:var(--urgent)}
+  .stat .ring{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+  /* TOOLBAR */
+  .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .tabs{display:inline-flex;background:#eef1f7;border-radius:10px;padding:3px}
+  .tabs button{border:none;background:transparent;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;color:var(--mut);cursor:pointer}
+  .tabs button.active{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+  .filters{display:inline-flex;gap:6px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:#fff;padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--mut);cursor:pointer}
+  .chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+
+  /* TABLE */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);padding:12px 16px;border-bottom:1px solid var(--line);background:#fbfcfe;font-weight:700}
+  tbody td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:#f7f9fd}
+  tbody tr:last-child td{border-bottom:none}
+  .who{display:flex;align-items:center;gap:11px}
+  .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;font-size:13px;flex:none}
+  .who .nm{font-weight:700}.who .ph{font-size:12.5px;color:var(--mut)}
+  .prob{max-width:340px;color:#2b3650}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px}
+  .pill .d{width:7px;height:7px;border-radius:50%}
+  .pill.new{background:#e8effd;color:#1d4ed8}.pill.new .d{background:var(--new)}
+  .pill.callback{background:#fef3e2;color:#b45309}.pill.callback .d{background:var(--callback)}
+  .pill.booked{background:#e6f7f0;color:#047857}.pill.booked .d{background:var(--booked)}
+  .pill.closed{background:#eef1f5;color:#64748b}.pill.closed .d{background:var(--closed)}
+  .badge-urg{background:#fde8e8;color:#b91c1c;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;margin-left:8px}
+  .ago{font-size:12.5px;color:var(--mut)}
+  .rowcb{display:inline-flex;gap:6px}
+  .icon-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;font-weight:700;font-size:12.5px;cursor:pointer;color:var(--brand)}
+  .icon-btn:hover{background:#f0f5ff}
+  .empty{padding:50px;text-align:center;color:var(--mut)}
+
+  /* BOARD */
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:1000px){.board{grid-template-columns:1fr 1fr}}
+  .col{background:#eef1f7;border-radius:13px;padding:10px;min-height:200px}
+  .col h3{margin:4px 6px 10px;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);display:flex;justify-content:space-between}
+  .col h3 .cnt{background:#fff;border-radius:999px;padding:1px 9px;color:var(--ink)}
+  .col.drop{outline:2px dashed var(--brand);outline-offset:-4px}
+  .kcard{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow);cursor:grab}
+  .kcard:active{cursor:grabbing}
+  .kcard .kt{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .kcard .kt .nm{font-weight:800}
+  .kcard .kp{font-size:13px;color:#33405c;margin-bottom:8px}
+  .kcard .kf{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mut)}
+  .kcard.urg{border-left:3px solid var(--urgent)}
+
+  /* DRAWER */
+  .drawer-bg{position:fixed;inset:0;background:rgba(15,27,52,.45);display:none;z-index:20}
+  .drawer-bg.show{display:block}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:440px;max-width:94vw;background:#fff;box-shadow:var(--shadow-lg);transform:translateX(100%);transition:.25s;z-index:21;display:flex;flex-direction:column}
+  .drawer.show{transform:none}
+  .drawer .dh{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;gap:13px;align-items:center}
+  .drawer .dh .x{margin-left:auto;cursor:pointer;color:var(--mut);font-size:20px;background:none;border:none}
+  .drawer .db{padding:20px 22px;overflow:auto;flex:1}
+  .drawer .nm{font-weight:850;font-size:19px}
+  .drawer .sub{color:var(--mut);font-size:13px}
+  .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0 18px}
+  .di{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:11px}
+  .di .l{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700}
+  .di .v{font-weight:700;margin-top:3px}
+  .section-t{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:800;margin:18px 0 9px}
+  .statusrow{display:flex;gap:7px;flex-wrap:wrap}
+  .statusrow .chip{cursor:pointer}
+  textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font-family:inherit;font-size:13.5px;resize:vertical;min-height:70px}
+  textarea:focus{outline:none;border-color:var(--brand)}
+  .note{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13.5px}
+  .note .meta{font-size:11.5px;color:var(--mut);margin-top:5px}
+  .dcta{display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--line)}
+  .dcta .btn{flex:1;justify-content:center}
+  .btn.call{background:var(--booked);color:#fff}
+  .btn.blue{background:var(--brand);color:#fff}
+
+  /* MODAL (log call / connect) */
+  .modal-bg{position:fixed;inset:0;background:rgba(15,27,52,.45);display:none;align-items:center;justify-content:center;z-index:30}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;border-radius:14px;width:440px;max-width:94vw;box-shadow:var(--shadow-lg);overflow:hidden}
+  .modal .mh{padding:18px 20px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between;align-items:center}
+  .modal .mb{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+  .modal .x{cursor:pointer;border:none;background:none;font-size:18px;color:var(--mut)}
+  .fld{display:flex;flex-direction:column;gap:5px}
+  .fld label{font-size:12px;font-weight:700;color:var(--mut)}
+  .fld input,.fld select{border:1px solid var(--line);border-radius:9px;padding:10px;font-size:13.5px;font-family:inherit}
+  .fld input:focus,.fld select:focus{outline:none;border-color:var(--brand)}
+  .mf{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#0f1b34;color:#fff;padding:12px 18px;border-radius:11px;font-size:13.5px;box-shadow:var(--shadow-lg);z-index:40;display:none}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 0 rgba(16,185,129,.6);animation:p 2s infinite}
+  @keyframes p{70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="brand"><div class="mk">S</div> Southline CRM</div>
+    <nav class="nav">
+      <a class="active"><span class="ic">📞</span> Call Inbox</a>
+      <a onclick="setView('board')"><span class="ic">🗂️</span> Pipeline</a>
+      <a onclick="filterUrgent()"><span class="ic">🚨</span> Urgent</a>
+      <a onclick="openConnect()"><span class="ic">🔌</span> Connect line</a>
+    </nav>
+    <div class="foot">
+      <div id="conn-state">Demo data (offline)</div>
+      Southline · AI Receptionist<br>085 174 0783
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="topbar">
+      <h1>Call Inbox</h1>
+      <div class="search">
+        <span class="mag">🔍</span>
+        <input id="search" placeholder="Search name, number or problem…" oninput="render()" />
+      </div>
+      <div class="spacer"></div>
+      <button class="btn ghost" onclick="openConnect()">🔌 Connect live line</button>
+      <button class="btn primary" onclick="openLog()">＋ Log a call</button>
+    </div>
+
+    <div class="content">
+      <div class="stats" id="stats"></div>
+
+      <div class="toolbar">
+        <div class="tabs">
+          <button id="tab-table" class="active" onclick="setView('table')">☰ Table</button>
+          <button id="tab-board" onclick="setView('board')">🗂️ Pipeline</button>
+        </div>
+        <div class="filters" id="filters"></div>
+      </div>
+
+      <div id="view-table" class="card">
+        <table>
+          <thead><tr>
+            <th>Caller</th><th>Problem / reason</th><th>Status</th><th>Received</th><th>Next action</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty" style="display:none">No calls match. Try a different filter.</div>
+      </div>
+
+      <div id="view-board" class="board" style="display:none"></div>
+    </div>
+  </main>
+</div>
+
+<!-- DRAWER (call detail) -->
+<div class="drawer-bg" id="drawer-bg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dh">
+    <div class="av" id="d-av">SB</div>
+    <div><div class="nm" id="d-name">—</div><div class="sub" id="d-phone">—</div></div>
+    <button class="x" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="db">
+    <div class="dgrid">
+      <div class="di"><div class="l">Problem</div><div class="v" id="d-problem">—</div></div>
+      <div class="di"><div class="l">Urgency</div><div class="v" id="d-urgency">—</div></div>
+      <div class="di"><div class="l">Preferred time</div><div class="v" id="d-time">—</div></div>
+      <div class="di"><div class="l">Received</div><div class="v" id="d-received">—</div></div>
+    </div>
+
+    <div class="section-t">Status</div>
+    <div class="statusrow" id="d-statusrow"></div>
+
+    <div class="section-t">Notes</div>
+    <textarea id="d-note" placeholder="Add a note — e.g. 'Called back, left voicemail' …"></textarea>
+    <button class="btn ghost" style="margin-top:8px" onclick="addNote()">＋ Add note</button>
+    <div id="d-notes"></div>
+  </div>
+  <div class="dcta">
+    <a class="btn call" id="d-callbtn" href="#">📞 Call back</a>
+    <button class="btn blue" onclick="markBooked()">✓ Mark booked</button>
+  </div>
+</div>
+
+<!-- MODAL: Log a call -->
+<div class="modal-bg" id="log-bg">
+  <div class="modal">
+    <div class="mh">Log a call <button class="x" onclick="closeModal('log-bg')">✕</button></div>
+    <div class="mb">
+      <div class="fld"><label>Caller name</label><input id="f-name" placeholder="e.g. Sarah Byrne" /></div>
+      <div class="fld"><label>Phone</label><input id="f-phone" placeholder="e.g. 087 555 0192" /></div>
+      <div class="fld"><label>Problem / reason for call</label><input id="f-problem" placeholder="e.g. Leak under kitchen sink" /></div>
+      <div class="fld"><label>Preferred time</label><input id="f-time" placeholder="e.g. This afternoon" /></div>
+      <div class="fld"><label>Urgency</label><select id="f-urg"><option value="normal">Normal</option><option value="urgent">Urgent</option></select></div>
+    </div>
+    <div class="mf">
+      <button class="btn ghost" onclick="closeModal('log-bg')">Cancel</button>
+      <button class="btn primary" onclick="saveLog()">Save call</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Connect live line -->
+<div class="modal-bg" id="conn-bg">
+  <div class="modal">
+    <div class="mh">Connect your live line <button class="x" onclick="closeModal('conn-bg')">✕</button></div>
+    <div class="mb">
+      <p style="margin:0;color:var(--mut);font-size:13px">Paste your lead webhook's address. The dashboard will pull in calls captured by your AI receptionist automatically. (Your webhook from <code>server/log-lead.js</code> — e.g. <code>https://your-app.onrender.com</code>.)</p>
+      <div class="fld"><label>Webhook base URL</label><input id="f-webhook" placeholder="https://your-app.onrender.com" /></div>
+    </div>
+    <div class="mf">
+      <button class="btn ghost" onclick="disconnect()">Disconnect</button>
+      <button class="btn primary" onclick="connect()">Connect & sync</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===========================================================
+   Southline CRM — call tracking dashboard
+   - Tracks every call: who, the problem, who to call back, status
+   - Table + HubSpot-style pipeline (drag between stages)
+   - Saves to localStorage; optional live sync from the webhook
+   =========================================================== */
+const $ = id => document.getElementById(id);
+const STAGES = [
+  {key:'new',      label:'New'},
+  {key:'callback', label:'To call back'},
+  {key:'booked',   label:'Booked'},
+  {key:'closed',   label:'Closed'}
+];
+const STATUS_LABEL = {new:'New', callback:'To call back', booked:'Booked', closed:'Closed'};
+const AV_COLORS = ['#2563eb','#0ea5e9','#7c3aed','#db2777','#f59e0b','#10b981','#ef4444','#0891b2'];
+
+let calls = [];
+let view = 'table';
+let filter = 'all';
+let webhook = localStorage.getItem('sl_webhook') || '';
+let syncTimer = null;
+
+/* ---------- seed + persistence ---------- */
+const SEED = [
+  {name:'Sarah Byrne', phone:'087 555 0192', problem:'Leak under kitchen sink, water escaping', urgency:'urgent', status:'callback', time:'Today, 2–4pm', mins:8, notes:[]},
+  {name:'David Kelly', phone:'086 222 4471', problem:'New patient — wants a check-up & clean', urgency:'normal', status:'new', time:'Next week', mins:26, notes:[]},
+  {name:'Aoife Murphy', phone:'085 661 3320', problem:'Cut & colour booking for Saturday', urgency:'normal', status:'booked', time:'Sat 11am w/ Emma', mins:54, notes:[{t:'Booked in with Emma, confirmed by text.', at:Date.now()-1000*60*40}]},
+  {name:'Mark Doyle', phone:'087 904 2218', problem:'Quote for a full bathroom refit', urgency:'normal', status:'new', time:'Callback today', mins:73, notes:[]},
+  {name:'Emma Walsh', phone:'083 447 1209', problem:'Dog off his food & lethargic, wants him seen', urgency:'urgent', status:'callback', time:'Today 4.30pm', mins:95, notes:[]},
+  {name:'Liam O\'Connor', phone:'089 330 7781', problem:'Boiler making a banging noise, no hot water', urgency:'urgent', status:'new', time:'ASAP', mins:120, notes:[]},
+  {name:'Niamh Ryan', phone:'085 220 9913', problem:'Asked about prices, said she\'d ring back', urgency:'normal', status:'closed', time:'—', mins:180, notes:[{t:'Price given, not ready to book yet.', at:Date.now()-1000*60*170}]},
+  {name:'Tom Fitzgerald', phone:'086 771 4420', problem:'Blocked drain in back garden', urgency:'normal', status:'booked', time:'Tomorrow am', mins:240, notes:[]}
+];
+function load(){
+  const saved = localStorage.getItem('sl_calls');
+  if(saved){ try{ calls = JSON.parse(saved); }catch(e){ calls=[]; } }
+  if(!calls.length){
+    calls = SEED.map((s,i)=>({ id:'seed'+i, ...s, received: Date.now()-s.mins*60000 }));
+    save();
+  }
+}
+function save(){ localStorage.setItem('sl_calls', JSON.stringify(calls)); }
+
+/* ---------- helpers ---------- */
+function initials(n){ return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function colorFor(n){ let h=0; for(const c of (n||'')) h=(h*31+c.charCodeAt(0))>>>0; return AV_COLORS[h%AV_COLORS.length]; }
+function ago(ts){
+  const m = Math.floor((Date.now()-ts)/60000);
+  if(m<1) return 'just now'; if(m<60) return m+'m ago';
+  const h=Math.floor(m/60); if(h<24) return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function telHref(p){ return 'tel:'+(p||'').replace(/[^\d+]/g,''); }
+function matchesFilter(c){
+  if(filter==='urgent') return c.urgency==='urgent';
+  if(filter==='all') return true;
+  return c.status===filter;
+}
+function searched(list){
+  const q = ($('search').value||'').toLowerCase().trim();
+  if(!q) return list;
+  return list.filter(c => (c.name+' '+c.phone+' '+c.problem).toLowerCase().includes(q));
+}
+
+/* ---------- render ---------- */
+function render(){
+  renderStats(); renderFilters();
+  const list = searched(calls.filter(matchesFilter)).sort((a,b)=> (b.urgency==='urgent')-(a.urgency==='urgent') || b.received-a.received);
+  view==='table' ? renderTable(list) : renderBoard();
+}
+function renderStats(){
+  const c=calls;
+  const cards=[
+    {lab:'Total calls', num:c.length, sub:'all time', ring:'#94a3b8'},
+    {lab:'New', num:c.filter(x=>x.status==='new').length, sub:'need triage', ring:'var(--new)'},
+    {lab:'To call back', num:c.filter(x=>x.status==='callback').length, sub:'owe a callback', ring:'var(--callback)'},
+    {lab:'Booked', num:c.filter(x=>x.status==='booked').length, sub:'jobs won', ring:'var(--booked)'},
+  ];
+  const urg=c.filter(x=>x.urgency==='urgent'&&x.status!=='closed').length;
+  $('stats').innerHTML = cards.map(s=>`
+    <div class="stat"><div class="lab"><span class="ring" style="background:${s.ring}"></span>${s.lab}</div>
+      <div class="num">${s.num}</div><div class="sub">${s.sub}</div></div>`).join('')
+    + `<div class="stat urgent"><div class="lab">🚨 Urgent open</div><div class="num">${urg}</div><div class="sub">act now</div></div>`;
+}
+function renderFilters(){
+  const defs=[['all','All'],['new','New'],['callback','To call back'],['booked','Booked'],['closed','Closed'],['urgent','🚨 Urgent']];
+  $('filters').innerHTML = defs.map(([k,l])=>`<button class="chip ${filter===k?'active':''}" onclick="setFilter('${k}')">${l}</button>`).join('');
+}
+function renderTable(list){
+  $('view-table').style.display=''; $('view-board').style.display='none';
+  $('tab-table').classList.add('active'); $('tab-board').classList.remove('active');
+  $('empty').style.display = list.length?'none':'block';
+  $('tbody').innerHTML = list.map(c=>`
+    <tr onclick="openDrawer('${c.id}')">
+      <td><div class="who"><div class="av" style="background:${colorFor(c.name)}">${initials(c.name)}</div>
+        <div><div class="nm">${esc(c.name)}</div><div class="ph">${esc(c.phone)}</div></div></div></td>
+      <td class="prob">${esc(c.problem)}${c.urgency==='urgent'?'<span class="badge-urg">URGENT</span>':''}</td>
+      <td><span class="pill ${c.status}"><span class="d"></span>${STATUS_LABEL[c.status]}</span></td>
+      <td class="ago">${ago(c.received)}</td>
+      <td><div class="rowcb" onclick="event.stopPropagation()">
+        <a class="icon-btn" href="${telHref(c.phone)}" onclick="markCallback('${c.id}')">📞 Call back</a>
+      </div></td>
+    </tr>`).join('');
+}
+function renderBoard(){
+  $('view-table').style.display='none'; $('view-board').style.display='grid';
+  $('tab-board').classList.add('active'); $('tab-table').classList.remove('active');
+  const q=($('search').value||'').toLowerCase().trim();
+  const inSearch = c => !q || (c.name+' '+c.phone+' '+c.problem).toLowerCase().includes(q);
+  $('view-board').innerHTML = STAGES.map(st=>{
+    const items = calls.filter(c=>c.status===st.key && inSearch(c)).sort((a,b)=>(b.urgency==='urgent')-(a.urgency==='urgent')||b.received-a.received);
+    return `<div class="col" data-stage="${st.key}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event)">
+      <h3>${st.label}<span class="cnt">${items.length}</span></h3>
+      ${items.map(c=>`
+        <div class="kcard ${c.urgency==='urgent'?'urg':''}" draggable="true" ondragstart="dragStart(event,'${c.id}')" onclick="openDrawer('${c.id}')">
+          <div class="kt"><div class="av" style="background:${colorFor(c.name)};width:28px;height:28px;font-size:11px">${initials(c.name)}</div>
+            <div class="nm">${esc(c.name)}</div></div>
+          <div class="kp">${esc(c.problem)}</div>
+          <div class="kf"><span>${esc(c.phone)}</span><span>${ago(c.received)}</span></div>
+        </div>`).join('') || '<div style="color:#9aa7c2;font-size:12.5px;padding:8px 6px">Nothing here</div>'}
+    </div>`;
+  }).join('');
+}
+
+/* ---------- drag & drop (pipeline) ---------- */
+let dragId=null;
+function dragStart(e,id){ dragId=id; e.dataTransfer.effectAllowed='move'; }
+function dragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drop'); }
+function dragLeave(e){ e.currentTarget.classList.remove('drop'); }
+function dropCard(e){
+  e.preventDefault(); e.currentTarget.classList.remove('drop');
+  const stage=e.currentTarget.dataset.stage;
+  const c=calls.find(x=>x.id===dragId);
+  if(c && c.status!==stage){ c.status=stage; save(); render(); toast(`${c.name} moved to “${STATUS_LABEL[stage]}”`); }
+  dragId=null;
+}
+
+/* ---------- drawer ---------- */
+let activeId=null;
+function openDrawer(id){
+  const c=calls.find(x=>x.id===id); if(!c) return; activeId=id;
+  $('d-av').textContent=initials(c.name); $('d-av').style.background=colorFor(c.name);
+  $('d-name').textContent=c.name; $('d-phone').textContent=c.phone;
+  $('d-problem').textContent=c.problem;
+  $('d-urgency').innerHTML = c.urgency==='urgent'?'<span style="color:var(--urgent)">🚨 Urgent</span>':'Normal';
+  $('d-time').textContent=c.time||'—';
+  $('d-received').textContent=new Date(c.received).toLocaleString('en-IE',{weekday:'short',hour:'2-digit',minute:'2-digit'});
+  $('d-callbtn').href=telHref(c.phone);
+  $('d-statusrow').innerHTML = STAGES.map(s=>`<button class="chip ${c.status===s.key?'active':''}" onclick="setStatus('${s.key}')">${s.label}</button>`).join('');
+  renderNotes(c);
+  $('drawer').classList.add('show'); $('drawer-bg').classList.add('show');
+}
+function closeDrawer(){ $('drawer').classList.remove('show'); $('drawer-bg').classList.remove('show'); activeId=null; }
+function renderNotes(c){
+  $('d-notes').innerHTML = (c.notes||[]).slice().reverse().map(n=>`
+    <div class="note">${esc(n.t)}<div class="meta">${ago(n.at)}</div></div>`).join('');
+}
+function setStatus(s){ const c=calls.find(x=>x.id===activeId); if(!c)return; c.status=s; save(); openDrawer(activeId); render(); toast(`Status → ${STATUS_LABEL[s]}`); }
+function markBooked(){ setStatus('booked'); }
+function addNote(){
+  const c=calls.find(x=>x.id===activeId); if(!c)return;
+  const t=$('d-note').value.trim(); if(!t)return;
+  c.notes=c.notes||[]; c.notes.push({t,at:Date.now()}); $('d-note').value=''; save(); renderNotes(c);
+}
+function markCallback(id){ const c=calls.find(x=>x.id===id); if(c&&c.status==='new'){ c.status='callback'; save(); setTimeout(render,50); } }
+
+/* ---------- log a call ---------- */
+function openLog(){ ['f-name','f-phone','f-problem','f-time'].forEach(i=>$(i).value=''); $('f-urg').value='normal'; $('log-bg').classList.add('show'); }
+function saveLog(){
+  const name=$('f-name').value.trim()||'Unknown caller';
+  const call={ id:'c'+Date.now(), name, phone:$('f-phone').value.trim()||'(no number)',
+    problem:$('f-problem').value.trim()||'General enquiry', time:$('f-time').value.trim()||'—',
+    urgency:$('f-urg').value, status:'new', received:Date.now(), notes:[] };
+  calls.unshift(call); save(); closeModal('log-bg'); render(); toast('Call logged');
+}
+
+/* ---------- connect live webhook ---------- */
+function openConnect(){ $('f-webhook').value=webhook; $('conn-bg').classList.add('show'); }
+function connect(){
+  webhook=($('f-webhook').value||'').trim().replace(/\/$/,'');
+  localStorage.setItem('sl_webhook',webhook); closeModal('conn-bg');
+  if(webhook){ startSync(); toast('Connected — syncing calls from your line'); }
+}
+function disconnect(){ webhook=''; localStorage.removeItem('sl_webhook'); if(syncTimer)clearInterval(syncTimer); $('conn-state').textContent='Demo data (offline)'; closeModal('conn-bg'); toast('Disconnected'); }
+async function syncNow(){
+  if(!webhook) return;
+  try{
+    const r=await fetch(webhook+'/leads',{cache:'no-store'}); if(!r.ok) throw 0;
+    const data=await r.json();
+    let added=0;
+    data.forEach(l=>{
+      const key=(l.phone||'')+'|'+(l.receivedAt||'');
+      if(!calls.some(c=>c._k===key)){
+        calls.unshift({ id:'w'+Date.now()+Math.random().toString(36).slice(2,6), _k:key,
+          name:l.name||'Unknown caller', phone:l.phone||'(no number)',
+          problem:l.reason||'General enquiry', time:l.preferred_time||'—',
+          urgency:l.urgency||'normal', status:'new',
+          received: l.receivedAt?Date.parse(l.receivedAt):Date.now(), notes:[] });
+        added++;
+      }
+    });
+    if(added){ save(); render(); toast(`${added} new call${added>1?'s':''} from your line`); }
+    $('conn-state').innerHTML='<span class="live-dot"></span> Live — '+webhook.replace(/^https?:\/\//,'');
+  }catch(e){ $('conn-state').textContent='⚠ Can\'t reach line'; }
+}
+function startSync(){ syncNow(); if(syncTimer)clearInterval(syncTimer); syncTimer=setInterval(syncNow, 15000); }
+
+/* ---------- misc ---------- */
+function setView(v){ view=v; render(); }
+function setFilter(f){ filter=f; render(); }
+function filterUrgent(){ filter='urgent'; setView('table'); }
+function closeModal(id){ $(id).classList.remove('show'); }
+let toastT=null;
+function toast(m){ const t=$('toast'); t.textContent=m; t.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>t.style.display='none',3000); }
+[...document.querySelectorAll('.modal-bg')].forEach(bg=>bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('show'); }));
+
+/* ---------- boot ---------- */
+load();
+render();
+if(webhook) startSync();
+</script>
+</body>
+</html>
