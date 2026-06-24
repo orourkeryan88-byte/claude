@@ -18,6 +18,15 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
+// Allow the CRM dashboard (served from another origin) to read /leads.
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
 const PORT = process.env.PORT || 3000;
 
 // Optional: Twilio SMS. If creds are missing we just log the lead (great for demos).

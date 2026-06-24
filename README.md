@@ -11,6 +11,7 @@ A 24/7 AI receptionist you can sell to tradespeople and clinics. It answers ever
 | File / folder | What it is | Use it to… |
 |---|---|---|
 | **`index.html`** | A live, offline-capable voice demo. Open it in a browser. | **Sell it** at the summit — it talks, listens and captures a lead live. |
+| **`dashboard/index.html`** | A HubSpot-style CRM: tracks every call, the problem, who to call back, status pipeline. Works offline (sample data) or syncs live from the webhook. | **Manage leads** — the place clients work their callbacks. |
 | **`SETUP-GUIDE.md`** | Plain-English setup, start to finish. | **Run it** — get a client live in ~10 min. |
 | **`CLIENT-ONBOARDING.md`** | One-pager to send the customer. | **Export it** — what the client does (call forwarding). |
 | `vapi/assistant.template.json` | The Vapi assistant template (placeholders). | Deploy a new client's receptionist. |
