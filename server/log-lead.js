@@ -1,0 +1,104 @@
+/**
+ * Southline AI Receptionist — Lead webhook
+ * ----------------------------------------
+ * Vapi calls this URL when the assistant runs the `log_lead` function.
+ * It texts the business owner the caller's details (via Twilio) and
+ * stores a copy. Works for ANY client — the owner's phone is passed in
+ * per-assistant metadata, so one server handles all your clients.
+ *
+ * QUICK START (see SETUP-GUIDE.md for the full walkthrough):
+ *   1. cd server && npm install
+ *   2. copy .env.example to .env and fill in your Twilio details
+ *   3. node log-lead.js
+ *   4. expose it with:  npx localtunnel --port 3000   (or deploy to Render/Railway)
+ *   5. put that public URL into the assistant's tool "server.url"
+ */
+
+const express = require("express");
+const app = express();
+app.use(express.json());
+
+const PORT = process.env.PORT || 3000;
+
+// Optional: Twilio SMS. If creds are missing we just log the lead (great for demos).
+let twilio = null;
+if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+  try {
+    twilio = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  } catch (e) {
+    console.warn("⚠ twilio package not installed — running in log-only mode. Run `npm install`.");
+  }
+}
+
+// In-memory store so you can eyeball leads at GET /leads during a demo.
+const leads = [];
+
+app.get("/", (_req, res) => res.send("Southline AI Receptionist webhook is running ✅"));
+app.get("/leads", (_req, res) => res.json(leads));
+
+app.post("/log-lead", async (req, res) => {
+  try {
+    // Vapi wraps function calls. Support both the wrapped and flat shapes.
+    const msg = req.body?.message || req.body;
+    const call = msg?.call || {};
+    const args =
+      msg?.functionCall?.parameters ||
+      msg?.toolCalls?.[0]?.function?.arguments ||
+      msg?.tool_calls?.[0]?.function?.arguments ||
+      req.body?.parameters ||
+      req.body;
+
+    const a = typeof args === "string" ? JSON.parse(args) : args;
+
+    // Per-client config travels on the assistant's metadata.
+    const meta = call?.assistant?.metadata || msg?.assistant?.metadata || {};
+    const businessName = meta.businessName || "Your business";
+    const ownerPhone = meta.ownerPhone || process.env.DEFAULT_OWNER_PHONE;
+
+    const lead = {
+      business: businessName,
+      name: a.name || "(no name)",
+      phone: a.phone || "(no number)",
+      reason: a.reason || "General enquiry",
+      urgency: a.urgency || "normal",
+      preferred_time: a.preferred_time || "TBC",
+      receivedAt: new Date().toISOString(),
+    };
+    leads.unshift(lead);
+
+    const flag = lead.urgency === "urgent" ? "⚠ URGENT — " : "";
+    const body =
+      `🔔 ${flag}NEW LEAD — ${businessName}\n` +
+      `Name: ${lead.name}\n` +
+      `Phone: ${lead.phone}\n` +
+      `Job: ${lead.reason}\n` +
+      `When: ${lead.preferred_time}`;
+
+    console.log("\n========== LEAD CAPTURED ==========\n" + body + "\n===================================\n");
+
+    if (twilio && ownerPhone && process.env.TWILIO_FROM_NUMBER) {
+      await twilio.messages.create({
+        to: ownerPhone,
+        from: process.env.TWILIO_FROM_NUMBER,
+        body,
+      });
+      console.log(`📲 SMS sent to owner ${ownerPhone}`);
+    } else {
+      console.log("ℹ No SMS sent (log-only mode). Add Twilio creds + ownerPhone metadata to enable texts.");
+    }
+
+    // Tell Vapi what the assistant should say next.
+    return res.json({
+      result: "Lead saved and the team has been notified by text.",
+    });
+  } catch (err) {
+    console.error("Error handling lead:", err);
+    return res.status(200).json({ result: "Noted — I've taken your details." });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Southline AI Receptionist webhook listening on :${PORT}`);
+  console.log(`Health check:  http://localhost:${PORT}/`);
+  console.log(`View leads:    http://localhost:${PORT}/leads`);
+});
