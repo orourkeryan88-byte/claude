@@ -375,23 +375,39 @@ function startTimer(){ timerStart = Date.now(); stopTimer(false);
 function stopTimer(clear=true){ if(timerInt){clearInterval(timerInt);timerInt=null;} if(clear) $('callmeta').textContent=''; }
 
 /* ---------- voice setup ---------- */
+let userPickedVoice = false;
 function loadVoices(){
   voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-  const sel = $('cfg-voice'); sel.innerHTML='';
+  if(!voices.length) return;
+  const sel = $('cfg-voice');
+  const keep = chosenVoice ? voices.indexOf(chosenVoice) : -1;
+  sel.innerHTML='';
   const prefer = voices.filter(v=>/en-(GB|IE|US|AU)/i.test(v.lang));
-  (prefer.length?prefer:voices).forEach((v,i)=>{
+  (prefer.length?prefer:voices).forEach((v)=>{
     const o=document.createElement('option'); o.value=voices.indexOf(v);
     o.textContent=`${v.name} (${v.lang})`; sel.appendChild(o);
   });
-  // default: prefer a UK/IE female-ish voice for warmth
-  const pick = voices.find(v=>/en-GB|en-IE/i.test(v.lang)) || voices[0];
-  if(pick){ sel.value=voices.indexOf(pick); chosenVoice=pick; }
+  if(userPickedVoice && keep>=0){
+    sel.value = keep;                 // never override the user's choice
+  } else {
+    const pick = voices.find(v=>/en-GB|en-IE/i.test(v.lang)) || voices[0];
+    if(pick){ sel.value=voices.indexOf(pick); chosenVoice=pick; }
+  }
 }
 if(window.speechSynthesis){
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;
 }
-$('cfg-voice').addEventListener('change',e=>{ chosenVoice = voices[e.target.value]; });
+$('cfg-voice').addEventListener('change',e=>{
+  const v = voices[e.target.value];
+  if(v){ chosenVoice = v; userPickedVoice = true;
+    // little confirmation so you can hear the new voice immediately
+    if(window.speechSynthesis && !running && !listening){
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance("Hi, this is how I'll sound."); u.voice=v; u.rate=1.02; speechSynthesis.speak(u);
+    }
+  }
+});
 
 function speak(text){
   return new Promise(res=>{
@@ -710,7 +726,7 @@ function toggleTalk(){
   if(!SR){ alert("Live mic needs Chrome or Edge. You can still TYPE to it here, and ▶ Auto demo works on any device."); }
   if(listening){ stopTalk(); return; }
   resetDemo(); listening=true;
-  listenState = { have:{name:'',phone:'',reason:'',time:''}, asked:null, booking:false, closed:false, turns:0 };
+  listenState = { have:{name:'',phone:'',reason:'',time:''}, asked:null, booking:false, pendingOffer:false, closed:false, turns:0 };
   $('talkBtn').textContent='■ Stop';
   $('typebar').style.display='flex';
   if(SR){ recog = new SR(); recog.lang='en-GB'; recog.interimResults=false; recog.continuous=false; }
@@ -759,7 +775,7 @@ function answerFor(intent,k){
     case 'hours': return `Our hours are ${stripDot(k.hours)}. Would you like to book a time?`;
     case 'location': return `We're based in ${k.area}. I can text you the exact address when I book you in — shall I do that?`;
     case 'services': return `We do ${stripDot(k.services)}. What is it you're after?`;
-    case 'emergency': return `Absolutely, we treat that as a priority — let me take your details and get someone to you fast. Can I take your name?`;
+    case 'emergency': return `Absolutely — we treat that as a priority and I'll get someone out to you fast.`;
     case 'payment': return `We take card, cash and bank transfer, and you'll always get a clear price before anything goes ahead. Would you like me to book you in?`;
     case 'guarantee': return `Of course — the team are fully qualified and insured, and the work is guaranteed. Shall I get you booked in?`;
     case 'duration': return `It depends a little on the job, but the team will give you a clear timeframe once they take a look. We can usually get to you very quickly — would you like me to arrange that?`;
@@ -774,50 +790,75 @@ async function handleLive(text, typed){
   try{recog&&recog.stop();}catch(e){}
   const k = knowledge(); const st = listenState; st.turns++;
   const intent = detect(text);
+  const affirmative = /\b(yes|yeah|yep|yup|sure|please|go on|ok|okay|grand|perfect|sounds good|that'?d be great|go ahead|do that|book me|absolutely)\b/i.test(text);
+  const negative = /\b(no thanks|no thank you|not now|nothing else|that'?s all|nope|nah)\b/i.test(text);
+  const phoneMatch = text.match(/\+?\d[\d\s]{5,}\d/);
 
-  // capture any details the caller volunteers
-  if(intent==='gavephone' || /\b\d[\d\s]{5,}\b/.test(text)){
-    st.have.phone = (text.match(/\+?[\d][\d\s]{5,}\d/)||[text])[0].trim();
-  } else if(st.asked==='name'){
-    st.have.name = cleanName(text);
+  // --- capture details based on what we just asked for ---
+  const looksLikeNumberOnly = phoneMatch && !/[a-z]{2,}/i.test(text);
+  if(st.asked==='name'){
+    if(looksLikeNumberOnly){ st.have.phone = phoneMatch[0].trim(); } // they answered the name prompt with a number
+    else st.have.name = cleanName(text);
   }
-  if(st.asked==='time' && !st.have.time) st.have.time = text;
-  if(!st.have.reason && intent && ['book','emergency','services'].includes(intent)) st.have.reason = text;
-  if(!st.have.reason && !intent && st.turns===1) st.have.reason = text; // their opening line
+  else if(st.asked==='phone' && phoneMatch) st.have.phone = phoneMatch[0].trim();
+  else if(st.asked==='time') st.have.time = text;
+  else if(st.asked==='reason') st.have.reason = text;
+  // caller volunteers a number at any point
+  if(!st.have.phone && phoneMatch && st.asked!=='name') st.have.phone = phoneMatch[0].trim();
+  // their very first sentence is usually the reason
+  if(!st.have.reason && st.turns===1 && !['price','hours','payment','guarantee','duration','coverage','location'].includes(intent))
+    st.have.reason = text;
+  if(!st.have.reason && ['book','emergency','services'].includes(intent)) st.have.reason = text;
 
-  // closing
-  if(intent==='bye'){
+  // --- closing ---
+  if(intent==='bye' || (negative && st.asked===null && !st.booking)){
     if(st.have.name && st.have.phone) fireLead(normLead(st.have,k), k);
     await aiSay(`No problem at all — thanks for calling ${k.name}, talk soon. Bye now!`);
     stopTalk(); return;
   }
-  if(intent==='human'){
+
+  // --- explicit handoffs ---
+  if(intent==='human' || intent==='reschedule'){
     st.booking=true;
-    await flow(`Of course — I'll get someone to call you straight back. Can I take your name and number?`, typed); return;
-  }
-  if(intent==='reschedule'){
-    st.booking=true;
-    await flow(`No problem, I can sort that. Can I take your name and the best number to reach you on?`, typed); return;
+    if(!st.have.reason) st.have.reason = intent==='reschedule' ? 'Reschedule appointment' : 'Requested a callback';
+    await aiSay(intent==='reschedule' ? `No problem, I can sort that for you.` : `Of course — I'll get someone to call you straight back.`);
+    return continueBooking(st,k,typed);
   }
 
-  // a question we know the answer to
+  // --- answer to a pending "would you like to book?" offer ---
+  if(st.pendingOffer){
+    st.pendingOffer=false;
+    if(negative){ await flow(`No problem at all. Is there anything else I can help you with?`, typed); return; }
+    if(affirmative){ st.booking=true; return continueBooking(st,k,typed); }
+    // otherwise they asked something else — fall through and handle it
+  }
+
+  // --- a question we know the answer to ---
   const known = answerFor(intent,k);
-  if(known && intent!=='book'){ st.booking = st.booking || intent==='emergency'; await flow(known,typed); return; }
+  if(known && intent!=='book'){
+    if(intent==='emergency'){ st.booking=true; await aiSay(known); return continueBooking(st,k,typed); }
+    st.pendingOffer = true;          // the answer ends by offering to book
+    await flow(known, typed); return;
+  }
 
-  // booking / lead-capture flow — ask for the next missing thing
+  // --- booking / lead-capture flow ---
   if(intent==='book' || st.booking || st.have.reason){
     st.booking = true;
-    const next = nextAsk(st,k);
-    if(next){ await flow(next.line, typed); st.asked=next.key; return; }
-    // we have everything -> confirm + capture
-    fireLead(normLead(st.have,k), k);
-    st.closed=true;
-    await flow(`You're all booked in${st.have.name?(', '+st.have.name):''}. I'm texting the details to the team now and someone will confirm shortly. Anything else I can help with?`, typed);
-    return;
+    return continueBooking(st,k,typed);
   }
 
-  // ---- UNKNOWN -> AI BACKUP ----
+  // --- UNKNOWN -> AI BACKUP ---
   await aiBackup(text, k, typed);
+}
+
+// Ask for the next missing detail (and REMEMBER what we asked), or finish + capture.
+async function continueBooking(st,k,typed){
+  const next = nextAsk(st,k);
+  if(next){ st.asked = next.key; await flow(next.line, typed); return; }
+  st.asked = null;
+  fireLead(normLead(st.have,k), k);
+  st.closed = true;
+  await flow(`You're all booked in${st.have.name?(', '+st.have.name):''}. I'm texting the details to the team now and someone will confirm shortly. Anything else I can help with?`, typed);
 }
 
 function nextAsk(st,k){
@@ -841,12 +882,17 @@ async function aiBackup(question, k, typed){
   if(key){
     try { reply = await askClaude(question, k, key); } catch(e){ reply=''; }
   }
-  if(!reply){
-    reply = `That's a good question — let me check that with the team and we'll come straight back to you. Can I take your name and number so we don't miss you?`;
-    listenState.booking = true;
-  }
   $('backup-badge').style.display='none';
-  await flow(reply, typed);
+  if(!reply){
+    // offline / no answer -> the trustworthy move: take a message
+    listenState.booking = true;
+    await aiSay(`That's a good question — let me check that with the team and we'll come straight back to you so we don't miss you.`);
+    return continueBooking(listenState, k, typed);
+  }
+  // real answer from Claude -> answer, then offer to book
+  listenState.pendingOffer = true;
+  const offer = /[?]\s*$/.test(reply) ? '' : ` Would you like me to book you in?`;
+  await flow(reply + offer, typed);
 }
 async function askClaude(question, k, key){
   const system = `You are the warm, professional phone receptionist for ${k.name}, a ${k.type} based in ${k.area}. `+
