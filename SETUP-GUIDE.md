@@ -157,6 +157,20 @@ You don't need any of the backend live to wow people. The **browser demo** (`ind
 
 ---
 
+## Making it answer every question (the "AI backup")
+
+You wanted it to feel like a real person who has every answer — and to look things up when it doesn't. Here's how that works at each layer:
+
+**1. On a real phone call (the actual product):** Claude *is* the brain, so it already answers naturally — hours, prices, services, "do you cover my area", "can you come today". You feed it the facts in three places in the assistant config: `OPENING HOURS`, `SERVICES`, `PRICING`, and the new **`{{FAQ}}`** field (put the 5–10 questions clients get asked most — payment methods, areas covered, parking, how soon, guarantees). The provisioner asks for this as `faq`.
+
+**2. When it doesn't know:** the system prompt tells it **never to guess**. It says "let me check that with the team and we'll come straight back to you" and takes the caller's name + number — so you never lose the lead. That's the correct, trustworthy behaviour (better than inventing a wrong price).
+
+**3. To literally look things up:** attach a **knowledge base** to the assistant in Vapi (upload the client's price list / FAQ PDF / a copy of their website) — Claude then searches it before answering. For web lookups you can add a search tool. Start with a good `{{FAQ}}`; add a knowledge base once a client has lots of detail.
+
+**In the browser demo:** the **🧠 AI backup** does the same thing. It answers common questions from the local brain; for anything else it shows "checking that for you…" and either (a) really asks Claude if you paste a key in *Demo settings → AI backup*, or (b) gracefully takes a message. For a client front-end, use `server/ai-answer.js` so the key lives on the server, never in the page. **For the summit, leave the key blank** — the local brain already handles the common questions and the take-a-message fallback looks completely natural.
+
+---
+
 ## Costs at a glance (so you can price confidently)
 
 | Item | Rough cost | Who pays |

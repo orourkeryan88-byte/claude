@@ -184,6 +184,7 @@
           </div>
           <div class="status" id="status">Tap <b>“Play live demo call”</b> to hear it answer.</div>
           <div id="callmeta" style="font-size:12.5px;color:#64779c;min-height:16px;font-variant-numeric:tabular-nums"></div>
+          <div id="backup-badge" style="display:none;font-size:12px;font-weight:700;color:#04122a;background:linear-gradient(120deg,var(--brand2),var(--brand));padding:4px 11px;border-radius:999px">🧠 AI backup brain answering…</div>
           <div class="controls">
             <button class="btn primary" id="autoBtn" onclick="startAuto()">▶ Auto demo</button>
             <button class="btn ghost" id="talkBtn" onclick="toggleTalk()">🎙 Talk to it</button>
@@ -234,6 +235,11 @@
         <div class="field"><label>Area</label><input id="cfg-area" value="Dublin" /></div>
         <div class="field"><label>Voice</label><select id="cfg-voice"></select></div>
         <div class="field"><label>Lead texts go to</label><input id="cfg-owner" value="+353 85 174 0783" /></div>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>🧠 AI backup brain — answers anything it's not scripted for <span style="color:#64779c;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <input id="cfg-aikey" type="password" placeholder="Paste an Anthropic API key (sk-ant-…) to let it answer ANY question live" />
+        <div class="hint" style="text-align:left;margin-top:6px">Leave blank for the summit — the demo already answers common questions (hours, price, services, area, emergencies) from the local brain, and gracefully takes a message for anything else. Add a key only if you want it to answer literally <em>any</em> question live (needs wifi). The key stays in your browser for this session only — for a real client, the key lives safely on the server, never in the page.</div>
       </div>
       <div class="controls" style="justify-content:flex-start;margin-top:14px">
         <button class="btn primary" onclick="exportConfig()">⬇ Export this client's Vapi config</button>
@@ -435,6 +441,7 @@ const SCENARIOS = {
       {user:`It's Sarah Byrne.`, ai:`Thanks Sarah. And the best mobile number to reach you on?`},
       {user:`It's 087 555 0192.`, ai:`Perfect, let me read that back — 087 555 0192, is that right?`},
       {user:`That's the one.`, ai:`Because there's water escaping I'll flag this as urgent. We can have someone out between 2 and 4 today — does that suit?`, time:'Today, 2–4pm (URGENT)', urgent:true},
+      {user:`Perfect — and how much do you charge for that?`, ai:`An emergency call-out is 150 euro, and you'll always get a clear price before any work starts. Happy to go ahead?`},
       {user:`Yeah this afternoon would be great, thanks.`, ai:`You're all booked in, Sarah. I'm texting the team now and someone will call to confirm. Anything else?`},
       {user:`No that's everything, thanks a million.`, ai:`No problem at all — talk soon, bye now.`, done:true}
     ]
@@ -681,69 +688,190 @@ function toast(msg){
   clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.style.display='none', 7000);
 }
 
-/* ---------- TALK MODE (live mic) ---------- */
+/* ============================================================
+   TALK MODE — conversational brain (feels like a real person)
+   - Understands free-form questions from a local knowledge base
+   - Captures the lead naturally (name / phone / reason) as it goes
+   - When it hits something it doesn't know, the AI BACKUP kicks in:
+       • with an Anthropic key -> really asks Claude and answers
+       • without -> gracefully takes a message (the correct real-world move)
+   ============================================================ */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let convoState = 0, liveLead = {name:'',phone:'',reason:'',time:''};
+let listenState = null;
 
+function knowledge(){
+  const c = cfg(); const s = currentScenario();
+  return {
+    name:c.name, type:c.type, area:c.area,
+    hours:s.hours, services:s.services, pricing:s.pricing
+  };
+}
 function toggleTalk(){
-  if(!SR){ alert("Live mic needs Chrome or Edge. Use ▶ Auto demo on this device — it works everywhere."); return; }
+  if(!SR){ alert("Live mic needs Chrome or Edge. You can still TYPE to it here, and ▶ Auto demo works on any device."); }
   if(listening){ stopTalk(); return; }
-  resetDemo(); listening=true; convoState=0; liveLead={name:'',phone:'',reason:'',time:''};
+  resetDemo(); listening=true;
+  listenState = { have:{name:'',phone:'',reason:'',time:''}, asked:null, booking:false, closed:false, turns:0 };
   $('talkBtn').textContent='■ Stop';
   $('typebar').style.display='flex';
-  recog = new SR(); recog.lang='en-GB'; recog.interimResults=false; recog.continuous=false;
+  if(SR){ recog = new SR(); recog.lang='en-GB'; recog.interimResults=false; recog.continuous=false; }
   beginLive();
 }
 async function beginLive(){
-  const c=cfg();
-  startTimer();
-  await aiSay(`Hi, thanks for calling ${c.name}. How can I help you today?`);
+  const c=cfg(); startTimer();
+  await aiSay(`Hi, thanks for calling ${c.name}, how can I help you today?`);
   listenOnce();
 }
 function listenOnce(){
-  if(!listening) return;
+  if(!listening || !recog) { if(listening) setOrb('','Type your reply below ↓'); return; }
   setOrb('listening','Listening… speak now');
   try{ recog.start(); }catch(e){}
-  recog.onresult = e=>{
-    const said = e.results[0][0].transcript;
-    addMsg('user',said); handleLive(said);
-  };
+  recog.onresult = e=>{ const said = e.results[0][0].transcript; addMsg('user',said); handleLive(said,false); };
   recog.onerror = ()=> { if(listening){ setOrb('','Didn\'t catch that — type it below or try again'); } };
-  recog.onend = ()=>{};
 }
 async function sendTyped(){
   const v=$('typeInput').value.trim(); if(!v) return;
   $('typeInput').value=''; addMsg('user',v); handleLive(v,true);
 }
-async function handleLive(text,typed){
-  try{recog&&recog.stop();}catch(e){}
-  const c=cfg(); const t=text.toLowerCase();
-  let reply='';
-  switch(convoState){
-    case 0:
-      liveLead.reason = text;
-      reply = `Got it — I can help with that. Can I take your name?`; convoState=1; break;
-    case 1:
-      liveLead.name = cleanName(text);
-      reply = `Thanks ${liveLead.name||'there'}. And the best phone number to reach you on?`; convoState=2; break;
-    case 2:
-      liveLead.phone = (text.match(/[\d\s]{6,}/)||[text])[0].trim();
-      reply = `Perfect. When would suit you best for an appointment — morning or afternoon?`; convoState=3; break;
-    case 3:
-      liveLead.time = text;
-      reply = `You're all booked in${liveLead.name?(', '+liveLead.name):''}. I'm texting the details to the team now and someone will confirm shortly. Anything else?`;
-      convoState=4; break;
-    default:
-      reply = `No problem at all — thanks for calling ${c.name}, talk soon!`;
-      await aiSay(reply); fireLead({...liveLead, name:liveLead.name||'Caller', phone:liveLead.phone||'(not given)'}, c);
-      stopTalk(); return;
-  }
-  await aiSay(reply);
-  if(!typed) listenOnce(); else setOrb('','Type your next reply below ↓');
+
+/* ---- intent detection over the caller's words ---- */
+function detect(t){
+  t=' '+t.toLowerCase()+' ';
+  const has = (...w)=>w.some(x=>t.includes(x));
+  if(has('emergency','urgent','leak','flood','no heat','no water','no power','asap','straight away','right now','out of hours','burst')) return 'emergency';
+  if(has('how much','price','cost','charge','rate','fee','quote')) return 'price';
+  if(has('open','hours','close','what time','when are you','today open','sunday','weekend')) return 'hours';
+  if(has(' where','located','address','location','find you','parking',' park ')) return 'location';
+  if(has('what do you','services','do you do','do you offer','can you do','treat')) return 'services';
+  if(has('book','appointment','schedule','come out','call out','fix','sort','get someone','visit','see me','slot')) return 'book';
+  if(has('cancel','reschedule','change my','move my')) return 'reschedule';
+  if(has('human','real person','speak to','talk to someone','manager','owner','call me back')) return 'human';
+  if(has('thank','thanks','that\'s all','that is all','nothing else','no that\'s it','bye','goodbye')) return 'bye';
+  if(/\b\d[\d\s]{5,}\b/.test(t)) return 'gavephone';
+  return null;
 }
-function cleanName(s){ return s.replace(/^(it'?s|i'?m|my name is|this is)\s+/i,'').replace(/\.$/,'').trim().split(' ').slice(0,2).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
+function answerFor(intent,k){
+  switch(intent){
+    case 'price': return `${cap(k.pricing)} I can give you a firm price once I know a bit more — would you like me to book you in?`;
+    case 'hours': return `Our hours are ${stripDot(k.hours)}. Would you like to book a time?`;
+    case 'location': return `We're based in ${k.area}. I can text you the exact address when I book you in — shall I do that?`;
+    case 'services': return `We do ${stripDot(k.services)}. What is it you're after?`;
+    case 'emergency': return `Absolutely, we treat that as a priority — let me take your details and get someone to you fast. Can I take your name?`;
+    default: return null;
+  }
+}
+const cap = s=> s ? s.charAt(0).toUpperCase()+s.slice(1) : s;
+const stripDot = s=> (s||'').replace(/\.$/,'');
+
+async function handleLive(text, typed){
+  try{recog&&recog.stop();}catch(e){}
+  const k = knowledge(); const st = listenState; st.turns++;
+  const intent = detect(text);
+
+  // capture any details the caller volunteers
+  if(intent==='gavephone' || /\b\d[\d\s]{5,}\b/.test(text)){
+    st.have.phone = (text.match(/\+?[\d][\d\s]{5,}\d/)||[text])[0].trim();
+  } else if(st.asked==='name'){
+    st.have.name = cleanName(text);
+  }
+  if(st.asked==='time' && !st.have.time) st.have.time = text;
+  if(!st.have.reason && intent && ['book','emergency','services'].includes(intent)) st.have.reason = text;
+  if(!st.have.reason && !intent && st.turns===1) st.have.reason = text; // their opening line
+
+  // closing
+  if(intent==='bye'){
+    if(st.have.name && st.have.phone) fireLead(normLead(st.have,k), k);
+    await aiSay(`No problem at all — thanks for calling ${k.name}, talk soon. Bye now!`);
+    stopTalk(); return;
+  }
+  if(intent==='human'){
+    st.booking=true;
+    await flow(`Of course — I'll get someone to call you straight back. Can I take your name and number?`, typed); return;
+  }
+  if(intent==='reschedule'){
+    st.booking=true;
+    await flow(`No problem, I can sort that. Can I take your name and the best number to reach you on?`, typed); return;
+  }
+
+  // a question we know the answer to
+  const known = answerFor(intent,k);
+  if(known && intent!=='book'){ st.booking = st.booking || intent==='emergency'; await flow(known,typed); return; }
+
+  // booking / lead-capture flow — ask for the next missing thing
+  if(intent==='book' || st.booking || st.have.reason){
+    st.booking = true;
+    const next = nextAsk(st,k);
+    if(next){ await flow(next.line, typed); st.asked=next.key; return; }
+    // we have everything -> confirm + capture
+    fireLead(normLead(st.have,k), k);
+    st.closed=true;
+    await flow(`You're all booked in${st.have.name?(', '+st.have.name):''}. I'm texting the details to the team now and someone will confirm shortly. Anything else I can help with?`, typed);
+    return;
+  }
+
+  // ---- UNKNOWN -> AI BACKUP ----
+  await aiBackup(text, k, typed);
+}
+
+function nextAsk(st,k){
+  if(!st.have.reason) return {key:'reason', line:`Happy to help with that. What is it you need done?`};
+  if(!st.have.name)   return {key:'name',   line:`Can I take your name?`};
+  if(!st.have.phone)  return {key:'phone',  line:`Thanks${st.have.name?' '+st.have.name:''}. And the best phone number to reach you on?`};
+  if(!st.have.time)   return {key:'time',   line:`Perfect. When would suit you best — morning or afternoon?`};
+  return null;
+}
+function normLead(h,k){
+  return { name:h.name||'Caller', phone:h.phone||'(not given)', reason:h.reason||'General enquiry',
+           time:h.time||'To be confirmed', urgent:/leak|flood|emergency|urgent|no heat|no water|no power/i.test(h.reason||'') };
+}
+
+/* ---- AI backup: real Claude if a key is provided, else graceful message ---- */
+async function aiBackup(question, k, typed){
+  const key = ($('cfg-aikey').value||'').trim();
+  $('backup-badge').style.display='inline-block';
+  setOrb('','🧠 AI backup — checking that for you…');
+  let reply='';
+  if(key){
+    try { reply = await askClaude(question, k, key); } catch(e){ reply=''; }
+  }
+  if(!reply){
+    reply = `That's a good question — let me check that with the team and we'll come straight back to you. Can I take your name and number so we don't miss you?`;
+    listenState.booking = true;
+  }
+  $('backup-badge').style.display='none';
+  await flow(reply, typed);
+}
+async function askClaude(question, k, key){
+  const system = `You are the warm, professional phone receptionist for ${k.name}, a ${k.type} based in ${k.area}. `+
+    `Opening hours: ${k.hours} Services: ${k.services} Pricing: ${k.pricing} `+
+    `Answer the caller's question in 1-2 short, natural spoken sentences, as the receptionist. `+
+    `Never invent specific prices, times or facts you weren't given — if you don't know, say you'll have the team confirm and offer to take their details. Do not mention being an AI.`;
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'content-type':'application/json',
+      'x-api-key':key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({
+      model:'claude-opus-4-8',
+      max_tokens:200,
+      system,
+      messages:[{role:'user', content:question}]
+    })
+  });
+  if(!res.ok){ throw new Error('api '+res.status); }
+  const data = await res.json();
+  return (data.content && data.content[0] && data.content[0].text || '').trim();
+}
+
+async function flow(line, typed){
+  await aiSay(line);
+  if(listening){ if(!typed && recog) listenOnce(); else setOrb('','Type your next reply below ↓'); }
+}
+function cleanName(s){ return s.replace(/^(it'?s|i'?m|my name is|this is|i am|yeah it'?s)\s+/i,'').replace(/[.,!]$/,'').trim().split(/\s+/).slice(0,2).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
 async function aiSay(t){ addMsg('ai',t); await speak(t); }
-function stopTalk(){ listening=false; try{recog&&recog.stop();}catch(e){} $('talkBtn').textContent='🎙 Talk to it'; setOrb('','Call ended'); }
+function stopTalk(){ listening=false; try{recog&&recog.stop();}catch(e){} $('talkBtn').textContent='🎙 Talk to it'; $('backup-badge').style.display='none'; if($('callmeta')&&!running) setOrb('','Call ended'); }
 
 /* ---------- reset ---------- */
 function resetDemo(){

@@ -26,6 +26,7 @@ const DEFAULT_CLIENT = {
   openingHours: "Mon-Fri 8am-6pm, Sat 9am-1pm, closed Sunday. Emergency call-outs 24/7.",
   services: "leak repairs, boiler servicing, bathroom installs, blocked drains, heating",
   pricingNotes: "Standard call-out 80 euro, emergency 150 euro. Free quotes for bigger jobs.",
+  faq: "Yes we cover all of Dublin city and south county. We take card and cash. We can usually get someone out same or next day. Free parking at our yard.",
   ownerPhone: "+353851740783",          // where leads get texted
   voiceId: "21m00Tcm4TlvDq8ikWAM",       // ElevenLabs voice id (warm female default)
   webhookUrl: "https://your-webhook.example.com/log-lead",
@@ -42,6 +43,7 @@ function buildAssistant(c) {
     "{{OPENING_HOURS}}": c.openingHours,
     "{{SERVICES}}": c.services,
     "{{PRICING_NOTES}}": c.pricingNotes,
+    "{{FAQ}}": c.faq || "Ask the team for anything not listed.",
     "{{VOICE_ID}}": c.voiceId,
     "{{WEBHOOK_URL}}": c.webhookUrl,
   };
