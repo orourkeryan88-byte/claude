@@ -148,8 +148,9 @@
   <nav>
     <div class="logo"><div class="mark">S</div> SOUTHLINE</div>
     <div class="links">
-      <a href="#how">How it works</a>
       <a href="#features">Features</a>
+      <a href="#roi">Calculator</a>
+      <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
       <a href="#book">Book a demo</a>
     </div>
@@ -251,6 +252,38 @@
       <div class="feature"><div class="ic">🗣️</div><h4>Sounds human</h4><p>Natural voice, understands accents, handles interruptions. Callers often don't realise it's AI.</p></div>
       <div class="feature"><div class="ic">🏷️</div><h4>Branded to you</h4><p>Greets with your business name, knows your hours, services and pricing. Feels like your own staff.</p></div>
       <div class="feature"><div class="ic">📈</div><h4>Cheaper than hiring</h4><p>A fraction of a €30k/yr receptionist salary — and it handles unlimited calls at once.</p></div>
+    </div>
+  </section>
+
+  <!-- ROI CALCULATOR -->
+  <section id="roi">
+    <div class="eyebrow">The maths</div>
+    <h2>How much are missed calls costing you?</h2>
+    <p class="lead-sub">Slide these to a prospect's real numbers. Watch the lost revenue add up — then show them the €99 price.</p>
+    <div class="panel" style="max-width:760px;margin:0 auto">
+      <div class="cfg" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Missed calls per week: <b id="roi-calls-v" style="color:var(--brand2)">10</b></label>
+          <input type="range" id="roi-calls" min="1" max="60" value="10" oninput="calcROI()"></div>
+        <div class="field"><label>Average job value: <b id="roi-val-v" style="color:var(--brand2)">€180</b></label>
+          <input type="range" id="roi-val" min="20" max="2000" step="10" value="180" oninput="calcROI()"></div>
+        <div class="field"><label>Of missed callers, % who'd have booked: <b id="roi-conv-v" style="color:var(--brand2)">35%</b></label>
+          <input type="range" id="roi-conv" min="5" max="90" value="35" oninput="calcROI()"></div>
+        <div class="field"><label>&nbsp;</label>
+          <div style="background:#0b1426;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--mut)">Recovering even a slice of these pays for itself many times over.</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px">
+        <div style="background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.3);border-radius:14px;padding:18px;text-align:center">
+          <div style="color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.5px">Lost every month</div>
+          <div id="roi-lost" style="font-size:40px;font-weight:850;color:var(--bad);margin-top:4px">€2,772</div>
+          <div style="color:var(--mut);font-size:13px" id="roi-year">€33,264 a year walking out the door</div>
+        </div>
+        <div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.3);border-radius:14px;padding:18px;text-align:center">
+          <div style="color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.5px">AI receptionist costs</div>
+          <div style="font-size:40px;font-weight:850;color:var(--good);margin-top:4px">€99<span style="font-size:16px;color:var(--mut)">/mo</span></div>
+          <div style="color:var(--good);font-size:13px;font-weight:700" id="roi-x">That's a 28× return</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:18px"><button class="btn primary" onclick="book()">Stop losing this money →</button></div>
     </div>
   </section>
 
@@ -667,6 +700,21 @@ function resetDemo(){
   setOrb('','Ready when you are.');
 }
 function book(){ document.getElementById('book').scrollIntoView({behavior:'smooth'}); }
+
+/* ---------- ROI calculator ---------- */
+function calcROI(){
+  const calls = +$('roi-calls').value, val = +$('roi-val').value, conv = +$('roi-conv').value;
+  $('roi-calls-v').textContent = calls;
+  $('roi-val-v').textContent = '€'+val;
+  $('roi-conv-v').textContent = conv+'%';
+  const monthly = Math.round(calls * 4.33 * (conv/100) * val);
+  const fmt = n => '€'+n.toLocaleString('en-IE');
+  $('roi-lost').textContent = fmt(monthly);
+  $('roi-year').textContent = fmt(monthly*12)+' a year walking out the door';
+  const x = Math.max(1, Math.round(monthly/99));
+  $('roi-x').textContent = `That's a ${x}× return`;
+}
+calcROI();
 </script>
 </body>
 </html>
