@@ -183,6 +183,7 @@
             <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
           </div>
           <div class="status" id="status">Tap <b>“Play live demo call”</b> to hear it answer.</div>
+          <div id="callmeta" style="font-size:12.5px;color:#64779c;min-height:16px;font-variant-numeric:tabular-nums"></div>
           <div class="controls">
             <button class="btn primary" id="autoBtn" onclick="startAuto()">▶ Auto demo</button>
             <button class="btn ghost" id="talkBtn" onclick="toggleTalk()">🎙 Talk to it</button>
@@ -223,6 +224,8 @@
             <option value="plumber">🔧 Plumber / trade — emergency leak</option>
             <option value="dentist">🦷 Dental clinic — book a check-up</option>
             <option value="salon">💇 Salon / barber — book an appointment</option>
+            <option value="vet">🐾 Veterinary clinic — sick pet</option>
+            <option value="clinic">✨ Aesthetic / skin clinic — consultation</option>
             <option value="generic">🏢 Generic business — new enquiry</option>
           </select>
         </div>
@@ -356,6 +359,15 @@ const $ = id => document.getElementById(id);
 const orb = $('orb'), statusEl = $('status'), transcript = $('transcript');
 let voices = [], chosenVoice = null, running = false, recog = null, listening = false;
 
+/* live call timer */
+let timerInt = null, timerStart = 0;
+function startTimer(){ timerStart = Date.now(); stopTimer(false);
+  timerInt = setInterval(()=>{ const s=Math.floor((Date.now()-timerStart)/1000);
+    $('callmeta').textContent = `● Live · ${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }, 500);
+}
+function stopTimer(clear=true){ if(timerInt){clearInterval(timerInt);timerInt=null;} if(clear) $('callmeta').textContent=''; }
+
 /* ---------- voice setup ---------- */
 function loadVoices(){
   voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
@@ -461,6 +473,40 @@ const SCENARIOS = {
       {user:`No that's it, thanks so much.`, ai:`Lovely, see you Saturday — bye now!`, done:true}
     ]
   },
+  vet:{
+    name:"Pawsome Vets", type:"veterinary clinic", area:"Dublin",
+    hours:"Mon-Fri 9am-6pm, Sat 9am-1pm. Out-of-hours emergency line 24/7.",
+    services:"check-ups, vaccinations, neutering, dental, microchipping, emergencies",
+    pricing:"Consultation 55 euro. Vaccination packages available. New pets welcome.",
+    lead:{name:'Emma Walsh',phone:'083 447 1209'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, how can I help you and your pet today?`},
+      {user:`Hi, my dog's been off his food and a bit lethargic, I'd like to get him seen.`,
+       ai:`Sorry to hear that — let's get him booked in. Can I take your name?`, reason:'Dog off food & lethargic — needs to be seen'},
+      {user:`Emma Walsh.`, ai:`Thanks Emma. And the best number to reach you on?`},
+      {user:`083 447 1209.`, ai:`Let me read that back — 083 447 1209, correct?`},
+      {user:`Yes.`, ai:`We've an appointment at 4.30 today or 9.15 tomorrow morning — which would you prefer?`, time:'Today 4.30pm'},
+      {user:`Today at half four, please.`, ai:`You're booked for 4.30, Emma. I'll text the details now. If he gets worse before then, ring us straight away. Anything else?`},
+      {user:`No, thank you so much.`, ai:`Of course — see you at 4.30, bye now.`, done:true}
+    ]
+  },
+  clinic:{
+    name:"Glow Aesthetics", type:"aesthetic & skin clinic", area:"Dublin",
+    hours:"Tue-Sat 10am-7pm.",
+    services:"skin consultations, anti-wrinkle, dermal fillers, facials, laser",
+    pricing:"Consultations free. Treatment prices given after a consult.",
+    lead:{name:'Lucy Nolan',phone:'089 220 7714'},
+    script:[
+      {ai:b=>`Hello, thanks for calling ${b}, how can I help you today?`},
+      {user:`Hi, I'd like to book a consultation about a skin treatment.`,
+       ai:`Lovely, our consultations are free. Can I take your name?`, reason:'Free skin treatment consultation'},
+      {user:`Lucy Nolan.`, ai:`Thanks Lucy. And the best number for you?`},
+      {user:`089 220 7714.`, ai:`Let me confirm — 089 220 7714, is that right?`},
+      {user:`That's right.`, ai:`Perfect. We've Thursday at 5 or Saturday at 11 — which suits?`, time:'Saturday 11am'},
+      {user:`Saturday at eleven is great.`, ai:`You're booked, Lucy — Saturday at 11. I'll text you the details and a reminder. Anything else?`},
+      {user:`No that's everything, thanks.`, ai:`Wonderful — see you Saturday, bye now.`, done:true}
+    ]
+  },
   generic:{
     name:"Your Business", type:"business", area:"your area",
     hours:"Mon-Fri 9am-5.30pm.",
@@ -495,7 +541,13 @@ async function startAuto(){
   const s = currentScenario();
   const lead = { name:s.lead.name, phone:s.lead.phone, reason:'', time:'', urgent:false };
 
-  await wait(500);
+  // incoming-call intro — makes it feel like a real ringing phone
+  setOrb('listening','📞 Incoming call from '+s.lead.phone+'…');
+  await wait(1400);
+  if(!running) return;
+  setOrb('','📞 Answering…'); await wait(550);
+  startTimer();
+
   for(const t of s.script){
     if(!running) return;
     if(t.user){ addMsg('user',t.user); await wait(700); }
@@ -509,6 +561,9 @@ async function startAuto(){
     if(t.done){ fireLead(lead,c); }
   }
   running=false; $('autoBtn').textContent='▶ Auto demo';
+  const dur = Math.floor((Date.now()-timerStart)/1000);
+  stopTimer(false);
+  $('callmeta').textContent = `Call ended · ${String(Math.floor(dur/60)).padStart(2,'0')}:${String(dur%60).padStart(2,'0')}`;
   setOrb('','Call ended · lead captured ✅');
 }
 
@@ -641,6 +696,7 @@ function toggleTalk(){
 }
 async function beginLive(){
   const c=cfg();
+  startTimer();
   await aiSay(`Hi, thanks for calling ${c.name}. How can I help you today?`);
   listenOnce();
 }
@@ -691,7 +747,7 @@ function stopTalk(){ listening=false; try{recog&&recog.stop();}catch(e){} $('tal
 
 /* ---------- reset ---------- */
 function resetDemo(){
-  running=false; stopTalk();
+  running=false; stopTalk(); stopTimer(true);
   if(window.speechSynthesis) speechSynthesis.cancel();
   transcript.innerHTML='<div class="empty" id="empty">The conversation will appear here in real time…</div>';
   $('lead').classList.remove('show');
