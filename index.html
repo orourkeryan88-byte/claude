@@ -217,12 +217,25 @@
     <div class="panel" style="margin-top:20px">
       <h3>Demo settings — rebrand it live for any prospect</h3>
       <div class="cfg">
+        <div class="field"><label>Industry scenario</label>
+          <select id="cfg-scenario" onchange="applyScenario()">
+            <option value="plumber">🔧 Plumber / trade — emergency leak</option>
+            <option value="dentist">🦷 Dental clinic — book a check-up</option>
+            <option value="salon">💇 Salon / barber — book an appointment</option>
+            <option value="generic">🏢 Generic business — new enquiry</option>
+          </select>
+        </div>
         <div class="field"><label>Business name</label><input id="cfg-name" value="Joe's Plumbing" /></div>
         <div class="field"><label>Business type</label><input id="cfg-type" value="plumbing company" /></div>
         <div class="field"><label>Area</label><input id="cfg-area" value="Dublin" /></div>
         <div class="field"><label>Voice</label><select id="cfg-voice"></select></div>
+        <div class="field"><label>Lead texts go to</label><input id="cfg-owner" value="+353 85 174 0783" /></div>
       </div>
-      <div class="hint">Tip for the summit: type the prospect's real business name here, hit “Auto demo”, and it answers as <em>their</em> receptionist. Live mic mode (“Talk to it”) works best in Chrome.</div>
+      <div class="controls" style="justify-content:flex-start;margin-top:14px">
+        <button class="btn primary" onclick="exportConfig()">⬇ Export this client's Vapi config</button>
+        <button class="btn ghost" onclick="copyOnboarding()">📋 Copy client setup steps</button>
+      </div>
+      <div class="hint">Tip for the summit: pick the prospect's industry, type their real business name, hit <em>“Auto demo”</em> — it answers as <em>their</em> receptionist. Then hit <em>“Export”</em> to walk away with a deployable file for them. Live mic mode works best in Chrome.</div>
     </div>
   </div>
 
@@ -358,8 +371,87 @@ const wait = ms => new Promise(r=>setTimeout(r,ms));
 function cfg(){ return {
   name:$('cfg-name').value.trim()||'your business',
   type:$('cfg-type').value.trim()||'business',
-  area:$('cfg-area').value.trim()||'your area'
+  area:$('cfg-area').value.trim()||'your area',
+  owner:$('cfg-owner').value.trim()||'+353 85 174 0783'
 };}
+
+/* ---------- industry scenarios (drive the auto demo + defaults) ---------- */
+const SCENARIOS = {
+  plumber:{
+    name:"Joe's Plumbing", type:"plumbing and heating company", area:"Dublin",
+    hours:"Mon-Fri 8am-6pm, Sat 9am-1pm. Emergency call-outs 24/7.",
+    services:"leak repairs, boiler servicing, blocked drains, bathroom installs, heating",
+    pricing:"Standard call-out 80 euro, emergency 150 euro. Free quotes on bigger jobs.",
+    lead:{name:'Sarah Byrne',phone:'087 555 0192'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, you're through to the reception desk. How can I help you today?`},
+      {user:`Hi, yeah — I've a leak under my kitchen sink and water's going everywhere.`,
+       ai:`Oh no, that doesn't sound good — let's get that sorted fast. Can I take your name?`, reason:'Leak under kitchen sink (water escaping)'},
+      {user:`It's Sarah Byrne.`, ai:`Thanks Sarah. And the best mobile number to reach you on?`},
+      {user:`It's 087 555 0192.`, ai:`Perfect, let me read that back — 087 555 0192, is that right?`},
+      {user:`That's the one.`, ai:`Because there's water escaping I'll flag this as urgent. We can have someone out between 2 and 4 today — does that suit?`, time:'Today, 2–4pm (URGENT)', urgent:true},
+      {user:`Yeah this afternoon would be great, thanks.`, ai:`You're all booked in, Sarah. I'm texting the team now and someone will call to confirm. Anything else?`},
+      {user:`No that's everything, thanks a million.`, ai:`No problem at all — talk soon, bye now.`, done:true}
+    ]
+  },
+  dentist:{
+    name:"Bright Smile Dental", type:"dental clinic", area:"Dublin",
+    hours:"Mon-Fri 8.30am-5.30pm, closed weekends.",
+    services:"check-ups, cleanings, fillings, whitening, emergency dental, Invisalign",
+    pricing:"Check-up and clean 65 euro. New patients welcome. Free Invisalign consults.",
+    lead:{name:'David Kelly',phone:'086 222 4471'},
+    script:[
+      {ai:b=>`Hello, thanks for calling ${b}, how can I help you today?`},
+      {user:`Hi, I'd like to book a check-up and clean, I'm a new patient.`,
+       ai:`Lovely, we'd be happy to see you. Can I take your name?`, reason:'New patient — check-up & clean'},
+      {user:`David Kelly.`, ai:`Thanks David. And the best number to reach you on?`},
+      {user:`086 222 4471.`, ai:`Got it — 086 222 4471, is that correct?`},
+      {user:`Yes.`, ai:`Perfect. We've space next Tuesday at 10am or Thursday at 2pm — which suits better?`, time:'Tuesday 10am'},
+      {user:`Tuesday at 10 is great.`, ai:`You're booked for Tuesday at 10, David. I'll text the details over now and a reminder the day before. Anything else?`},
+      {user:`No, that's perfect, thank you.`, ai:`Great, see you Tuesday — take care, bye now.`, done:true}
+    ]
+  },
+  salon:{
+    name:"Luxe Hair Studio", type:"hair salon", area:"Dublin",
+    hours:"Tue-Sat 9am-7pm, closed Sun & Mon.",
+    services:"cuts, colour, balayage, blow-dries, treatments, bridal",
+    pricing:"Cut & blow-dry from 45 euro. Colour consults free.",
+    lead:{name:'Aoife Murphy',phone:'085 661 3320'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, how can I help?`},
+      {user:`Hiya, I'm looking to book a cut and colour for the weekend.`,
+       ai:`Of course, we'd love to get you in. Can I take your name?`, reason:'Cut & colour booking'},
+      {user:`Aoife Murphy.`, ai:`Thanks Aoife. And the best number for you?`},
+      {user:`085 661 3320.`, ai:`Let me confirm that — 085 661 3320, correct?`},
+      {user:`Yep.`, ai:`Brilliant. Saturday we've 11am with Emma or 3pm with Niamh — any preference?`, time:'Saturday 11am with Emma'},
+      {user:`Eleven with Emma sounds perfect.`, ai:`You're booked, Aoife — Saturday at 11 with Emma. I'll text you the details now. Anything else?`},
+      {user:`No that's it, thanks so much.`, ai:`Lovely, see you Saturday — bye now!`, done:true}
+    ]
+  },
+  generic:{
+    name:"Your Business", type:"business", area:"your area",
+    hours:"Mon-Fri 9am-5.30pm.",
+    services:"your main services",
+    pricing:"as discussed with the team",
+    lead:{name:'Mark Doyle',phone:'087 904 2218'},
+    script:[
+      {ai:b=>`Hi, thanks for calling ${b}, how can I help you today?`},
+      {user:`Hi, I saw you online and wanted to ask about your services and get a quote.`,
+       ai:`Happy to help with that. Can I take your name?`, reason:'New enquiry — services & quote'},
+      {user:`Mark Doyle.`, ai:`Thanks Mark. And the best number to reach you on?`},
+      {user:`087 904 2218.`, ai:`Let me read that back — 087 904 2218, is that right?`},
+      {user:`That's right.`, ai:`Perfect. I'll have someone call you back today to talk through exactly what you need — does that work?`, time:'Callback today'},
+      {user:`Yeah that's great, thanks.`, ai:`You're all set, Mark — someone will be in touch shortly. Anything else?`},
+      {user:`No, that's everything.`, ai:`Great stuff — talk soon, bye now.`, done:true}
+    ]
+  }
+};
+function currentScenario(){ return SCENARIOS[$('cfg-scenario').value] || SCENARIOS.plumber; }
+function applyScenario(){
+  const s = currentScenario();
+  $('cfg-name').value = s.name; $('cfg-type').value = s.type; $('cfg-area').value = s.area;
+  resetDemo();
+}
 
 /* ---------- AUTO DEMO (summit-safe scripted call) ---------- */
 async function startAuto(){
@@ -367,31 +459,19 @@ async function startAuto(){
   $('autoBtn').textContent='● In call…';
   document.getElementById('demo').scrollIntoView({behavior:'smooth',block:'center'});
   const c = cfg();
-  const lead = { name:'Sarah Byrne', phone:'087 555 0192', reason:'', time:'' };
-
-  const turns = [
-    {ai:`Hi, thanks for calling ${c.name}, you're through to the reception desk. How can I help you today?`},
-    {user:`Hi, yeah — I've a leak under my kitchen sink and water's going everywhere.`,
-     ai:`Oh no, that doesn't sound good — let's get that sorted for you fast. Can I take your name?`, set:()=>lead.reason='Leak under kitchen sink (water escaping)'},
-    {user:`It's Sarah Byrne.`,
-     ai:`Thanks Sarah. And the best mobile number to reach you on?`},
-    {user:`It's 087 555 0192.`,
-     ai:`Perfect, let me read that back — 087 555 0192, is that right?`},
-    {user:`That's the one.`,
-     ai:`Brilliant. Because there's water escaping I'll flag this as urgent. We can have someone out to you this afternoon between 2 and 4 — does that suit?`, set:()=>lead.time='Today, 2–4pm (URGENT)'},
-    {user:`Yeah this afternoon would be great, thank you.`,
-     ai:`You're all booked in, Sarah. I'm texting the details to the team now and someone will call you shortly to confirm. Anything else I can help with?`},
-    {user:`No that's everything, thanks a million.`,
-     ai:`No problem at all — talk soon, bye now.`, done:true}
-  ];
+  const s = currentScenario();
+  const lead = { name:s.lead.name, phone:s.lead.phone, reason:'', time:'', urgent:false };
 
   await wait(500);
-  for(const t of turns){
+  for(const t of s.script){
     if(!running) return;
     if(t.user){ addMsg('user',t.user); await wait(700); }
-    if(t.set) t.set();
+    if(t.reason) lead.reason = t.reason;
+    if(t.time) lead.time = t.time;
+    if(t.urgent) lead.urgent = true;
     setOrb('','<b>'+c.name+'</b> · thinking…'); await wait(450);
-    addMsg('ai',t.ai); await speak(t.ai);
+    const line = typeof t.ai==='function' ? t.ai(c.name) : t.ai;
+    addMsg('ai',line); await speak(line);
     await wait(250);
     if(t.done){ fireLead(lead,c); }
   }
@@ -404,15 +484,113 @@ function fireLead(lead,c){
   $('ld-phone').textContent=lead.phone;
   $('ld-reason').textContent=lead.reason||'General enquiry';
   $('ld-time').textContent=lead.time||'To be confirmed';
+  const urgentLine = lead.urgent ? '\n⚠ Marked URGENT' : '';
   $('ld-sms').textContent =
 `🔔 NEW LEAD — ${c.name}
 Name: ${lead.name}
 Phone: ${lead.phone}
 Job: ${lead.reason||'General enquiry'}
-When: ${lead.time||'TBC'}
-⚠ Marked URGENT`;
+When: ${lead.time||'TBC'}${urgentLine}`;
   $('lead').classList.add('show');
   $('lead').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ---------- EXPORT: build a deployable Vapi config from the demo settings ---------- */
+function buildAssistantConfig(){
+  const c = cfg(); const s = currentScenario();
+  const ownerDigits = c.owner.replace(/[^\d+]/g,'');
+  const sys =
+`You are the friendly, professional virtual receptionist for ${c.name}, a ${c.type} based in ${c.area}. You answer phone calls on their behalf.
+
+OPENING HOURS: ${s.hours}
+SERVICES: ${s.services}.
+PRICING / NOTES: ${s.pricing}
+
+YOUR GOAL on every call:
+1. Greet warmly using the business name.
+2. Find out what the caller needs.
+3. Capture their FIRST NAME.
+4. Capture their BEST PHONE NUMBER and READ IT BACK to confirm.
+5. Capture a few job/appointment details.
+6. Offer to book them in or take a message, agree a rough time if relevant.
+7. When you have name + phone + reason, call the function log_lead.
+8. Confirm the team will be in touch, then close warmly.
+
+URGENCY: If anything is time-critical (leak, no heat/power, emergency, pain), set urgency to "urgent".
+
+STYLE: Warm and human, short sentences, one question at a time. Never invent prices or facts. Keep replies under ~30 words. Always read phone numbers back. Don't say you're an AI unless asked.`;
+
+  return {
+    name:`${c.name} — AI Receptionist`,
+    firstMessage:`Hi, thanks for calling ${c.name}, you're through to the reception desk. How can I help you today?`,
+    firstMessageMode:"assistant-speaks-first",
+    model:{
+      provider:"anthropic", model:"claude-opus-4-8", temperature:0.4, maxTokens:300,
+      messages:[{role:"system",content:sys}],
+      tools:[{
+        type:"function",
+        function:{ name:"log_lead",
+          description:"Save the caller's details as a lead and text the owner. Call once you have name + phone.",
+          parameters:{ type:"object",
+            properties:{
+              name:{type:"string"}, phone:{type:"string"}, reason:{type:"string"},
+              urgency:{type:"string",enum:["normal","urgent"]}, preferred_time:{type:"string"}
+            }, required:["name","phone","reason"] } },
+        server:{ url:"https://YOUR-WEBHOOK-URL/log-lead" }
+      }]
+    },
+    voice:{ provider:"11labs", voiceId:"21m00Tcm4TlvDq8ikWAM", model:"eleven_turbo_v2_5", stability:0.5, similarityBoost:0.75 },
+    transcriber:{ provider:"deepgram", model:"nova-2", language:"en" },
+    endCallMessage:`Thanks a million for calling ${c.name}. Someone will be in touch shortly. Take care, bye now!`,
+    silenceTimeoutSeconds:20, maxDurationSeconds:600, backgroundSound:"office", recordingEnabled:true,
+    metadata:{ businessName:c.name, ownerPhone:ownerDigits, provisionedBy:"Southline" }
+  };
+}
+function download(filename, text){
+  const blob = new Blob([text], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function exportConfig(){
+  const c = cfg();
+  const slug = c.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'client';
+  download(`${slug}-vapi-assistant.json`, JSON.stringify(buildAssistantConfig(), null, 2));
+  toast(`Downloaded ${slug}-vapi-assistant.json — paste it into Vapi (Assistants → Create → JSON), set your webhook URL, attach a number. See SETUP-GUIDE.md.`);
+}
+function copyOnboarding(){
+  const c = cfg();
+  const steps =
+`Your new AI Receptionist — ${c.name}
+
+WHAT IT DOES
+Answers every call 24/7, takes the caller's name, number and what they need, and texts it straight to you. Your number stays the same.
+
+THE ONE STEP — turn on call forwarding (about 2 minutes):
+• Forward when you don't answer:  **61*<AI-NUMBER>#  then call
+• Forward when busy:              **67*<AI-NUMBER>#  then call
+• Forward when unreachable:       **62*<AI-NUMBER>#  then call
+(Replace <AI-NUMBER> with the number we give you. Turn off with ##61#, ##67#, ##62#.)
+Prefer the AI to answer everything? Dial **21*<AI-NUMBER>#  (off: ##21#).
+
+WHAT YOU'LL GET — a text per lead:
+🔔 NEW LEAD — ${c.name}
+Name / Phone / Job / When (urgent jobs flagged)
+
+Need a hand? Southline — 085 174 0783 — agencysouthline@gmail.com`;
+  navigator.clipboard?.writeText(steps).then(
+    ()=>toast('Client setup steps copied — paste into an email/WhatsApp to the customer.'),
+    ()=>{ download(`${(c.name||'client').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-setup.txt`, steps); toast('Saved client setup steps as a text file.'); }
+  );
+}
+let toastTimer=null;
+function toast(msg){
+  let t=$('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast';
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);max-width:560px;background:#10213d;border:1px solid var(--brand);color:#eaf0ff;padding:14px 18px;border-radius:12px;font-size:14px;box-shadow:0 16px 50px rgba(0,0,0,.5);z-index:99;line-height:1.45';
+    document.body.appendChild(t); }
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.style.display='none', 7000);
 }
 
 /* ---------- TALK MODE (live mic) ---------- */
