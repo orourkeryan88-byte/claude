@@ -20,7 +20,7 @@ Then open the demo on your laptop/phone.
 4. One line when it finishes:
    > "That just answered a call you'd have missed, booked the job, and texted you the lead — at 2am if it had to. It never sleeps, never calls in sick, and handles ten calls at once."
 
-If they're engaged, hit **🎙 Talk to it** and let *them* talk to it. That's the moment they buy.
+If they're engaged, hit **📞 Call it now** and let *them* talk to it. That's the moment they buy.
 
 ---
 
@@ -58,7 +58,7 @@ If "let me think" → "No bother — let me take your number and I'll text you t
 
 ## What to have ready tomorrow
 
-- [ ] Demo page open and **tested** on your phone *and* laptop (try Auto demo once).
+- [ ] Demo page open and **tested** on your phone *and* laptop (try Play sample call once).
 - [ ] Phone charged, headphones optional for noisy rooms.
 - [ ] A way to take details (notes app / the lead form).
 - [ ] This script + `SETUP-GUIDE.md` bookmarked.

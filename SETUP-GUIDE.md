@@ -150,10 +150,10 @@ You don't need any of the backend live to wow people. The **browser demo** (`ind
 1. Open the demo page on your laptop or phone (have it pre-loaded — see README for the live link).
 2. In **Demo settings**, type the prospect's **real business name**.
 3. Hit **▶ Play live demo call**. It answers as *their* business, books a job, and shows the lead text landing. ~40 seconds. Jaws drop.
-4. For the brave: hit **🎙 Talk to it** (use Chrome) and let them actually *talk* to it.
+4. For the brave: hit **📞 Call it now** (use Chrome) and let them actually *talk* to it.
 5. Close with: *"That's answering every call you'd otherwise miss, 24/7, from €99 a month. Want it live on your number this week?"*
 
-**Backup plan:** if wifi/mic is flaky, the **Auto demo** is fully scripted and offline — it cannot fail. Lead with that.
+**Backup plan:** if wifi/mic is flaky, the **Play sample call** is fully scripted and offline — it cannot fail. Lead with that.
 
 ---
 
@@ -214,6 +214,6 @@ Your margin is healthy even on the Starter plan. The more clients on one webhook
 - **No text arrives:** check Twilio creds in the webhook env, and that the assistant's metadata `ownerPhone` is in `+353...` format.
 - **Assistant won't create:** make sure `VAPI_PRIVATE_KEY` is the **private** key, not public.
 - **Voice sounds robotic:** set an ElevenLabs `voiceId` and add your ElevenLabs key in Vapi provider settings.
-- **Live mic demo does nothing:** that feature needs Chrome/Edge. Use Auto demo elsewhere.
+- **Live mic demo does nothing:** that feature needs Chrome/Edge. Use Play sample call elsewhere.
 
 Questions while you're setting up? You've got the example config in `vapi/assistant.example-joes-plumbing.json` as a reference for what a finished one looks like.

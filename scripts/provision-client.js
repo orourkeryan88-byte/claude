@@ -49,6 +49,7 @@ function buildAssistant(c) {
     "{{WEBHOOK_URL}}": c.webhookUrl,
     "{{AVAILABILITY_URL}}": base + "/availability",
     "{{BOOK_URL}}": base + "/book",
+    "{{TRANSFER_NUMBER}}": c.transferNumber || c.ownerPhone,
   };
   for (const [k, v] of Object.entries(replacements)) {
     raw = raw.split(k).join(String(v).replace(/"/g, '\\"'));

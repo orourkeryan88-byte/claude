@@ -71,6 +71,14 @@
   .status b{color:var(--brand2)}
 
   .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+  .callbar{display:flex;justify-content:center;margin-top:10px}
+  .endcall{width:62px;height:62px;border-radius:50%;border:none;background:#ef4444;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.45);transition:.15s}
+  .endcall:hover{background:#dc2626;transform:scale(1.05)}
+  .endcall:active{transform:scale(.96)}
+  .mic-note{font-size:12.5px;color:#8da2c7;margin-top:10px;text-align:center}
+  .orb.ringing{animation:ring 1s ease-in-out infinite}
+  @keyframes ring{0%,100%{box-shadow:0 0 0 6px rgba(34,211,238,.10),0 0 40px rgba(34,211,238,.25)}50%{box-shadow:0 0 0 16px rgba(34,211,238,.04),0 0 60px rgba(34,211,238,.4)}}
+  .orb.transfer{animation:ring 1s ease-in-out infinite}
 
   /* transcript */
   .transcript{height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:6px}
@@ -183,26 +191,28 @@
           <div class="orb" id="orb">
             <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
           </div>
-          <div class="status" id="status">Tap <b>“Play live demo call”</b> to hear it answer.</div>
+          <div class="status" id="status">Tap a button below to start the call.</div>
           <div id="callmeta" style="font-size:12.5px;color:#64779c;min-height:16px;font-variant-numeric:tabular-nums"></div>
           <div id="backup-badge" style="display:none;font-size:12px;font-weight:700;color:#04122a;background:linear-gradient(120deg,var(--brand2),var(--brand));padding:4px 11px;border-radius:999px">🧠 AI backup brain answering…</div>
-          <div class="controls">
-            <button class="btn primary" id="autoBtn" onclick="startAuto()">▶ Auto demo</button>
-            <button class="btn ghost" id="talkBtn" onclick="toggleTalk()">🎙 Talk to it</button>
-            <button class="btn ghost" onclick="resetDemo()">↺ Reset</button>
+
+          <!-- pre-call controls -->
+          <div class="controls" id="precall">
+            <button class="btn primary" id="callBtn" onclick="toggleTalk()">📞 Call it now</button>
+            <button class="btn ghost" id="autoBtn" onclick="startAuto()">▶ Play sample call</button>
           </div>
-          <div class="typebar" id="typebar" style="display:none">
-            <input id="typeInput" placeholder="Type your reply and hit enter…" onkeydown="if(event.key==='Enter')sendTyped()"/>
-            <button class="btn primary" onclick="sendTyped()">Send</button>
+          <!-- in-call controls (phone style) -->
+          <div class="callbar" id="callbar" style="display:none">
+            <button class="endcall" onclick="resetDemo()" title="End call">📵</button>
           </div>
+          <div class="mic-note" id="micnote" style="display:none">🎙 Speak naturally — just like a real phone call.</div>
         </div>
       </div>
 
       <!-- right: transcript + lead -->
       <div class="panel">
-        <h3>Live transcript</h3>
+        <h3>Live call captions</h3>
         <div class="transcript" id="transcript">
-          <div class="empty" id="empty">The conversation will appear here in real time…</div>
+          <div class="empty" id="empty">The call captions will appear here in real time…</div>
         </div>
         <div class="lead" id="lead">
           <h4>✅ Lead captured &amp; texted to the owner</h4>
@@ -247,7 +257,7 @@
         <button class="btn primary" onclick="exportConfig()">⬇ Export this client's Vapi config</button>
         <button class="btn ghost" onclick="copyOnboarding()">📋 Copy client setup steps</button>
       </div>
-      <div class="hint">Tip for the summit: pick the prospect's industry, type their real business name, hit <em>“Auto demo”</em> — it answers as <em>their</em> receptionist. Then hit <em>“Export”</em> to walk away with a deployable file for them. Live mic mode works best in Chrome.</div>
+      <div class="hint">Tip for the summit: pick the prospect's industry, type their real business name, then hit <em>“📞 Call it now”</em> and actually talk to it like a phone call (Chrome/Edge), or <em>“▶ Play sample call”</em> on any device. Hit <em>“Export”</em> to walk away with a deployable file for them.</div>
     </div>
   </div>
 
@@ -560,14 +570,14 @@ function applyScenario(){
 /* ---------- AUTO DEMO (summit-safe scripted call) ---------- */
 async function startAuto(){
   if(running) return; resetDemo(); running=true;
-  $('autoBtn').textContent='● In call…';
+  showCallUI(true,false);
   document.getElementById('demo').scrollIntoView({behavior:'smooth',block:'center'});
   const c = cfg();
   const s = currentScenario();
   const lead = { name:s.lead.name, phone:s.lead.phone, reason:'', time:'', urgent:false };
 
   // incoming-call intro — makes it feel like a real ringing phone
-  setOrb('listening','📞 Incoming call from '+s.lead.phone+'…');
+  setOrb('ringing','📞 Incoming call from '+s.lead.phone+'…');
   await wait(1400);
   if(!running) return;
   setOrb('','📞 Answering…'); await wait(550);
@@ -585,7 +595,7 @@ async function startAuto(){
     await wait(250);
     if(t.done){ fireLead(lead,c); }
   }
-  running=false; $('autoBtn').textContent='▶ Auto demo';
+  running=false; showCallUI(false,false); $('autoBtn').textContent='▶ Play sample call';
   const dur = Math.floor((Date.now()-timerStart)/1000);
   stopTimer(false);
   $('callmeta').textContent = `Call ended · ${String(Math.floor(dur/60)).padStart(2,'0')}:${String(dur%60).padStart(2,'0')}`;
@@ -727,31 +737,33 @@ function knowledge(){
     hours:s.hours, services:s.services, pricing:s.pricing
   };
 }
+function showCallUI(on, mic){
+  $('precall').style.display = on ? 'none' : 'flex';
+  $('callbar').style.display = on ? 'flex' : 'none';
+  $('micnote').style.display = (on && mic && SR) ? 'block' : 'none';
+}
 function toggleTalk(){
-  if(!SR){ alert("Live mic needs Chrome or Edge. You can still TYPE to it here, and ▶ Auto demo works on any device."); }
   if(listening){ stopTalk(); return; }
+  if(!SR){ alert("Live calling needs Chrome or Edge (for the microphone). On this device, tap ▶ Play sample call — it runs a full call with no mic needed."); return; }
   resetDemo(); listening=true;
   listenState = { have:{name:'',phone:'',reason:'',time:''}, asked:null, booking:false, pendingOffer:false, closed:false, turns:0 };
-  $('talkBtn').textContent='■ Stop';
-  $('typebar').style.display='flex';
-  if(SR){ recog = new SR(); recog.lang='en-GB'; recog.interimResults=false; recog.continuous=false; }
+  showCallUI(true,true);
+  recog = new SR(); recog.lang='en-GB'; recog.interimResults=false; recog.continuous=false;
   beginLive();
 }
 async function beginLive(){
-  const c=cfg(); startTimer();
+  const c=cfg();
+  setOrb('ringing','📞 Connecting…'); await wait(700);
+  startTimer();
   await aiSay(`Hi, thanks for calling ${c.name}, how can I help you today?`);
   listenOnce();
 }
 function listenOnce(){
-  if(!listening || !recog) { if(listening) setOrb('','Type your reply below ↓'); return; }
-  setOrb('listening','Listening… speak now');
+  if(!listening || !recog) return;
+  setOrb('listening','🎙 Listening… go ahead');
   try{ recog.start(); }catch(e){}
-  recog.onresult = e=>{ const said = e.results[0][0].transcript; addMsg('user',said); handleLive(said,false); };
-  recog.onerror = ()=> { if(listening){ setOrb('','Didn\'t catch that — type it below or try again'); } };
-}
-async function sendTyped(){
-  const v=$('typeInput').value.trim(); if(!v) return;
-  $('typeInput').value=''; addMsg('user',v); handleLive(v,true);
+  recog.onresult = e=>{ const said = e.results[0][0].transcript; addMsg('user',said); handleLive(said); };
+  recog.onerror = ()=> { if(listening){ setOrb('listening','🎙 Go ahead…'); setTimeout(()=>{ if(listening) listenOnce(); }, 400); } };
 }
 
 /* ---- intent detection over the caller's words ---- */
@@ -823,11 +835,12 @@ async function handleLive(text, typed){
   }
 
   // --- explicit handoffs ---
-  if(intent==='human' || intent==='reschedule'){
+  if(intent==='human'){ return transferToHuman(k); }
+  if(intent==='reschedule'){
     st.booking=true;
-    if(!st.have.reason) st.have.reason = intent==='reschedule' ? 'Reschedule appointment' : 'Requested a callback';
-    await aiSay(intent==='reschedule' ? `No problem, I can sort that for you.` : `Of course — I'll get someone to call you straight back.`);
-    return continueBooking(st,k,typed);
+    if(!st.have.reason) st.have.reason = 'Reschedule appointment';
+    await aiSay(`No problem, I can sort that for you.`);
+    return continueBooking(st,k);
   }
 
   // --- answer to a pending "would you like to book?" offer ---
@@ -943,22 +956,36 @@ async function askClaude(question, k, key){
   return (data.content && data.content[0] && data.content[0].text || '').trim();
 }
 
-async function flow(line, typed){
+async function flow(line){
   await aiSay(line);
-  if(listening){ if(!typed && recog) listenOnce(); else setOrb('','Type your next reply below ↓'); }
+  if(listening) listenOnce();
 }
 function cleanName(s){ return s.replace(/^(it'?s|i'?m|my name is|this is|i am|yeah it'?s)\s+/i,'').replace(/[.,!]$/,'').trim().split(/\s+/).slice(0,2).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
 async function aiSay(t){ addMsg('ai',t); await speak(t); }
-function stopTalk(){ listening=false; try{recog&&recog.stop();}catch(e){} $('talkBtn').textContent='🎙 Talk to it'; $('backup-badge').style.display='none'; if($('callmeta')&&!running) setOrb('','Call ended'); }
+function stopTalk(){ listening=false; try{recog&&recog.stop();}catch(e){} $('backup-badge').style.display='none'; showCallUI(false,false); $('callBtn').textContent='📞 Call it now'; if($('callmeta')&&!running) setOrb('','Call ended'); }
+
+/* ---- transfer the caller to a human ---- */
+async function transferToHuman(k){
+  if(listenState && (listenState.have.name || listenState.have.phone)) fireLead(normLead(listenState.have,k), k);
+  await aiSay(`Of course — let me put you straight through to the team now. Bear with me one moment.`);
+  setOrb('transfer','📞 Transferring you to the team…');
+  addMsg('ai','📞 Transferring the call…');
+  await wait(2000);
+  addMsg('ai',"✅ Connected — putting you through to a team member now.");
+  setOrb('','Call transferred to a human ✅');
+  stopTimer(false);
+  listening=false; try{recog&&recog.stop();}catch(e){}
+  showCallUI(false,false); $('callBtn').textContent='📞 Call it now';
+}
 
 /* ---------- reset ---------- */
 function resetDemo(){
   running=false; stopTalk(); stopTimer(true);
   if(window.speechSynthesis) speechSynthesis.cancel();
-  transcript.innerHTML='<div class="empty" id="empty">The conversation will appear here in real time…</div>';
+  transcript.innerHTML='<div class="empty" id="empty">The call captions will appear here in real time…</div>';
   $('lead').classList.remove('show');
-  $('typebar').style.display='none';
-  $('autoBtn').textContent='▶ Auto demo';
+  showCallUI(false,false);
+  $('autoBtn').textContent='▶ Play sample call';
   setOrb('','Ready when you are.');
 }
 function book(){ document.getElementById('book').scrollIntoView({behavior:'smooth'}); }

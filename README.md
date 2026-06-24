@@ -35,8 +35,8 @@ A 24/7 AI receptionist you can sell to tradespeople and clinics. It answers ever
 
 **Offline (most reliable for the summit):** download `index.html` and open it in **Chrome**. No internet needed. The voice is generated on your device.
 
-- **Auto demo** — fully scripted, voiced, works on any device. Can't fail. Lead with this on stage.
-- **Talk to it** — live microphone (Chrome/Edge). Let prospects actually talk to it.
+- **Play sample call** — fully scripted, voiced, works on any device. Can't fail. Lead with this on stage.
+- **📞 Call it now** — live microphone (Chrome/Edge). Let prospects actually talk to it.
 - **Demo settings** — rebrand the receptionist to any business name on the spot.
 
 *(Optional) want a public link to pull up on your phone at the summit? Ask and we can deploy `index.html` to GitHub Pages so it's live at a URL.*
