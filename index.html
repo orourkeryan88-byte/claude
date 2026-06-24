@@ -740,6 +740,10 @@ function detect(t){
   if(has('emergency','urgent','leak','flood','no heat','no water','no power','asap','straight away','right now','out of hours','burst')) return 'emergency';
   if(has('how much','price','cost','charge','rate','fee','quote')) return 'price';
   if(has('open','hours','close','what time','when are you','today open','sunday','weekend')) return 'hours';
+  if(has('pay','card','cash','apple pay','revolut','deposit','bank transfer','contactless')) return 'payment';
+  if(has('guarantee','warranty','insured','insurance','qualified','registered','certified','rgi','reviews')) return 'guarantee';
+  if(has('how long','take long','how soon','when can you','timeframe','time frame','lead time','wait')) return 'duration';
+  if(has('do you cover','come to','do you service','do you serve','are you near','do you travel','cover ')) return 'coverage';
   if(has(' where','located','address','location','find you','parking',' park ')) return 'location';
   if(has('what do you','services','do you do','do you offer','can you do','treat')) return 'services';
   if(has('book','appointment','schedule','come out','call out','fix','sort','get someone','visit','see me','slot')) return 'book';
@@ -756,6 +760,10 @@ function answerFor(intent,k){
     case 'location': return `We're based in ${k.area}. I can text you the exact address when I book you in — shall I do that?`;
     case 'services': return `We do ${stripDot(k.services)}. What is it you're after?`;
     case 'emergency': return `Absolutely, we treat that as a priority — let me take your details and get someone to you fast. Can I take your name?`;
+    case 'payment': return `We take card, cash and bank transfer, and you'll always get a clear price before anything goes ahead. Would you like me to book you in?`;
+    case 'guarantee': return `Of course — the team are fully qualified and insured, and the work is guaranteed. Shall I get you booked in?`;
+    case 'duration': return `It depends a little on the job, but the team will give you a clear timeframe once they take a look. We can usually get to you very quickly — would you like me to arrange that?`;
+    case 'coverage': return `Yes, we cover ${k.area} and the surrounding areas. Whereabouts are you, and would you like me to book you in?`;
     default: return null;
   }
 }
