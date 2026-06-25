@@ -12,6 +12,7 @@ A 24/7 AI receptionist you can sell to tradespeople and clinics. It answers ever
 |---|---|---|
 | **`index.html`** | A live, offline-capable voice demo. Open it in a browser. | **Sell it** at the summit — it talks, listens and captures a lead live. |
 | **`dashboard/index.html`** | A HubSpot-style CRM: tracks every call, the problem, who to call back, status pipeline. Works offline (sample data) or syncs live from the webhook. | **Manage leads** — the place clients work their callbacks. |
+| **`GO-LIVE.md`** | The one ordered checklist: repo → live, sellable receptionist (~1 hr). | **Ship it** — start here. |
 | **`SETUP-GUIDE.md`** | Plain-English setup, start to finish. | **Run it** — get a client live in ~10 min. |
 | **`CLIENT-ONBOARDING.md`** | One-pager to send the customer. | **Export it** — what the client does (call forwarding). |
 | **`PHONE-SETUP.md`** | How to give the receptionist a number and link the client's number to it. | **Connect the phone** — buy/assign a number, forwarding, porting. |
