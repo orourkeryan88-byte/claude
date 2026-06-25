@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Southline AI Receptionist — Never miss a call again</title>
 <meta name="description" content="A 24/7 AI receptionist that answers every call, books appointments and captures every lead. Built by Southline." />
+<meta property="og:title" content="Southline AI Receptionist" />
+<meta property="og:description" content="Answers every call 24/7, books appointments, texts you every lead — for a tenth of the cost." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233b82f6'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%23041222' font-family='Arial' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" />
 <style>
   :root{
     --bg:#070b14; --bg2:#0d1424; --card:#111a2e; --line:#1e2a44;
@@ -76,6 +79,9 @@
   .endcall:hover{background:#dc2626;transform:scale(1.05)}
   .endcall:active{transform:scale(.96)}
   .mic-note{font-size:12.5px;color:#8da2c7;margin-top:10px;text-align:center}
+  .trysay{margin-top:14px;display:flex;flex-wrap:wrap;gap:7px;justify-content:center;align-items:center;max-width:430px}
+  .trysay-lbl{font-size:12px;color:#64779c;font-weight:700;width:100%;text-align:center;margin-bottom:2px}
+  .say-chip{font-size:12px;color:#cfe0ff;background:rgba(59,130,246,.10);border:1px solid rgba(59,130,246,.28);padding:6px 11px;border-radius:999px}
   .orb.ringing{animation:ring 1s ease-in-out infinite}
   @keyframes ring{0%,100%{box-shadow:0 0 0 6px rgba(34,211,238,.10),0 0 40px rgba(34,211,238,.25)}50%{box-shadow:0 0 0 16px rgba(34,211,238,.04),0 0 60px rgba(34,211,238,.4)}}
   .orb.transfer{animation:ring 1s ease-in-out infinite}
@@ -200,6 +206,13 @@
             <button class="btn primary" id="callBtn" onclick="toggleTalk()">📞 Call it now</button>
             <button class="btn ghost" id="autoBtn" onclick="startAuto()">▶ Play sample call</button>
           </div>
+          <div class="trysay" id="trysay">
+            <span class="trysay-lbl">On the call, try:</span>
+            <span class="say-chip">"How much is a check-up?"</span>
+            <span class="say-chip">"Book me in tomorrow at 10"</span>
+            <span class="say-chip">"I need to cancel"</span>
+            <span class="say-chip">"Can I speak to someone?"</span>
+          </div>
           <!-- in-call controls (phone style) -->
           <div class="callbar" id="callbar" style="display:none">
             <button class="endcall" onclick="resetDemo()" title="End call">📵</button>
@@ -267,12 +280,12 @@
     <h2>A receptionist that never sleeps, never calls in sick</h2>
     <p class="lead-sub">Most tradespeople and clinics lose money the second a call goes to voicemail. This fixes that.</p>
     <div class="cards">
-      <div class="feature"><div class="ic">📞</div><h4>Answers every call</h4><p>Picks up on the first ring, 24/7. No more missed calls, no more lost jobs going to the competitor.</p></div>
-      <div class="feature"><div class="ic">📅</div><h4>Books appointments</h4><p>Takes the job details, offers time slots and books straight into the calendar while you're on the tools.</p></div>
-      <div class="feature"><div class="ic">💬</div><h4>Texts you the lead</h4><p>Every caller's name, number and reason lands in your phone instantly — flagged urgent when it matters.</p></div>
-      <div class="feature"><div class="ic">🗣️</div><h4>Sounds human</h4><p>Natural voice, understands accents, handles interruptions. Callers often don't realise it's AI.</p></div>
-      <div class="feature"><div class="ic">🏷️</div><h4>Branded to you</h4><p>Greets with your business name, knows your hours, services and pricing. Feels like your own staff.</p></div>
-      <div class="feature"><div class="ic">📈</div><h4>Cheaper than hiring</h4><p>A fraction of a €30k/yr receptionist salary — and it handles unlimited calls at once.</p></div>
+      <div class="feature"><div class="ic">📞</div><h4>Answers every call, 24/7</h4><p>Picks up on the first ring — day, night, weekends. No more missed calls, no more jobs lost to the competitor.</p></div>
+      <div class="feature"><div class="ic">📅</div><h4>Books into your calendar</h4><p>Checks real availability — "tomorrow at 10?" If it's taken it offers 11 and asks for another time, then books it in.</p></div>
+      <div class="feature"><div class="ic">💬</div><h4>Texts you every lead</h4><p>Name, number and reason land in your phone instantly, flagged urgent when it matters — then logged to your CRM.</p></div>
+      <div class="feature"><div class="ic">🔁</div><h4>Reschedules, cancels, messages</h4><p>Handles changes, takes detailed messages, manages complaints calmly — a full front desk, not just an answerphone.</p></div>
+      <div class="feature"><div class="ic">🆘</div><h4>Knows when to transfer</h4><p>Spots emergencies and "I'd like a person" and puts the caller straight through to you — never drops the ball.</p></div>
+      <div class="feature"><div class="ic">📈</div><h4>A tenth of the cost</h4><p>A fraction of a €25–30k/yr receptionist — branded to your business, handling unlimited calls at once.</p></div>
     </div>
   </section>
 
@@ -363,6 +376,7 @@
   <div class="big">Southline</div>
   Websites · Digital marketing · AI receptionists for tradespeople &amp; clinics<br>
   085 174 0783 · agencysouthline@gmail.com
+  <div style="margin-top:12px"><a href="dashboard/" style="color:var(--brand2);font-weight:700">Open the CRM dashboard →</a></div>
   <div class="hint" style="margin-top:14px">This page is a live, offline-capable demo. The voice you hear is generated on-device — no calls are placed and no data leaves your browser.</div>
 </footer>
 
@@ -741,6 +755,7 @@ function showCallUI(on, mic){
   $('precall').style.display = on ? 'none' : 'flex';
   $('callbar').style.display = on ? 'flex' : 'none';
   $('micnote').style.display = (on && mic && SR) ? 'block' : 'none';
+  const ts = $('trysay'); if(ts) ts.style.display = on ? 'none' : 'flex';
 }
 function toggleTalk(){
   if(listening){ stopTalk(); return; }
