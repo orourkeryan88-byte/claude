@@ -1,0 +1,49 @@
+{
+  "_comment": "Booking payload the in-call receptionist workflow EMITS to the downstream booking workflow. Exact shape provided by the booking workflow. The receptionist fills every field during the call, sets status='pending', and submits. The booking workflow validates availability, assigns booking_reference, and returns status='confirmed'.",
+  "_field_sources": {
+    "intent": "always 'new_booking' for this path",
+    "customer.name": "Step: Understand — caller's name",
+    "customer.phone": "Step: Understand — read back to confirm",
+    "customer.email": "Step: Understand — optional, for the confirmation",
+    "service": "Step: Identify — what they want done (from {{services}})",
+    "appointment_type": "Step: Qualify — e.g. new patient / returning, consult / treatment, in-person / video",
+    "provider": "Step: Qualify — specific staff member if requested, else 'any'",
+    "date": "Step: Act — chosen slot date (YYYY-MM-DD) from check_availability",
+    "time": "Step: Act — chosen slot time (HH:mm, 24h) from check_availability",
+    "location": "Step: Qualify — branch/clinic if multi-site, else the main {{area}} location",
+    "special_requests": "Step: Qualify — accessibility, preferences, notes",
+    "qualification_answers": "Step: Qualify — answers to screening questions (see qualification_questions)",
+    "booking_reference": "Filled by the BOOKING workflow on confirm (leave empty when submitting)",
+    "status": "'pending' on submit -> 'confirmed' (or 'waitlist'/'declined') after the booking workflow runs"
+  },
+
+  "payload_template": {
+    "intent": "new_booking",
+    "customer": { "name": "", "phone": "", "email": "" },
+    "service": "",
+    "appointment_type": "",
+    "provider": "",
+    "date": "",
+    "time": "",
+    "location": "",
+    "special_requests": "",
+    "qualification_answers": {},
+    "booking_reference": "",
+    "status": "pending"
+  },
+
+  "example_filled": {
+    "intent": "new_booking",
+    "customer": { "name": "Sarah Byrne", "phone": "087 555 0192", "email": "sarah@example.com" },
+    "service": "Check-up & clean",
+    "appointment_type": "New patient",
+    "provider": "any",
+    "date": "2026-06-30",
+    "time": "10:00",
+    "location": "Ballsbridge clinic",
+    "special_requests": "Wheelchair access needed",
+    "qualification_answers": { "new_or_returning": "new", "insurance": "VHI", "reason": "routine" },
+    "booking_reference": "",
+    "status": "pending"
+  }
+}

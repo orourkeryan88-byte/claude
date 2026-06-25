@@ -1,0 +1,209 @@
+{
+  "name": "Southline AI Receptionist — In-Call Workflow",
+  "version": "1.0",
+  "description": "The receptionist's call brain as a state machine: greet -> identify -> understand -> act -> confirm -> close. Engine-agnostic; maps onto Vapi assistant tools. Emits a 'handoff' payload at the end that connects to the post-call automation.",
+
+  "variables": ["business_name", "business_type", "area", "opening_hours", "services", "pricing", "faq", "owner_phone", "locations", "providers", "booking_workflow_url"],
+
+  "qualification_questions": {
+    "_comment": "Per-business screening questions asked in the 'qualify' step; answers go into booking-payload.qualification_answers. Edit per client.",
+    "default": [
+      { "key": "new_or_returning", "ask": "Have you been in with us before, or is this your first visit?" },
+      { "key": "reason", "ask": "And what's the appointment for?" }
+    ],
+    "examples": {
+      "dental": [
+        { "key": "new_or_returning", "ask": "Are you a new or returning patient?" },
+        { "key": "insurance", "ask": "Do you have dental insurance we should note?" }
+      ],
+      "trades": [
+        { "key": "property_type", "ask": "Is it a house or an apartment?" },
+        { "key": "access", "ask": "Will someone be home to let us in?" }
+      ]
+    }
+  },
+
+  "tools": {
+    "check_availability": "Get real open appointment slots from Google Calendar.",
+    "book_appointment": "Book a chosen slot into Google Calendar.",
+    "submit_booking": "Send the completed booking payload (booking-payload.json shape, status='pending') to the downstream BOOKING workflow, which assigns a booking_reference and returns status='confirmed'.",
+    "manage_appointment": "Reschedule or cancel an existing appointment (action: reschedule|cancel).",
+    "log_lead": "Save a lead / message / complaint and notify the owner (type: lead|message|complaint|reschedule|cancel).",
+    "transferCall": "Transfer the live call to a human (owner_phone or a department)."
+  },
+
+  "global_rules": [
+    "Never invent information — only answer from the provided business knowledge.",
+    "Ask one question at a time; keep replies under ~30 words (it's a phone call).",
+    "Confirm critical details (phone number, email, appointment time) by reading them back.",
+    "Collect missing info before taking an action.",
+    "Escalate when confidence is low or the caller asks for a person.",
+    "Always summarize what you did before closing.",
+    "Never say you are an AI unless asked; if asked, be honest and friendly."
+  ],
+
+  "entry": "greeting",
+
+  "states": {
+    "greeting": {
+      "say": "Hello, thanks for calling {{business_name}}. How can I help you today?",
+      "next": "identify_intent"
+    },
+
+    "identify_intent": {
+      "goal": "Classify the caller's reason into one intent. If unclear, ask: 'Could you tell me a little more about what you need?'",
+      "intents": {
+        "new_appointment": "qualify",
+        "reschedule": "manage_appointment",
+        "cancel": "manage_appointment",
+        "general_inquiry": "answer_faq",
+        "pricing": "answer_faq",
+        "support": "answer_faq",
+        "complaint": "handle_complaint",
+        "billing": "answer_faq",
+        "sales": "capture_lead",
+        "emergency": "emergency",
+        "message": "take_message",
+        "speak_to_human": "escalate",
+        "other": "answer_faq"
+      }
+    },
+
+    "qualify": {
+      "goal": "Qualify the booking so the downstream workflow has everything it needs.",
+      "collect": ["service", "appointment_type", "provider", "location", "special_requests", "qualification_answers"],
+      "steps": [
+        "Confirm the service they want (from {{services}}).",
+        "Ask the appointment_type (e.g. new vs returning, consult vs treatment, in-person vs video).",
+        "Ask the qualification questions for this business (see qualification_questions) and store answers.",
+        "If multi-site, ask which location; otherwise default to the main {{area}} location.",
+        "Ask if there are any special requests (access needs, preferences).",
+        "If a specific provider/staff member is requested, capture it; else 'any'."
+      ],
+      "next": "book_appointment"
+    },
+
+    "book_appointment": {
+      "goal": "Pick a real time, take contact details, and submit the booking payload.",
+      "collect": ["date", "time", "name", "phone", "email"],
+      "steps": [
+        "Call check_availability and read out 2-3 slots in plain language.",
+        "When they pick one, set date + time from that slot.",
+        "Take name + phone (read the phone back) and optionally email for the confirmation.",
+        "Build the booking-payload.json object (status='pending') and call submit_booking.",
+        "Read back the booking_reference the workflow returns."
+      ],
+      "on_unavailable": "Offer the next alternatives from check_availability.",
+      "emits": "booking-payload.json (status pending -> confirmed)",
+      "next": "confirm_close"
+    },
+
+    "manage_appointment": {
+      "goal": "Reschedule or cancel an existing appointment.",
+      "verify_identity": ["name", "phone"],
+      "collect": ["existing_appointment", "new_time_if_reschedule"],
+      "steps": [
+        "Verify who they are (name + phone on file).",
+        "For reschedule: call check_availability, offer slots, then manage_appointment(action=reschedule).",
+        "For cancel: confirm clearly before calling manage_appointment(action=cancel)."
+      ],
+      "next": "confirm_close"
+    },
+
+    "answer_faq": {
+      "goal": "Answer questions from approved business knowledge ({{opening_hours}}, {{services}}, {{pricing}}, {{faq}}).",
+      "on_unknown": "Say: 'I don't want to give you inaccurate information — let me have the team confirm that.' Then go to take_message.",
+      "after_answer": "Ask if they'd like to book in. If yes -> book_appointment. If nothing else -> confirm_close.",
+      "next": "confirm_close"
+    },
+
+    "capture_lead": {
+      "goal": "Capture a sales / new-business enquiry.",
+      "collect": ["name", "phone", "reason"],
+      "action": "log_lead(type=lead)",
+      "next": "confirm_close"
+    },
+
+    "take_message": {
+      "goal": "Take a detailed message for a person/department.",
+      "collect": ["name", "phone", "recipient", "message", "urgency"],
+      "confirm": "Read the message back before submitting.",
+      "action": "log_lead(type=message)",
+      "next": "confirm_close"
+    },
+
+    "handle_complaint": {
+      "goal": "Handle a complaint calmly.",
+      "steps": [
+        "Acknowledge the concern empathetically.",
+        "Gather the facts (what happened, when).",
+        "Summarize the issue back to them.",
+        "Offer the next step (callback / escalation).",
+        "Call log_lead(type=complaint, urgency=urgent) and escalate if unresolved."
+      ],
+      "escalate_if": "Caller remains dissatisfied or asks for a manager.",
+      "next": "confirm_close"
+    },
+
+    "emergency": {
+      "goal": "Detect and route emergencies immediately.",
+      "triggers": ["safety concern", "medical emergency", "security incident", "threat", "urgent operational failure", "leak/flood/no heat/no power"],
+      "say": "This needs immediate attention — I'm putting you through to the team right now.",
+      "action": "log_lead(type=lead, urgency=urgent) then transferCall",
+      "terminal": true
+    },
+
+    "escalate": {
+      "goal": "Transfer to a human.",
+      "say": "Of course — let me put you straight through to the team now. One moment.",
+      "action": "log_lead(type=lead) then transferCall",
+      "terminal": true
+    },
+
+    "confirm_close": {
+      "goal": "Summarize, confirm next steps, thank, and end.",
+      "steps": [
+        "Summarize the action taken (e.g. 'You're booked for Tuesday at 2pm').",
+        "Confirm what happens next (e.g. 'You'll get a text confirmation shortly').",
+        "Ask 'Anything else I can help with?' — if yes, return to identify_intent.",
+        "Thank them and close warmly."
+      ],
+      "emit": "handoff",
+      "terminal": true
+    }
+  },
+
+  "escalation_rules": [
+    "Customer requests a manager or a person.",
+    "Required information is unavailable.",
+    "Legal issues arise.",
+    "Emergency situation detected.",
+    "Customer dissatisfied after reasonable assistance.",
+    "Financial authorization is required."
+  ],
+
+  "handoff": {
+    "_comment": "Emitted at the end of every call -> connects to the post-call automation (n8n). For new bookings, the 'book_appointment' step ALSO emits booking-payload.json via submit_booking to the downstream BOOKING workflow (booking_workflow_url), which returns a booking_reference and status='confirmed'. Two connection points, one set of gathered data.",
+    "connects_to": {
+      "post_call_automation": "n8n-receptionist-postcall.json (Parse node reads these fields)",
+      "booking_workflow": "receives booking-payload.json at booking_workflow_url"
+    },
+    "schema": {
+      "business": "string",
+      "intent": "new_appointment|reschedule|cancel|general_inquiry|pricing|support|complaint|billing|sales|emergency|message|other",
+      "name": "string",
+      "phone": "string",
+      "email": "string|null",
+      "company": "string|null",
+      "reason": "string",
+      "urgency": "normal|urgent",
+      "action_taken": "booked|rescheduled|cancelled|message_taken|answered|escalated|none",
+      "booked": "boolean",
+      "startISO": "string|null",
+      "recipient": "string|null",
+      "message": "string|null",
+      "escalated": "boolean",
+      "receivedAt": "ISO-8601"
+    }
+  }
+}

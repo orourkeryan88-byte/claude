@@ -49,6 +49,7 @@ function buildAssistant(c) {
     "{{WEBHOOK_URL}}": c.webhookUrl,
     "{{AVAILABILITY_URL}}": base + "/availability",
     "{{BOOK_URL}}": base + "/book",
+    "{{BOOKING_WORKFLOW_URL}}": c.bookingWorkflowUrl || base + "/submit-booking",
     "{{TRANSFER_NUMBER}}": c.transferNumber || c.ownerPhone,
   };
   for (const [k, v] of Object.entries(replacements)) {
