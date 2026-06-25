@@ -814,6 +814,22 @@ async function handleLive(text, typed){
   const negative = /\b(no thanks|no thank you|not now|nothing else|that'?s all|nope|nah)\b/i.test(text);
   const phoneMatch = text.match(/\+?\d[\d\s]{5,}\d/);
 
+  // --- when we asked for a time, "check the calendar" against taken slots ---
+  if(st.asked==='time'){
+    const pt = parseProposedTime(text);
+    const noPref = /\b(no|whenever|any\s?time|anytime|you (pick|choose|decide)|don'?t mind|whatever|first available|soonest)\b/i.test(text);
+    if(pt && DEMO_TAKEN.some(s=>s.hour===pt.hour && s.minute===pt.minute)){
+      // simulated clash -> offer the next slot that morning and ask for another time
+      const hr=((pt.hour%12)||12), next=`${hr+1}${pt.hour<12?'am':'pm'}`;
+      await flow(`Ah, I'm afraid ${pt.label||'that time'} is already booked. I do have ${next} that same morning — would that suit, or is there another time that works for you?`);
+      return; // stay on the time step
+    }
+    if(pt) st.have.time = pt.label;
+    else if(noPref){ const s=demoSlots(); st.have.time = s[0].label; }
+    else st.have.time = text;
+    st.asked = '_timed'; // mark handled so the capture chain below doesn't overwrite
+  }
+
   // --- capture details based on what we just asked for ---
   const looksLikeNumberOnly = phoneMatch && !/[a-z]{2,}/i.test(text);
   if(st.asked==='name'){
@@ -821,7 +837,6 @@ async function handleLive(text, typed){
     else st.have.name = cleanName(text);
   }
   else if(st.asked==='phone' && phoneMatch) st.have.phone = phoneMatch[0].trim();
-  else if(st.asked==='time') st.have.time = text;
   else if(st.asked==='reason') st.have.reason = text;
   // caller volunteers a number at any point
   if(!st.have.phone && phoneMatch && st.asked!=='name') st.have.phone = phoneMatch[0].trim();
@@ -917,12 +932,31 @@ function nextAsk(st,k){
   if(!st.have.name)   return {key:'name',   line:`Can I take your name?`};
   if(!st.have.phone)  return {key:'phone',  line:`Thanks${st.have.name?' '+st.have.name:''}. And the best phone number to reach you on?`};
   if(!st.have.time){
-    if(!st.slots) st.slots = demoSlots();
-    const opts = st.slots.map(s=>s.label).join(', or ');
-    return {key:'time', line:`Let me check the calendar… I've ${opts} — which suits you best?`};
+    return {key:'time', line:`Of course — did you have a particular day and time in mind?`};
   }
   return null;
 }
+/* parse a spoken time like "tomorrow at 10", "10am", "half two", "eleven" */
+function parseProposedTime(text){
+  const t = ' '+text.toLowerCase()+' ';
+  const words = {nine:9, ten:10, eleven:11, twelve:12, one:13, two:14, three:15, four:16, five:17};
+  let h=null, mi=0, mer='';
+  let m = t.match(/\b(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm|o'?clock)?/);
+  if(m){ h=parseInt(m[1],10); mi=m[2]?parseInt(m[2],10):0; mer=m[3]||''; }
+  else {
+    const half = /half\s+(nine|ten|eleven|twelve|one|two|three|four|five)/.exec(t);
+    if(half){ h=words[half[1]]; mi=30; }
+    else { for(const w in words){ if(t.includes(' '+w+' ')){ h=words[w]; break; } } }
+  }
+  if(h===null) return null;
+  if(/pm/.test(mer) && h<12) h+=12;
+  if(/am/.test(mer) && h===12) h=0;
+  const day = /tomorrow/.test(t)?'tomorrow':/today/.test(t)?'today':((/(monday|tuesday|wednesday|thursday|friday)/.exec(t)||[])[0]||'');
+  const hr12=((h%12)||12), ampm=h<12?'am':'pm';
+  const label = `${day?day+' at ':''}${hr12}${mi?(':'+String(mi).padStart(2,'0')):''}${ampm}`;
+  return { hour:h, minute:mi, label, novalue:false };
+}
+const DEMO_TAKEN = [{hour:10, minute:0}]; // simulate: 10:00 is already booked
 function normLead(h,k){
   return { name:h.name||'Caller', phone:h.phone||'(not given)', reason:h.reason||'General enquiry',
            time:h.time||'To be confirmed', urgent: !!h.urgent || /leak|flood|emergency|urgent|no heat|no water|no power|complaint/i.test(h.reason||'') };
