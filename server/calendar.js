@@ -153,10 +153,29 @@ async function checkRequested({ datetime, date, time }) {
     return { configured: configured(), requested: reqSlot, slots: [reqSlot],
              result: `Yes, ${reqSlot.label} is free — shall I book that in?` };
   }
-  const alts = (await freeSlots(3)).slots;
-  const why = !future ? "that time has passed" : !inHours ? "we're closed then" : "that slot is taken";
-  return { configured: configured(), requested: reqSlot, slots: alts,
-           result: `Sorry, ${why}. The nearest I have is ${alts.map((s) => s.label).join(", or ")}.` };
+  const alts = await nearbyAlternatives(instant, 3);
+  const why = !future ? "that time has passed" : !inHours ? "we're closed then" : "that one's already taken";
+  const list = alts.map((s) => s.label).join(", or ");
+  const result = alts.length
+    ? `Sorry, ${why}. The nearest I have is ${list} — would any of those suit, or is there another time that works for you?`
+    : `Sorry, ${why}, and I don't have much that day. Is there another day or time that suits you?`;
+  return { configured: configured(), requested: reqSlot, slots: alts, result };
+}
+
+// Free slots ranked by closeness to the requested time: same day AFTER the
+// requested time first (e.g. 11:00 when 10:00 is taken), then earlier the same
+// day, then following days.
+async function nearbyAlternatives(instant, limit = 3) {
+  const all = (await freeSlots(40)).slots;
+  const r = parts(instant, TZ);
+  const sameDay = (s) => { const p = parts(s.start, TZ); return p.y === r.y && p.mo === r.mo && p.d === r.d; };
+  const afterSame = all.filter((s) => sameDay(s) && s.start > instant);              // 11:00 after 10:00
+  const beforeSame = all.filter((s) => sameDay(s) && s.start < instant).reverse();   // closest earlier first
+  const otherDays = all.filter((s) => !sameDay(s));
+  const ranked = [...afterSame, ...beforeSame, ...otherDays];
+  const seen = new Set(); const out = [];
+  for (const s of ranked) { if (!seen.has(s.id)) { seen.add(s.id); out.push(s); } if (out.length >= limit) break; }
+  return out;
 }
 
 async function book({ startISO, durationMins, name, phone, reason }) {
