@@ -19,6 +19,7 @@ A 24/7 AI receptionist you can sell to tradespeople and clinics. It answers ever
 | `vapi/assistant.example-joes-plumbing.json` | A finished example. | See what "done" looks like. |
 | `server/log-lead.js` | Lead webhook — texts the owner via Twilio. | Catch leads from calls. |
 | `server/calendar.js` | Google Calendar booking — `/availability` + `/book`. | Book real appointments (demo mode until connected). |
+| `automation/` | n8n post-call automation — CRM log, owner SMS, calendar, caller confirm, follow-up, daily summary. | Automate everything after a call. |
 | `scripts/provision-client.js` | One-command client provisioner. | Onboard a client fast. |
 
 ---
