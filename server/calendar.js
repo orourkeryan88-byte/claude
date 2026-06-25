@@ -109,6 +109,56 @@ async function freeSlots(limit = 6) {
   return { configured: true, slots: free.slice(0, limit) };
 }
 
+// Check whether a SPECIFIC requested time is free (e.g. "tomorrow at 10").
+// The AI resolves "tomorrow" to a date and passes date=YYYY-MM-DD, time=HH:mm
+// (or a full datetime/startISO). Returns availability + nearby alternatives.
+async function checkRequested({ datetime, date, time }) {
+  let instant;
+  if (datetime) {
+    instant = Date.parse(datetime);
+  } else if (date && time) {
+    const [y, mo, d] = date.split("-").map(Number);
+    const m = String(time).match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+    let h = m ? parseInt(m[1], 10) : 9;
+    const mi = m && m[2] ? parseInt(m[2], 10) : 0;
+    if (m && m[3]) { const pm = /pm/i.test(m[3]); if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; }
+    instant = wallToInstant(y, mo, d, h, mi, TZ);
+  }
+  if (!instant || isNaN(instant)) {
+    const fb = await freeSlots(4);
+    return { ...fb, requested: null, result: "I didn't catch an exact time — here are the next open slots." };
+  }
+
+  const p = parts(instant, TZ);
+  const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hour12: false }).format(new Date(instant)));
+  const inHours = hour >= OPEN_HOUR && hour < CLOSE_HOUR && p.wd !== "Sat" && p.wd !== "Sun";
+  const future = instant > Date.now();
+
+  let available;
+  if (!configured()) {
+    // demo: free if it's a future weekday business-hours slot
+    available = inHours && future;
+  } else {
+    const slotMs = SLOT_MINS * 60000;
+    const cal = getCalendar();
+    const fbq = await cal.freebusy.query({
+      requestBody: { timeMin: new Date(instant - slotMs).toISOString(), timeMax: new Date(instant + slotMs).toISOString(), timeZone: TZ, items: [{ id: CAL_ID }] },
+    });
+    const busy = (fbq.data.calendars[CAL_ID]?.busy || []).map((b) => [Date.parse(b.start), Date.parse(b.end)]);
+    available = inHours && future && !busy.some(([bs, be]) => instant < be && instant + slotMs > bs);
+  }
+
+  const reqSlot = { id: new Date(instant).toISOString(), start: instant, label: label(instant), available };
+  if (available) {
+    return { configured: configured(), requested: reqSlot, slots: [reqSlot],
+             result: `Yes, ${reqSlot.label} is free — shall I book that in?` };
+  }
+  const alts = (await freeSlots(3)).slots;
+  const why = !future ? "that time has passed" : !inHours ? "we're closed then" : "that slot is taken";
+  return { configured: configured(), requested: reqSlot, slots: alts,
+           result: `Sorry, ${why}. The nearest I have is ${alts.map((s) => s.label).join(", or ")}.` };
+}
+
 async function book({ startISO, durationMins, name, phone, reason }) {
   const start = Date.parse(startISO);
   if (!start) return { ok: false, error: "invalid start time" };
@@ -133,10 +183,25 @@ async function book({ startISO, durationMins, name, phone, reason }) {
 
 // Mount the routes onto an existing Express app.
 function mountCalendar(app) {
-  app.get("/availability", async (_req, res) => {
-    try { res.json(await freeSlots(6)); }
-    catch (e) { console.error("availability error", e.message); res.json({ configured: false, slots: candidateSlots(7, 6).slice(0, 6) }); }
-  });
+  // Works for browser GET and Vapi POST. If the caller proposed a specific
+  // date/time it checks that exact slot; otherwise it returns the next slots.
+  async function availability(req, res) {
+    try {
+      const a = req.body?.message?.functionCall?.parameters || req.body?.parameters || req.body || {};
+      const src = { ...req.query, ...a };
+      const datetime = src.datetime || src.startISO;
+      if (datetime || (src.date && src.time)) {
+        return res.json(await checkRequested({ datetime, date: src.date, time: src.time }));
+      }
+      const fb = await freeSlots(6);
+      res.json({ ...fb, result: `The next openings are ${fb.slots.slice(0, 3).map((s) => s.label).join(", or ")}.` });
+    } catch (e) {
+      console.error("availability error", e.message);
+      res.json({ configured: false, slots: candidateSlots(7, 6).slice(0, 6) });
+    }
+  }
+  app.get("/availability", availability);
+  app.post("/availability", availability);
   app.post("/book", async (req, res) => {
     try {
       const a = req.body?.message?.functionCall?.parameters || req.body?.parameters || req.body || {};
@@ -155,4 +220,4 @@ function mountCalendar(app) {
   console.log(`Calendar booking mounted (${configured() ? "Google Calendar LIVE" : "demo mode — set GOOGLE_* env to go live"})`);
 }
 
-module.exports = { mountCalendar, freeSlots, book, configured, _internals: { candidateSlots, wallToInstant, label } };
+module.exports = { mountCalendar, freeSlots, book, checkRequested, configured, _internals: { candidateSlots, wallToInstant, label } };
