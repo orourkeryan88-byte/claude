@@ -779,8 +779,11 @@ function detect(t){
   if(has('do you cover','come to','do you service','do you serve','are you near','do you travel','cover ')) return 'coverage';
   if(has(' where','located','address','location','find you','parking',' park ')) return 'location';
   if(has('what do you','services','do you do','do you offer','can you do','treat')) return 'services';
+  if(has('complaint','complain','not happy','unhappy','disappointed','terrible','awful','poor service','bad service','let down')) return 'complaint';
+  if(has('cancel')) return 'cancel';
+  if(has('reschedule','change my appointment','move my appointment','rearrange','change my booking')) return 'reschedule';
+  if(has('leave a message','take a message','pass on','pass a message','let them know','message for','tell him','tell her')) return 'message';
   if(has('book','appointment','schedule','come out','call out','fix','sort','get someone','visit','see me','slot')) return 'book';
-  if(has('cancel','reschedule','change my','move my')) return 'reschedule';
   if(has('human','real person','speak to','talk to someone','manager','owner','call me back')) return 'human';
   if(has('thank','thanks','that\'s all','that is all','nothing else','no that\'s it','bye','goodbye')) return 'bye';
   if(/\b\d[\d\s]{5,}\b/.test(t)) return 'gavephone';
@@ -834,8 +837,23 @@ async function handleLive(text, typed){
     stopTalk(); return;
   }
 
-  // --- explicit handoffs ---
+  // --- explicit handoffs (workflow branches) ---
   if(intent==='human'){ return transferToHuman(k); }
+  if(intent==='complaint'){
+    st.booking=true; st.have.reason = 'Complaint — ' + text; st.have.urgent=true;
+    await aiSay(`I'm really sorry to hear that — let me take your details and have a manager call you straight back.`);
+    return continueBooking(st,k);
+  }
+  if(intent==='cancel'){
+    st.booking=true; if(!st.have.reason) st.have.reason = 'Cancellation request';
+    await aiSay(`No problem, I can sort that. Let me take your name and number to confirm the cancellation.`);
+    return continueBooking(st,k);
+  }
+  if(intent==='message'){
+    st.booking=true; if(!st.have.reason) st.have.reason = 'Message for the team';
+    await aiSay(`Of course, I'll take a message for the team.`);
+    return continueBooking(st,k);
+  }
   if(intent==='reschedule'){
     st.booking=true;
     if(!st.have.reason) st.have.reason = 'Reschedule appointment';
@@ -907,7 +925,7 @@ function nextAsk(st,k){
 }
 function normLead(h,k){
   return { name:h.name||'Caller', phone:h.phone||'(not given)', reason:h.reason||'General enquiry',
-           time:h.time||'To be confirmed', urgent:/leak|flood|emergency|urgent|no heat|no water|no power/i.test(h.reason||'') };
+           time:h.time||'To be confirmed', urgent: !!h.urgent || /leak|flood|emergency|urgent|no heat|no water|no power|complaint/i.test(h.reason||'') };
 }
 
 /* ---- AI backup: real Claude if a key is provided, else graceful message ---- */
