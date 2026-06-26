@@ -18,6 +18,7 @@ A 24/7 AI receptionist you can sell to tradespeople and clinics. It answers ever
 | **`PHONE-SETUP.md`** | How to give the receptionist a number and link the client's number to it. | **Connect the phone** — buy/assign a number, forwarding, porting. |
 | **`CONNECT-GOOGLE-CALENDAR.md`** | 10-minute checklist to switch booking from simulated to real Google Calendar. | **Go live with bookings** — service account + share + env vars. |
 | **`CLIENT-PORTAL.md`** | Per-client login — each client logs into the CRM and sees only their own leads. | **Give clients access** — create accounts, scoped data. |
+| **`BILLING.md`** | Sign-up + subscription (€350 setup + €80/mo via Stripe) and auto-provisioning on payment. | **Charge & auto-onboard** — gate, Stripe, pipeline. |
 | `vapi/assistant.template.json` | The Vapi assistant template (placeholders). | Deploy a new client's receptionist. |
 | `vapi/assistant.example-joes-plumbing.json` | A finished example. | See what "done" looks like. |
 | `server/log-lead.js` | Lead webhook — texts the owner via Twilio. | Catch leads from calls. |

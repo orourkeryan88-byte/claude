@@ -15,6 +15,7 @@
  */
 
 const crypto = require("crypto");
+const store = require("./store");
 
 function hashPassword(password, salt) {
   salt = salt || crypto.randomBytes(16).toString("hex");
@@ -55,15 +56,26 @@ function readToken(req) {
   return rec;
 }
 
+// Look up an account: env accounts (always active) first, then the sign-up store.
+function getAccount(envAccounts, username) {
+  const u = String(username || "").toLowerCase();
+  const env = envAccounts.find((a) => (a.username || "").toLowerCase() === u);
+  if (env) return { ...env, active: true };
+  return store.find(username) || null;
+}
+
 // Mount onto the existing app. getLeads() returns the in-memory leads array.
 function mountAuth(app, getLeads) {
-  const accounts = loadAccounts();
+  const envAccounts = loadAccounts();
 
   app.post("/login", (req, res) => {
     const { username, password } = req.body || {};
-    const acct = accounts.find((a) => (a.username || "").toLowerCase() === String(username || "").toLowerCase());
+    const acct = getAccount(envAccounts, username);
     if (!acct || !verifyPassword(password, acct.salt, acct.hash)) {
       return res.status(401).json({ error: "Wrong email or password." });
+    }
+    if (acct.active === false) {
+      return res.status(402).json({ error: "Your subscription isn't active yet — finish payment, then log in." });
     }
     res.json({ token: issueToken(acct.business), business: acct.business });
   });
@@ -81,7 +93,15 @@ function mountAuth(app, getLeads) {
     res.json({ business: rec.business });
   });
 
-  console.log(`Client login mounted (${accounts.length} account${accounts.length === 1 ? "" : "s"}; POST /login, GET /my-leads)`);
+  // Provisioning progress for the logged-in client.
+  app.get("/setup-status", (req, res) => {
+    const rec = readToken(req);
+    if (!rec) return res.status(401).json({ error: "not logged in" });
+    const acct = (store.read() || []).find((a) => a.business === rec.business);
+    res.json({ business: rec.business, provisioning: (acct && acct.provisioning) || { status: "ready", steps: [] } });
+  });
+
+  console.log(`Client login mounted (${envAccounts.length} preset account${envAccounts.length === 1 ? "" : "s"} + sign-ups; POST /login, GET /my-leads)`);
 }
 
 module.exports = { mountAuth, hashPassword, verifyPassword, _tokens: tokens };

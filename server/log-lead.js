@@ -16,7 +16,12 @@
 
 const express = require("express");
 const app = express();
-app.use(express.json());
+// Parse JSON for everything EXCEPT the Stripe webhook (which needs the raw body
+// for signature verification).
+app.use((req, res, next) => {
+  if (req.originalUrl === "/stripe-webhook") return next();
+  express.json()(req, res, next);
+});
 
 // Allow the CRM dashboard (served from another origin) to read /leads and log in.
 app.use((req, res, next) => {
@@ -52,6 +57,10 @@ catch (e) { console.warn("Calendar module not mounted:", e.message); }
 // Per-client login — adds POST /login and GET /my-leads (scoped to the client).
 try { require("./auth").mountAuth(app, () => leads); }
 catch (e) { console.warn("Auth module not mounted:", e.message); }
+
+// Sign-up + subscription (Stripe) — adds /pricing, /create-checkout-session, /stripe-webhook.
+try { require("./billing").mountBilling(app); }
+catch (e) { console.warn("Billing module not mounted:", e.message); }
 
 app.post("/log-lead", async (req, res) => {
   try {
