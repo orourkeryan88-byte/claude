@@ -269,6 +269,7 @@
     <!-- CREATE ACCOUNT -->
     <div id="pane-signup" style="display:none">
       <div class="lfld"><label>Business name</label><input id="su-biz" placeholder="Joe's Plumbing" /></div>
+      <div class="lfld"><label>Website <span style="color:#62708a;text-transform:none">(optional — we'll auto-set up your AI from it)</span></label><input id="su-web" placeholder="www.yourbusiness.ie" /></div>
       <div class="lfld"><label>Email</label><input id="su-email" type="email" placeholder="you@yourbusiness.ie" /></div>
       <div class="lfld"><label>Choose a password</label><input id="su-pass" type="password" placeholder="At least 8 characters" /></div>
       <div class="price-box">
@@ -828,6 +829,7 @@ async function loadPricing(){
 }
 async function signup(){
   const business=($('su-biz').value||'').trim();
+  const website=($('su-web').value||'').trim();
   const email=($('su-email').value||'').trim();
   const password=$('su-pass').value||'';
   let server=($('lg-server').value||'').trim().replace(/\/$/,'') || webhook;
@@ -837,7 +839,7 @@ async function signup(){
   if(!server){ $('su-err').textContent='Enter your server address (under “Server address”).'; return; }
   $('su-btn').textContent='Taking you to payment…';
   try{
-    const r=await fetch(server+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,business,password})});
+    const r=await fetch(server+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,business,password,website})});
     const data=await r.json().catch(()=>({}));
     if(data.url){ window.location.href=data.url; return; }       // -> Stripe Checkout
     $('su-err').textContent=data.error||'Could not start checkout.';
