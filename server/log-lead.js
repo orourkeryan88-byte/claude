@@ -18,10 +18,10 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-// Allow the CRM dashboard (served from another origin) to read /leads.
+// Allow the CRM dashboard (served from another origin) to read /leads and log in.
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
@@ -48,6 +48,10 @@ app.get("/leads", (_req, res) => res.json(leads));
 // Appointment booking (Google Calendar) — adds GET /availability and POST /book.
 try { require("./calendar").mountCalendar(app); }
 catch (e) { console.warn("Calendar module not mounted:", e.message); }
+
+// Per-client login — adds POST /login and GET /my-leads (scoped to the client).
+try { require("./auth").mountAuth(app, () => leads); }
+catch (e) { console.warn("Auth module not mounted:", e.message); }
 
 app.post("/log-lead", async (req, res) => {
   try {
