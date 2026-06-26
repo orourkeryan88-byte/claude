@@ -614,6 +614,10 @@ const THEMES = [
 ];
 function theme(p){ for(const t of THEMES){ if(t.re.test(p||'')) return t.key; } return 'General enquiry'; }
 function afterHours(ts){ const d=new Date(ts); const h=d.getHours(), wd=d.getDay(); return wd===0||wd===6||h<9||h>=18; }
+// rough € value of a job by theme — gives the owner a tangible revenue picture
+const VALUE={'Leaks & water':200,'Heating & boiler':320,'Drains & blockages':150,'New appointment':140,'Cancellation/reschedule':0,'Pricing question':130,'Complaint':0,'General enquiry':120};
+function leadValue(c){ return VALUE[theme(c.problem)] ?? 120; }
+function money(n){ return '€'+Math.round(n).toLocaleString('en-IE'); }
 
 function renderInsights(){
   $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='';
@@ -624,6 +628,10 @@ function renderInsights(){
   const urgent=c.filter(x=>x.urgency==='urgent').length;
   const ah=c.filter(x=>afterHours(x.received)).length;
   const conv= total? Math.round(booked/total*100):0;
+  // estimated revenue
+  const bookedVal=c.filter(x=>x.status==='booked').reduce((s,x)=>s+leadValue(x),0);
+  const pipelineVal=c.filter(x=>x.status==='new'||x.status==='callback').reduce((s,x)=>s+leadValue(x),0);
+  const ahVal=c.filter(x=>afterHours(x.received)).reduce((s,x)=>s+leadValue(x),0);
   // themes
   const counts={}; c.forEach(x=>{ const t=theme(x.problem); counts[t]=(counts[t]||0)+1; });
   const themes=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
@@ -635,6 +643,8 @@ function renderInsights(){
 
   // recommendations (rules-based agent)
   const recs=[];
+  if(pipelineVal>0) recs.push(`There's roughly <b>${money(pipelineVal)}</b> of work sitting in new + call-back leads — chase these today.`);
+  if(ahVal>0) recs.push(`About <b>${money(ahVal)}</b> of that came in <b>after hours</b> — money the AI caught that you'd otherwise have missed.`);
   if(callbacks>0) recs.push(`You owe <b>${callbacks}</b> call-back${callbacks>1?'s':''} — clear these first; they're warm leads waiting.`);
   if(urgent>0) recs.push(`<b>${urgent}</b> urgent call${urgent>1?'s':''} came in — make sure those got actioned fast.`);
   if(ah>0) recs.push(`<b>${ah}</b> call${ah>1?'s':''} arrived <b>after hours / weekends</b> — these are the ones you'd have missed without the AI.`);
@@ -646,10 +656,10 @@ function renderInsights(){
   $('view-insights').innerHTML = `
     <div class="ins-head"><span class="ins-badge">✨ AI Insights</span> What your calls are telling you</div>
     <div class="stats" style="margin-bottom:18px">
-      ${card('Calls analysed', total, 'all time')}
-      ${card('Booking rate', conv+'%', booked+' booked', 'var(--booked)')}
-      ${card('After-hours caught', ah, 'missed otherwise', 'var(--brand)')}
-      ${card('Urgent', urgent, 'time-critical', 'var(--urgent)')}
+      ${card('Booked revenue', money(bookedVal), booked+' jobs won', 'var(--booked)')}
+      ${card('In the pipeline', money(pipelineVal), 'leads to chase', 'var(--brand)')}
+      ${card('After-hours caught', ah, money(ahVal)+' value', 'var(--callback)')}
+      ${card('Booking rate', conv+'%', total+' calls', 'var(--ink)')}
     </div>
     <div class="ins-grid">
       <div class="card ins-card">
