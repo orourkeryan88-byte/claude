@@ -8,6 +8,8 @@
 <meta property="og:title" content="Southline AI Receptionist" />
 <meta property="og:description" content="Answers every call 24/7, books appointments, texts you every lead — for a tenth of the cost." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233b82f6'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%23041222' font-family='Arial' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" />
+<!-- Live ElevenLabs conversational AI agent -->
+<script src="https://elevenlabs.io/convai-widget/index.js" async></script>
 <style>
   :root{
     --bg:#070b14; --bg2:#0d1424; --card:#111a2e; --line:#1e2a44;
@@ -187,7 +189,18 @@
     </div>
   </header>
 
-  <!-- DEMO -->
+  <!-- LIVE ELEVENLABS AGENT -->
+  <section id="live-agent" style="text-align:center;padding:10px 0 6px">
+    <span class="pill"><span class="dot"></span> Live AI · real voice — talk to it now</span>
+    <h2 style="margin:14px 0 6px">Have a real conversation with the AI receptionist</h2>
+    <p class="lead-sub">Tap the call button, allow your microphone, and just talk — this is the live agent, not a recording.</p>
+    <div style="display:flex;justify-content:center;margin-top:8px">
+      <elevenlabs-convai agent-id="agent_2401kw1mdpm2eg6b6rhhb55785ch"></elevenlabs-convai>
+    </div>
+    <div class="hint" style="margin-top:10px">Works best in Chrome/Safari with a mic. Below is a scripted scenario simulator that also works offline.</div>
+  </section>
+
+  <!-- DEMO (scripted scenario simulator) -->
   <div class="demo" id="demo">
     <div class="demo-grid">
       <!-- left: call stage -->
@@ -377,7 +390,7 @@
   Websites · Digital marketing · AI receptionists for tradespeople &amp; clinics<br>
   085 174 0783 · agencysouthline@gmail.com
   <div style="margin-top:12px"><a href="dashboard/" style="color:var(--brand2);font-weight:700">Open the CRM dashboard →</a></div>
-  <div class="hint" style="margin-top:14px">This page is a live, offline-capable demo. The voice you hear is generated on-device — no calls are placed and no data leaves your browser.</div>
+  <div class="hint" style="margin-top:14px">The “talk to it now” agent at the top is a live AI (powered by ElevenLabs) and connects over the internet. The scripted scenario simulator below runs on-device and works offline.</div>
 </footer>
 
 <script>
