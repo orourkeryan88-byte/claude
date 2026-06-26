@@ -104,11 +104,29 @@ async function agentWelcome(acct, results) {
   return { status: "done", detail: "Welcome pack prepared (login + number + forwarding steps)." };
 }
 
+// 0) Scan the client's website to auto-fill hours/services/FAQ (like Rosie).
+async function agentScanWebsite(acct) {
+  if (!acct.website) return { status: "skipped", detail: "No website given — using the details on file." };
+  try {
+    const k = await require("./knowledge").scanWebsite(acct.website);
+    // merge anything useful onto the account so buildAssistant uses it
+    const patch = {};
+    if (k.hours) patch.openingHours = k.hours;
+    if (k.services) patch.services = k.services;
+    if (k.faq) patch.faq = k.faq;
+    if (k.area && !acct.area) patch.area = k.area;
+    Object.assign(acct, patch);
+    store.upsert({ username: acct.username, ...patch, knowledge: k });
+    return { status: "done", detail: `Scanned ${acct.website} — pulled hours/services/FAQ (confidence ${k.confidence}/4).` };
+  } catch (e) { return { status: "queued", detail: "Couldn't read the website — fill the details in by hand: " + e.message }; }
+}
+
 async function runProvisioning(acct) {
   console.log(`🤖 Provisioning started for ${acct.business} (${acct.username})`);
   const steps = [];
   const ctx = {}; // carries assistantId/number between agents
   const order = [
+    ["Scan website & build knowledge", agentScanWebsite],
     ["Build AI assistant", agentBuildAssistant],
     ["Assign phone number", agentAssignNumber],
     ["Activate CRM login", agentActivateAccount],

@@ -62,6 +62,10 @@ catch (e) { console.warn("Auth module not mounted:", e.message); }
 try { require("./billing").mountBilling(app); }
 catch (e) { console.warn("Billing module not mounted:", e.message); }
 
+// Knowledge agent — adds POST /scan-website (auto-train from a website).
+try { require("./knowledge").mountKnowledge(app); }
+catch (e) { console.warn("Knowledge module not mounted:", e.message); }
+
 app.post("/log-lead", async (req, res) => {
   try {
     // Vapi wraps function calls. Support both the wrapped and flat shapes.

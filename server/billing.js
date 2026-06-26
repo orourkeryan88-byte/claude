@@ -34,14 +34,14 @@ function mountBilling(app) {
 
   // Start sign-up: store the pending account, return a Checkout URL.
   app.post("/create-checkout-session", async (req, res) => {
-    const { email, business, password } = req.body || {};
+    const { email, business, password, website } = req.body || {};
     if (!email || !business || !password)
       return res.status(400).json({ error: "Enter your business name, email and a password." });
     if (store.find(email) && store.find(email).active)
       return res.status(400).json({ error: "That email already has an account — just log in." });
 
     const { salt, hash } = hashPassword(password);
-    store.upsert({ username: email, business, salt, hash, active: false, createdAt: new Date().toISOString() });
+    store.upsert({ username: email, business, website: website || "", salt, hash, active: false, createdAt: new Date().toISOString() });
 
     if (!configured())
       return res.status(503).json({ error: "Billing isn't switched on yet (no Stripe key on the server)." });
