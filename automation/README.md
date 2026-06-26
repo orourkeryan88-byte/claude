@@ -26,7 +26,19 @@ Plus a second workflow, **Daily Summary**, that texts the owner an end-of-day re
 | File | What it is |
 |---|---|
 | `n8n-receptionist-postcall.json` | The main per-call workflow (import this). |
+| `n8n-appointment-reminders.json` | Reminders (day before) + post-visit follow-up/review (day after) — text **and** email. |
 | `n8n-daily-summary.json` | The 6pm daily summary workflow. |
+
+## The appointment lifecycle (what the customer gets)
+
+![lifecycle](appointment-lifecycle.png)
+
+1. **Books** — the AI books the slot into Google Calendar (on the call).
+2. **Confirmation** — instantly, by **text + email** (handled in `n8n-receptionist-postcall.json`).
+3. **Reminder** — the **day before**, by text + email ("see you tomorrow at 10").
+4. **Follow-up** — the **day after**, by text + email ("thanks — leave us a quick review").
+
+Steps 3–4 are the **`n8n-appointment-reminders.json`** workflow: it runs every morning, reads the bookings sheet, and sends a reminder for appointments happening tomorrow and a follow-up for appointments that were yesterday. It needs these columns on the sheet: `Name, Phone, Email, Business, Date (YYYY-MM-DD), When, Booked` (and optional `ReviewLink`). Connect **Twilio** (SMS) and an **SMTP/email** credential, set `FROM_EMAIL`, and toggle it Active.
 
 ## Setup (about 20 minutes, once)
 

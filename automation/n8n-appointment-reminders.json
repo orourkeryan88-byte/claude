@@ -1,0 +1,107 @@
+{
+  "name": "Southline AI Receptionist — Appointment Reminders & Follow-up",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [ { "field": "days", "triggerAtHour": 9, "triggerAtMinute": 0 } ] }
+      },
+      "id": "schedule",
+      "name": "Every day at 9am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [-640, 300]
+    },
+    {
+      "parameters": {
+        "documentId": { "__rl": true, "mode": "url", "value": "PASTE_YOUR_GOOGLE_SHEET_URL_HERE" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Leads" },
+        "options": {}
+      },
+      "id": "read",
+      "name": "Read bookings",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [-430, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// For each BOOKED appointment, decide if today is the day to send a reminder\n// (appointment is tomorrow) or a post-visit follow-up (appointment was yesterday).\n// Runs daily, so each booking gets each message exactly once — no state needed.\nconst rows = $input.all().map(i => i.json);\nconst fmt = (d) => d.toISOString().slice(0, 10);\nconst today = new Date();\nconst tomorrow = fmt(new Date(today.getTime() + 86400000));\nconst yesterday = fmt(new Date(today.getTime() - 86400000));\nconst out = [];\nfor (const r of rows) {\n  if (String(r.Booked).toLowerCase() !== 'true') continue;\n  let dateStr = r.Date || '';\n  if (!dateStr && r.When) { const m = String(r.When).match(/\\d{4}-\\d{2}-\\d{2}/); if (m) dateStr = m[0]; }\n  if (!dateStr) continue;\n  const name = String(r.Name || 'there').split(' ')[0];\n  const biz = r.Business || 'us';\n  const when = r.When || dateStr;\n  const phone = r.Phone || '';\n  const email = r.Email || '';\n  const review = r.ReviewLink || '';\n  let type = null;\n  if (dateStr === tomorrow) type = 'reminder';\n  else if (dateStr === yesterday) type = 'followup';\n  if (!type) continue;\n  let sms, subject, body;\n  if (type === 'reminder') {\n    sms = `Hi ${name}, a reminder of your appointment with ${biz} ${when}. Reply R to reschedule or C to cancel — see you then!`;\n    subject = `Reminder: your appointment with ${biz}`;\n    body = `Hi ${name},\\n\\nJust a friendly reminder of your appointment with ${biz} ${when}.\\n\\nNeed to change it? Reply to this email or give us a call.\\n\\nSee you then!\\n${biz}`;\n  } else {\n    sms = `Hi ${name}, thanks for coming in to ${biz}! We'd love a quick review${review ? ': ' + review : ''}. Hope to see you again soon.`;\n    subject = `Thanks from ${biz}`;\n    body = `Hi ${name},\\n\\nThanks for visiting ${biz} — we hope everything went well!\\n\\nIf you have a moment, a quick review really helps us${review ? ': ' + review : ''}.\\n\\nThanks again,\\n${biz}`;\n  }\n  out.push({ json: { type, name, biz, phone, email, sms, subject, body, hasPhone: !!phone, hasEmail: !!email } });\n}\nreturn out;"
+      },
+      "id": "decide",
+      "name": "Reminder or follow-up?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-210, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "combinator": "and",
+          "conditions": [ { "id": "has-phone", "leftValue": "={{ $json.hasPhone }}", "rightValue": "", "operator": { "type": "boolean", "operation": "true", "singleValue": true } } ]
+        },
+        "options": {}
+      },
+      "id": "if-phone",
+      "name": "Has a phone?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [30, 220]
+    },
+    {
+      "parameters": { "from": "={{ $env.TWILIO_FROM_NUMBER }}", "to": "={{ $json.phone }}", "message": "={{ $json.sms }}" },
+      "id": "sms",
+      "name": "Send reminder / follow-up text",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [250, 160],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "combinator": "and",
+          "conditions": [ { "id": "has-email", "leftValue": "={{ $json.hasEmail }}", "rightValue": "", "operator": { "type": "boolean", "operation": "true", "singleValue": true } } ]
+        },
+        "options": {}
+      },
+      "id": "if-email",
+      "name": "Has an email?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [30, 420]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.FROM_EMAIL }}",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {}
+      },
+      "id": "email",
+      "name": "Send reminder / follow-up email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [250, 460],
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Every day at 9am": { "main": [[{ "node": "Read bookings", "type": "main", "index": 0 }]] },
+    "Read bookings": { "main": [[{ "node": "Reminder or follow-up?", "type": "main", "index": 0 }]] },
+    "Reminder or follow-up?": { "main": [[
+      { "node": "Has a phone?", "type": "main", "index": 0 },
+      { "node": "Has an email?", "type": "main", "index": 0 }
+    ]] },
+    "Has a phone?": { "main": [[{ "node": "Send reminder / follow-up text", "type": "main", "index": 0 }], []] },
+    "Has an email?": { "main": [[{ "node": "Send reminder / follow-up email", "type": "main", "index": 0 }], []] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templatecredsSetupCompleted": false },
+  "tags": [{ "name": "Southline" }, { "name": "AI Receptionist" }]
+}
