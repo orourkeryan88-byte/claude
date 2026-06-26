@@ -173,6 +173,24 @@
   .db::-webkit-scrollbar,.content::-webkit-scrollbar{width:9px}
   .db::-webkit-scrollbar-thumb,.content::-webkit-scrollbar-thumb{background:#d7deea;border-radius:8px}
   .mobile-only{display:none}
+  /* login gate */
+  .login-bg{position:fixed;inset:0;background:radial-gradient(1000px 600px at 70% -10%,#16243f,#0b1426 60%),#0b1426;display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .login-card{background:#0f1b34;border:1px solid #1e2a44;border-radius:18px;padding:30px;width:380px;max-width:94vw;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+  .login-brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:20px}
+  .login-brand .mk{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#0ea5e9);display:grid;place-items:center;color:#04122a;font-weight:900}
+  .login-sub{color:#8da2c7;font-size:13.5px;margin:6px 0 20px}
+  .lfld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .lfld label{font-size:12px;color:#aebbd6;font-weight:700}
+  .lfld input,.ladv input{background:#0b1426;border:1px solid #25304c;color:#eaf0ff;padding:12px;border-radius:10px;font-size:14px;font-family:inherit;width:100%}
+  .lfld input:focus,.ladv input:focus{outline:none;border-color:#2563eb}
+  .ladv{margin-bottom:12px}
+  .ladv summary{color:#8da2c7;font-size:12.5px;cursor:pointer;margin-bottom:8px}
+  .lerr{color:#f87171;font-size:13px;min-height:18px;margin-bottom:6px;font-weight:600}
+  .btn-login{width:100%;border:none;background:#2563eb;color:#fff;font-weight:800;font-size:15px;padding:13px;border-radius:11px;cursor:pointer;transition:.12s}
+  .btn-login:hover{background:#1d4ed8}.btn-login:active{transform:translateY(1px)}
+  .btn-demo{width:100%;border:1px solid #25304c;background:transparent;color:#cdd8ef;font-weight:700;font-size:13.5px;padding:11px;border-radius:11px;cursor:pointer;margin-top:10px}
+  .btn-demo:hover{border-color:#2563eb}
+  .login-foot{color:#62708a;font-size:12px;text-align:center;margin-top:18px}
   /* appointments agenda */
   .appts{display:flex;flex-direction:column}
   .appt{display:grid;grid-template-columns:230px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
@@ -203,7 +221,23 @@
 </style>
 </head>
 <body>
-<div class="app">
+<!-- LOGIN GATE -->
+<div class="login-bg" id="login-bg">
+  <div class="login-card">
+    <div class="login-brand"><div class="mk">S</div> Southline CRM</div>
+    <div class="login-sub">Sign in to your call inbox</div>
+    <div class="lfld"><label>Email</label><input id="lg-user" type="email" placeholder="you@yourbusiness.ie" autocomplete="username" /></div>
+    <div class="lfld"><label>Password</label><input id="lg-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" /></div>
+    <details class="ladv"><summary>Server address</summary>
+      <input id="lg-server" placeholder="https://your-receptionist.onrender.com" /></details>
+    <div class="lerr" id="lg-err"></div>
+    <button class="btn-login" id="lg-btn" onclick="doLogin()">Log in</button>
+    <button class="btn-demo" onclick="useDemo()">View the demo (sample data)</button>
+    <div class="login-foot">Need an account? Ask Southline · 085 174 0783</div>
+  </div>
+</div>
+
+<div class="app" id="app" style="display:none">
   <!-- SIDEBAR -->
   <aside>
     <div class="brand"><div class="mk">S</div> Southline CRM</div>
@@ -215,7 +249,9 @@
       <a onclick="openConnect()"><span class="ic">🔌</span> Connect line</a>
     </nav>
     <div class="foot">
+      <div id="who-state" style="color:#cdd8ef;font-weight:700;margin-bottom:4px"></div>
       <div id="conn-state">Demo data (offline)</div>
+      <a onclick="logout()" style="display:inline-block;margin-top:8px;color:#aebbd6;cursor:pointer;font-weight:700">Log out →</a>
       Southline · AI Receptionist<br>085 174 0783
     </div>
   </aside>
@@ -355,6 +391,7 @@ let view = 'table';
 let filter = 'all';
 let sortBy = 'urgent';
 let webhook = localStorage.getItem('sl_webhook') || '';
+let session = (()=>{ try{ return JSON.parse(localStorage.getItem('sl_session')||'{}'); }catch(e){ return {}; } })();
 let syncTimer = null;
 let freshIds = new Set();      // newly added calls to flash-highlight
 let lastStat = {};             // for count-up animation
@@ -373,7 +410,9 @@ const SEED = [
 function load(){
   const saved = localStorage.getItem('sl_calls');
   if(saved){ try{ calls = JSON.parse(saved); }catch(e){ calls=[]; } }
-  if(!calls.length){
+  // Only seed sample data in demo mode. A logged-in client starts empty and
+  // fills from their own real leads via sync.
+  if(!calls.length && session.mode!=='client'){
     calls = SEED.map((s,i)=>({ id:'seed'+i, ...s, received: Date.now()-s.mins*60000 }));
     save();
   }
@@ -564,9 +603,14 @@ function connect(){
 }
 function disconnect(){ webhook=''; localStorage.removeItem('sl_webhook'); if(syncTimer)clearInterval(syncTimer); $('conn-state').textContent='Demo data (offline)'; closeModal('conn-bg'); toast('Disconnected'); }
 async function syncNow(){
-  if(!webhook) return;
+  // Logged-in client: pull only their own leads from /my-leads (scoped server-side).
+  const url = session.token ? session.server+'/my-leads' : (webhook ? webhook+'/leads' : '');
+  if(!url) return;
+  const headers = session.token ? { 'Authorization':'Bearer '+session.token } : {};
   try{
-    const r=await fetch(webhook+'/leads',{cache:'no-store'}); if(!r.ok) throw 0;
+    const r=await fetch(url,{cache:'no-store', headers});
+    if(r.status===401){ toast('Session expired — please log in again.'); logout(); return; }
+    if(!r.ok) throw 0;
     const data=await r.json();
     let added=0;
     data.forEach(l=>{
@@ -582,7 +626,8 @@ async function syncNow(){
       }
     });
     if(added){ save(); render(); toast(`${added} new call${added>1?'s':''} from your line`); }
-    $('conn-state').innerHTML='<span class="live-dot"></span> Live — '+webhook.replace(/^https?:\/\//,'');
+    const host=(session.server||webhook||'').replace(/^https?:\/\//,'');
+    $('conn-state').innerHTML='<span class="live-dot"></span> Live — '+host;
   }catch(e){ $('conn-state').textContent='⚠ Can\'t reach line'; }
 }
 function startSync(){ syncNow(); if(syncTimer)clearInterval(syncTimer); syncTimer=setInterval(syncNow, 15000); }
@@ -605,10 +650,48 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){ closeDrawer(); document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show')); }
 });
 
+/* ---------- login gate ---------- */
+async function doLogin(){
+  const user=($('lg-user').value||'').trim();
+  const pass=$('lg-pass').value||'';
+  let server=($('lg-server').value||'').trim().replace(/\/$/,'') || session.server || webhook;
+  $('lg-err').textContent='';
+  if(!user||!pass){ $('lg-err').textContent='Enter your email and password.'; return; }
+  if(!server){ $('lg-err').textContent='Enter your server address (under “Server address”).'; return; }
+  $('lg-btn').textContent='Signing in…';
+  try{
+    const r=await fetch(server+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,password:pass})});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok){ $('lg-err').textContent=data.error||'Wrong email or password.'; $('lg-btn').textContent='Log in'; return; }
+    session={ mode:'client', server, token:data.token, business:data.business, user };
+    localStorage.setItem('sl_session',JSON.stringify(session));
+    calls=[]; localStorage.removeItem('sl_calls'); // start from their real data
+    enterApp(); toast('Welcome back, '+(data.business||''));
+  }catch(e){ $('lg-err').textContent='Could not reach the server. Check the address.'; }
+  $('lg-btn').textContent='Log in';
+}
+function useDemo(){
+  session={ mode:'demo' };
+  localStorage.setItem('sl_session',JSON.stringify(session));
+  enterApp();
+}
+function logout(){
+  if(syncTimer) clearInterval(syncTimer);
+  session={}; localStorage.removeItem('sl_session'); localStorage.removeItem('sl_calls'); calls=[];
+  $('app').style.display='none'; $('login-bg').style.display='flex';
+  $('lg-pass').value='';
+}
+function enterApp(){
+  $('login-bg').style.display='none'; $('app').style.display='';
+  $('who-state').textContent = session.business || (session.mode==='demo'?'Demo workspace':'');
+  load(); render();
+  if(session.token){ startSync(); }
+  else if(webhook){ startSync(); }
+}
+
 /* ---------- boot ---------- */
-load();
-render();
-if(webhook) startSync();
+if(session.mode){ enterApp(); }
+else { $('login-bg').style.display='flex'; }
 </script>
 </body>
 </html>
