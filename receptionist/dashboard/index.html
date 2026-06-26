@@ -207,6 +207,26 @@
   .cal-ic{width:38px;height:38px;border-radius:10px;background:#e8effd;display:grid;place-items:center;font-size:18px}
   .aw-t{font-weight:800}.aw-s{font-size:11.5px;color:var(--booked);font-weight:700}
   @media(max-width:820px){.appt{grid-template-columns:1fr;gap:8px}}
+  /* insights */
+  .ins-head{font-size:18px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .ins-badge{background:linear-gradient(120deg,#7c3aed,#2563eb);color:#fff;font-size:12px;font-weight:800;padding:5px 11px;border-radius:999px}
+  .ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.ins-grid{grid-template-columns:1fr}}
+  .ins-card{padding:18px}
+  .ins-card h4{margin:0 0 14px;font-size:15px}
+  .theme-row{margin-bottom:12px}
+  .theme-top{display:flex;justify-content:space-between;font-size:13.5px;color:#33405c;margin-bottom:5px;font-weight:600}
+  .bar{height:8px;background:#eef1f7;border-radius:6px;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#0ea5e9);border-radius:6px}
+  .ins-note{color:var(--mut);font-size:12.5px;margin-top:10px}
+  .rec{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:9px;font-size:14px;color:#2b3650;line-height:1.5}
+  /* copilot draft */
+  .copilot{margin-top:14px}
+  .copilot-btn{width:100%;border:1px solid #c7b6f5;background:linear-gradient(120deg,rgba(124,58,237,.08),rgba(37,99,235,.06));color:#6d28d9;font-weight:800;font-size:13.5px;padding:11px;border-radius:10px;cursor:pointer}
+  .copilot-btn:hover{filter:brightness(1.03)}
+  .copilot-out{margin-top:10px;background:#faf8ff;border:1px solid #e3d9fb;border-radius:10px;padding:12px;font-size:13.5px;color:#2b2150;display:none;white-space:pre-wrap;line-height:1.5}
+  .copilot-out.show{display:block}
+  .copilot-copy{margin-top:8px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-weight:700;font-size:12.5px;cursor:pointer;color:var(--brand)}
 
   /* responsive */
   @media(max-width:820px){
@@ -274,6 +294,7 @@
       <a class="active"><span class="ic">📞</span> Call Inbox</a>
       <a onclick="setView('appts')"><span class="ic">📅</span> Appointments</a>
       <a onclick="setView('board')"><span class="ic">🗂️</span> Pipeline</a>
+      <a onclick="setView('insights')"><span class="ic">✨</span> Insights</a>
       <a onclick="filterUrgent()"><span class="ic">🚨</span> Urgent</a>
       <a onclick="openConnect()"><span class="ic">🔌</span> Connect line</a>
     </nav>
@@ -329,6 +350,7 @@
 
       <div id="view-board" class="board" style="display:none"></div>
       <div id="view-appts" style="display:none"></div>
+      <div id="view-insights" style="display:none"></div>
     </div>
   </main>
 </div>
@@ -351,6 +373,13 @@
 
     <div class="section-t">Status</div>
     <div class="statusrow" id="d-statusrow"></div>
+
+    <div class="section-t">✨ Copilot</div>
+    <div class="copilot">
+      <button class="copilot-btn" onclick="draftFollowUp()">✨ Draft a follow-up message</button>
+      <div class="copilot-out" id="copilot-out"></div>
+      <button class="copilot-copy" id="copilot-copy" style="display:none" onclick="copyDraft()">Copy</button>
+    </div>
 
     <div class="section-t">Notes</div>
     <textarea id="d-note" placeholder="Add a note — e.g. 'Called back, left voicemail' …"></textarea>
@@ -484,6 +513,7 @@ function render(){
   const list = sortList(searched(calls.filter(matchesFilter)));
   if(view==='table') renderTable(list);
   else if(view==='board') renderBoard();
+  else if(view==='insights') renderInsights();
   else renderAppts();
   // flash any freshly-added rows/cards once
   if(freshIds.size){
@@ -520,7 +550,7 @@ function renderFilters(){
   $('filters').innerHTML = defs.map(([k,l])=>`<button class="chip ${filter===k?'active':''}" onclick="setFilter('${k}')">${l}</button>`).join('');
 }
 function renderTable(list){
-  $('view-table').style.display=''; $('view-board').style.display='none'; $('view-appts').style.display='none';
+  $('view-table').style.display=''; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='none';
   $('tab-table').classList.add('active'); $('tab-board').classList.remove('active');
   $('empty').style.display = list.length?'none':'block';
   $('tbody').innerHTML = list.map(c=>`
@@ -536,7 +566,7 @@ function renderTable(list){
     </tr>`).join('');
 }
 function renderBoard(){
-  $('view-table').style.display='none'; $('view-board').style.display='grid'; $('view-appts').style.display='none';
+  $('view-table').style.display='none'; $('view-board').style.display='grid'; $('view-appts').style.display='none'; $('view-insights').style.display='none';
   $('tab-board').classList.add('active'); $('tab-table').classList.remove('active');
   const q=($('search').value||'').toLowerCase().trim();
   const inSearch = c => !q || (c.name+' '+c.phone+' '+c.problem).toLowerCase().includes(q);
@@ -556,7 +586,7 @@ function renderBoard(){
 }
 
 function renderAppts(){
-  $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='';
+  $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display=''; $('view-insights').style.display='none';
   $('tab-table').classList.remove('active'); $('tab-board').classList.remove('active');
   const q=($('search').value||'').toLowerCase().trim();
   const list = calls.filter(c=>c.status==='booked' && (!q || (c.name+' '+c.phone+' '+c.problem+' '+(c.time||'')).toLowerCase().includes(q)))
@@ -569,6 +599,71 @@ function renderAppts(){
         <div><div class="nm">${esc(c.name)}</div><div class="ph">${esc(c.problem)}</div></div></div></div>
       <div class="appt-act" onclick="event.stopPropagation()"><a class="icon-btn" href="${telHref(c.phone)}">📞 ${esc(c.phone)}</a></div>
     </div>`).join('') + `</div></div>`;
+}
+
+/* ---------- Insights agent (Fin-style analytics) ---------- */
+const THEMES = [
+  {key:'Leaks & water', re:/leak|flood|burst|water|drip|overflow/i},
+  {key:'Heating & boiler', re:/boiler|heat|radiator|no hot water|gas|furnace/i},
+  {key:'Drains & blockages', re:/drain|block|clog|toilet|sewer/i},
+  {key:'New appointment', re:/book|appointment|check-?up|consult|quote|estimate|visit/i},
+  {key:'Cancellation/reschedule', re:/cancel|reschedule|change|move/i},
+  {key:'Pricing question', re:/price|cost|how much|charge|quote/i},
+  {key:'Complaint', re:/complaint|unhappy|not happy|disappoint/i},
+  {key:'General enquiry', re:/.*/i},
+];
+function theme(p){ for(const t of THEMES){ if(t.re.test(p||'')) return t.key; } return 'General enquiry'; }
+function afterHours(ts){ const d=new Date(ts); const h=d.getHours(), wd=d.getDay(); return wd===0||wd===6||h<9||h>=18; }
+
+function renderInsights(){
+  $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='';
+  $('tab-table').classList.remove('active'); $('tab-board').classList.remove('active');
+  const c=calls;
+  const total=c.length, booked=c.filter(x=>x.status==='booked').length;
+  const callbacks=c.filter(x=>x.status==='callback').length;
+  const urgent=c.filter(x=>x.urgency==='urgent').length;
+  const ah=c.filter(x=>afterHours(x.received)).length;
+  const conv= total? Math.round(booked/total*100):0;
+  // themes
+  const counts={}; c.forEach(x=>{ const t=theme(x.problem); counts[t]=(counts[t]||0)+1; });
+  const themes=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topTheme=themes[0]?themes[0][0]:'—';
+  // busiest hour
+  const byHour={}; c.forEach(x=>{ const h=new Date(x.received).getHours(); byHour[h]=(byHour[h]||0)+1; });
+  const peak=Object.entries(byHour).sort((a,b)=>b[1]-a[1])[0];
+  const peakLabel=peak?`${((peak[0])%12)||12}${peak[0]<12?'am':'pm'}`:'—';
+
+  // recommendations (rules-based agent)
+  const recs=[];
+  if(callbacks>0) recs.push(`You owe <b>${callbacks}</b> call-back${callbacks>1?'s':''} — clear these first; they're warm leads waiting.`);
+  if(urgent>0) recs.push(`<b>${urgent}</b> urgent call${urgent>1?'s':''} came in — make sure those got actioned fast.`);
+  if(ah>0) recs.push(`<b>${ah}</b> call${ah>1?'s':''} arrived <b>after hours / weekends</b> — these are the ones you'd have missed without the AI.`);
+  if(topTheme!=='—') recs.push(`Most calls are about <b>${topTheme}</b> — add a clear line on this to your website &amp; the AI's FAQ to deflect even more.`);
+  if(conv<40 && total>3) recs.push(`Booking rate is <b>${conv}%</b> — a quick follow-up text to the unbooked callers usually lifts this.`);
+  if(!recs.length) recs.push('Everything looks handled — no outstanding call-backs. Nice.');
+
+  const card=(lab,num,sub,col)=>`<div class="stat"><div class="lab">${lab}</div><div class="num" style="color:${col||'var(--ink)'}">${num}</div><div class="sub">${sub}</div></div>`;
+  $('view-insights').innerHTML = `
+    <div class="ins-head"><span class="ins-badge">✨ AI Insights</span> What your calls are telling you</div>
+    <div class="stats" style="margin-bottom:18px">
+      ${card('Calls analysed', total, 'all time')}
+      ${card('Booking rate', conv+'%', booked+' booked', 'var(--booked)')}
+      ${card('After-hours caught', ah, 'missed otherwise', 'var(--brand)')}
+      ${card('Urgent', urgent, 'time-critical', 'var(--urgent)')}
+    </div>
+    <div class="ins-grid">
+      <div class="card ins-card">
+        <h4>Why people are calling</h4>
+        ${themes.map(([t,n])=>{ const pct=Math.round(n/total*100); return `
+          <div class="theme-row"><div class="theme-top"><span>${t}</span><span>${n} · ${pct}%</span></div>
+            <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;}).join('')}
+        <div class="ins-note">Busiest around <b>${peakLabel}</b>.</div>
+      </div>
+      <div class="card ins-card">
+        <h4>Recommended next moves</h4>
+        ${recs.map(r=>`<div class="rec">💡 ${r}</div>`).join('')}
+      </div>
+    </div>`;
 }
 
 /* ---------- drag & drop (pipeline) ---------- */
@@ -597,9 +692,35 @@ function openDrawer(id){
   $('d-callbtn').href=telHref(c.phone);
   $('d-statusrow').innerHTML = STAGES.map(s=>`<button class="chip ${c.status===s.key?'active':''}" onclick="setStatus('${s.key}')">${s.label}</button>`).join('');
   renderNotes(c);
+  const co=$('copilot-out'); if(co){ co.classList.remove('show'); co.textContent=''; } $('copilot-copy').style.display='none';
   $('drawer').classList.add('show'); $('drawer-bg').classList.add('show');
 }
 function closeDrawer(){ $('drawer').classList.remove('show'); $('drawer-bg').classList.remove('show'); activeId=null; }
+
+/* ---------- Copilot: draft a follow-up for this caller ---------- */
+function draftFollowUp(){
+  const c=calls.find(x=>x.id===activeId); if(!c) return;
+  const biz=session.business||'the team';
+  const first=(c.name||'there').split(' ')[0];
+  const reason=(c.problem||'your enquiry').replace(/^Complaint —\s*/i,'').toLowerCase();
+  let msg;
+  if(c.status==='booked'){
+    msg=`Hi ${first}, it's ${biz} — just confirming your appointment${c.time&&c.time!=='—'?' for '+c.time:''}. We've got you in the diary. Reply here if anything changes — see you then!`;
+  } else if(c.urgency==='urgent'){
+    msg=`Hi ${first}, ${biz} here — we got your message about ${reason} and we're treating it as a priority. Can we call you straight back? What's the best number and time?`;
+  } else if(/complaint/i.test(c.problem||'')){
+    msg=`Hi ${first}, it's ${biz}. I'm really sorry about ${reason}. I'd like to put this right — when's a good time for a quick call today so we can sort it for you?`;
+  } else if(c.status==='callback'||c.status==='new'){
+    msg=`Hi ${first}, it's ${biz} returning your call about ${reason}. We'd love to help — would you like us to book you in? Reply with a day/time that suits, or let us know a good time to ring you.`;
+  } else {
+    msg=`Hi ${first}, it's ${biz} following up on your call about ${reason}. Anything we can help you with? Happy to get you booked in whenever suits.`;
+  }
+  const out=$('copilot-out'); out.textContent=msg; out.classList.add('show'); $('copilot-copy').style.display='inline-block';
+}
+function copyDraft(){
+  const t=$('copilot-out').textContent; if(!t) return;
+  navigator.clipboard?.writeText(t).then(()=>toast('Follow-up copied — paste into a text/WhatsApp.'),()=>{});
+}
 function renderNotes(c){
   $('d-notes').innerHTML = (c.notes||[]).slice().reverse().map(n=>`
     <div class="note">${esc(n.t)}<div class="meta">${ago(n.at)}</div></div>`).join('');
