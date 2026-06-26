@@ -179,6 +179,13 @@
   .login-brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:20px}
   .login-brand .mk{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#0ea5e9);display:grid;place-items:center;color:#04122a;font-weight:900}
   .login-sub{color:#8da2c7;font-size:13.5px;margin:6px 0 20px}
+  .login-tabs{display:flex;background:#0b1426;border:1px solid #25304c;border-radius:11px;padding:3px;margin:18px 0 18px}
+  .ltab{flex:1;border:none;background:transparent;color:#8da2c7;font-weight:700;font-size:13.5px;padding:9px;border-radius:9px;cursor:pointer}
+  .ltab.active{background:#2563eb;color:#fff}
+  .price-box{background:#0b1426;border:1px solid #25304c;border-radius:12px;padding:14px;margin:4px 0 12px}
+  .price-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;color:#cdd8ef;font-size:14px}
+  .price-row b{color:#fff}
+  .price-note{color:#62708a;font-size:12px;margin-top:6px}
   .lfld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
   .lfld label{font-size:12px;color:#aebbd6;font-weight:700}
   .lfld input,.ladv input{background:#0b1426;border:1px solid #25304c;color:#eaf0ff;padding:12px;border-radius:10px;font-size:14px;font-family:inherit;width:100%}
@@ -225,15 +232,37 @@
 <div class="login-bg" id="login-bg">
   <div class="login-card">
     <div class="login-brand"><div class="mk">S</div> Southline CRM</div>
-    <div class="login-sub">Sign in to your call inbox</div>
-    <div class="lfld"><label>Email</label><input id="lg-user" type="email" placeholder="you@yourbusiness.ie" autocomplete="username" /></div>
-    <div class="lfld"><label>Password</label><input id="lg-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" /></div>
+    <div class="login-tabs">
+      <button id="tab-login" class="ltab active" onclick="switchAuth('login')">Log in</button>
+      <button id="tab-signup" class="ltab" onclick="switchAuth('signup')">Create account</button>
+    </div>
+
+    <!-- LOG IN -->
+    <div id="pane-login">
+      <div class="lfld"><label>Email</label><input id="lg-user" type="email" placeholder="you@yourbusiness.ie" autocomplete="username" /></div>
+      <div class="lfld"><label>Password</label><input id="lg-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" /></div>
+      <div class="lerr" id="lg-err"></div>
+      <button class="btn-login" id="lg-btn" onclick="doLogin()">Log in</button>
+      <button class="btn-demo" onclick="useDemo()">View the demo (sample data)</button>
+    </div>
+
+    <!-- CREATE ACCOUNT -->
+    <div id="pane-signup" style="display:none">
+      <div class="lfld"><label>Business name</label><input id="su-biz" placeholder="Joe's Plumbing" /></div>
+      <div class="lfld"><label>Email</label><input id="su-email" type="email" placeholder="you@yourbusiness.ie" /></div>
+      <div class="lfld"><label>Choose a password</label><input id="su-pass" type="password" placeholder="At least 8 characters" /></div>
+      <div class="price-box">
+        <div class="price-row"><span>Setup (one-time)</span><b id="su-setup">€350</b></div>
+        <div class="price-row"><span>Then monthly</span><b id="su-monthly">€80 / month</b></div>
+        <div class="price-note">Cancel anytime. Your receptionist is set up automatically once you pay.</div>
+      </div>
+      <div class="lerr" id="su-err"></div>
+      <button class="btn-login" id="su-btn" onclick="signup()">Subscribe &amp; create account →</button>
+    </div>
+
     <details class="ladv"><summary>Server address</summary>
       <input id="lg-server" placeholder="https://your-receptionist.onrender.com" /></details>
-    <div class="lerr" id="lg-err"></div>
-    <button class="btn-login" id="lg-btn" onclick="doLogin()">Log in</button>
-    <button class="btn-demo" onclick="useDemo()">View the demo (sample data)</button>
-    <div class="login-foot">Need an account? Ask Southline · 085 174 0783</div>
+    <div class="login-foot">Questions? Southline · 085 174 0783</div>
   </div>
 </div>
 
@@ -651,6 +680,39 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ---------- login gate ---------- */
+function switchAuth(tab){
+  const login = tab==='login';
+  $('pane-login').style.display = login?'':'none';
+  $('pane-signup').style.display = login?'none':'';
+  $('tab-login').classList.toggle('active', login);
+  $('tab-signup').classList.toggle('active', !login);
+  if(!login) loadPricing();
+}
+async function loadPricing(){
+  const server=($('lg-server').value||'').trim().replace(/\/$/,'') || webhook;
+  if(!server) return;
+  try{ const r=await fetch(server+'/pricing'); if(!r.ok) return; const p=await r.json();
+    $('su-setup').textContent='€'+p.setup; $('su-monthly').textContent='€'+p.monthly+' / month';
+  }catch(e){}
+}
+async function signup(){
+  const business=($('su-biz').value||'').trim();
+  const email=($('su-email').value||'').trim();
+  const password=$('su-pass').value||'';
+  let server=($('lg-server').value||'').trim().replace(/\/$/,'') || webhook;
+  $('su-err').textContent='';
+  if(!business||!email||!password){ $('su-err').textContent='Fill in your business, email and a password.'; return; }
+  if(password.length<8){ $('su-err').textContent='Password needs at least 8 characters.'; return; }
+  if(!server){ $('su-err').textContent='Enter your server address (under “Server address”).'; return; }
+  $('su-btn').textContent='Taking you to payment…';
+  try{
+    const r=await fetch(server+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,business,password})});
+    const data=await r.json().catch(()=>({}));
+    if(data.url){ window.location.href=data.url; return; }       // -> Stripe Checkout
+    $('su-err').textContent=data.error||'Could not start checkout.';
+  }catch(e){ $('su-err').textContent='Could not reach the server. Check the address.'; }
+  $('su-btn').textContent='Subscribe & create account →';
+}
 async function doLogin(){
   const user=($('lg-user').value||'').trim();
   const pass=$('lg-pass').value||'';
@@ -690,8 +752,20 @@ function enterApp(){
 }
 
 /* ---------- boot ---------- */
-if(session.mode){ enterApp(); }
-else { $('login-bg').style.display='flex'; }
+(function boot(){
+  let signup = null;
+  try{ signup = new URLSearchParams(location.search).get('signup'); }catch(e){}
+  if(session.mode && !signup){ enterApp(); return; }
+  $('login-bg').style.display='flex';
+  if(signup==='success'){
+    switchAuth('login');
+    $('lg-err').style.color='#34d399';
+    $('lg-err').textContent='Payment received — your receptionist is being set up. Log in to your inbox.';
+  } else if(signup==='cancel'){
+    switchAuth('signup');
+    $('su-err').textContent='Payment cancelled — you can try again any time.';
+  }
+})();
 </script>
 </body>
 </html>
