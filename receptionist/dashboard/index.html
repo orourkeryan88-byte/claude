@@ -15,6 +15,45 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+
+  /* ===== PREMIUM LAYER — richer, more expensive feel ===== */
+  :root{ --gold:#c9a227; --gold2:#e7c659; --ink2:#0b1426; }
+  aside{background:linear-gradient(185deg,#0c1730 0%,#0f1b34 55%,#101d3a 100%);box-shadow:inset -1px 0 0 rgba(255,255,255,.04)}
+  .brand .mk{box-shadow:0 4px 14px rgba(37,99,235,.5)}
+  .stat{background:linear-gradient(180deg,#ffffff,#fcfdff);position:relative;overflow:hidden}
+  .stat::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+  .stat:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px);transition:.16s}
+  .btn.primary{background:linear-gradient(135deg,#ff8a6b,#ff6a44)}
+  /* plan badge in sidebar */
+  .plan-badge{margin:0 6px 14px;padding:9px 12px;border-radius:11px;font-weight:800;font-size:12px;letter-spacing:.3px;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid rgba(255,255,255,.10);
+    background:linear-gradient(135deg,rgba(201,162,39,.18),rgba(231,198,89,.06));color:#f4e7bd}
+  .plan-badge .up{font-size:11px;font-weight:800;color:#0b1426;background:linear-gradient(135deg,var(--gold2),var(--gold));padding:3px 8px;border-radius:20px;cursor:pointer}
+  .plan-badge.tier-pro{background:linear-gradient(135deg,rgba(37,99,235,.28),rgba(14,165,233,.08));color:#cfe0ff;border-color:rgba(120,170,255,.25)}
+  .plan-badge.tier-premium{background:linear-gradient(135deg,rgba(201,162,39,.30),rgba(231,198,89,.10));color:#f6ead0;border-color:rgba(231,198,89,.35)}
+  /* locked nav item */
+  .nav a.locked{opacity:.5}
+  .nav a.locked::after{content:"🔒";margin-left:auto;font-size:11px}
+  /* tier picker on signup */
+  .planpick{display:flex;flex-direction:column;gap:9px}
+  .tiercard{border:1.5px solid var(--line);border-radius:13px;padding:12px 13px;cursor:pointer;transition:.14s;background:#fff;position:relative}
+  .tiercard:hover{border-color:#b9c6e6}
+  .tiercard.sel{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.13)}
+  .tiercard.sel.premium{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.18)}
+  .tiercard .th{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .tiercard .tn{font-weight:850;font-size:15px}
+  .tiercard .tp{font-weight:850;font-size:15px;color:var(--brand)}
+  .tiercard.premium .tp{color:#a8841b}
+  .tiercard .tsetup{font-size:11.5px;color:var(--mut);font-weight:700}
+  .tiercard .tb{font-size:12px;color:var(--mut);margin-top:3px}
+  .tiercard .tag{position:absolute;top:-9px;right:12px;font-size:10px;font-weight:850;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0b1426}
+  .btn-apply{cursor:pointer;border:1px solid var(--line);background:#fff;font-weight:800;border-radius:9px;padding:0 14px;color:var(--brand)}
+  .btn-apply:hover{border-color:var(--brand)}
+  /* upgrade overlay panel */
+  .lockpane{max-width:460px;margin:30px auto;text-align:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px;box-shadow:var(--shadow-lg)}
+  .lockpane h3{margin:6px 0 8px;font-size:19px}
+  .lockpane p{color:var(--mut);margin:0 0 16px}
+  .lockpane .feat{display:inline-block;font-size:48px;margin-bottom:4px}
   a{color:var(--brand);text-decoration:none}
   .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
 
@@ -272,6 +311,18 @@
       <div class="lfld"><label>Website <span style="color:#62708a;text-transform:none">(optional — we'll auto-set up your AI from it)</span></label><input id="su-web" placeholder="www.yourbusiness.ie" /></div>
       <div class="lfld"><label>Email</label><input id="su-email" type="email" placeholder="you@yourbusiness.ie" /></div>
       <div class="lfld"><label>Choose a password</label><input id="su-pass" type="password" placeholder="At least 8 characters" /></div>
+
+      <label style="font-size:12px;font-weight:800;color:#7b88a6;text-transform:uppercase;letter-spacing:.5px;display:block;margin:6px 2px 8px">Choose your plan</label>
+      <div class="planpick" id="su-plans"><div style="color:#62708a;font-size:13px;padding:8px">Loading plans…</div></div>
+
+      <div class="lfld" style="margin-top:12px"><label>Discount code <span style="color:#62708a;text-transform:none">(optional)</span></label>
+        <div style="display:flex;gap:8px">
+          <input id="su-code" placeholder="e.g. LAUNCH50" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" />
+          <button type="button" class="btn-apply" onclick="applyCode()">Apply</button>
+        </div>
+        <div id="su-codemsg" style="font-size:12.5px;margin-top:6px"></div>
+      </div>
+
       <div class="price-box">
         <div class="price-row"><span>Setup (one-time)</span><b id="su-setup">€350</b></div>
         <div class="price-row"><span>Then monthly</span><b id="su-monthly">€80 / month</b></div>
@@ -291,11 +342,12 @@
   <!-- SIDEBAR -->
   <aside>
     <div class="brand"><div class="mk">S</div> Southline CRM</div>
+    <div id="plan-badge" class="plan-badge" style="display:none"></div>
     <nav class="nav">
       <a class="active"><span class="ic">📞</span> Call Inbox</a>
       <a onclick="setView('appts')"><span class="ic">📅</span> Appointments</a>
-      <a onclick="setView('board')"><span class="ic">🗂️</span> Pipeline</a>
-      <a onclick="setView('insights')"><span class="ic">✨</span> Insights</a>
+      <a data-feat="pipeline" onclick="navFeat('pipeline','board')"><span class="ic">🗂️</span> Pipeline</a>
+      <a data-feat="insights" onclick="navFeat('insights','insights')"><span class="ic">✨</span> Insights</a>
       <a onclick="filterUrgent()"><span class="ic">🚨</span> Urgent</a>
       <a onclick="openConnect()"><span class="ic">🔌</span> Connect line</a>
     </nav>
@@ -657,9 +709,12 @@ function renderInsights(){
   $('view-insights').innerHTML = `
     <div class="ins-head"><span class="ins-badge">✨ AI Insights</span> What your calls are telling you</div>
     <div class="stats" style="margin-bottom:18px">
-      ${card('Booked revenue', money(bookedVal), booked+' jobs won', 'var(--booked)')}
-      ${card('In the pipeline', money(pipelineVal), 'leads to chase', 'var(--brand)')}
-      ${card('After-hours caught', ah, money(ahVal)+' value', 'var(--callback)')}
+      ${ can('revenue')
+        ? card('Booked revenue', money(bookedVal), booked+' jobs won', 'var(--booked)') +
+          card('In the pipeline', money(pipelineVal), 'leads to chase', 'var(--brand)')
+        : card('Jobs booked', booked, 'won this period', 'var(--booked)') +
+          card('💎 Revenue analytics', '€ —', 'Premium plan', 'var(--mut)') }
+      ${card('After-hours caught', ah, can('revenue')?money(ahVal)+' value':'calls saved', 'var(--callback)')}
       ${card('Booking rate', conv+'%', total+' calls', 'var(--ink)')}
     </div>
     <div class="ins-grid">
@@ -820,26 +875,64 @@ function switchAuth(tab){
   $('tab-signup').classList.toggle('active', !login);
   if(!login) loadPricing();
 }
+let PLANS=[], selectedPlan='pro', appliedCode=null;
+function planServer(){ return ($('lg-server').value||'').trim().replace(/\/$/,'') || webhook; }
 async function loadPricing(){
-  const server=($('lg-server').value||'').trim().replace(/\/$/,'') || webhook;
-  if(!server) return;
+  const server=planServer(); if(!server) return;
   try{ const r=await fetch(server+'/pricing'); if(!r.ok) return; const p=await r.json();
-    $('su-setup').textContent='€'+p.setup; $('su-monthly').textContent='€'+p.monthly+' / month';
+    PLANS=p.plans||[]; if(!PLANS.some(x=>x.id===selectedPlan)) selectedPlan=(PLANS[1]||PLANS[0]||{}).id;
+    renderPlans();
   }catch(e){}
+}
+function renderPlans(){
+  const box=$('su-plans'); if(!box) return;
+  box.innerHTML = PLANS.map(p=>{
+    const sel=p.id===selectedPlan, prem=p.id==='premium';
+    const tag = p.id==='pro'?'<div class="tag">Most popular</div>' : (prem?'<div class="tag">Best value</div>':'');
+    return `<div class="tiercard ${sel?'sel':''} ${prem?'premium':''}" onclick="pickPlan('${p.id}')">${tag}
+      <div class="th"><span class="tn">${p.name}</span><span class="tp">€${p.monthly}<span style="font-size:11px;color:#8190ad">/mo</span></span></div>
+      <div class="tsetup">+ €${p.setup} one-time setup</div>
+      <div class="tb">${p.blurb||''}</div></div>`;
+  }).join('');
+  priceBox();
+}
+function pickPlan(id){ selectedPlan=id; appliedCode=null; $('su-codemsg').textContent=''; renderPlans(); }
+function curPlan(){ return PLANS.find(p=>p.id===selectedPlan)||{setup:0,monthly:0}; }
+function priceBox(){
+  const p=curPlan();
+  let setup=p.setup, monthly=p.monthly, note='';
+  if(appliedCode&&appliedCode.preview){ setup=appliedCode.preview.setup; monthly=appliedCode.preview.monthly; note=' '+appliedCode.label; }
+  const sline = (appliedCode&&setup!==p.setup)?`<s style="color:#9aa6bd">€${p.setup}</s> €${setup}`:`€${setup}`;
+  const mline = (appliedCode&&monthly!==p.monthly)?`<s style="color:#9aa6bd">€${p.monthly}</s> €${monthly} / month`:`€${monthly} / month`;
+  $('su-setup').innerHTML=sline; $('su-monthly').innerHTML=mline;
+}
+async function applyCode(){
+  const code=($('su-code').value||'').trim(); const msg=$('su-codemsg');
+  if(!code){ msg.textContent=''; appliedCode=null; priceBox(); return; }
+  const server=planServer(); const p=curPlan();
+  const email=($('su-email').value||'').trim();
+  try{
+    const r=await fetch(server+'/validate-discount',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,email,setup:p.setup,monthly:p.monthly})});
+    const d=await r.json();
+    if(d.ok){ appliedCode=d; msg.style.color='#0b9e6e'; msg.textContent='✓ '+d.label+' applied'; }
+    else { appliedCode=null; msg.style.color='#e2466b'; msg.textContent=d.reason||'Invalid code'; }
+  }catch(e){ msg.style.color='#e2466b'; msg.textContent='Could not check that code.'; }
+  priceBox();
 }
 async function signup(){
   const business=($('su-biz').value||'').trim();
   const website=($('su-web').value||'').trim();
   const email=($('su-email').value||'').trim();
   const password=$('su-pass').value||'';
-  let server=($('lg-server').value||'').trim().replace(/\/$/,'') || webhook;
+  const discountCode=($('su-code').value||'').trim();
+  let server=planServer();
   $('su-err').textContent='';
   if(!business||!email||!password){ $('su-err').textContent='Fill in your business, email and a password.'; return; }
   if(password.length<8){ $('su-err').textContent='Password needs at least 8 characters.'; return; }
   if(!server){ $('su-err').textContent='Enter your server address (under “Server address”).'; return; }
   $('su-btn').textContent='Taking you to payment…';
   try{
-    const r=await fetch(server+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,business,password,website})});
+    const r=await fetch(server+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,business,password,website,plan:selectedPlan,discountCode})});
     const data=await r.json().catch(()=>({}));
     if(data.url){ window.location.href=data.url; return; }       // -> Stripe Checkout
     $('su-err').textContent=data.error||'Could not start checkout.';
@@ -858,7 +951,8 @@ async function doLogin(){
     const r=await fetch(server+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,password:pass})});
     const data=await r.json().catch(()=>({}));
     if(!r.ok){ $('lg-err').textContent=data.error||'Wrong email or password.'; $('lg-btn').textContent='Log in'; return; }
-    session={ mode:'client', server, token:data.token, business:data.business, user };
+    session={ mode:'client', server, token:data.token, business:data.business, user,
+      plan:data.plan||'pro', planName:data.planName||'Pro', features:data.features||[] };
     localStorage.setItem('sl_session',JSON.stringify(session));
     calls=[]; localStorage.removeItem('sl_calls'); // start from their real data
     enterApp(); toast('Welcome back, '+(data.business||''));
@@ -879,9 +973,38 @@ function logout(){
 function enterApp(){
   $('login-bg').style.display='none'; $('app').style.display='';
   $('who-state').textContent = session.business || (session.mode==='demo'?'Demo workspace':'');
+  applyPlan();
   load(); render();
   if(session.token){ startSync(); }
   else if(webhook){ startSync(); }
+}
+/* ---------- plan / feature gating ---------- */
+// Demo and preset env clients see everything; paying clients see their tier.
+function planFeatures(){
+  if(session.mode==='demo' || !session.features) return null; // null = everything unlocked
+  return session.features;
+}
+function can(feat){ const f=planFeatures(); return !f || f.includes(feat); }
+function applyPlan(){
+  const badge=$('plan-badge');
+  if(session.mode==='client' && session.planName){
+    badge.style.display='flex';
+    badge.className='plan-badge tier-'+(session.plan||'pro');
+    badge.innerHTML=`<span>★ ${session.planName} plan</span>`+
+      (session.plan!=='premium'?`<span class="up" onclick="openUpgrade()">Upgrade</span>`:'');
+  } else badge.style.display='none';
+  // lock nav items the plan doesn't include
+  document.querySelectorAll('.nav a[data-feat]').forEach(a=>{
+    a.classList.toggle('locked', !can(a.getAttribute('data-feat')));
+  });
+}
+function navFeat(feat,viewName){
+  if(!can(feat)){ openUpgrade(feat); return; }
+  setView(viewName);
+}
+function openUpgrade(feat){
+  const names={pipeline:'Pipeline board',insights:'AI Insights',copilot:'Copilot',web_chat:'Website chat',revenue:'Revenue analytics',reminders:'Reminders'};
+  alert(`${names[feat]||'That feature'} is part of a higher plan.\n\nUpgrade your plan to unlock it — call Southline on 085 174 0783 or reply to your welcome email and we'll switch it on instantly.`);
 }
 
 /* ---------- boot ---------- */
