@@ -16,6 +16,7 @@
 
 const crypto = require("crypto");
 const store = require("./store");
+const plans = require("./plans");
 
 function hashPassword(password, salt) {
   salt = salt || crypto.randomBytes(16).toString("hex");
@@ -42,9 +43,9 @@ function loadAccounts() {
 const tokens = new Map(); // token -> { business, exp }
 const TOKEN_TTL = 12 * 60 * 60 * 1000;
 
-function issueToken(business) {
+function issueToken(business, plan) {
   const t = crypto.randomBytes(24).toString("hex");
-  tokens.set(t, { business, exp: Date.now() + TOKEN_TTL });
+  tokens.set(t, { business, plan: plan || plans.DEFAULT_PLAN, exp: Date.now() + TOKEN_TTL });
   return t;
 }
 function readToken(req) {
@@ -77,7 +78,9 @@ function mountAuth(app, getLeads) {
     if (acct.active === false) {
       return res.status(402).json({ error: "Your subscription isn't active yet — finish payment, then log in." });
     }
-    res.json({ token: issueToken(acct.business), business: acct.business });
+    const plan = plans.getPlan(acct.plan);
+    res.json({ token: issueToken(acct.business, plan.id), business: acct.business,
+      plan: plan.id, planName: plan.name, features: plan.features });
   });
 
   app.get("/my-leads", (req, res) => {
@@ -90,7 +93,8 @@ function mountAuth(app, getLeads) {
   app.get("/me", (req, res) => {
     const rec = readToken(req);
     if (!rec) return res.status(401).json({ error: "not logged in" });
-    res.json({ business: rec.business });
+    const plan = plans.getPlan(rec.plan);
+    res.json({ business: rec.business, plan: plan.id, planName: plan.name, features: plan.features });
   });
 
   // Provisioning progress for the logged-in client.

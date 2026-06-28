@@ -66,6 +66,14 @@ catch (e) { console.warn("Billing module not mounted:", e.message); }
 try { require("./knowledge").mountKnowledge(app); }
 catch (e) { console.warn("Knowledge module not mounted:", e.message); }
 
+// Discount codes — adds POST /validate-discount.
+try { require("./discounts").mountDiscounts(app); }
+catch (e) { console.warn("Discounts module not mounted:", e.message); }
+
+// Owner admin — adds /admin/* (password-protected, owner only).
+try { require("./admin").mountAdmin(app, () => leads); }
+catch (e) { console.warn("Admin module not mounted:", e.message); }
+
 app.post("/log-lead", async (req, res) => {
   try {
     // Vapi wraps function calls. Support both the wrapped and flat shapes.
