@@ -33,6 +33,7 @@ function buildAssistantConfig(acct) {
     "{{FAQ}}": acct.faq || "Ask the team for anything not listed.",
     "{{VOICE_ID}}": acct.voiceId || "21m00Tcm4TlvDq8ikWAM",
     "{{WEBHOOK_URL}}": base + "/log-lead",
+    "{{CALL_REPORT_URL}}": base + "/call-report",
     "{{AVAILABILITY_URL}}": base + "/availability",
     "{{BOOK_URL}}": base + "/book",
     "{{BOOKING_WORKFLOW_URL}}": base + "/submit-booking",

@@ -74,6 +74,11 @@ catch (e) { console.warn("Discounts module not mounted:", e.message); }
 try { require("./admin").mountAdmin(app, () => leads); }
 catch (e) { console.warn("Admin module not mounted:", e.message); }
 
+// Call intelligence — adds POST /call-report (transcripts/summaries/recordings)
+// and POST /missed-call (automatic text-back to callers you miss).
+try { require("./calls").mountCalls(app, () => leads); }
+catch (e) { console.warn("Calls module not mounted:", e.message); }
+
 app.post("/log-lead", async (req, res) => {
   try {
     // Vapi wraps function calls. Support both the wrapped and flat shapes.

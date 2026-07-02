@@ -47,6 +47,7 @@ function buildAssistant(c) {
     "{{FAQ}}": c.faq || "Ask the team for anything not listed.",
     "{{VOICE_ID}}": c.voiceId,
     "{{WEBHOOK_URL}}": c.webhookUrl,
+    "{{CALL_REPORT_URL}}": String(c.webhookUrl||"").replace(/\/log-lead$/,"") + "/call-report",
     "{{AVAILABILITY_URL}}": base + "/availability",
     "{{BOOK_URL}}": base + "/book",
     "{{BOOKING_WORKFLOW_URL}}": c.bookingWorkflowUrl || base + "/submit-booking",

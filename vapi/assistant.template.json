@@ -6,6 +6,10 @@
   "firstMessage": "Hi, thanks for calling {{BUSINESS_NAME}}, you're through to the reception desk. How can I help you today?",
   "firstMessageMode": "assistant-speaks-first",
 
+  "server": { "url": "{{CALL_REPORT_URL}}" },
+  "serverMessages": ["end-of-call-report"],
+  "artifactPlan": { "recordingEnabled": true },
+
   "model": {
     "provider": "anthropic",
     "model": "claude-opus-4-8",

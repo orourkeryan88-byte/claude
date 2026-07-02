@@ -35,6 +35,10 @@ real number once Vapi is connected.
 3. Paste me: Account SID, Auth Token, the Twilio number.
 4. I'll set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, and
    `DEFAULT_OWNER_PHONE=085 174 0783` on Render.
+5. **Missed-call text-back** (recovers 30–58% of leads): on any client's real line,
+   set the Twilio number's "call status changes" webhook to
+   `<your Render URL>/missed-call` — any call that rings out gets an automatic
+   text back within seconds and is logged in their CRM.
 
 ## 4. Stripe (the €350 + €80/mo charge)
 
