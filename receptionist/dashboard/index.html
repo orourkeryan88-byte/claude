@@ -171,6 +171,23 @@
   textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font-family:inherit;font-size:13.5px;resize:vertical;min-height:70px}
   textarea:focus{outline:none;border-color:var(--brand)}
   .note{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13.5px}
+  /* call record (summary / transcript / recording) */
+  .callsum{background:#f7f8fa;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13.5px;line-height:1.55;color:#2b3650}
+  .tr-toggle{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--mut)}
+  .tr-toggle:hover{color:var(--brand)}
+  .transcript{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12.5px;line-height:1.7;color:#3a465f;max-height:260px;overflow:auto;white-space:pre-wrap}
+  /* insights bar charts */
+  .chartcard h4{margin:0 0 2px}
+  .chart-sub{font-size:12px;color:var(--mut);margin-bottom:14px}
+  .bars{display:flex;align-items:flex-end;gap:2px;height:120px}
+  .bars .b{flex:1;min-width:4px;background:var(--brand);border-radius:4px 4px 0 0;position:relative;cursor:default;transition:opacity .1s}
+  .bars .b:hover{opacity:.75}
+  .bars .b .tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;
+    font-size:11.5px;font-weight:600;padding:4px 8px;border-radius:6px;white-space:nowrap;display:none;z-index:3}
+  .bars .b:hover .tip{display:block}
+  .bars .b.zero{background:#eaecf0}
+  .axis{display:flex;gap:2px;margin-top:6px}
+  .axis span{flex:1;text-align:center;font-size:10.5px;color:var(--mut);overflow:hidden;white-space:nowrap}
   .note .meta{font-size:11.5px;color:var(--mut);margin-top:5px}
   .dcta{display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--line)}
   .dcta .btn{flex:1;justify-content:center}
@@ -431,6 +448,16 @@
       <div class="di"><div class="l">Received</div><div class="v" id="d-received">—</div></div>
     </div>
 
+    <div id="d-callrec" style="display:none">
+      <div class="section-t">Call record</div>
+      <div id="d-summary" class="callsum"></div>
+      <audio id="d-audio" controls preload="none" style="width:100%;margin-top:9px;display:none"></audio>
+      <details id="d-transcript-wrap" style="margin-top:9px;display:none">
+        <summary class="tr-toggle">Full transcript</summary>
+        <div id="d-transcript" class="transcript"></div>
+      </details>
+    </div>
+
     <div class="section-t">Status</div>
     <div class="statusrow" id="d-statusrow"></div>
 
@@ -516,14 +543,28 @@ let lastStat = {};             // for count-up animation
 
 /* ---------- seed + persistence ---------- */
 const SEED = [
-  {name:'Sarah Byrne', phone:'087 555 0192', problem:'Leak under kitchen sink, water escaping', urgency:'urgent', status:'callback', time:'Today, 2–4pm', mins:8, notes:[]},
+  {name:'Sarah Byrne', phone:'087 555 0192', problem:'Leak under kitchen sink, water escaping', urgency:'urgent', status:'callback', time:'Today, 2–4pm', mins:8, notes:[],
+   summary:'Sarah has a leak under her kitchen sink and water is escaping onto the floor. She has turned off the isolation valve. She needs someone today between 2–4pm and gave her mobile as the best contact. Marked urgent.',
+   transcript:'AI: Hi, thanks for calling, you\'re through to the reception desk. How can I help you today?\nSarah: Hi, I\'ve got water coming out from under my kitchen sink, it\'s going everywhere.\nAI: Sorry to hear that — that sounds urgent. Have you been able to turn off the water at the valve under the sink?\nSarah: Yeah, I found the little tap and turned it off, it\'s slowed down a lot.\nAI: That\'s the right thing to do. Can I take your name and the best number to reach you?\nSarah: Sarah Byrne, 087 555 0192.\nAI: Thanks Sarah. When suits you for someone to come out — we could do today between 2 and 4?\nSarah: Today 2 to 4 works, please.\nAI: Perfect, I\'ve flagged it as urgent and the team will text you to confirm. Anything else?\nSarah: No, that\'s everything, thanks.\nAI: You\'re welcome — help is on the way. Bye now.'},
   {name:'David Kelly', phone:'086 222 4471', problem:'New patient — wants a check-up & clean', urgency:'normal', status:'new', time:'Next week', mins:26, notes:[]},
   {name:'Aoife Murphy', phone:'085 661 3320', problem:'Cut & colour booking for Saturday', urgency:'normal', status:'booked', time:'Sat 11am w/ Emma', mins:54, notes:[{t:'Booked in with Emma, confirmed by text.', at:Date.now()-1000*60*40}]},
   {name:'Mark Doyle', phone:'087 904 2218', problem:'Quote for a full bathroom refit', urgency:'normal', status:'new', time:'Callback today', mins:73, notes:[]},
   {name:'Emma Walsh', phone:'083 447 1209', problem:'Dog off his food & lethargic, wants him seen', urgency:'urgent', status:'callback', time:'Today 4.30pm', mins:95, notes:[]},
   {name:'Liam O\'Connor', phone:'089 330 7781', problem:'Boiler making a banging noise, no hot water', urgency:'urgent', status:'new', time:'ASAP', mins:120, notes:[]},
   {name:'Niamh Ryan', phone:'085 220 9913', problem:'Asked about prices, said she\'d ring back', urgency:'normal', status:'closed', time:'—', mins:180, notes:[{t:'Price given, not ready to book yet.', at:Date.now()-1000*60*170}]},
-  {name:'Tom Fitzgerald', phone:'086 771 4420', problem:'Blocked drain in back garden', urgency:'normal', status:'booked', time:'Tomorrow am', mins:240, notes:[]}
+  {name:'Tom Fitzgerald', phone:'086 771 4420', problem:'Blocked drain in back garden', urgency:'normal', status:'booked', time:'Tomorrow am', mins:240, notes:[]},
+  // earlier history so the trends read properly
+  {name:'Grace Nolan', phone:'087 118 6205', problem:'Radiator cold downstairs, wants a service', urgency:'normal', status:'closed', time:'—', mins:60*26, notes:[]},
+  {name:'Paul Brennan', phone:'086 902 5170', problem:'Quote to re-tile an ensuite', urgency:'normal', status:'booked', time:'Done — last Wed', mins:60*30, notes:[]},
+  {name:'Ciara Duffy', phone:'083 355 8841', problem:'Toilet running constantly, water bill worry', urgency:'normal', status:'closed', time:'—', mins:60*52, notes:[]},
+  {name:'John Farrell', phone:'089 447 2036', problem:'Outdoor tap replacement', urgency:'normal', status:'booked', time:'Done — last week', mins:60*76, notes:[]},
+  {name:'Mary Keane', phone:'085 003 9917', problem:'No hot water in the mornings', urgency:'urgent', status:'closed', time:'—', mins:60*99, notes:[]},
+  {name:'Dara Lynch', phone:'087 660 2483', problem:'Wants a full heating check before winter', urgency:'normal', status:'booked', time:'Done', mins:60*124, notes:[]},
+  {name:'Eve Whelan', phone:'086 511 7729', problem:'Dripping shower head', urgency:'normal', status:'closed', time:'—', mins:60*150, notes:[]},
+  {name:'Rob Casey', phone:'083 220 4165', problem:'Dishwasher plumbing for a new kitchen', urgency:'normal', status:'booked', time:'Done', mins:60*196, notes:[]},
+  {name:'Anna Field', phone:'089 733 5510', problem:'Leak stain on ceiling under bathroom', urgency:'urgent', status:'closed', time:'—', mins:60*230, notes:[]},
+  {name:'Sean Óg Byrne', phone:'085 447 8092', problem:'Price for a power flush', urgency:'normal', status:'closed', time:'—', mins:60*260, notes:[]},
+  {name:'Laura Hyland', phone:'087 224 6631', problem:'New washing machine install', urgency:'normal', status:'booked', time:'Done', mins:60*300, notes:[]}
 ];
 function load(){
   const saved = localStorage.getItem('sl_calls');
@@ -736,7 +777,45 @@ function renderInsights(){
         <h4>Recommended next moves</h4>
         ${recs.map(r=>`<div class="rec">${r}</div>`).join('')}
       </div>
+    </div>
+    <div class="ins-grid" style="margin-top:18px">
+      ${chartCard('Calls per day','Last 14 days',dayBars(c))}
+      ${chartCard('Calls by hour','When your phone rings — all time',hourBars(c))}
     </div>`;
+}
+/* ---------- insights charts (single series, hover tooltips) ---------- */
+function chartCard(title,sub,inner){
+  return `<div class="card ins-card chartcard"><h4>${title}</h4><div class="chart-sub">${sub}</div>${inner}</div>`;
+}
+function barRow(bins,labels){
+  const max=Math.max(1,...bins.map(b=>b.n));
+  const bars=bins.map(b=>{
+    const h=b.n? Math.max(6,Math.round(b.n/max*100)) : 2;
+    return `<div class="b ${b.n?'':'zero'}" style="height:${h}%"><span class="tip">${b.tip}</span></div>`;
+  }).join('');
+  return `<div class="bars">${bars}</div><div class="axis">${labels.map(l=>`<span>${l}</span>`).join('')}</div>`;
+}
+function dayBars(c){
+  const days=[...Array(14)].map((_,i)=>{
+    const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-(13-i));
+    return d;
+  });
+  const bins=days.map(d=>{
+    const next=new Date(d); next.setDate(d.getDate()+1);
+    const n=c.filter(x=>x.received>=d.getTime()&&x.received<next.getTime()).length;
+    return { n, tip:`${d.toLocaleDateString('en-IE',{weekday:'short',day:'numeric',month:'short'})} — ${n} call${n===1?'':'s'}` };
+  });
+  const labels=days.map((d,i)=> i%2? '' : d.toLocaleDateString('en-IE',{weekday:'narrow'}));
+  return barRow(bins,labels);
+}
+function hourBars(c){
+  const bins=[...Array(24)].map((_,h)=>{
+    const n=c.filter(x=>new Date(x.received).getHours()===h).length;
+    const lab=((h%12)||12)+(h<12?'am':'pm');
+    return { n, tip:`${lab} — ${n} call${n===1?'':'s'}` };
+  });
+  const labels=[...Array(24)].map((_,h)=> h%4? '' : ((h%12)||12)+(h<12?'a':'p'));
+  return barRow(bins,labels);
 }
 
 /* ---------- drag & drop (pipeline) ---------- */
@@ -764,6 +843,16 @@ function openDrawer(id){
   $('d-received').textContent=new Date(c.received).toLocaleString('en-IE',{weekday:'short',hour:'2-digit',minute:'2-digit'});
   $('d-callbtn').href=telHref(c.phone);
   $('d-statusrow').innerHTML = STAGES.map(s=>`<button class="chip ${c.status===s.key?'active':''}" onclick="setStatus('${s.key}')">${s.label}</button>`).join('');
+  // call record: AI summary, recording playback, full transcript (from /call-report)
+  const hasRec = c.summary || c.transcript || c.recordingUrl;
+  $('d-callrec').style.display = hasRec ? '' : 'none';
+  if(hasRec){
+    $('d-summary').textContent = c.summary || 'Call captured — transcript below.';
+    const au=$('d-audio');
+    if(c.recordingUrl){ au.src=c.recordingUrl; au.style.display=''; } else { au.removeAttribute('src'); au.style.display='none'; }
+    const tw=$('d-transcript-wrap');
+    if(c.transcript){ tw.style.display=''; tw.open=false; $('d-transcript').textContent=c.transcript; } else tw.style.display='none';
+  }
   renderNotes(c);
   const co=$('copilot-out'); if(co){ co.classList.remove('show'); co.textContent=''; } $('copilot-copy').style.display='none';
   $('drawer').classList.add('show'); $('drawer-bg').classList.add('show');
@@ -838,15 +927,22 @@ async function syncNow(){
     let added=0;
     data.forEach(l=>{
       const key=(l.phone||'')+'|'+(l.receivedAt||'');
-      if(!calls.some(c=>c._k===key)){
-        const nid='w'+Date.now()+Math.random().toString(36).slice(2,6);
-        calls.unshift({ id:nid, _k:key,
-          name:l.name||'Unknown caller', phone:l.phone||'(no number)',
-          problem:l.reason||'General enquiry', time:l.preferred_time||'—',
-          urgency:l.urgency||'normal', status:'new',
-          received: l.receivedAt?Date.parse(l.receivedAt):Date.now(), notes:[] });
-        freshIds.add(nid); added++;
+      const rec={ summary:l.summary||'', transcript:l.transcript||'', recordingUrl:l.recordingUrl||'', channel:l.channel||'' };
+      const existing=calls.find(c=>c._k===key);
+      if(existing){
+        // call-report data lands after the lead — merge it into the record we already have
+        let changed=false;
+        for(const k of ['summary','transcript','recordingUrl']){ if(rec[k] && !existing[k]){ existing[k]=rec[k]; changed=true; } }
+        if(changed) save();
+        return;
       }
+      const nid='w'+Date.now()+Math.random().toString(36).slice(2,6);
+      calls.unshift({ id:nid, _k:key,
+        name:l.name||'Unknown caller', phone:l.phone||'(no number)',
+        problem:l.reason||'General enquiry', time:l.preferred_time||'—',
+        urgency:l.urgency||'normal', status:'new',
+        received: l.receivedAt?Date.parse(l.receivedAt):Date.now(), notes:[], ...rec });
+      freshIds.add(nid); added++;
     });
     if(added){ save(); render(); toast(`${added} new call${added>1?'s':''} from your line`); }
     const host=(session.server||webhook||'').replace(/^https?:\/\//,'');
