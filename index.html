@@ -10,16 +10,18 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233b82f6'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%23041222' font-family='Arial' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" />
 <!-- Live ElevenLabs conversational AI agent -->
 <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#070b14; --bg2:#0d1424; --card:#111a2e; --line:#1e2a44;
-    --txt:#eaf0ff; --mut:#8da2c7; --brand:#3b82f6; --brand2:#22d3ee;
+    --txt:#eaf0ff; --mut:#8da2c7; --brand:#6366f1; --brand2:#a5b4fc;
     --good:#34d399; --warn:#fbbf24; --bad:#f87171; --radius:18px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.008em;
     background:radial-gradient(1200px 700px at 70% -10%,#16243f 0%,var(--bg) 55%) ,var(--bg);
     color:var(--txt); line-height:1.55; -webkit-font-smoothing:antialiased;
   }
@@ -128,7 +130,7 @@
   .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   @media(max-width:780px){.cards{grid-template-columns:1fr}}
   .feature{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
-  .feature .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(59,130,246,.12);margin-bottom:12px}
+  .feature .ic{width:44px;height:44px;border-radius:12px;background:rgba(99,102,241,.12);display:grid;place-items:center;color:#a5b4fc;margin-bottom:12px}
   .feature h4{margin:0 0 6px;font-size:17px}
   .feature p{margin:0;color:var(--mut);font-size:14.5px}
 
@@ -183,10 +185,10 @@
       <button class="btn ghost" onclick="document.getElementById('book').scrollIntoView({behavior:'smooth'})">Book a demo</button>
     </div>
     <div class="badge-row">
-      <div>📞 <b>Answers in 1 ring</b></div>
-      <div>🕑 <b>24/7 / 365</b></div>
-      <div>💬 <b>Every lead texted to you</b></div>
-      <div>💶 <b>From €99/mo</b></div>
+      <div><b>Answers in 1 ring</b></div>
+      <div><b>24/7 / 365</b></div>
+      <div><b>Every lead texted to you</b></div>
+      <div><b>From €80/mo</b></div>
     </div>
   </header>
 
@@ -217,7 +219,7 @@
 
           <!-- pre-call controls -->
           <div class="controls" id="precall">
-            <button class="btn primary" id="callBtn" onclick="toggleTalk()">📞 Call it now</button>
+            <button class="btn primary" id="callBtn" onclick="toggleTalk()">Call it now</button>
             <button class="btn ghost" id="autoBtn" onclick="startAuto()">▶ Play sample call</button>
           </div>
           <div class="trysay" id="trysay">
@@ -242,7 +244,7 @@
           <div class="empty" id="empty">The call captions will appear here in real time…</div>
         </div>
         <div class="lead" id="lead">
-          <h4>✅ Lead captured &amp; texted to the owner</h4>
+          <h4>Lead captured &amp; texted to the owner</h4>
           <div class="row"><span>Name</span><span id="ld-name">—</span></div>
           <div class="row"><span>Phone</span><span id="ld-phone">—</span></div>
           <div class="row"><span>Reason</span><span id="ld-reason">—</span></div>
@@ -281,8 +283,8 @@
         <div class="hint" style="text-align:left;margin-top:6px">Leave blank for the summit — the demo already answers common questions (hours, price, services, area, emergencies) from the local brain, and gracefully takes a message for anything else. Add a key only if you want it to answer literally <em>any</em> question live (needs wifi). The key stays in your browser for this session only — for a real client, the key lives safely on the server, never in the page.</div>
       </div>
       <div class="controls" style="justify-content:flex-start;margin-top:14px">
-        <button class="btn primary" onclick="exportConfig()">⬇ Export this client's Vapi config</button>
-        <button class="btn ghost" onclick="copyOnboarding()">📋 Copy client setup steps</button>
+        <button class="btn primary" onclick="exportConfig()">Export this client's Vapi config</button>
+        <button class="btn ghost" onclick="copyOnboarding()">Copy client setup steps</button>
       </div>
       <div class="hint">Tip for the summit: pick the prospect's industry, type their real business name, then hit <em>“📞 Call it now”</em> and actually talk to it like a phone call (Chrome/Edge), or <em>“▶ Play sample call”</em> on any device. Hit <em>“Export”</em> to walk away with a deployable file for them.</div>
     </div>
@@ -294,12 +296,12 @@
     <h2>A receptionist that never sleeps, never calls in sick</h2>
     <p class="lead-sub">Most tradespeople and clinics lose money the second a call goes to voicemail. This fixes that.</p>
     <div class="cards">
-      <div class="feature"><div class="ic">📞</div><h4>Answers every call, 24/7</h4><p>Picks up on the first ring — day, night, weekends. No more missed calls, no more jobs lost to the competitor.</p></div>
-      <div class="feature"><div class="ic">📅</div><h4>Books into your calendar</h4><p>Checks real availability — "tomorrow at 10?" If it's taken it offers 11 and asks for another time, then books it in.</p></div>
-      <div class="feature"><div class="ic">💬</div><h4>Texts you every lead</h4><p>Name, number and reason land in your phone instantly, flagged urgent when it matters — then logged to your CRM.</p></div>
-      <div class="feature"><div class="ic">🔁</div><h4>Reschedules, cancels, messages</h4><p>Handles changes, takes detailed messages, manages complaints calmly — a full front desk, not just an answerphone.</p></div>
-      <div class="feature"><div class="ic">🆘</div><h4>Knows when to transfer</h4><p>Spots emergencies and "I'd like a person" and puts the caller straight through to you — never drops the ball.</p></div>
-      <div class="feature"><div class="ic">📈</div><h4>A tenth of the cost</h4><p>A fraction of a €25–30k/yr receptionist — branded to your business, handling unlimited calls at once.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.6a2 2 0 01-.5 2.1L8.1 9.6a16 16 0 006 6l1.2-1.2a2 2 0 012.1-.4c.8.3 1.7.5 2.6.6a2 2 0 011.7 2z"/></svg></div><h4>Answers every call, 24/7</h4><p>Picks up on the first ring — day, night, weekends. No more missed calls, no more jobs lost to the competitor.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><h4>Books into your calendar</h4><p>Checks real availability — "tomorrow at 10?" If it's taken it offers 11 and asks for another time, then books it in.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><h4>Texts you every lead</h4><p>Name, number and reason land in your phone instantly, flagged urgent when it matters — then logged to your CRM.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><h4>Reschedules, cancels, messages</h4><p>Handles changes, takes detailed messages, manages complaints calmly — a full front desk, not just an answerphone.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M8 21H3v-5M21 3l-7 7M3 21l7-7"/></svg></div><h4>Knows when to transfer</h4><p>Spots emergencies and "I'd like a person" and puts the caller straight through to you — never drops the ball.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div><h4>A tenth of the cost</h4><p>A fraction of a €25–30k/yr receptionist — branded to your business, handling unlimited calls at once.</p></div>
     </div>
   </section>
 
@@ -307,7 +309,7 @@
   <section id="roi">
     <div class="eyebrow">The maths</div>
     <h2>How much are missed calls costing you?</h2>
-    <p class="lead-sub">Slide these to a prospect's real numbers. Watch the lost revenue add up — then show them the €99 price.</p>
+    <p class="lead-sub">Slide these to a prospect's real numbers. Watch the lost revenue add up — then show them the €80/mo price.</p>
     <div class="panel" style="max-width:760px;margin:0 auto">
       <div class="cfg" style="grid-template-columns:1fr 1fr">
         <div class="field"><label>Missed calls per week: <b id="roi-calls-v" style="color:var(--brand2)">10</b></label>
@@ -327,7 +329,7 @@
         </div>
         <div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.3);border-radius:14px;padding:18px;text-align:center">
           <div style="color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.5px">AI receptionist costs</div>
-          <div style="font-size:40px;font-weight:850;color:var(--good);margin-top:4px">€99<span style="font-size:16px;color:var(--mut)">/mo</span></div>
+          <div style="font-size:40px;font-weight:850;color:var(--good);margin-top:4px">€80<span style="font-size:16px;color:var(--mut)">/mo</span></div>
           <div style="color:var(--good);font-size:13px;font-weight:700" id="roi-x">That's a 28× return</div>
         </div>
       </div>
@@ -351,24 +353,27 @@
   <section id="pricing">
     <div class="eyebrow">Simple pricing</div>
     <h2>Pick a plan, go live this week</h2>
-    <p class="lead-sub">No long contracts. Cancel anytime. First 14 days free.</p>
+    <p class="lead-sub">One-time setup, then monthly. No long contracts — cancel anytime.</p>
     <div class="price-grid">
       <div class="plan">
         <div class="pname">Starter</div>
-        <div class="pp">€99<small>/mo</small></div>
-        <ul><li>24/7 call answering</li><li>Lead capture + SMS to you</li><li>Up to 150 calls/mo</li><li>Your branding &amp; greeting</li></ul>
-        <button class="btn ghost" onclick="book()">Start free trial</button>
+        <div class="pp">€80<small>/mo</small></div>
+        <div style="color:var(--mut);font-size:12.5px;margin:-6px 0 10px">+ €250 one-time setup</div>
+        <ul><li>24/7 call answering</li><li>Appointment booking</li><li>Every lead texted to you</li><li>Call log — 30-day history</li></ul>
+        <button class="btn ghost" onclick="book()">Get started</button>
       </div>
       <div class="plan feat">
         <div class="pname">Pro</div>
-        <div class="pp">€199<small>/mo</small></div>
-        <ul><li>Everything in Starter</li><li>Appointment booking</li><li>Up to 600 calls/mo</li><li>Calendar integration</li><li>Urgent-lead flagging</li></ul>
-        <button class="btn primary" onclick="book()">Start free trial</button>
+        <div class="pp">€150<small>/mo</small></div>
+        <div style="color:var(--mut);font-size:12.5px;margin:-6px 0 10px">+ €350 one-time setup</div>
+        <ul><li>Everything in Starter</li><li>Website chat widget</li><li>Pipeline board + AI Insights</li><li>Call summaries &amp; transcripts</li><li>Reminders + review follow-ups</li></ul>
+        <button class="btn primary" onclick="book()">Get started</button>
       </div>
       <div class="plan">
-        <div class="pname">Multi-site</div>
-        <div class="pp">Custom</div>
-        <ul><li>Everything in Pro</li><li>Multiple locations / numbers</li><li>Unlimited calls</li><li>CRM &amp; webhook integrations</li><li>Priority support</li></ul>
+        <div class="pname">Premium</div>
+        <div class="pp">€250<small>/mo</small></div>
+        <div style="color:var(--mut);font-size:12.5px;margin:-6px 0 10px">+ €500 one-time setup</div>
+        <ul><li>Everything in Pro</li><li>Revenue analytics (€ recovered)</li><li>Multi-location / multi-number</li><li>Custom voice &amp; branding</li><li>Priority support</li></ul>
         <button class="btn ghost" onclick="book()">Talk to us</button>
       </div>
     </div>
@@ -380,8 +385,8 @@
     <h2>See it answer your business</h2>
     <p class="lead-sub">Tell us your business name and we'll have a live AI receptionist answering as you within the day.</p>
     <div class="cta-row">
-      <a class="btn primary" href="tel:0851740783">📞 Call Southline — 085 174 0783</a>
-      <a class="btn ghost" href="mailto:agencysouthline@gmail.com?subject=I%20want%20an%20AI%20receptionist">✉ Email us</a>
+      <a class="btn primary" href="tel:0851740783">Call Southline — 085 174 0783</a>
+      <a class="btn ghost" href="mailto:agencysouthline@gmail.com?subject=I%20want%20an%20AI%20receptionist">Email us</a>
     </div>
   </section>
 </div>
@@ -1081,7 +1086,7 @@ function calcROI(){
   const fmt = n => '€'+n.toLocaleString('en-IE');
   $('roi-lost').textContent = fmt(monthly);
   $('roi-year').textContent = fmt(monthly*12)+' a year walking out the door';
-  const x = Math.max(1, Math.round(monthly/99));
+  const x = Math.max(1, Math.round(monthly/80));
   $('roi-x').textContent = `That's a ${x}× return`;
 }
 calcROI();
