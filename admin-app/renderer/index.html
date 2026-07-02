@@ -87,6 +87,7 @@
     <input id="pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()" />
     <div style="height:14px"></div>
     <button class="btn gold" style="width:100%" onclick="login()">Enter admin →</button>
+    <button class="btn ghost" style="width:100%;margin-top:10px" onclick="enterDemo()">Preview with sample data</button>
     <div class="err" id="gate-err"></div>
   </div>
 </div>
@@ -199,9 +200,66 @@ if(server) $('server').value=server;
 function toast(m){ const t=$('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2600); }
 function H(){ return { 'Authorization':'Bearer '+token, 'Content-Type':'application/json' }; }
 async function api(path,opts={}){
+  if(DEMO) return { json: async()=>demoApi(path,opts) };
   const r=await fetch(server+path,{...opts,headers:{...H(),...(opts.headers||{})}});
   if(r.status===401){ logout(); throw new Error('unauthorised'); }
   return r;
+}
+
+/* ---------- demo mode (sample data, fully interactive) ---------- */
+let DEMO=false;
+const AGO=(h)=>new Date(Date.now()-h*3600e3).toISOString();
+const SAMPLE={
+  clients:[
+    {username:'joe@dublinplumbing.ie', business:"Joe's Plumbing", plan:'pro', planName:'Pro', active:true, website:'dublinplumbing.ie', createdAt:AGO(24*40), notes:'Referred by summit', provisioning:{status:'complete'}},
+    {username:'reception@seapointdental.ie', business:'Seapoint Dental', plan:'premium', planName:'Premium', active:true, website:'seapointdental.ie', createdAt:AGO(24*22), notes:'', provisioning:{status:'complete'}},
+    {username:'emma@no9hair.ie', business:'Hair at No.9', plan:'starter', planName:'Starter', active:true, website:'no9hair.ie', createdAt:AGO(24*9), notes:'Wants web chat — upsell Pro', provisioning:{status:'complete'}},
+    {username:'info@dalkeyvets.ie', business:'Dalkey Vets', plan:'pro', planName:'Pro', active:false, website:'', createdAt:AGO(20), notes:'Paid pending webhook', provisioning:{status:'needs_attention'}},
+  ],
+  discounts:[
+    {code:'LAUNCH50', type:'percent', amount:50, applies:'setup', uses:3, maxUses:10, note:'Summit launch', active:true},
+    {code:'JOE100', type:'fixed', amount:100, applies:'both', email:'joe@dublinplumbing.ie', uses:1, active:true},
+  ],
+  leads:[
+    {business:"Joe's Plumbing", name:'Sarah Byrne', phone:'087 555 0192', reason:'Leak under kitchen sink', urgency:'urgent', receivedAt:AGO(1)},
+    {business:'Seapoint Dental', name:'David Kelly', phone:'086 222 4471', reason:'New patient check-up', urgency:'normal', receivedAt:AGO(3)},
+    {business:'Hair at No.9', name:'Aoife Murphy', phone:'085 661 3320', reason:'Cut & colour Saturday', urgency:'normal', receivedAt:AGO(5)},
+    {business:"Joe's Plumbing", name:'Liam O\'Connor', phone:'089 330 7781', reason:'Boiler banging, no hot water', urgency:'urgent', receivedAt:AGO(7)},
+    {business:'Seapoint Dental', name:'Emma Walsh', phone:'083 447 1209', reason:'Toothache — wants today', urgency:'urgent', receivedAt:AGO(9)},
+  ],
+  plans:[
+    {id:'starter',name:'Starter',monthly:80,setup:250,features:Array(4),highlights:['24/7 call answering','Appointment booking','Text-to-owner on every lead','30-day history']},
+    {id:'pro',name:'Pro',monthly:150,setup:350,features:Array(9),highlights:['Everything in Starter','Website chat widget','Pipeline board','AI Insights & Copilot','Reminders + reviews']},
+    {id:'premium',name:'Premium',monthly:250,setup:500,features:Array(14),highlights:['Everything in Pro','Revenue analytics','Multi-location','Custom voice','API access','Priority support']},
+  ],
+  config:{welcomeNote:'Demo workspace — connect your live server to manage real clients.'},
+};
+function demoApi(path,opts){
+  const body=opts.body?JSON.parse(opts.body):{};
+  if(path==='/admin/overview'){
+    const act=SAMPLE.clients.filter(c=>c.active);
+    const price={starter:80,pro:150,premium:250};
+    const mrr=act.reduce((s,c)=>s+price[c.plan],0);
+    return {clients:SAMPLE.clients.length,activeClients:act.length,pendingClients:SAMPLE.clients.length-act.length,mrr,arr:mrr*12,leadsTotal:SAMPLE.leads.length,byPlan:{},discounts:SAMPLE.discounts.length};
+  }
+  if(path==='/admin/clients') return SAMPLE.clients;
+  if(path==='/admin/client/update'){
+    const c=SAMPLE.clients.find(x=>x.username===body.email);
+    if(c){ if(body.plan!==undefined){c.plan=body.plan;c.planName=body.plan[0].toUpperCase()+body.plan.slice(1);} if(body.active!==undefined)c.active=body.active; if(body.notes!==undefined)c.notes=body.notes; }
+    return {ok:true};
+  }
+  if(path==='/admin/discounts'&&!opts.method) return SAMPLE.discounts;
+  if(path==='/admin/discounts'){ SAMPLE.discounts.unshift({uses:0,active:true,...body,code:(body.code||'').toUpperCase()}); return {ok:true}; }
+  if(path==='/admin/discounts/delete'){ SAMPLE.discounts=SAMPLE.discounts.filter(d=>d.code!==body.code); return {ok:true}; }
+  if(path==='/admin/leads') return SAMPLE.leads;
+  if(path==='/admin/product') return {plans:SAMPLE.plans,config:SAMPLE.config};
+  return {ok:true};
+}
+function enterDemo(){
+  DEMO=true; token='demo';
+  $('gate').classList.add('hide'); $('app').classList.remove('hide');
+  $('server-pill').textContent='Demo — sample data';
+  loadAll();
 }
 
 async function login(){
@@ -220,7 +278,7 @@ async function login(){
     enter();
   }catch(e){ $('gate-err').textContent='Could not reach the server. Check the address.'; }
 }
-function logout(){ token=''; localStorage.removeItem('sl_admin_token'); $('app').classList.add('hide'); $('gate').classList.remove('hide'); }
+function logout(){ token=''; DEMO=false; localStorage.removeItem('sl_admin_token'); $('app').classList.add('hide'); $('gate').classList.remove('hide'); }
 function enter(){ $('gate').classList.add('hide'); $('app').classList.remove('hide'); $('server-pill').textContent=server.replace(/^https?:\/\//,''); loadAll(); }
 
 function tab(t){
