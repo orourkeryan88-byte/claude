@@ -32,6 +32,7 @@ const tokens = new Map(); // token -> exp
 const TTL = 8 * 60 * 60 * 1000;
 
 function adminPassword() { return process.env.ADMIN_PASSWORD || "southline-admin"; }
+function adminEmail() { return (process.env.ADMIN_EMAIL || "agencysouthline@gmail.com").toLowerCase(); }
 function issue() { const t = crypto.randomBytes(24).toString("hex"); tokens.set(t, Date.now() + TTL); return t; }
 function ok(req) {
   const h = req.headers.authorization || "";
@@ -53,10 +54,12 @@ function writeConfig(c) {
 
 function mountAdmin(app, getLeads) {
   app.post("/admin/login", (req, res) => {
-    const { password } = req.body || {};
+    const { email, password } = req.body || {};
+    if (!email || String(email).toLowerCase() !== adminEmail())
+      return res.status(401).json({ error: "Wrong admin email or password." });
     if (!password || password !== adminPassword())
-      return res.status(401).json({ error: "Wrong admin password." });
-    res.json({ token: issue() });
+      return res.status(401).json({ error: "Wrong admin email or password." });
+    res.json({ token: issue(), email: adminEmail() });
   });
 
   app.get("/admin/overview", guard, (req, res) => {

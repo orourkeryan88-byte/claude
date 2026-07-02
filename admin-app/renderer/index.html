@@ -83,8 +83,10 @@
     <div class="sub">Private control centre. Owner access only.</div>
     <label>Server address</label>
     <input id="server" placeholder="https://your-receptionist.onrender.com" />
+    <label>Admin email</label>
+    <input id="em" type="email" placeholder="agencysouthline@gmail.com" autocomplete="username" />
     <label>Admin password</label>
-    <input id="pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()" />
+    <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()" />
     <div style="height:14px"></div>
     <button class="btn gold" style="width:100%" onclick="login()">Enter admin →</button>
     <button class="btn ghost" style="width:100%;margin-top:10px" onclick="enterDemo()">Preview with sample data</button>
@@ -264,12 +266,14 @@ function enterDemo(){
 
 async function login(){
   server=($('server').value||'').trim().replace(/\/$/,'');
+  const email=($('em').value||'').trim();
   const password=$('pw').value||'';
   $('gate-err').textContent='';
   if(!server){ $('gate-err').textContent='Enter your server address.'; return; }
+  if(!email){ $('gate-err').textContent='Enter your admin email.'; return; }
   if(!password){ $('gate-err').textContent='Enter the admin password.'; return; }
   try{
-    const r=await fetch(server+'/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
+    const r=await fetch(server+'/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     const d=await r.json().catch(()=>({}));
     if(!r.ok){ $('gate-err').textContent=d.error||'Wrong password.'; return; }
     token=d.token;
