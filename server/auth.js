@@ -87,7 +87,8 @@ function mountAuth(app, getLeads) {
     const rec = readToken(req);
     if (!rec) return res.status(401).json({ error: "Please log in again." });
     const all = (getLeads && getLeads()) || [];
-    res.json(all.filter((l) => (l.business || "") === rec.business));
+    // spam-screened calls stay out of the client's inbox (owner can audit via /admin/leads)
+    res.json(all.filter((l) => (l.business || "") === rec.business && !l.spam));
   });
 
   app.get("/me", (req, res) => {

@@ -31,6 +31,7 @@ function buildAssistantConfig(acct) {
     "{{SERVICES}}": acct.services || "your services",
     "{{PRICING_NOTES}}": acct.pricingNotes || "as discussed with the team",
     "{{FAQ}}": acct.faq || "Ask the team for anything not listed.",
+    "{{LANGUAGES}}": acct.languages || "English (switch if the caller speaks another language)",
     "{{VOICE_ID}}": acct.voiceId || "21m00Tcm4TlvDq8ikWAM",
     "{{WEBHOOK_URL}}": base + "/log-lead",
     "{{CALL_REPORT_URL}}": base + "/call-report",

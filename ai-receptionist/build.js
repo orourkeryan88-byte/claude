@@ -42,6 +42,7 @@ function build(profile) {
     "{{SERVICES}}": profile.services,
     "{{PRICING_NOTES}}": profile.pricingNotes,
     "{{FAQ}}": profile.faq || "Ask the team for anything not listed.",
+    "{{LANGUAGES}}": profile.languages || p.languages || "English (switch if the caller speaks another language)",
     "{{VOICE_ID}}": profile.voiceId || "21m00Tcm4TlvDq8ikWAM",
     "{{WEBHOOK_URL}}": base + "/log-lead",
     "{{CALL_REPORT_URL}}": base + "/call-report",

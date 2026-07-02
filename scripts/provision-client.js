@@ -45,6 +45,7 @@ function buildAssistant(c) {
     "{{SERVICES}}": c.services,
     "{{PRICING_NOTES}}": c.pricingNotes,
     "{{FAQ}}": c.faq || "Ask the team for anything not listed.",
+    "{{LANGUAGES}}": c.languages || "English (switch if the caller speaks another language)",
     "{{VOICE_ID}}": c.voiceId,
     "{{WEBHOOK_URL}}": c.webhookUrl,
     "{{CALL_REPORT_URL}}": String(c.webhookUrl||"").replace(/\/log-lead$/,"") + "/call-report",

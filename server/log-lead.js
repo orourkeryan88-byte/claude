@@ -47,6 +47,22 @@ if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
 // In-memory store so you can eyeball leads at GET /leads during a demo.
 const leads = [];
 
+// --- Spam screening (like Dialzara/Rosie) -----------------------------------
+// Flags cold-sales / robocall patterns so they never pollute the client's
+// inbox or stats. The assistant also screens verbally; this is the backstop.
+const SPAM_PATTERNS = [
+  /google (business |my )?(listing|profile|ranking)/i, /seo (service|package|audit)/i,
+  /web ?design (service|agency|package)/i, /extended (car )?warranty/i,
+  /final notice/i, /you('|)ve been selected/i, /lower your (interest|rate|bill)/i,
+  /solar (panel|survey|grant)/i, /debt (relief|consolidation)/i, /crypto|forex/i,
+  /this is not a sales call/i, /marketing (agency|service|package)/i,
+  /free (audit|consultation) for your business/i, /business loan|merchant (cash|funding)/i,
+];
+function looksLikeSpam(lead) {
+  const t = `${lead.reason || ""} ${lead.name || ""}`;
+  return SPAM_PATTERNS.some((re) => re.test(t));
+}
+
 app.get("/", (_req, res) => res.send("Southline AI Receptionist webhook is running ✅"));
 app.get("/leads", (_req, res) => res.json(leads));
 
@@ -107,7 +123,13 @@ app.post("/log-lead", async (req, res) => {
       preferred_time: a.preferred_time || "TBC",
       receivedAt: new Date().toISOString(),
     };
+    if (looksLikeSpam(lead)) lead.spam = true;
     leads.unshift(lead);
+
+    if (lead.spam) {
+      console.log(`🚫 spam screened out (${lead.phone}): ${lead.reason}`);
+      return res.json({ result: "Noted. Politely wrap up the call now — this is not a customer enquiry." });
+    }
 
     const flag = lead.urgency === "urgent" ? "⚠ URGENT — " : "";
     const body =
