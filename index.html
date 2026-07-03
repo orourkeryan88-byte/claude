@@ -146,7 +146,7 @@
   @media(max-width:780px){.price-grid{grid-template-columns:1fr}}
   .plan{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column}
   .plan.feat{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),0 16px 50px rgba(59,130,246,.18);position:relative}
-  .plan.feat::before{content:"MOST POPULAR";position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#fff;color:#0b0b0c;font-size:10px;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.14em;font-family:"JetBrains Mono",monospace}
+  .plan.feat::before{content:"EVERYTHING INCLUDED";position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#fff;color:#0b0b0c;font-size:10px;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.14em;font-family:"JetBrains Mono",monospace}
   .plan .pname{font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);font-weight:700}
   .plan .pp{font-size:38px;font-weight:850;margin:8px 0 2px}
   .plan .pp small{font-size:15px;color:var(--mut);font-weight:600}
@@ -354,28 +354,23 @@
   <section id="pricing">
     <div class="eyebrow">Simple pricing</div>
     <h2>Pick a plan, go live this week</h2>
-    <p class="lead-sub">One-time setup, then monthly. No long contracts — cancel anytime.</p>
-    <div class="price-grid">
-      <div class="plan">
-        <div class="pname">Starter</div>
-        <div class="pp">€80<small>/mo</small></div>
-        <div style="color:var(--mut);font-size:12.5px;margin:-6px 0 10px">+ €250 one-time setup</div>
-        <ul><li>24/7 call answering</li><li>Appointment booking</li><li>Every lead texted to you</li><li>Call log — 30-day history</li></ul>
-        <button class="btn ghost" onclick="book()">Get started</button>
-      </div>
+    <p class="lead-sub">One plan. Everything included. No long contracts — cancel anytime.</p>
+    <div class="price-grid" style="grid-template-columns:minmax(0,420px);justify-content:center">
       <div class="plan feat">
-        <div class="pname">Pro</div>
-        <div class="pp">€150<small>/mo</small></div>
+        <div class="pname">AI Receptionist</div>
+        <div class="pp">€80<small>/mo</small></div>
         <div style="color:var(--mut);font-size:12.5px;margin:-6px 0 10px">+ €350 one-time setup</div>
-        <ul><li>Everything in Starter</li><li>Website chat widget</li><li>Pipeline board + AI Insights</li><li>Call summaries &amp; transcripts</li><li>Reminders + review follow-ups</li></ul>
+        <ul>
+          <li>24/7 call answering in your name</li>
+          <li>Books appointments into Google Calendar</li>
+          <li>Every lead texted to you instantly</li>
+          <li>Missed-call text-back</li>
+          <li>Call summaries, transcripts &amp; recordings</li>
+          <li>Spam &amp; sales-call screening</li>
+          <li>Website chat widget</li>
+          <li>CRM app on your phone — pipeline, insights, revenue</li>
+        </ul>
         <button class="btn primary" onclick="book()">Get started</button>
-      </div>
-      <div class="plan">
-        <div class="pname">Premium</div>
-        <div class="pp">€250<small>/mo</small></div>
-        <div style="color:var(--mut);font-size:12.5px;margin:-6px 0 10px">+ €500 one-time setup</div>
-        <ul><li>Everything in Pro</li><li>Revenue analytics (€ recovered)</li><li>Multi-location / multi-number</li><li>Custom voice &amp; branding</li><li>Priority support</li></ul>
-        <button class="btn ghost" onclick="book()">Talk to us</button>
       </div>
     </div>
   </section>

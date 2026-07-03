@@ -1,59 +1,40 @@
 /**
- * Subscription tiers for the AI Receptionist.
- * ------------------------------------------
- * Three levels. Each higher tier unlocks more of the CRM. The dashboard reads
- * the logged-in account's `plan` and shows/hides features from `features` below,
- * so the UI literally gets richer as the client pays more.
+ * One plan. €350 setup + €80/month. Everything included.
+ * ------------------------------------------------------
+ * No tiers, no gating — every client gets the full product. The features
+ * list is what the product genuinely does today (nothing aspirational).
  *
- * Pricing is one-time setup + a monthly subscription, in euro.
- * Override any number with env vars (see keys in cents below).
+ * Price overrides: SETUP_FEE_CENTS (default 35000), MONTHLY_FEE_CENTS (8000).
+ *
+ * getPlan()/hasFeature()/listPlans() keep the same shape as before so the
+ * dashboard, billing and admin code work unchanged.
  */
 
-const PLANS = {
-  starter: {
-    id: "starter",
-    name: "Starter",
-    blurb: "Never miss a call. The essentials, done well.",
-    setup: parseInt(process.env.STARTER_SETUP_CENTS || "25000", 10) / 100,   // €250
-    monthly: parseInt(process.env.STARTER_MONTHLY_CENTS || "8000", 10) / 100, // €80
-    features: ["inbox", "appointments", "owner_sms", "call_log"],
-    limits: { seats: 1, history_days: 30 },
-    highlights: ["24/7 call answering", "Appointment booking", "Text-to-owner on every lead", "30-day call history"],
-  },
-  pro: {
-    id: "pro",
-    name: "Pro",
-    blurb: "The full front desk — phone, web chat and insights.",
-    setup: parseInt(process.env.PRO_SETUP_CENTS || "35000", 10) / 100,    // €350
-    monthly: parseInt(process.env.PRO_MONTHLY_CENTS || "15000", 10) / 100, // €150
-    features: ["inbox", "appointments", "owner_sms", "call_log", "pipeline", "insights", "copilot", "web_chat", "reminders"],
-    limits: { seats: 3, history_days: 365 },
-    highlights: ["Everything in Starter", "Website chat widget", "Pipeline board", "AI Insights & Copilot", "Reminders + review follow-ups", "1-year history, 3 seats"],
-  },
-  premium: {
-    id: "premium",
-    name: "Premium",
-    blurb: "A revenue engine. Analytics, multi-location, priority.",
-    setup: parseInt(process.env.PREMIUM_SETUP_CENTS || "50000", 10) / 100,   // €500
-    monthly: parseInt(process.env.PREMIUM_MONTHLY_CENTS || "25000", 10) / 100, // €250
-    features: ["inbox", "appointments", "owner_sms", "call_log", "pipeline", "insights", "copilot", "web_chat", "reminders", "revenue", "multi_location", "api_access", "priority", "custom_voice"],
-    limits: { seats: 10, history_days: 3650 },
-    highlights: ["Everything in Pro", "Revenue analytics (€ recovered)", "Multi-location / multi-number", "Custom voice & branding", "API access", "Priority support", "10 seats, unlimited history"],
-  },
+const PLAN = {
+  id: "complete",
+  name: "AI Receptionist",
+  blurb: "Everything included. One price, no tiers.",
+  setup: parseInt(process.env.SETUP_FEE_CENTS || "35000", 10) / 100,    // €350
+  monthly: parseInt(process.env.MONTHLY_FEE_CENTS || "8000", 10) / 100, // €80
+  features: ["inbox", "appointments", "owner_sms", "call_log", "pipeline",
+    "insights", "copilot", "web_chat", "reminders", "revenue"],
+  limits: { seats: 3, history_days: 365 },
+  highlights: [
+    "24/7 call answering in your business's name",
+    "Books appointments into Google Calendar",
+    "Every lead texted to you instantly",
+    "Missed-call text-back",
+    "Call summaries, transcripts & recordings",
+    "Spam & sales-call screening",
+    "Website chat widget",
+    "CRM app on your phone — pipeline, insights, revenue",
+  ],
 };
 
-const DEFAULT_PLAN = "pro";
+const DEFAULT_PLAN = "complete";
 
-function getPlan(id) {
-  return PLANS[String(id || "").toLowerCase()] || PLANS[DEFAULT_PLAN];
-}
-// Does a plan include a feature?
-function hasFeature(planId, feature) {
-  return getPlan(planId).features.includes(feature);
-}
-// Public, ordered list for pricing tables.
-function listPlans() {
-  return ["starter", "pro", "premium"].map((id) => PLANS[id]);
-}
+function getPlan(_id) { return PLAN; }
+function hasFeature(_planId, feature) { return PLAN.features.includes(feature); }
+function listPlans() { return [PLAN]; }
 
-module.exports = { PLANS, DEFAULT_PLAN, getPlan, hasFeature, listPlans };
+module.exports = { PLANS: { complete: PLAN }, DEFAULT_PLAN, getPlan, hasFeature, listPlans };

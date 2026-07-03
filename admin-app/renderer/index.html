@@ -178,7 +178,7 @@
   <div id="t-product" class="hide">
     <div class="panel">
       <h3>Plans &amp; pricing</h3>
-      <div class="muted" style="margin-bottom:12px">These are your live tiers. To change prices, set the env vars on the server (e.g. <code>PRO_MONTHLY_CENTS</code>) — shown per plan below.</div>
+      <div class="muted" style="margin-bottom:12px">One plan, everything included. Change prices with <code>SETUP_FEE_CENTS</code> and <code>MONTHLY_FEE_CENTS</code> on the server.</div>
       <div id="plans-body" class="row3"></div>
     </div>
     <div class="panel">
@@ -213,10 +213,10 @@ let DEMO=false;
 const AGO=(h)=>new Date(Date.now()-h*3600e3).toISOString();
 const SAMPLE={
   clients:[
-    {username:'joe@dublinplumbing.ie', business:"Joe's Plumbing", plan:'pro', planName:'Pro', active:true, website:'dublinplumbing.ie', createdAt:AGO(24*40), notes:'Referred by summit', provisioning:{status:'complete'}},
-    {username:'reception@seapointdental.ie', business:'Seapoint Dental', plan:'premium', planName:'Premium', active:true, website:'seapointdental.ie', createdAt:AGO(24*22), notes:'', provisioning:{status:'complete'}},
-    {username:'emma@no9hair.ie', business:'Hair at No.9', plan:'starter', planName:'Starter', active:true, website:'no9hair.ie', createdAt:AGO(24*9), notes:'Wants web chat — upsell Pro', provisioning:{status:'complete'}},
-    {username:'info@dalkeyvets.ie', business:'Dalkey Vets', plan:'pro', planName:'Pro', active:false, website:'', createdAt:AGO(20), notes:'Paid pending webhook', provisioning:{status:'needs_attention'}},
+    {username:'joe@dublinplumbing.ie', business:"Joe's Plumbing", plan:'complete', planName:'AI Receptionist', active:true, website:'dublinplumbing.ie', createdAt:AGO(24*40), notes:'Referred by summit', provisioning:{status:'complete'}},
+    {username:'reception@seapointdental.ie', business:'Seapoint Dental', plan:'complete', planName:'AI Receptionist', active:true, website:'seapointdental.ie', createdAt:AGO(24*22), notes:'', provisioning:{status:'complete'}},
+    {username:'emma@no9hair.ie', business:'Hair at No.9', plan:'complete', planName:'AI Receptionist', active:true, website:'no9hair.ie', createdAt:AGO(24*9), notes:'Wants web chat — upsell Pro', provisioning:{status:'complete'}},
+    {username:'info@dalkeyvets.ie', business:'Dalkey Vets', plan:'complete', planName:'AI Receptionist', active:false, website:'', createdAt:AGO(20), notes:'Paid pending webhook', provisioning:{status:'needs_attention'}},
   ],
   discounts:[
     {code:'LAUNCH50', type:'percent', amount:50, applies:'setup', uses:3, maxUses:10, note:'Summit launch', active:true},
@@ -230,9 +230,7 @@ const SAMPLE={
     {business:'Seapoint Dental', name:'Emma Walsh', phone:'083 447 1209', reason:'Toothache — wants today', urgency:'urgent', receivedAt:AGO(9)},
   ],
   plans:[
-    {id:'starter',name:'Starter',monthly:80,setup:250,features:Array(4),highlights:['24/7 call answering','Appointment booking','Text-to-owner on every lead','30-day history']},
-    {id:'pro',name:'Pro',monthly:150,setup:350,features:Array(9),highlights:['Everything in Starter','Website chat widget','Pipeline board','AI Insights & Copilot','Reminders + reviews']},
-    {id:'premium',name:'Premium',monthly:250,setup:500,features:Array(14),highlights:['Everything in Pro','Revenue analytics','Multi-location','Custom voice','API access','Priority support']},
+    {id:'complete',name:'AI Receptionist',monthly:80,setup:350,features:Array(10),highlights:['24/7 call answering','Books into Google Calendar','Every lead texted to you','Missed-call text-back','Call summaries & transcripts','Spam screening','Website chat widget','CRM app with insights']},
   ],
   config:{welcomeNote:'Demo workspace — connect your live server to manage real clients.'},
 };
@@ -240,7 +238,7 @@ function demoApi(path,opts){
   const body=opts.body?JSON.parse(opts.body):{};
   if(path==='/admin/overview'){
     const act=SAMPLE.clients.filter(c=>c.active);
-    const price={starter:80,pro:150,premium:250};
+    const price={complete:80};
     const mrr=act.reduce((s,c)=>s+price[c.plan],0);
     return {clients:SAMPLE.clients.length,activeClients:act.length,pendingClients:SAMPLE.clients.length-act.length,mrr,arr:mrr*12,leadsTotal:SAMPLE.leads.length,byPlan:{},discounts:SAMPLE.discounts.length};
   }
@@ -301,17 +299,17 @@ async function loadOverview(){
   }catch(e){}
 }
 
-const PLAN_OPTS=['starter','pro','premium'];
+const PLAN_OPTS=['complete'];
 async function loadClients(){
   try{ const list=await (await api('/admin/clients')).json();
     $('clients-empty').textContent = list.length?'':'No clients yet. They appear here the moment someone signs up.';
     $('clients-body').innerHTML = list.map(c=>{
-      const opts=PLAN_OPTS.map(p=>`<option value="${p}" ${c.plan===p?'selected':''}>${p[0].toUpperCase()+p.slice(1)}</option>`).join('');
+      const opts='';
       const prov=c.provisioning?`<span class="muted">${c.provisioning.status||''}</span>`:'';
       return `<tr>
         <td><b>${esc(c.business||'—')}</b><br><span class="muted">${prov}</span></td>
         <td>${esc(c.username)}</td>
-        <td><select onchange="setPlan('${esc(c.username)}',this.value)" style="padding:6px 8px">${opts}</select></td>
+        <td><span class="tag complete" style="background:rgba(52,211,153,.15);color:#9ae6c5">AI Receptionist</span></td>
         <td><span class="dot ${c.active?'on':'off'}"></span>${c.active?'Active':'Pending'}</td>
         <td class="muted">${c.createdAt?new Date(c.createdAt).toLocaleDateString('en-IE'):'—'}</td>
         <td><input value="${esc(c.notes||'')}" placeholder="add a note" onchange="setNote('${esc(c.username)}',this.value)" style="padding:6px 8px;min-width:130px" /></td>
@@ -368,12 +366,10 @@ async function loadLeads(){
 async function loadProduct(){
   try{ const d=await (await api('/admin/product')).json();
     $('plans-body').innerHTML=(d.plans||[]).map(p=>{
-      const env=p.id.toUpperCase();
       return `<div class="panel" style="margin:0;background:var(--panel2)">
         <span class="tag ${p.id}">${p.name}</span>
         <div style="font-size:24px;font-weight:900;margin:10px 0 2px">€${p.monthly}<span class="muted" style="font-size:13px">/mo</span></div>
         <div class="muted">+ €${p.setup} setup · ${p.features.length} features</div>
-        <div class="muted" style="margin-top:8px;font-size:11.5px">env: <code>${env}_MONTHLY_CENTS</code> · <code>${env}_SETUP_CENTS</code></div>
         <ul style="margin:10px 0 0;padding-left:18px;color:#c3d0ee;font-size:12.5px">${(p.highlights||[]).map(h=>`<li>${esc(h)}</li>`).join('')}</ul>
       </div>`;
     }).join('');

@@ -357,9 +357,6 @@
       <div class="lfld"><label>Email</label><input id="su-email" type="email" placeholder="you@yourbusiness.ie" /></div>
       <div class="lfld"><label>Choose a password</label><input id="su-pass" type="password" placeholder="At least 8 characters" /></div>
 
-      <label style="font-size:12px;font-weight:800;color:#a09a90;text-transform:uppercase;letter-spacing:.5px;display:block;margin:6px 2px 8px">Choose your plan</label>
-      <div class="planpick" id="su-plans"><div style="color:#8a857c;font-size:13px;padding:8px">Loading plans…</div></div>
-
       <div class="lfld" style="margin-top:12px"><label>Discount code <span style="color:#8a857c;text-transform:none">(optional)</span></label>
         <div style="display:flex;gap:8px">
           <input id="su-code" placeholder="e.g. LAUNCH50" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" />
@@ -1003,13 +1000,13 @@ function switchAuth(tab){
   $('tab-signup').classList.toggle('active', !login);
   if(!login) loadPricing();
 }
-let PLANS=[], selectedPlan='pro', appliedCode=null;
+let PLANS=[], selectedPlan='complete', appliedCode=null;
 function planServer(){ return ($('lg-server').value||'').trim().replace(/\/$/,'') || webhook; }
 async function loadPricing(){
   const server=planServer(); if(!server) return;
   try{ const r=await fetch(server+'/pricing'); if(!r.ok) return; const p=await r.json();
-    PLANS=p.plans||[]; if(!PLANS.some(x=>x.id===selectedPlan)) selectedPlan=(PLANS[1]||PLANS[0]||{}).id;
-    renderPlans();
+    PLANS=p.plans||[]; selectedPlan=(PLANS[0]||{id:'complete'}).id;
+    priceBox();
   }catch(e){}
 }
 function renderPlans(){
@@ -1025,7 +1022,7 @@ function renderPlans(){
   priceBox();
 }
 function pickPlan(id){ selectedPlan=id; appliedCode=null; $('su-codemsg').textContent=''; renderPlans(); }
-function curPlan(){ return PLANS.find(p=>p.id===selectedPlan)||{setup:0,monthly:0}; }
+function curPlan(){ return PLANS[0]||{setup:350,monthly:80}; }
 function priceBox(){
   const p=curPlan();
   let setup=p.setup, monthly=p.monthly, note='';
@@ -1080,7 +1077,7 @@ async function doLogin(){
     const data=await r.json().catch(()=>({}));
     if(!r.ok){ $('lg-err').textContent=data.error||'Wrong email or password.'; $('lg-btn').textContent='Log in'; return; }
     session={ mode:'client', server, token:data.token, business:data.business, user,
-      plan:data.plan||'pro', planName:data.planName||'Pro', features:data.features||[] };
+      plan:data.plan||'complete', planName:data.planName||'AI Receptionist', features:data.features||[] };
     localStorage.setItem('sl_session',JSON.stringify(session));
     calls=[]; localStorage.removeItem('sl_calls'); // start from their real data
     enterApp(); toast('Welcome back, '+(data.business||''));
@@ -1118,8 +1115,7 @@ function applyPlan(){
   if(session.mode==='client' && session.planName){
     badge.style.display='flex';
     badge.className='plan-badge tier-'+(session.plan||'pro');
-    badge.innerHTML=`<span>${session.planName} plan</span>`+
-      (session.plan!=='premium'?`<span class="up" onclick="openUpgrade()">Upgrade</span>`:'');
+    badge.innerHTML=`<span>${session.planName||'AI Receptionist'}</span>`;
   } else badge.style.display='none';
   // lock nav items the plan doesn't include
   document.querySelectorAll('.nav a[data-feat]').forEach(a=>{
@@ -1138,9 +1134,7 @@ function openUpgrade(feat){
 /* ---------- My receptionist (account view) ---------- */
 function planMeta(){
   const id=session.plan||'pro';
-  const names={starter:'Starter',pro:'Pro',premium:'Premium'};
-  const prices={starter:'\u20ac80/mo',pro:'\u20ac150/mo',premium:'\u20ac250/mo'};
-  return { id, name:session.planName||names[id]||'Pro', price:prices[id]||'' };
+  return { id, name:session.planName||'AI Receptionist', price:'\u20ac80/mo' };
 }
 function renderAccount(){
   $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='none';
@@ -1169,7 +1163,6 @@ function renderAccount(){
         <div class="acct-feats">
           ${feats.map(([f,on])=>`<div class="acct-feat ${on?'':'off'}"><span class="tick">${on?'\u2713':'\u2013'}</span>${f}</div>`).join('')}
         </div>
-        ${p.id!=='premium'?'<button class="btn primary" style="margin-top:14px" onclick="openUpgrade()">Upgrade my plan</button>':''}
       </div>
       <div>
         <div class="card acct-card">
