@@ -1,7 +1,7 @@
 /* Southline CRM — service worker.
  * Network-first for the app itself (always fresh), cache fallback offline,
  * cache-first for fonts/icons. Lets the CRM install and open like a native app. */
-const CACHE = "southline-crm-v1";
+const CACHE = "southline-crm-v2";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (e) => {

@@ -1,16 +1,29 @@
 {
-  "name": "Southline CRM — AI Receptionist",
+  "name": "Southline CRM \u2014 AI Receptionist",
   "short_name": "Southline",
-  "description": "Your AI receptionist's inbox — every call, booking and lead in one place.",
+  "description": "Your AI receptionist's inbox \u2014 every call, booking and lead in one place.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0f1120",
-  "theme_color": "#0f1120",
+  "background_color": "#1b1917",
+  "theme_color": "#1b1917",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
