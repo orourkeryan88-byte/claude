@@ -85,7 +85,7 @@ function mountAdmin(app, getLeads) {
       username: a.username, business: a.business, plan: plans.getPlan(a.plan).id,
       planName: plans.getPlan(a.plan).name, active: !!a.active, website: a.website || "",
       ownerPhone: a.ownerPhone || "", createdAt: a.createdAt || "", notes: a.notes || "",
-      provisioning: a.provisioning || null,
+      voiceId: a.voiceId || "", provisioning: a.provisioning || null,
     }));
     res.json(accts);
   });
@@ -99,6 +99,7 @@ function mountAdmin(app, getLeads) {
     if (business !== undefined) patch.business = business;
     if (ownerPhone !== undefined) patch.ownerPhone = ownerPhone;
     if (notes !== undefined) patch.notes = notes;
+    if (req.body.voiceId !== undefined) patch.voiceId = req.body.voiceId;
     const saved = store.upsert(patch);
     res.json({ ok: true, client: saved });
   });

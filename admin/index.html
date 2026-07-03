@@ -119,7 +119,7 @@
       <h3>Every client</h3>
       <div style="overflow:auto">
         <table>
-          <thead><tr><th>Business</th><th>Email</th><th>Plan</th><th>Status</th><th>Setup</th><th>Notes</th><th></th></tr></thead>
+          <thead><tr><th>Business</th><th>Email</th><th>Plan</th><th>Status</th><th>Voice</th><th>Notes</th><th></th></tr></thead>
           <tbody id="clients-body"></tbody>
         </table>
       </div>
@@ -311,7 +311,7 @@ async function loadClients(){
         <td>${esc(c.username)}</td>
         <td><span class="tag complete" style="background:rgba(52,211,153,.15);color:#9ae6c5">AI Receptionist</span></td>
         <td><span class="dot ${c.active?'on':'off'}"></span>${c.active?'Active':'Pending'}</td>
-        <td class="muted">${c.createdAt?new Date(c.createdAt).toLocaleDateString('en-IE'):'—'}</td>
+        <td><input value="${esc(c.voiceId||'')}" placeholder="ElevenLabs voice ID" title="Paste an ElevenLabs voice ID — sets this client's receptionist voice" onchange="setVoice('${esc(c.username)}',this.value)" style="padding:6px 8px;min-width:150px;font-family:ui-monospace,monospace;font-size:12px" /></td>
         <td><input value="${esc(c.notes||'')}" placeholder="add a note" onchange="setNote('${esc(c.username)}',this.value)" style="padding:6px 8px;min-width:130px" /></td>
         <td>${c.active
           ? `<button class="btn ghost sm" onclick="setActive('${esc(c.username)}',false)">Suspend</button>`
@@ -323,6 +323,7 @@ async function loadClients(){
 async function setPlan(email,plan){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,plan})}); toast(email+' → '+plan); loadOverview(); }
 async function setActive(email,active){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,active})}); toast(active?'Activated '+email:'Suspended '+email); loadClients(); loadOverview(); }
 async function setNote(email,notes){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,notes})}); toast('Note saved'); }
+async function setVoice(email,voiceId){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,voiceId})}); toast('Voice set — applies when their assistant is built'); }
 
 async function loadDiscounts(){
   try{ const list=await (await api('/admin/discounts')).json();
