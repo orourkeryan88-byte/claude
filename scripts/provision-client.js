@@ -49,6 +49,8 @@ function buildAssistant(c) {
     "{{VOICE_ID}}": c.voiceId,
     "{{WEBHOOK_URL}}": c.webhookUrl,
     "{{CALL_REPORT_URL}}": String(c.webhookUrl||"").replace(/\/log-lead$/,"") + "/call-report",
+    "{{CANCEL_URL}}": String(c.webhookUrl||"").replace(/\/log-lead$/,"") + "/cancel-booking",
+    "{{RESCHEDULE_URL}}": String(c.webhookUrl||"").replace(/\/log-lead$/,"") + "/reschedule-booking",
     "{{AVAILABILITY_URL}}": base + "/availability",
     "{{BOOK_URL}}": base + "/book",
     "{{BOOKING_WORKFLOW_URL}}": c.bookingWorkflowUrl || base + "/submit-booking",

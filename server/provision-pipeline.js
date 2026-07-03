@@ -35,6 +35,8 @@ function buildAssistantConfig(acct) {
     "{{VOICE_ID}}": acct.voiceId || "21m00Tcm4TlvDq8ikWAM",
     "{{WEBHOOK_URL}}": base + "/log-lead",
     "{{CALL_REPORT_URL}}": base + "/call-report",
+    "{{CANCEL_URL}}": base + "/cancel-booking",
+    "{{RESCHEDULE_URL}}": base + "/reschedule-booking",
     "{{AVAILABILITY_URL}}": base + "/availability",
     "{{BOOK_URL}}": base + "/book",
     "{{BOOKING_WORKFLOW_URL}}": base + "/submit-booking",
