@@ -1,208 +1,494 @@
 {
   "name": "Southline AI Receptionist — In-Call Workflow",
-  "version": "1.0",
-  "description": "The receptionist's call brain as a state machine: greet -> identify -> understand -> act -> confirm -> close. Engine-agnostic; maps onto Vapi assistant tools. Emits a 'handoff' payload at the end that connects to the post-call automation.",
+  "version": "2.0",
+  "description": "The receptionist's call brain as a rigorous, guarded state machine. Every state declares its entry behaviour, the slots it fills, its transitions (with conditions), and its recovery paths for no-input / low-confidence / tool-failure. Engine-agnostic: maps onto a Vapi assistant (tools) or a Vapi Workflow node graph. Emits analytics events per state and a structured handoff payload that feeds the post-call automation and the booking workflow. Validated by validate-workflow.js (reachability, dangling-reference, slot and tool integrity, acceptance-path checks).",
 
-  "variables": ["business_name", "business_type", "area", "opening_hours", "services", "pricing", "faq", "owner_phone", "locations", "providers", "booking_workflow_url"],
+  "variables": ["business_name", "business_type", "area", "opening_hours", "open_days", "timezone", "services", "pricing", "faq", "owner_phone", "transfer_departments", "locations", "providers", "booking_workflow_url", "deposit_required", "deposit_amount", "recording_disclosure_required", "languages", "after_hours_policy"],
+
+  "design_principles": [
+    "One question at a time; every critical slot is read back and confirmed before it is used.",
+    "The model never invents facts — knowledge answers are grounded in provided business knowledge only, or the call becomes a message.",
+    "Every state has a defined recovery for silence, misunderstanding, and tool failure — the call never dead-ends.",
+    "Confidence-gated routing: below threshold, disambiguate rather than guess.",
+    "Escalate early and gracefully; a warm human hand-off is always available.",
+    "Emit a structured event at every state so the whole call is measurable.",
+    "Fail safe: if any tool is unavailable, degrade to taking a message so no lead is ever lost."
+  ],
+
+  "slots": {
+    "intent":               { "type": "enum", "confirm": false, "values": ["new_appointment", "reschedule", "cancel", "confirm_existing", "general_inquiry", "pricing", "hours_location", "complaint", "billing", "sales_partnership", "emergency", "message", "prescription_refill", "speak_to_human", "spam", "other"] },
+    "confidence":           { "type": "number", "confirm": false, "range": [0, 1], "note": "Model's self-rated intent confidence; drives disambiguation." },
+    "language":             { "type": "string", "confirm": false, "note": "Detected caller language; whole call continues in it." },
+    "sentiment":            { "type": "enum", "confirm": false, "values": ["calm", "frustrated", "angry", "distressed"], "note": "Drives the de-escalation ladder." },
+    "consent_recording":    { "type": "boolean", "confirm": false, "note": "Set true only after the recording disclosure is acknowledged (if required)." },
+    "caller_name":          { "type": "string", "confirm": true, "confirm_style": "repeat", "validation": "non_empty" },
+    "caller_phone":         { "type": "phone", "confirm": true, "confirm_style": "read_back_digits", "validation": "e164_or_local", "note": "Always read back digit by digit." },
+    "caller_email":         { "type": "email", "confirm": true, "confirm_style": "spell_back", "optional": true, "validation": "email_shape" },
+    "service":              { "type": "string", "confirm": false, "source": "services", "validation": "in_services_or_freeform" },
+    "appointment_type":     { "type": "string", "confirm": false, "examples": ["new", "returning", "consultation", "treatment", "in_person", "video"] },
+    "provider":             { "type": "string", "confirm": false, "optional": true, "default": "any", "source": "providers" },
+    "location":             { "type": "string", "confirm": false, "optional": true, "source": "locations", "default_note": "If single-site, default silently to the main location." },
+    "preferred_datetime":   { "type": "datetime", "confirm": false, "optional": true, "note": "What the caller asked for; may be unavailable." },
+    "chosen_slot_id":       { "type": "string", "confirm": false, "note": "The exact slot id returned by check_availability — never fabricated." },
+    "special_requests":     { "type": "string", "confirm": false, "optional": true },
+    "qualification_answers":{ "type": "object", "confirm": false, "note": "Per-business screening answers (see qualification_questions)." },
+    "existing_booking_ref": { "type": "string", "confirm": true, "confirm_style": "repeat", "optional": true, "note": "SL-XXXX; phone number is an accepted fallback identifier." },
+    "new_datetime":         { "type": "datetime", "confirm": true, "optional": true, "note": "Target time for a reschedule." },
+    "message_body":         { "type": "string", "confirm": true, "confirm_style": "read_back" },
+    "message_recipient":    { "type": "string", "confirm": false, "optional": true, "default": "the team" },
+    "complaint_details":    { "type": "string", "confirm": true, "confirm_style": "summarize" },
+    "urgency":              { "type": "enum", "confirm": false, "values": ["normal", "urgent"], "default": "normal" },
+    "deposit_paid":         { "type": "boolean", "confirm": false, "optional": true }
+  },
 
   "qualification_questions": {
-    "_comment": "Per-business screening questions asked in the 'qualify' step; answers go into booking-payload.qualification_answers. Edit per client.",
+    "_comment": "Per-business screening asked in qualify_booking; answers -> slots.qualification_answers -> booking-payload.qualification_answers.",
     "default": [
       { "key": "new_or_returning", "ask": "Have you been in with us before, or is this your first visit?" },
       { "key": "reason", "ask": "And what's the appointment for?" }
     ],
     "examples": {
-      "dental": [
-        { "key": "new_or_returning", "ask": "Are you a new or returning patient?" },
-        { "key": "insurance", "ask": "Do you have dental insurance we should note?" }
-      ],
-      "trades": [
-        { "key": "property_type", "ask": "Is it a house or an apartment?" },
-        { "key": "access", "ask": "Will someone be home to let us in?" }
-      ]
+      "dental":  [ { "key": "new_or_returning", "ask": "Are you a new or returning patient?" }, { "key": "insurance", "ask": "Do you have dental insurance we should note?" }, { "key": "pain", "ask": "Are you in any pain right now?" } ],
+      "trades":  [ { "key": "property_type", "ask": "Is it a house or an apartment?" }, { "key": "access", "ask": "Will someone be home to let us in?" }, { "key": "issue_age", "ask": "How long has this been going on?" } ],
+      "salon":   [ { "key": "service_length", "ask": "Is it a cut, colour, or both?" }, { "key": "stylist", "ask": "Do you have a stylist you'd like to see?" } ],
+      "clinic":  [ { "key": "first_visit", "ask": "Is this your first consultation with us?" }, { "key": "concern", "ask": "What's the main thing you'd like to look at?" } ]
     }
   },
 
   "tools": {
-    "check_availability": "Get real open appointment slots from Google Calendar.",
-    "book_appointment": "Book a chosen slot into Google Calendar.",
-    "submit_booking": "Send the completed booking payload (booking-payload.json shape, status='pending') to the downstream BOOKING workflow, which assigns a booking_reference and returns status='confirmed'.",
-    "manage_appointment": "Reschedule or cancel an existing appointment (action: reschedule|cancel).",
-    "log_lead": "Save a lead / message / complaint and notify the owner (type: lead|message|complaint|reschedule|cancel).",
-    "transferCall": "Transfer the live call to a human (owner_phone or a department)."
+    "check_availability":  { "desc": "Get real open appointment slots from Google Calendar (optionally around a requested date/time).", "on_error": "degraded_mode", "returns": "slots[] with id + human label" },
+    "book_appointment":    { "desc": "Book a chosen slot id into Google Calendar. Re-checks the slot first to prevent double-booking.", "on_error": "degraded_mode" },
+    "submit_booking":      { "desc": "Send the completed booking-payload (status='pending') to the downstream booking workflow; returns a booking_reference and status='confirmed'.", "on_error": "degraded_mode" },
+    "cancel_booking":      { "desc": "Cancel an existing appointment by reference or phone; texts the caller a confirmation.", "on_error": "degraded_mode" },
+    "reschedule_booking":  { "desc": "Move an existing appointment to a new checked slot; texts the caller.", "on_error": "degraded_mode" },
+    "take_payment_link":   { "desc": "Text the caller a Stripe deposit/payment link when a deposit is required.", "optional": true, "on_error": "note_and_continue" },
+    "log_lead":            { "desc": "Save a lead / message / complaint / callback and notify the owner (type + urgency).", "on_error": "retry_then_apologize" },
+    "transferCall":        { "desc": "Warm-transfer the live call to a human (owner_phone or a named department).", "on_error": "take_message" }
   },
 
   "global_rules": [
-    "Never invent information — only answer from the provided business knowledge.",
-    "Ask one question at a time; keep replies under ~30 words (it's a phone call).",
-    "Confirm critical details (phone number, email, appointment time) by reading them back.",
-    "Collect missing info before taking an action.",
-    "Escalate when confidence is low or the caller asks for a person.",
-    "Always summarize what you did before closing.",
-    "Never say you are an AI unless asked; if asked, be honest and friendly."
+    "Never invent information — answer only from the provided business knowledge; otherwise take a message.",
+    "Ask one question at a time; keep replies under ~30 words (it is a phone call, not an essay).",
+    "Confirm every critical slot by reading it back (phone digit-by-digit, email spelled, time restated).",
+    "Collect all required slots before calling an action tool.",
+    "Never offer or book a time that did not come from check_availability.",
+    "Detect the caller's language in the first exchange and continue the whole call in it.",
+    "If a tool fails, do not lose the caller — fall back to taking a message (degraded_mode).",
+    "Escalate when confidence is low twice in a row, when asked for a person, or on any emergency or legal matter.",
+    "Always summarise what you did before closing.",
+    "Never claim to be human; if asked, be honest and friendly."
   ],
+
+  "confidence_policy": {
+    "threshold": 0.6,
+    "below_threshold": "Route to disambiguate (ask one focused clarifying question). Two low-confidence turns in a row -> escalate_human.",
+    "at_or_above": "Route to the mapped intent state."
+  },
+
+  "no_input_policy": {
+    "prompt_1": "Sorry, I didn't catch that — are you still there?",
+    "prompt_2": "I still can't hear you. I'll stay on for a moment.",
+    "max_retries": 2,
+    "on_exhausted": "voicemail_or_close"
+  },
 
   "entry": "greeting",
 
   "states": {
     "greeting": {
-      "say": "Hello, thanks for calling {{business_name}}. How can I help you today?",
-      "next": "identify_intent"
+      "purpose": "Open warmly, set language, and hand to intent detection. If a recording disclosure is legally required, give it first.",
+      "on_enter": "Hello, thanks for calling {{business_name}}. How can I help you today?",
+      "on_enter_after_hours": "Thanks for calling {{business_name}} — you've reached us after hours, but I can still help, take a message, or book you in. What do you need?",
+      "sets": ["language"],
+      "emit": "call_started",
+      "transitions": [
+        { "when": "recording_disclosure_required", "to": "compliance_disclosure" },
+        { "default": true, "to": "identify_intent" }
+      ]
+    },
+
+    "compliance_disclosure": {
+      "purpose": "State that the call may be recorded and capture acknowledgement (GDPR / two-party-consent safety).",
+      "on_enter": "Just so you know, this call may be recorded for quality and training. Is that okay?",
+      "sets": ["consent_recording"],
+      "transitions": [
+        { "when": "consent_declined", "to": "escalate_human", "note": "No consent -> route to a human rather than record." },
+        { "default": true, "to": "identify_intent" }
+      ]
     },
 
     "identify_intent": {
-      "goal": "Classify the caller's reason into one intent. If unclear, ask: 'Could you tell me a little more about what you need?'",
-      "intents": {
-        "new_appointment": "qualify",
-        "reschedule": "manage_appointment",
-        "cancel": "manage_appointment",
-        "general_inquiry": "answer_faq",
-        "pricing": "answer_faq",
-        "support": "answer_faq",
-        "complaint": "handle_complaint",
-        "billing": "answer_faq",
-        "sales": "capture_lead",
-        "emergency": "emergency",
-        "message": "take_message",
-        "speak_to_human": "escalate",
-        "other": "answer_faq"
-      }
-    },
-
-    "qualify": {
-      "goal": "Qualify the booking so the downstream workflow has everything it needs.",
-      "collect": ["service", "appointment_type", "provider", "location", "special_requests", "qualification_answers"],
-      "steps": [
-        "Confirm the service they want (from {{services}}).",
-        "Ask the appointment_type (e.g. new vs returning, consult vs treatment, in-person vs video).",
-        "Ask the qualification questions for this business (see qualification_questions) and store answers.",
-        "If multi-site, ask which location; otherwise default to the main {{area}} location.",
-        "Ask if there are any special requests (access needs, preferences).",
-        "If a specific provider/staff member is requested, capture it; else 'any'."
+      "purpose": "Classify the caller's need into one intent with a confidence score; screen obvious spam.",
+      "on_enter": "Listen for the reason for the call. Classify into exactly one intent and rate confidence 0–1.",
+      "sets": ["intent", "confidence", "sentiment"],
+      "emit": "intent_classified",
+      "transitions": [
+        { "when": "intent == spam", "to": "spam_screen" },
+        { "when": "intent == emergency", "to": "emergency" },
+        { "when": "sentiment in [angry, distressed]", "to": "handle_complaint", "note": "Lead with empathy even before formal intent when the caller is upset." },
+        { "when": "confidence < 0.6", "to": "disambiguate" },
+        { "when": "intent == new_appointment", "to": "qualify_booking" },
+        { "when": "intent in [reschedule, cancel, confirm_existing]", "to": "verify_identity" },
+        { "when": "intent in [general_inquiry, pricing, hours_location, billing]", "to": "answer_knowledge" },
+        { "when": "intent == complaint", "to": "handle_complaint" },
+        { "when": "intent == sales_partnership", "to": "capture_lead" },
+        { "when": "intent == message", "to": "take_message" },
+        { "when": "intent == prescription_refill", "to": "take_message" },
+        { "when": "intent == speak_to_human", "to": "escalate_human" },
+        { "default": true, "to": "answer_knowledge" }
       ],
-      "next": "book_appointment"
+      "on_no_input": "no_input_recovery"
     },
 
-    "book_appointment": {
-      "goal": "Pick a real time, take contact details, and submit the booking payload.",
-      "collect": ["date", "time", "name", "phone", "email"],
-      "steps": [
-        "Call check_availability and read out 2-3 slots in plain language.",
-        "When they pick one, set date + time from that slot.",
-        "Take name + phone (read the phone back) and optionally email for the confirmation.",
-        "Build the booking-payload.json object (status='pending') and call submit_booking.",
-        "Read back the booking_reference the workflow returns."
+    "disambiguate": {
+      "purpose": "Recover from an unclear request with ONE focused question, then re-classify.",
+      "on_enter": "Ask a single clarifying question, e.g. 'Just so I point you to the right place — is this about booking, an existing appointment, or a question?'",
+      "sets": ["intent", "confidence"],
+      "retry": { "max": 2, "counter": "disambiguate_count" },
+      "transitions": [
+        { "when": "disambiguate_count >= 2", "to": "escalate_human", "note": "Stop guessing after two tries." },
+        { "when": "confidence >= 0.6", "to": "identify_intent" },
+        { "default": true, "to": "disambiguate" }
       ],
-      "on_unavailable": "Offer the next alternatives from check_availability.",
-      "emits": "booking-payload.json (status pending -> confirmed)",
-      "next": "confirm_close"
+      "on_no_input": "no_input_recovery"
     },
 
-    "manage_appointment": {
-      "goal": "Reschedule or cancel an existing appointment.",
-      "verify_identity": ["name", "phone"],
-      "collect": ["existing_appointment", "new_time_if_reschedule"],
-      "steps": [
-        "Verify who they are (name + phone on file).",
-        "For reschedule: call check_availability, offer slots, then manage_appointment(action=reschedule).",
-        "For cancel: confirm clearly before calling manage_appointment(action=cancel)."
+    "spam_screen": {
+      "purpose": "Politely end cold-sales / robocalls without wasting the owner's inbox, but log them for the record.",
+      "on_enter": "If this is a cold sales, SEO, insurance, or marketing call: say the business isn't interested, and end politely.",
+      "action": "log_lead(type=lead, tag=spam, urgency=normal)",
+      "emit": "spam_screened",
+      "transitions": [ { "default": true, "to": "polite_end" } ]
+    },
+
+    "verify_identity": {
+      "purpose": "Before changing an existing appointment, confirm who is calling.",
+      "on_enter": "Ask for their name and the booking reference (SL-XXXX); if they don't have it, the phone number the booking was made under is fine.",
+      "collect": ["caller_name", "existing_booking_ref", "caller_phone"],
+      "emit": "identity_verified",
+      "transitions": [
+        { "when": "intent == cancel", "to": "cancel_flow" },
+        { "when": "intent == confirm_existing", "to": "confirm_close" },
+        { "default": true, "to": "reschedule_flow" }
       ],
-      "next": "confirm_close"
+      "on_no_input": "no_input_recovery"
     },
 
-    "answer_faq": {
-      "goal": "Answer questions from approved business knowledge ({{opening_hours}}, {{services}}, {{pricing}}, {{faq}}).",
-      "on_unknown": "Say: 'I don't want to give you inaccurate information — let me have the team confirm that.' Then go to take_message.",
-      "after_answer": "Ask if they'd like to book in. If yes -> book_appointment. If nothing else -> confirm_close.",
-      "next": "confirm_close"
+    "qualify_booking": {
+      "purpose": "Gather everything the booking needs so the downstream workflow is complete on the first pass.",
+      "on_enter": "Confirm the service, then qualify: appointment type, screening questions, location if multi-site, provider preference, special requests. One question at a time.",
+      "collect": ["service", "appointment_type", "qualification_answers", "location", "provider", "special_requests"],
+      "emit": "booking_qualified",
+      "transitions": [ { "default": true, "to": "check_slots" } ],
+      "on_no_input": "no_input_recovery"
+    },
+
+    "check_slots": {
+      "purpose": "Get REAL availability from the calendar (never invent times).",
+      "on_enter": "Call check_availability — with the caller's preferred date/time if they named one, otherwise for the next open slots.",
+      "collect": ["preferred_datetime"],
+      "action": "check_availability",
+      "emit": "availability_checked",
+      "transitions": [
+        { "when": "no_slots_returned", "to": "booking_unavailable" },
+        { "default": true, "to": "offer_slots" }
+      ],
+      "on_tool_error": "degraded_mode"
+    },
+
+    "offer_slots": {
+      "purpose": "Offer 2–3 real slots and let the caller choose; honour a specific request first.",
+      "on_enter": "Read out two or three real options in plain language. If their requested time is free, offer that first. When they pick one, store its exact slot id.",
+      "collect": ["chosen_slot_id"],
+      "transitions": [
+        { "when": "none_suit", "to": "booking_unavailable" },
+        { "default": true, "to": "collect_contact" }
+      ],
+      "on_no_input": "no_input_recovery"
+    },
+
+    "collect_contact": {
+      "purpose": "Capture and confirm the contact details the booking + confirmation need.",
+      "on_enter": "Take their name and phone (read the phone back digit by digit). Ask for an email for the confirmation if they'd like one.",
+      "collect": ["caller_name", "caller_phone", "caller_email"],
+      "emit": "contact_captured",
+      "transitions": [ { "default": true, "to": "confirm_booking" } ],
+      "on_no_input": "no_input_recovery"
+    },
+
+    "confirm_booking": {
+      "purpose": "Read the whole booking back before writing it — the final human check.",
+      "on_enter": "Restate service, date, time, location and name. Ask 'Shall I lock that in?'",
+      "transitions": [
+        { "when": "caller_changes_time", "to": "check_slots" },
+        { "when": "caller_confirms && deposit_required", "to": "take_deposit" },
+        { "when": "caller_confirms", "to": "submit_booking_state" },
+        { "default": true, "to": "check_slots" }
+      ],
+      "on_no_input": "no_input_recovery"
+    },
+
+    "take_deposit": {
+      "purpose": "When the business requires a deposit, text a payment link and note it (does not block the booking).",
+      "on_enter": "Let them know a {{deposit_amount}} deposit secures the slot; text the link with take_payment_link.",
+      "action": "take_payment_link",
+      "collect": ["deposit_paid"],
+      "emit": "deposit_requested",
+      "transitions": [ { "default": true, "to": "submit_booking_state" } ],
+      "on_tool_error": "submit_booking_state"
+    },
+
+    "submit_booking_state": {
+      "purpose": "Write the booking and read back the reference.",
+      "on_enter": "Build the booking-payload (status='pending') and call submit_booking (or book_appointment). Read back the returned booking_reference and say a confirmation text is on its way.",
+      "action": "submit_booking",
+      "emit": "booking_submitted",
+      "transitions": [
+        { "when": "slot_taken_race", "to": "booking_unavailable", "note": "If the slot was grabbed between offer and write, recover gracefully." },
+        { "default": true, "to": "confirm_close" }
+      ],
+      "on_tool_error": "degraded_mode"
+    },
+
+    "booking_unavailable": {
+      "purpose": "No suitable slot — offer the nearest alternatives, a waitlist, or a callback. Never a dead end.",
+      "on_enter": "Apologise briefly, offer the nearest real alternatives. If none suit, offer to add them to a callback/waitlist for that day.",
+      "collect": ["caller_name", "caller_phone", "preferred_datetime"],
+      "action": "log_lead(type=callback, urgency=normal)",
+      "emit": "waitlisted",
+      "transitions": [
+        { "when": "alternative_accepted", "to": "collect_contact" },
+        { "default": true, "to": "confirm_close" }
+      ],
+      "on_no_input": "no_input_recovery"
+    },
+
+    "reschedule_flow": {
+      "purpose": "Move an existing appointment to a new, checked time.",
+      "on_enter": "Find their booking, offer new checked slots, then call reschedule_booking. Read back the new time and reference.",
+      "collect": ["new_datetime", "chosen_slot_id"],
+      "action": "reschedule_booking",
+      "emit": "rescheduled",
+      "transitions": [
+        { "when": "not_found", "to": "take_message" },
+        { "when": "no_slots_returned", "to": "booking_unavailable" },
+        { "default": true, "to": "confirm_close" }
+      ],
+      "on_tool_error": "degraded_mode"
+    },
+
+    "cancel_flow": {
+      "purpose": "Cancel an existing appointment with a clear confirmation first.",
+      "on_enter": "Read back which appointment you found, confirm they want it cancelled, then call cancel_booking. Offer to rebook.",
+      "action": "cancel_booking",
+      "emit": "cancelled",
+      "transitions": [
+        { "when": "not_found", "to": "take_message" },
+        { "when": "wants_to_rebook", "to": "qualify_booking" },
+        { "default": true, "to": "confirm_close" }
+      ],
+      "on_tool_error": "degraded_mode"
+    },
+
+    "answer_knowledge": {
+      "purpose": "Answer questions grounded ONLY in approved business knowledge; never guess.",
+      "on_enter": "Answer from {{opening_hours}} / {{services}} / {{pricing}} / {{faq}} only. If it isn't covered, do not guess.",
+      "grounding_guardrail": "If the answer is not in the knowledge, say 'I don't want to give you inaccurate information — let me have the team confirm that,' and go to take_message.",
+      "emit": "knowledge_answered",
+      "transitions": [
+        { "when": "answer_not_in_knowledge", "to": "knowledge_unknown" },
+        { "when": "caller_wants_to_book", "to": "qualify_booking" },
+        { "default": true, "to": "confirm_close" }
+      ],
+      "on_no_input": "no_input_recovery"
+    },
+
+    "knowledge_unknown": {
+      "purpose": "Bridge an unanswerable question into a captured message so nothing is dropped.",
+      "on_enter": "Reassure them the team will confirm, and take a message.",
+      "transitions": [ { "default": true, "to": "take_message" } ]
     },
 
     "capture_lead": {
-      "goal": "Capture a sales / new-business enquiry.",
-      "collect": ["name", "phone", "reason"],
+      "purpose": "Capture a sales / partnership / new-business enquiry for follow-up.",
+      "on_enter": "Take name, phone, company (if any) and what they're after.",
+      "collect": ["caller_name", "caller_phone", "message_body"],
       "action": "log_lead(type=lead)",
-      "next": "confirm_close"
+      "emit": "lead_captured",
+      "transitions": [ { "default": true, "to": "confirm_close" } ],
+      "on_no_input": "no_input_recovery"
     },
 
     "take_message": {
-      "goal": "Take a detailed message for a person/department.",
-      "collect": ["name", "phone", "recipient", "message", "urgency"],
-      "confirm": "Read the message back before submitting.",
+      "purpose": "Take a detailed, read-back message for a person or department.",
+      "on_enter": "Collect name, phone, who it's for, the message and urgency. Read the message back before saving.",
+      "collect": ["caller_name", "caller_phone", "message_recipient", "message_body", "urgency"],
       "action": "log_lead(type=message)",
-      "next": "confirm_close"
+      "emit": "message_taken",
+      "transitions": [ { "default": true, "to": "confirm_close" } ],
+      "on_no_input": "no_input_recovery"
     },
 
     "handle_complaint": {
-      "goal": "Handle a complaint calmly.",
-      "steps": [
-        "Acknowledge the concern empathetically.",
-        "Gather the facts (what happened, when).",
-        "Summarize the issue back to them.",
-        "Offer the next step (callback / escalation).",
-        "Call log_lead(type=complaint, urgency=urgent) and escalate if unresolved."
+      "purpose": "De-escalate calmly with a structured ladder, capture the facts, and route for resolution.",
+      "on_enter": "Acknowledge and empathise first. Do not get defensive.",
+      "deescalation_ladder": [
+        "1. Acknowledge feeling: 'I'm really sorry to hear that, that's not the experience we want for you.'",
+        "2. Gather facts: what happened, when, who.",
+        "3. Summarise the issue back to confirm you've understood.",
+        "4. Offer a concrete next step (priority callback / manager).",
+        "5. If they remain unhappy or ask for a manager -> escalate_human."
       ],
-      "escalate_if": "Caller remains dissatisfied or asks for a manager.",
-      "next": "confirm_close"
+      "collect": ["caller_name", "caller_phone", "complaint_details"],
+      "action": "log_lead(type=complaint, urgency=urgent)",
+      "emit": "complaint_logged",
+      "transitions": [
+        { "when": "wants_manager || still_unhappy", "to": "escalate_human" },
+        { "default": true, "to": "confirm_close" }
+      ],
+      "on_no_input": "no_input_recovery"
     },
 
     "emergency": {
-      "goal": "Detect and route emergencies immediately.",
-      "triggers": ["safety concern", "medical emergency", "security incident", "threat", "urgent operational failure", "leak/flood/no heat/no power"],
-      "say": "This needs immediate attention — I'm putting you through to the team right now.",
+      "purpose": "Detect and route emergencies immediately — safety first.",
+      "on_enter": "This needs immediate attention — I'm putting you through to the team right now. (If life-threatening, advise calling emergency services.)",
+      "triggers": ["medical emergency", "safety concern", "security incident", "threat", "gas leak", "flood", "no heat in winter", "no power", "vulnerable person at risk"],
       "action": "log_lead(type=lead, urgency=urgent) then transferCall",
-      "terminal": true
+      "emit": "emergency_routed",
+      "transitions": [
+        { "when": "transfer_failed", "to": "take_message" },
+        { "default": true, "to": "polite_end" }
+      ]
     },
 
-    "escalate": {
-      "goal": "Transfer to a human.",
-      "say": "Of course — let me put you straight through to the team now. One moment.",
-      "action": "log_lead(type=lead) then transferCall",
-      "terminal": true
+    "escalate_human": {
+      "purpose": "Warm-transfer to a human, choosing the right department when possible.",
+      "on_enter": "Of course — let me put you straight through. One moment.",
+      "action": "log_lead(type=lead) then transferCall(department_or_owner)",
+      "emit": "escalated",
+      "transitions": [
+        { "when": "transfer_failed || after_hours", "to": "take_message", "note": "No human available -> capture a message instead." },
+        { "default": true, "to": "polite_end" }
+      ]
+    },
+
+    "no_input_recovery": {
+      "purpose": "Handle silence / dropped audio without dead-ending.",
+      "on_enter": "Re-prompt gently (see no_input_policy). Count attempts.",
+      "retry": { "max": 2, "counter": "no_input_count" },
+      "transitions": [
+        { "when": "no_input_count >= 2", "to": "voicemail_or_close" },
+        { "when": "caller_returns", "to": "identify_intent" },
+        { "default": true, "to": "no_input_recovery" }
+      ]
+    },
+
+    "degraded_mode": {
+      "purpose": "A tool (calendar / booking) is unavailable — never lose the caller; capture everything as a message and promise a fast callback.",
+      "on_enter": "Apologise that you can't complete that live right now, then take full details so the team can finish it and call them straight back.",
+      "collect": ["caller_name", "caller_phone", "message_body"],
+      "action": "log_lead(type=message, urgency=urgent, tag=tool_failure)",
+      "emit": "degraded_fallback",
+      "transitions": [ { "default": true, "to": "confirm_close" } ]
+    },
+
+    "voicemail_or_close": {
+      "purpose": "If the caller is gone or it's an answering machine, leave/close cleanly.",
+      "on_enter": "If a voicemail is detected, leave a short message with the business name and callback number. Otherwise close.",
+      "emit": "voicemail_or_silent_close",
+      "transitions": [ { "default": true, "to": "polite_end" } ]
     },
 
     "confirm_close": {
-      "goal": "Summarize, confirm next steps, thank, and end.",
-      "steps": [
-        "Summarize the action taken (e.g. 'You're booked for Tuesday at 2pm').",
-        "Confirm what happens next (e.g. 'You'll get a text confirmation shortly').",
-        "Ask 'Anything else I can help with?' — if yes, return to identify_intent.",
-        "Thank them and close warmly."
-      ],
+      "purpose": "Summarise, confirm next steps, offer more help, and end warmly.",
+      "on_enter": "Summarise the action ('You're booked for Tuesday at 2pm, reference SL-4KQ2'). Confirm what happens next ('a text is on its way'). Ask 'Anything else I can help with?'",
+      "emit": "call_summary",
+      "transitions": [
+        { "when": "caller_has_another_need", "to": "identify_intent" },
+        { "default": true, "to": "polite_end" }
+      ]
+    },
+
+    "polite_end": {
+      "purpose": "Terminal — thank the caller and end the call, emitting the handoff payload.",
+      "on_enter": "Thanks a million for calling {{business_name}}. Take care, bye now.",
       "emit": "handoff",
       "terminal": true
     }
   },
 
-  "escalation_rules": [
-    "Customer requests a manager or a person.",
-    "Required information is unavailable.",
-    "Legal issues arise.",
-    "Emergency situation detected.",
-    "Customer dissatisfied after reasonable assistance.",
-    "Financial authorization is required."
+  "escalation_matrix": [
+    { "trigger": "Caller asks for a person or a manager", "priority": "high", "action": "escalate_human" },
+    { "trigger": "Emergency / safety / legal matter", "priority": "critical", "action": "emergency" },
+    { "trigger": "Two low-confidence turns in a row", "priority": "medium", "action": "escalate_human" },
+    { "trigger": "Financial authorisation or refund beyond policy", "priority": "high", "action": "escalate_human" },
+    { "trigger": "Required information unavailable", "priority": "medium", "action": "take_message" },
+    { "trigger": "Any booking/calendar tool failure", "priority": "high", "action": "degraded_mode" },
+    { "trigger": "Caller remains dissatisfied after de-escalation", "priority": "high", "action": "escalate_human" }
+  ],
+
+  "compliance": {
+    "recording_disclosure": "If recording_disclosure_required, give the disclosure in greeting/compliance_disclosure and capture consent_recording; if declined, route to a human and do not record.",
+    "pii_handling": "Only collect the minimum PII needed for the task. Never read a full card number aloud; deposits go via a texted payment link.",
+    "data_subject_requests": "If a caller asks to access or delete their data, log_lead(type=message, recipient='data/privacy') and escalate — never action it on the call.",
+    "do_not_call": "If a caller asks not to be contacted again, capture it as a message tagged 'do_not_contact'."
+  },
+
+  "guardrails": [
+    "Grounded answers only — no invented prices, availability, clinical, or legal advice.",
+    "No medical, legal, or financial advice; capture and route to a human instead.",
+    "Never offer a time not returned by check_availability.",
+    "Never confirm a booking without reading it back.",
+    "Redact/avoid repeating full sensitive numbers on the recording."
+  ],
+
+  "analytics_events": [
+    "call_started", "intent_classified", "identity_verified", "booking_qualified", "availability_checked",
+    "contact_captured", "deposit_requested", "booking_submitted", "waitlisted", "rescheduled", "cancelled",
+    "knowledge_answered", "lead_captured", "message_taken", "complaint_logged", "emergency_routed",
+    "escalated", "spam_screened", "degraded_fallback", "voicemail_or_silent_close", "call_summary", "handoff"
+  ],
+
+  "acceptance_tests": [
+    { "name": "Happy-path booking", "path": ["greeting", "identify_intent", "qualify_booking", "check_slots", "offer_slots", "collect_contact", "confirm_booking", "submit_booking_state", "confirm_close", "polite_end"] },
+    { "name": "Requested time taken -> alternative", "path": ["greeting", "identify_intent", "qualify_booking", "check_slots", "offer_slots", "booking_unavailable", "collect_contact", "confirm_booking", "submit_booking_state", "confirm_close", "polite_end"] },
+    { "name": "Reschedule by reference", "path": ["greeting", "identify_intent", "verify_identity", "reschedule_flow", "confirm_close", "polite_end"] },
+    { "name": "Cancel then rebook", "path": ["greeting", "identify_intent", "verify_identity", "cancel_flow", "qualify_booking", "check_slots", "offer_slots", "collect_contact", "confirm_booking", "submit_booking_state", "confirm_close", "polite_end"] },
+    { "name": "FAQ then message when unknown", "path": ["greeting", "identify_intent", "answer_knowledge", "knowledge_unknown", "take_message", "confirm_close", "polite_end"] },
+    { "name": "Angry caller -> de-escalate -> human", "path": ["greeting", "identify_intent", "handle_complaint", "escalate_human", "polite_end"] },
+    { "name": "Emergency fast-path", "path": ["greeting", "identify_intent", "emergency", "polite_end"] },
+    { "name": "Calendar down -> degraded capture", "path": ["greeting", "identify_intent", "qualify_booking", "check_slots", "degraded_mode", "confirm_close", "polite_end"] },
+    { "name": "Spam screened out", "path": ["greeting", "identify_intent", "spam_screen", "polite_end"] },
+    { "name": "Silence -> voicemail/close", "path": ["greeting", "identify_intent", "no_input_recovery", "voicemail_or_close", "polite_end"] }
   ],
 
   "handoff": {
-    "_comment": "Emitted at the end of every call -> connects to the post-call automation (n8n). For new bookings, the 'book_appointment' step ALSO emits booking-payload.json via submit_booking to the downstream BOOKING workflow (booking_workflow_url), which returns a booking_reference and status='confirmed'. Two connection points, one set of gathered data.",
+    "_comment": "Emitted at polite_end -> post-call automation (n8n). New bookings ALSO emit booking-payload.json via submit_booking to booking_workflow_url, which returns a booking_reference. Two connection points, one gathered dataset.",
     "connects_to": {
-      "post_call_automation": "n8n-receptionist-postcall.json (Parse node reads these fields)",
+      "post_call_automation": "automation/n8n-receptionist-postcall.json (Parse node reads these fields)",
       "booking_workflow": "receives booking-payload.json at booking_workflow_url"
     },
     "schema": {
       "business": "string",
-      "intent": "new_appointment|reschedule|cancel|general_inquiry|pricing|support|complaint|billing|sales|emergency|message|other",
+      "intent": "enum(slots.intent)",
+      "language": "string",
+      "sentiment": "calm|frustrated|angry|distressed",
       "name": "string",
       "phone": "string",
       "email": "string|null",
       "company": "string|null",
       "reason": "string",
       "urgency": "normal|urgent",
-      "action_taken": "booked|rescheduled|cancelled|message_taken|answered|escalated|none",
+      "action_taken": "booked|rescheduled|cancelled|waitlisted|message_taken|answered|escalated|spam|degraded|none",
       "booked": "boolean",
+      "booking_reference": "string|null",
       "startISO": "string|null",
       "recipient": "string|null",
       "message": "string|null",
       "escalated": "boolean",
+      "deposit_paid": "boolean|null",
+      "consent_recording": "boolean|null",
+      "states_visited": "string[]",
       "receivedAt": "ISO-8601"
     }
   }

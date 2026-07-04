@@ -2,91 +2,102 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 from matplotlib.lines import Line2D
 
-C = {"trigger": "#16a34a", "process": "#2563eb", "decision": "#f59e0b",
-     "tool": "#0ea5e9", "act": "#7c3aed", "escalate": "#ef4444", "ext": "#0f766e"}
+# warm/serious palette (matches the product brand, not default AI blue/purple)
+C = {"start": "#1c1917", "router": "#c2410c", "gather": "#1f3d5c", "tool": "#0d6448",
+     "act": "#12805c", "escalate": "#b91c1c", "ext": "#7c5e10", "safe": "#57534e", "mut": "#78716c"}
 
-fig, ax = plt.subplots(figsize=(13, 11))
-ax.set_xlim(0, 14); ax.set_ylim(0, 15); ax.axis("off")
+fig, ax = plt.subplots(figsize=(15, 12))
+ax.set_xlim(0, 15); ax.set_ylim(0, 13.4); ax.axis("off")
+fig.patch.set_facecolor("white")
 
-def box(x, y, w, h, text, color, fs=10.5, dashed=False):
-    p = FancyBboxPatch((x-w/2, y-h/2), w, h, boxstyle="round,pad=0.02,rounding_size=0.16",
-                       linewidth=(1.6 if dashed else 0), facecolor=color, alpha=0.96,
-                       edgecolor="#0f172a", linestyle=("--" if dashed else "-"))
-    ax.add_patch(p)
+def box(x, y, w, h, text, color, fs=9.5, dashed=False, text_color="white"):
+    ax.add_patch(FancyBboxPatch((x-w/2, y-h/2), w, h, boxstyle="round,pad=0.02,rounding_size=0.14",
+                 linewidth=(1.5 if dashed else 0), facecolor=color, alpha=0.97,
+                 edgecolor="#1c1917", linestyle=("--" if dashed else "-")))
+    ax.text(x, y, text, ha="center", va="center", color=text_color, fontsize=fs, fontweight="bold")
+
+def diamond(x, y, w, h, text, color, fs=9.5):
+    ax.add_patch(plt.Polygon([(x,y+h/2),(x+w/2,y),(x,y-h/2),(x-w/2,y)], closed=True, facecolor=color))
     ax.text(x, y, text, ha="center", va="center", color="white", fontsize=fs, fontweight="bold")
 
-def diamond(x, y, w, h, text, color):
-    ax.add_patch(plt.Polygon([(x,y+h/2),(x+w/2,y),(x,y-h/2),(x-w/2,y)], closed=True, facecolor=color))
-    ax.text(x, y, text, ha="center", va="center", color="white", fontsize=10, fontweight="bold")
-
-def arrow(x1,y1,x2,y2,label=None,lx=0,ly=0,color="#334155"):
-    ax.add_patch(FancyArrowPatch((x1,y1),(x2,y2),arrowstyle="-|>",mutation_scale=16,
-                 linewidth=2,color=color,shrinkA=3,shrinkB=3))
+def arrow(x1,y1,x2,y2,label=None,lx=0,ly=0,color="#57534e",lw=1.9,ls="-"):
+    ax.add_patch(FancyArrowPatch((x1,y1),(x2,y2),arrowstyle="-|>",mutation_scale=14,
+                 linewidth=lw,color=color,shrinkA=2,shrinkB=2,linestyle=ls))
     if label:
-        ax.text((x1+x2)/2+lx,(y1+y2)/2+ly,label,ha="center",va="center",fontsize=9.5,
-                fontweight="bold",color="#0f172a",bbox=dict(boxstyle="round,pad=0.2",fc="white",ec="#cbd5e1"))
+        ax.text((x1+x2)/2+lx,(y1+y2)/2+ly,label,ha="center",va="center",fontsize=8,
+                fontweight="bold",color="#1c1917",bbox=dict(boxstyle="round,pad=0.18",fc="white",ec="#d6d3cd"))
 
-ax.text(7, 14.5, "AI Receptionist — In-Call Workflow", ha="center", fontsize=16, fontweight="bold", color="#0f172a")
+ax.text(8.6, 13.05, "AI Receptionist — In-Call Workflow", ha="center", fontsize=15.5, fontweight="bold", color="#1c1917")
+ax.text(8.6, 12.6, "v2 · 28 states · dead-end-free · validated", ha="center", fontsize=9.5, color="#78716c")
 
-cx = 7
-box(cx, 13.5, 4.4, 0.9, "GREET", C["trigger"], 12)
-diamond(cx, 12.0, 3.6, 1.5, "IDENTIFY intent", C["decision"])
-arrow(cx, 13.05, cx, 12.75)
+# ---- top: main call path -------------------------------------------------
+box(7.5, 12.1, 3.2, 0.7, "GREET  ·  detect language", C["start"], 10.5)
+box(7.5, 11.2, 3.0, 0.6, "compliance / recording notice", C["safe"], 8.5)
+arrow(7.5, 11.75, 7.5, 11.5, ls="--", color=C["mut"])
+diamond(7.5, 10.1, 3.8, 1.35, "IDENTIFY intent\n(+ confidence)", C["router"])
+arrow(7.5, 10.9, 7.5, 10.78)
 
-# intent fan-out row
-y_int = 10.2
-cols = [
-    (2.0,  "New\nappointment", C["process"]),
-    (4.6,  "Reschedule /\nCancel", C["process"]),
-    (7.0,  "Question /\nPricing", C["process"]),
-    (9.4,  "Complaint /\nMessage", C["process"]),
-    (12.0, "Emergency /\nHuman", C["escalate"]),
+# intent fan-out
+yI = 8.3
+lanes = [
+    (1.7,  "New\nappointment", C["gather"]),
+    (4.3,  "Reschedule /\nCancel", C["gather"]),
+    (6.9,  "Question /\nPricing", C["gather"]),
+    (9.5,  "Complaint /\nMessage", C["gather"]),
+    (12.9, "Emergency /\nHuman", C["escalate"]),
 ]
-for x, t, col in cols:
-    box(x, y_int, 2.2, 0.95, t, col, 9.5)
-    arrow(cx, 11.25, x, y_int+0.5)
+for x, t, col in lanes:
+    box(x, yI, 2.25, 0.9, t, col, 9)
+    arrow(7.5, 9.42, x, yI+0.48, color="#a8a29e")
 
-# New appointment lane -> qualify -> book -> submit
-box(2.0, 8.6, 2.3, 0.85, "QUALIFY\n(type, screening,\nlocation, requests)", C["process"], 8.3)
-box(2.0, 7.2, 2.3, 0.8, "check_availability", C["tool"], 9)
-box(2.0, 5.9, 2.3, 0.8, "submit_booking", C["act"], 9.5)
-arrow(2.0, y_int-0.5, 2.0, 9.05)
-arrow(2.0, 8.15, 2.0, 7.6)
-arrow(2.0, 6.8, 2.0, 6.3)
+# booking lane
+box(1.7, 6.9, 2.4, 0.8, "QUALIFY\ntype·screen·provider", C["gather"], 8.2)
+box(1.7, 5.7, 2.4, 0.7, "check_availability", C["tool"], 8.8)
+box(1.7, 4.6, 2.4, 0.7, "offer real slots\n→ contact → confirm", C["gather"], 8)
+box(1.7, 3.5, 2.4, 0.7, "submit_booking\n(reference SL-XXXX)", C["act"], 8.3)
+for a,b in [(7.85,7.3),(6.5,6.05),(5.35,4.95),(4.25,3.85)]:
+    arrow(1.7, a, 1.7, b)
 
-# reschedule/cancel -> manage_appointment
-box(4.6, 7.2, 2.3, 0.9, "verify identity\n+ manage_appointment", C["act"], 8.3)
-arrow(4.6, y_int-0.5, 4.6, 7.7)
+# reschedule/cancel
+box(4.3, 6.5, 2.4, 0.9, "verify identity →\nreschedule / cancel", C["act"], 8.2)
+arrow(4.3, yI-0.48, 4.3, 6.98)
+# question
+box(6.9, 6.5, 2.4, 0.9, "grounded answer\n· else take message", C["tool"], 8.2)
+arrow(6.9, yI-0.48, 6.9, 6.98)
+# complaint/message
+box(9.5, 6.5, 2.4, 0.9, "de-escalate ladder\n· log_lead", C["act"], 8.2)
+arrow(9.5, yI-0.48, 9.5, 6.98)
+# emergency/human
+box(12.9, 6.5, 2.4, 0.9, "log urgent →\ntransferCall", C["escalate"], 8.6)
+arrow(12.9, yI-0.48, 12.9, 6.98)
 
-# question -> answer_faq / take message
-box(7.0, 7.2, 2.3, 0.9, "answer from\nknowledge / log_lead", C["tool"], 8.6)
-arrow(7.0, y_int-0.5, 7.0, 7.7)
+# converge
+box(7.5, 2.2, 5.4, 0.8, "CONFIRM  →  CLOSE", C["start"], 11)
+for x, yb in [(1.7,3.15),(4.3,6.05),(6.9,6.05),(9.5,6.05),(12.9,6.05)]:
+    arrow(x, yb, 7.5 + (-2 if x<7.5 else 2), 2.55, color="#c9c4ba", lw=1.5)
 
-# complaint/message -> log_lead
-box(9.4, 7.2, 2.3, 0.9, "log_lead\n(message / complaint)", C["act"], 8.6)
-arrow(9.4, y_int-0.5, 9.4, 7.7)
+# ---- resilience band (the enterprise safety net) -------------------------
+ax.add_patch(FancyBboxPatch((0.4, 0.35), 14.2, 0.95, boxstyle="round,pad=0.02,rounding_size=0.1",
+             facecolor="#faf7f2", edgecolor="#e9e5dd", linewidth=1.3))
+ax.text(0.75, 1.12, "RESILIENCE & SAFEGUARDS — every state recovers; the call never dead-ends",
+        fontsize=9.5, fontweight="bold", color=C["safe"])
+safe = ["disambiguate (low confidence)", "no-input recovery", "degraded mode (tool down → capture)",
+        "spam screen", "waitlist / callback", "voicemail detect", "GDPR consent · PII guard"]
+xs = [1.9, 3.9, 6.1, 8.1, 9.7, 11.3, 13.3]
+for x, t in zip(xs, safe):
+    ax.text(x, 0.66, "• " + t, ha="center", va="center", fontsize=7.6, color="#1c1917")
 
-# emergency/human -> transfer
-box(12.0, 7.2, 2.3, 0.9, "transferCall\nto a human", C["escalate"], 9)
-arrow(12.0, y_int-0.5, 12.0, 7.7)
+# external connections
+box(1.7, 2.2, 2.5, 0.75, "Your BOOKING\nworkflow", C["ext"], 8.4, dashed=True)
+arrow(1.7, 3.15, 1.7, 2.58, "payload", lx=0.95, color=C["ext"], lw=1.6)
+box(12.9, 2.2, 2.9, 0.8, "Post-call automation\nCRM · SMS · follow-up", C["ext"], 8, dashed=True)
+arrow(9.6, 2.2, 11.45, 2.2, "handoff", ly=0.3, color=C["ext"], lw=1.6)
 
-# converge to confirm + close
-box(cx, 4.0, 4.4, 0.9, "CONFIRM  →  CLOSE", C["trigger"], 12)
-for x in [2.0, 4.6, 7.0, 9.4, 12.0]:
-    yb = 5.5 if x == 2.0 else 6.75
-    arrow(x, yb, cx-1.6 if x < cx else cx+1.6, 4.35, color="#94a3b8")
+items = [("Greet/Close", C["start"]), ("Router", C["router"]), ("Gather", C["gather"]),
+         ("Tool", C["tool"]), ("Action", C["act"]), ("Escalate", C["escalate"]),
+         ("Safeguard", C["safe"]), ("Connected", C["ext"])]
+handles = [Line2D([0],[0], marker="s", color="w", markerfacecolor=c, markersize=11, label=l) for l,c in items]
+ax.legend(handles=handles, loc="upper left", ncol=2, frameon=False, fontsize=8, bbox_to_anchor=(0.0, 1.02))
 
-# external connections (dashed)
-box(2.0, 4.0, 2.6, 1.0, "Your BOOKING\nworkflow\n(booking_reference)", C["ext"], 9, dashed=True)
-arrow(2.0, 5.5, 2.0, 4.5, "booking-payload.json\nstatus: pending", lx=1.7, ly=0.0, color=C["ext"])
-box(11.8, 4.0, 2.8, 1.0, "Post-call automation\n(CRM · SMS · calendar\n· follow-up)", C["ext"], 8.5, dashed=True)
-arrow(cx+2.2, 4.0, 10.4, 4.0, "handoff payload", ly=0.35, color=C["ext"])
-
-items = [("Greet/Close", C["trigger"]), ("Decision", C["decision"]), ("Gather", C["process"]),
-         ("Tool", C["tool"]), ("Action", C["act"]), ("Escalate", C["escalate"]), ("Connected workflow", C["ext"])]
-handles = [Line2D([0],[0], marker="s", color="w", markerfacecolor=c, markersize=12, label=l) for l,c in items]
-ax.legend(handles=handles, loc="lower center", ncol=4, frameon=False, fontsize=9, bbox_to_anchor=(0.5, -0.04))
-
-plt.tight_layout()
 plt.savefig("workflow/receptionist-flow.png", dpi=150, bbox_inches="tight", facecolor="white")
 print("saved workflow/receptionist-flow.png")
