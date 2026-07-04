@@ -332,9 +332,10 @@ async function loadClients(){
         <td><span class="dot ${c.active?'on':'off'}"></span>${c.active?'Active':'Pending'}</td>
         <td><input value="${esc(c.voiceId||'')}" placeholder="ElevenLabs voice ID" title="Paste an ElevenLabs voice ID — sets this client's receptionist voice" onchange="setVoice('${esc(c.username)}',this.value)" style="padding:6px 8px;min-width:150px;font-family:ui-monospace,monospace;font-size:12px" /></td>
         <td><input value="${esc(c.notes||'')}" placeholder="add a note" onchange="setNote('${esc(c.username)}',this.value)" style="padding:6px 8px;min-width:130px" /></td>
-        <td>${c.active
+        <td style="white-space:nowrap">${c.active
           ? `<button class="btn ghost sm" onclick="setActive('${esc(c.username)}',false)">Suspend</button>`
-          : `<button class="btn gold sm" onclick="setActive('${esc(c.username)}',true)">Activate</button>`}</td>
+          : `<button class="btn gold sm" onclick="setActive('${esc(c.username)}',true)">Activate</button>`}
+          <button class="btn ghost sm" onclick="resetPassword('${esc(c.username)}')" title="Set a new password for this client">Reset PW</button></td>
       </tr>`;
     }).join('');
   }catch(e){}
@@ -343,6 +344,15 @@ async function setPlan(email,plan){ await api('/admin/client/update',{method:'PO
 async function setActive(email,active){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,active})}); toast(active?'Activated '+email:'Suspended '+email); loadClients(); loadOverview(); }
 async function setNote(email,notes){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,notes})}); toast('Note saved'); }
 async function setVoice(email,voiceId){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,voiceId})}); toast('Voice set — applies when their assistant is built'); }
+async function resetPassword(email){
+  const pw=prompt('New password for '+email+' (8+ characters). Tell them this — they can change it themselves in the app afterwards.');
+  if(pw===null) return;
+  if(pw.length<8){ toast('Password must be at least 8 characters'); return; }
+  if(DEMO){ toast('Demo — in the live admin this sets their password'); return; }
+  try{ const r=await api('/admin/client/reset-password',{method:'POST',body:JSON.stringify({email,newPassword:pw})});
+    const d=await r.json().catch(()=>({})); toast(d.ok?'Password reset for '+email:(d.error||'Could not reset'));
+  }catch(e){ toast('Could not reset password'); }
+}
 
 async function loadDiscounts(){
   try{ const list=await (await api('/admin/discounts')).json();
