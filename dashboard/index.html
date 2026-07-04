@@ -1172,6 +1172,13 @@ function renderAccount(){
           <code class="acct-code">**61*YOUR-AI-NUMBER#</code>
           <div class="acct-help">Your own number never changes. Dial <code>##61#</code> to switch it off.</div>
         </div>
+        ${demo ? '' : `<div class="card acct-card" style="margin-top:16px">
+          <div class="acct-kicker">Change password</div>
+          <input id="cp-cur" type="password" placeholder="Current password" style="margin-top:8px" />
+          <input id="cp-new" type="password" placeholder="New password (8+ characters)" style="margin-top:8px" />
+          <div id="cp-msg" style="font-size:12.5px;margin-top:8px;min-height:16px"></div>
+          <button class="btn primary" style="margin-top:4px" onclick="changePassword()">Update password</button>
+        </div>`}
         <div class="card acct-card" style="margin-top:16px">
           <div class="acct-kicker">Get this app on your phone</div>
           <div class="acct-help" style="margin-top:6px">iPhone: Share \u2192 "Add to Home Screen". Android: menu \u2192 "Install app".</div>
@@ -1180,6 +1187,19 @@ function renderAccount(){
         </div>
       </div>
     </div>`;
+}
+async function changePassword(){
+  const cur=$('cp-cur').value||'', nw=$('cp-new').value||'', msg=$('cp-msg');
+  msg.style.color='var(--mut)';
+  if(nw.length<8){ msg.style.color='var(--urgent)'; msg.textContent='New password must be at least 8 characters.'; return; }
+  try{
+    const r=await fetch(session.server+'/change-password',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.token},
+      body:JSON.stringify({currentPassword:cur,newPassword:nw})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok){ msg.style.color='var(--booked)'; msg.textContent='Password updated. Use it next time you log in.'; $('cp-cur').value=''; $('cp-new').value=''; }
+    else { msg.style.color='var(--urgent)'; msg.textContent=d.error||'Could not update password.'; }
+  }catch(e){ msg.style.color='var(--urgent)'; msg.textContent='Could not reach the server.'; }
 }
 
 /* ---------- app install (PWA) ---------- */

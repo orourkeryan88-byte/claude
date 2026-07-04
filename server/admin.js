@@ -26,6 +26,7 @@ const path = require("path");
 const store = require("./store");
 const discounts = require("./discounts");
 const plans = require("./plans");
+const { hashPassword } = require("./auth");
 
 const CONFIG_FILE = process.env.PRODUCT_CONFIG_FILE || path.join(__dirname, "product-config.json");
 const tokens = new Map(); // token -> exp
@@ -102,6 +103,17 @@ function mountAdmin(app, getLeads) {
     if (req.body.voiceId !== undefined) patch.voiceId = req.body.voiceId;
     const saved = store.upsert(patch);
     res.json({ ok: true, client: saved });
+  });
+
+  // Owner resets a client's password (for "I forgot mine" support calls).
+  app.post("/admin/client/reset-password", guard, (req, res) => {
+    const { email, newPassword } = req.body || {};
+    if (!email || !newPassword) return res.status(400).json({ error: "email and newPassword required" });
+    if (String(newPassword).length < 8) return res.status(400).json({ error: "Password must be at least 8 characters." });
+    if (!store.find(email)) return res.status(404).json({ error: "No sign-up account with that email (preset accounts live in CLIENT_ACCOUNTS)." });
+    const { salt, hash } = hashPassword(newPassword);
+    store.upsert({ username: email, salt, hash });
+    res.json({ ok: true });
   });
 
   app.get("/admin/leads", guard, (req, res) => {

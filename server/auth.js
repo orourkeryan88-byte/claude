@@ -43,9 +43,9 @@ function loadAccounts() {
 const tokens = new Map(); // token -> { business, exp }
 const TOKEN_TTL = 12 * 60 * 60 * 1000;
 
-function issueToken(business, plan) {
+function issueToken(business, plan, username) {
   const t = crypto.randomBytes(24).toString("hex");
-  tokens.set(t, { business, plan: plan || plans.DEFAULT_PLAN, exp: Date.now() + TOKEN_TTL });
+  tokens.set(t, { business, plan: plan || plans.DEFAULT_PLAN, username: username || "", exp: Date.now() + TOKEN_TTL });
   return t;
 }
 function readToken(req) {
@@ -79,8 +79,26 @@ function mountAuth(app, getLeads) {
       return res.status(402).json({ error: "Your subscription isn't active yet — finish payment, then log in." });
     }
     const plan = plans.getPlan(acct.plan);
-    res.json({ token: issueToken(acct.business, plan.id), business: acct.business,
+    res.json({ token: issueToken(acct.business, plan.id, acct.username), business: acct.business,
       plan: plan.id, planName: plan.name, features: plan.features });
+  });
+
+  // Client changes their own password (must give the current one).
+  app.post("/change-password", (req, res) => {
+    const rec = readToken(req);
+    if (!rec) return res.status(401).json({ error: "Please log in again." });
+    const { currentPassword, newPassword } = req.body || {};
+    if (!newPassword || String(newPassword).length < 8)
+      return res.status(400).json({ error: "New password must be at least 8 characters." });
+    const acct = getAccount(envAccounts, rec.username);
+    if (!acct) return res.status(404).json({ error: "Account not found." });
+    if (!store.find(rec.username))
+      return res.status(400).json({ error: "This is a preset account — ask Southline to change its password." });
+    if (!verifyPassword(currentPassword, acct.salt, acct.hash))
+      return res.status(401).json({ error: "Your current password isn't right." });
+    const { salt, hash } = hashPassword(newPassword);
+    store.upsert({ username: rec.username, salt, hash });
+    res.json({ ok: true });
   });
 
   app.get("/my-leads", (req, res) => {
