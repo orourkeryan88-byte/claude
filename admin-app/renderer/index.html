@@ -123,6 +123,29 @@
   <!-- CLIENTS -->
   <div id="t-clients">
     <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <h3 style="margin:0">Onboard a new client</h3>
+        <button class="btn gold" onclick="toggleOnboard()">＋ New client</button>
+      </div>
+      <div id="onboard-form" style="display:none">
+        <div class="row3">
+          <div><label>Business name *</label><input id="ob-biz" placeholder="Joe's Plumbing" /></div>
+          <div><label>Their login email *</label><input id="ob-email" type="email" placeholder="joe@dublinplumbing.ie" /></div>
+          <div><label>Owner's mobile (for lead texts)</label><input id="ob-phone" placeholder="+353 87…" /></div>
+        </div>
+        <div class="row3" style="margin-top:10px">
+          <div><label>Website (auto-fills their details)</label><input id="ob-web" placeholder="dublinplumbing.ie" /></div>
+          <div><label>Google Calendar ID</label><input id="ob-cal" placeholder="…@group.calendar.google.com" /></div>
+          <div><label>ElevenLabs voice ID (optional)</label><input id="ob-voice" placeholder="leave blank for default" /></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+          <button class="btn gold" id="ob-run" onclick="onboardClient()">Run the onboarding squad →</button>
+          <span class="muted" id="ob-msg"></span>
+        </div>
+        <div id="ob-results" style="margin-top:14px"></div>
+      </div>
+    </div>
+    <div class="panel">
       <h3>Every client</h3>
       <div style="overflow:auto">
         <table>
@@ -344,6 +367,32 @@ async function setPlan(email,plan){ await api('/admin/client/update',{method:'PO
 async function setActive(email,active){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,active})}); toast(active?'Activated '+email:'Suspended '+email); loadClients(); loadOverview(); }
 async function setNote(email,notes){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,notes})}); toast('Note saved'); }
 async function setVoice(email,voiceId){ await api('/admin/client/update',{method:'POST',body:JSON.stringify({email,voiceId})}); toast('Voice set — applies when their assistant is built'); }
+
+function toggleOnboard(){ const f=$('onboard-form'); f.style.display = f.style.display==='none'?'':'none'; }
+async function onboardClient(){
+  const business=($('ob-biz').value||'').trim(), email=($('ob-email').value||'').trim();
+  const msg=$('ob-msg'), out=$('ob-results');
+  if(!business||!email){ msg.textContent='Business name and email are required.'; return; }
+  if(DEMO){ out.innerHTML='<div class="muted">Demo mode — connect your live server to actually onboard clients.</div>'; return; }
+  $('ob-run').disabled=true; msg.textContent='Agents working…'; out.innerHTML='';
+  const body={ business, email,
+    ownerPhone:($('ob-phone').value||'').trim(), website:($('ob-web').value||'').trim(),
+    calendarId:($('ob-cal').value||'').trim(), voiceId:($('ob-voice').value||'').trim() };
+  try{
+    const r=await api('/admin/onboard-client',{method:'POST',body:JSON.stringify(body)});
+    const d=await r.json();
+    if(!d.ok){ msg.textContent=d.error||'Onboarding failed.'; $('ob-run').disabled=false; return; }
+    msg.textContent='';
+    const icon=s=>({done:'✅',queued:'🕓',skipped:'—',error:'❌',partly_queued:'🕓'}[s]||'•');
+    out.innerHTML =
+      `<div style="font-weight:800;margin-bottom:8px">Onboarding: ${d.status.replace('_',' ')}</div>`+
+      d.steps.map(s=>`<div style="padding:7px 0;border-bottom:1px solid var(--line);font-size:13px">
+        ${icon(s.status)} <b>${s.name}</b> — <span class="muted">${s.detail}</span></div>`).join('')+
+      (d.tempPassword?`<div style="margin-top:10px" class="muted">Temp password for ${email}: <code>${d.tempPassword}</code> — give it to them; they can change it in the app.</div>`:'');
+    loadClients(); loadOverview();
+  }catch(e){ msg.textContent='Could not reach the server.'; }
+  $('ob-run').disabled=false;
+}
 async function resetPassword(email){
   const pw=prompt('New password for '+email+' (8+ characters). Tell them this — they can change it themselves in the app afterwards.');
   if(pw===null) return;

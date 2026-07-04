@@ -101,8 +101,35 @@ function mountAdmin(app, getLeads) {
     if (ownerPhone !== undefined) patch.ownerPhone = ownerPhone;
     if (notes !== undefined) patch.notes = notes;
     if (req.body.voiceId !== undefined) patch.voiceId = req.body.voiceId;
+    if (req.body.calendarId !== undefined) patch.calendarId = req.body.calendarId;
+    if (req.body.ownerPhone !== undefined) patch.ownerPhone = req.body.ownerPhone;
     const saved = store.upsert(patch);
     res.json({ ok: true, client: saved });
+  });
+
+  // Close a client -> run the onboarding squad end to end.
+  app.post("/admin/onboard-client", guard, async (req, res) => {
+    const { email, business, ownerPhone, website, calendarId, voiceId, businessType, area, tempPassword } = req.body || {};
+    if (!email || !business) return res.status(400).json({ error: "business and email are required" });
+    const existing = store.find(email) || {};
+    const acct = {
+      username: email, business, tempPassword: tempPassword || undefined,
+      ownerPhone: ownerPhone || existing.ownerPhone || "",
+      website: website || existing.website || "",
+      calendarId: calendarId || existing.calendarId || "",
+      voiceId: voiceId || existing.voiceId || "",
+      businessType: businessType || existing.businessType || "",
+      area: area || existing.area || "",
+      plan: existing.plan || "complete",
+    };
+    store.upsert(acct);
+    try {
+      const result = await require("./provision-pipeline").runProvisioning(acct);
+      res.json({ ok: true, ...result });
+    } catch (e) {
+      console.error("onboard error:", e.message);
+      res.status(500).json({ error: "Onboarding hit a snag: " + e.message });
+    }
   });
 
   // Owner resets a client's password (for "I forgot mine" support calls).

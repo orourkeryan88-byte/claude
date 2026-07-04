@@ -167,14 +167,18 @@ function candidateSlots(days = 7, limit = 6) {
   return out;
 }
 
-// Busy intervals from Google (buffer applied), over [fromMs, toMs].
-async function busyIntervals(fromMs, toMs) {
+// Live if we have this client's calendar id + the shared service-account creds.
+const isLive = (calId) => !!((calId || CAL_ID) && SA_EMAIL && SA_KEY);
+
+// Busy intervals from Google (buffer applied), over [fromMs, toMs], for one calendar.
+async function busyIntervals(fromMs, toMs, calId) {
+  const id = calId || CAL_ID;
   const cal = getCalendar();
   const fb = await cal.freebusy.query({
-    requestBody: { timeMin: new Date(fromMs).toISOString(), timeMax: new Date(toMs).toISOString(), timeZone: TZ, items: [{ id: CAL_ID }] },
+    requestBody: { timeMin: new Date(fromMs).toISOString(), timeMax: new Date(toMs).toISOString(), timeZone: TZ, items: [{ id }] },
   });
   const buf = BUFFER_MINS * 60000;
-  return (fb.data.calendars[CAL_ID]?.busy || []).map((b) => [Date.parse(b.start) - buf, Date.parse(b.end) + buf]);
+  return (fb.data.calendars[id]?.busy || []).map((b) => [Date.parse(b.start) - buf, Date.parse(b.end) + buf]);
 }
 // Demo-mode "busy": bookings already taken in the local ledger count as busy,
 // so even without Google the AI can't double-book a slot.
@@ -185,27 +189,22 @@ function demoBusy() {
     .map((b) => [Date.parse(b.startISO) - buf, Date.parse(b.startISO) + (b.durationMins || SLOT_MINS) * 60000 + buf]);
 }
 
-async function freeSlots(limit = 6) {
+async function freeSlots(limit = 6, calId) {
   const cands = candidateSlots(7, limit);
   const slotMs = SLOT_MINS * 60000;
-  let busy;
-  if (!configured()) {
-    busy = demoBusy();
-  } else {
-    busy = await busyIntervals(Date.now(), Date.now() + 8 * 86400000);
-  }
+  const busy = isLive(calId) ? await busyIntervals(Date.now(), Date.now() + 8 * 86400000, calId) : demoBusy();
   const free = cands.filter((s) => {
     const a = s.start, b = s.start + slotMs;
     return !busy.some(([bs, be]) => a < be && b > bs);
   });
-  return { configured: configured(), slots: free.slice(0, limit) };
+  return { configured: isLive(calId), slots: free.slice(0, limit) };
 }
 
-// Is one specific instant bookable right now?
-async function slotFree(instant) {
+// Is one specific instant bookable right now (on this calendar)?
+async function slotFree(instant, calId) {
   if (!inBusinessHours(instant) || instant <= Date.now()) return false;
   const slotMs = SLOT_MINS * 60000;
-  const busy = configured() ? await busyIntervals(instant - slotMs, instant + slotMs) : demoBusy();
+  const busy = isLive(calId) ? await busyIntervals(instant - slotMs, instant + slotMs, calId) : demoBusy();
   return !busy.some(([bs, be]) => instant < be && instant + slotMs > bs);
 }
 
@@ -223,31 +222,31 @@ function parseWhen({ datetime, date, time }) {
 }
 
 // Check whether a SPECIFIC requested time is free (e.g. "tomorrow at 10").
-async function checkRequested({ datetime, date, time }) {
+async function checkRequested({ datetime, date, time, calId }) {
   const instant = parseWhen({ datetime, date, time });
   if (!instant) {
-    const fb = await freeSlots(4);
+    const fb = await freeSlots(4, calId);
     return { ...fb, requested: null, result: "I didn't catch an exact time — here are the next open slots." };
   }
-  const available = await slotFree(instant);
+  const available = await slotFree(instant, calId);
   const reqSlot = { id: new Date(instant).toISOString(), start: instant, label: label(instant), available };
   if (available) {
-    return { configured: configured(), requested: reqSlot, slots: [reqSlot],
+    return { configured: isLive(calId), requested: reqSlot, slots: [reqSlot],
              result: `Yes, ${reqSlot.label} is free — shall I book that in?` };
   }
-  const alts = await nearbyAlternatives(instant, 3);
+  const alts = await nearbyAlternatives(instant, 3, calId);
   const why = instant <= Date.now() ? "that time has passed"
     : !inBusinessHours(instant) ? "we're closed then" : "that one's already taken";
   const list = alts.map((s) => s.label).join(", or ");
   const result = alts.length
     ? `Sorry, ${why}. The nearest I have is ${list} — would any of those suit, or is there another time that works for you?`
     : `Sorry, ${why}, and I don't have much that day. Is there another day or time that suits you?`;
-  return { configured: configured(), requested: reqSlot, slots: alts, result };
+  return { configured: isLive(calId), requested: reqSlot, slots: alts, result };
 }
 
 // Free slots ranked by closeness to the requested time.
-async function nearbyAlternatives(instant, limit = 3) {
-  const all = (await freeSlots(40)).slots;
+async function nearbyAlternatives(instant, limit = 3, calId) {
+  const all = (await freeSlots(40, calId)).slots;
   const r = parts(instant, TZ);
   const sameDay = (s) => { const p = parts(s.start, TZ); return p.y === r.y && p.mo === r.mo && p.d === r.d; };
   const afterSame = all.filter((s) => sameDay(s) && s.start > instant);
@@ -260,7 +259,7 @@ async function nearbyAlternatives(instant, limit = 3) {
 }
 
 /* ---------- book (re-checks first: no double booking) ---------- */
-async function book({ startISO, durationMins, name, phone, reason, business }) {
+async function book({ startISO, durationMins, name, phone, reason, business, calId }) {
   const start = Date.parse(startISO);
   if (!start) return { ok: false, error: "invalid start time" };
   const dur = (durationMins || SLOT_MINS) * 60000;
@@ -268,8 +267,8 @@ async function book({ startISO, durationMins, name, phone, reason, business }) {
 
   // Final availability check right before writing — beats double-booking races
   // and stops the AI booking a slot another call just took.
-  if (!(await slotFree(start))) {
-    const alts = await nearbyAlternatives(start, 3);
+  if (!(await slotFree(start, calId))) {
+    const alts = await nearbyAlternatives(start, 3, calId);
     const list = alts.map((s) => s.label).join(", or ");
     return { ok: false, taken: true, slots: alts,
       result: alts.length
@@ -279,10 +278,10 @@ async function book({ startISO, durationMins, name, phone, reason, business }) {
 
   const ref = makeRef();
   let eventId = "", eventLink = "";
-  if (configured()) {
+  if (isLive(calId)) {
     const cal = getCalendar();
     const ev = await cal.events.insert({
-      calendarId: CAL_ID,
+      calendarId: calId || CAL_ID,
       requestBody: {
         summary: `${reason || "Appointment"} — ${name || "Caller"} [${ref}]`,
         description: `Booked by the AI receptionist.\nRef: ${ref}\nCaller: ${name || "?"}\nPhone: ${phone || "?"}\nReason: ${reason || "?"}`,
@@ -294,15 +293,15 @@ async function book({ startISO, durationMins, name, phone, reason, business }) {
   }
 
   const record = { ref, name: name || "", phone: phone || "", reason: reason || "",
-    business: business || "", startISO: new Date(start).toISOString(),
+    business: business || "", calId: calId || CAL_ID || "", startISO: new Date(start).toISOString(),
     durationMins: durationMins || SLOT_MINS, eventId, status: "confirmed",
-    simulated: !configured(), createdAt: new Date().toISOString() };
+    simulated: !isLive(calId), createdAt: new Date().toISOString() };
   writeBookings([record, ...readBookings()]);
 
   const smsSent = await smsCaller(phone,
     `Your appointment is booked for ${when}. Ref ${ref} — reply or call if you need to change it. ${business ? "— " + business : ""}`.trim());
 
-  return { ok: true, when, ref, eventLink, smsSent, simulated: !configured(),
+  return { ok: true, when, ref, eventLink, smsSent, simulated: !isLive(calId),
     message: `Booked for ${when}. Your reference is ${ref}.` };
 }
 
@@ -310,8 +309,8 @@ async function book({ startISO, durationMins, name, phone, reason, business }) {
 async function cancelBooking({ reference, phone }) {
   const b = findBooking({ reference, phone });
   if (!b) return { ok: false, result: "I couldn't find a booking under that — could you check the reference, or the number it was booked with?" };
-  if (configured() && b.eventId) {
-    try { await getCalendar().events.delete({ calendarId: CAL_ID, eventId: b.eventId }); }
+  if (isLive(b.calId) && b.eventId) {
+    try { await getCalendar().events.delete({ calendarId: b.calId || CAL_ID, eventId: b.eventId }); }
     catch (e) { console.warn("event delete failed:", e.message); }
   }
   updateBooking(b.ref, { status: "cancelled", cancelledAt: new Date().toISOString() });
@@ -323,22 +322,23 @@ async function cancelBooking({ reference, phone }) {
 async function rescheduleBooking({ reference, phone, datetime, date, time }) {
   const b = findBooking({ reference, phone });
   if (!b) return { ok: false, result: "I couldn't find a booking under that — could you check the reference, or the number it was booked with?" };
+  const cid = b.calId || CAL_ID;
   const instant = parseWhen({ datetime, date, time });
   if (!instant) {
-    const fb = await freeSlots(4);
+    const fb = await freeSlots(4, cid);
     return { ok: false, slots: fb.slots, result: `No problem — what time would suit instead? The next openings are ${fb.slots.slice(0, 3).map((s) => s.label).join(", or ")}.` };
   }
-  if (!(await slotFree(instant))) {
-    const alts = await nearbyAlternatives(instant, 3);
+  if (!(await slotFree(instant, cid))) {
+    const alts = await nearbyAlternatives(instant, 3, cid);
     const list = alts.map((s) => s.label).join(", or ");
     return { ok: false, taken: true, slots: alts,
       result: alts.length ? `That time isn't free. The nearest I have is ${list} — would one of those suit?` : `That time isn't free and that day is full — is there another day that works?` };
   }
   const dur = (b.durationMins || SLOT_MINS) * 60000;
-  if (configured() && b.eventId) {
+  if (isLive(cid) && b.eventId) {
     try {
       await getCalendar().events.patch({
-        calendarId: CAL_ID, eventId: b.eventId,
+        calendarId: cid, eventId: b.eventId,
         requestBody: { start: { dateTime: new Date(instant).toISOString(), timeZone: TZ },
                        end: { dateTime: new Date(instant + dur).toISOString(), timeZone: TZ } },
       });
@@ -353,9 +353,17 @@ async function rescheduleBooking({ reference, phone, datetime, date, time }) {
 
 /* ---------- mount ---------- */
 function mountCalendar(app) {
+  // Per-client calendar: the client's Google Calendar id travels in the
+  // assistant metadata (or an explicit calendarId param). Falls back to the
+  // server-wide GOOGLE_CALENDAR_ID. One shared service account, many calendars.
+  const calIdOf = (req) => {
+    const meta = req.body?.message?.call?.assistant?.metadata || req.body?.message?.assistant?.metadata || {};
+    const a = req.body?.message?.functionCall?.parameters || req.body?.parameters || req.body || {};
+    return a.calendarId || req.query.calendarId || meta.calendarId || CAL_ID || undefined;
+  };
   const params = (req) => {
     const a = req.body?.message?.functionCall?.parameters || req.body?.parameters || req.body || {};
-    return { ...req.query, ...a };
+    return { ...req.query, ...a, calId: calIdOf(req) };
   };
 
   async function availability(req, res) {
@@ -363,9 +371,9 @@ function mountCalendar(app) {
       const src = params(req);
       const datetime = src.datetime || src.startISO;
       if (datetime || (src.date && src.time)) {
-        return res.json(await checkRequested({ datetime, date: src.date, time: src.time }));
+        return res.json(await checkRequested({ datetime, date: src.date, time: src.time, calId: src.calId }));
       }
-      const fb = await freeSlots(6);
+      const fb = await freeSlots(6, src.calId);
       res.json({ ...fb, result: `The next openings are ${fb.slots.slice(0, 3).map((s) => s.label).join(", or ")}.` });
     } catch (e) {
       console.error("availability error", e.message);
@@ -381,7 +389,7 @@ function mountCalendar(app) {
       const out = await book({
         startISO: a.startISO || a.start || a.id,
         durationMins: a.durationMins, name: a.name, phone: a.phone,
-        reason: a.reason, business: a.business,
+        reason: a.reason, business: a.business, calId: a.calId,
       });
       res.json({ ...out, result: out.result || (out.ok ? out.message : "I couldn't lock that slot — I'll have the team confirm.") });
     } catch (e) {
@@ -402,7 +410,7 @@ function mountCalendar(app) {
         .filter(Boolean).join(" · ");
       const out = await book({
         startISO: new Date(instant).toISOString(),
-        name: a.name, phone: a.phone, reason: bits || a.reason || "Appointment", business: a.business,
+        name: a.name, phone: a.phone, reason: bits || a.reason || "Appointment", business: a.business, calId: a.calId,
       });
       res.json({ ...out, result: out.result || (out.ok ? out.message : "I couldn't lock that slot — I'll have the team confirm.") });
     } catch (e) {
