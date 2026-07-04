@@ -7,6 +7,12 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b1426'/%3E%3Ctext x='50' y='66' font-size='52' text-anchor='middle' fill='%23e7c659' font-family='Arial' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1020">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SL Admin">
 <style>
   :root{
     --bg:#0a1020; --panel:#0f1830; --panel2:#13203f; --ink:#eaf0ff; --mut:#8ea0c4; --line:#1e2c4f;
@@ -90,6 +96,7 @@
     <div style="height:14px"></div>
     <button class="btn gold" style="width:100%" onclick="login()">Enter admin →</button>
     <button class="btn ghost" style="width:100%;margin-top:10px" onclick="enterDemo()">Preview with sample data</button>
+    <button id="install-btn" class="btn ghost" style="width:100%;margin-top:10px;display:none" onclick="installApp()">Install this app</button>
     <div class="err" id="gate-err"></div>
   </div>
 </div>
@@ -195,6 +202,18 @@
 
 <script>
 const $=id=>document.getElementById(id);
+
+/* ---- install as an app (PWA) ---- */
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); installEvt=e; const b=document.getElementById('install-btn'); if(b) b.style.display=''; });
+if(/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.matchMedia('(display-mode: standalone)').matches){
+  addEventListener('DOMContentLoaded',()=>{ const b=document.getElementById('install-btn'); if(b) b.style.display=''; });
+}
+async function installApp(){
+  if(installEvt){ installEvt.prompt(); await installEvt.userChoice; installEvt=null; const b=document.getElementById('install-btn'); if(b) b.style.display='none'; return; }
+  alert('To install on iPhone/iPad:\n\n1. Tap the Share button (square with arrow)\n2. Tap "Add to Home Screen"\n\nThe admin then opens like its own app.');
+}
 let server=localStorage.getItem('sl_admin_server')||'';
 let token=localStorage.getItem('sl_admin_token')||'';
 if(server) $('server').value=server;
