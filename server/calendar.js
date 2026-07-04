@@ -390,6 +390,27 @@ function mountCalendar(app) {
     }
   });
 
+  // Rich booking from the full qualification payload (name, phone, service,
+  // date, time, provider, etc.) — resolves date+time to a slot and books it.
+  // This is the submit_booking tool the assistant calls with everything gathered.
+  app.post("/submit-booking", async (req, res) => {
+    try {
+      const a = params(req);
+      const instant = parseWhen({ datetime: a.datetime || a.startISO, date: a.date, time: a.time });
+      if (!instant) return res.json({ ok: false, result: "I didn't catch an exact time — let me check what's free." });
+      const bits = [a.service, a.appointment_type, a.provider && a.provider !== "any" ? "with " + a.provider : "", a.special_requests]
+        .filter(Boolean).join(" · ");
+      const out = await book({
+        startISO: new Date(instant).toISOString(),
+        name: a.name, phone: a.phone, reason: bits || a.reason || "Appointment", business: a.business,
+      });
+      res.json({ ...out, result: out.result || (out.ok ? out.message : "I couldn't lock that slot — I'll have the team confirm.") });
+    } catch (e) {
+      console.error("submit-booking error", e.message);
+      res.json({ ok: false, result: "I'll have the team confirm that booking with you." });
+    }
+  });
+
   app.post("/cancel-booking", async (req, res) => {
     try { res.json(await cancelBooking(params(req))); }
     catch (e) { console.error("cancel error", e.message); res.json({ ok: false, result: "I'll have the team sort that cancellation for you." }); }
