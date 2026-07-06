@@ -391,8 +391,6 @@
       <button class="btn-login" id="su-btn" onclick="signup()">Subscribe &amp; create account →</button>
     </div>
 
-    <details class="ladv"><summary>Server address</summary>
-      <input id="lg-server" placeholder="https://your-receptionist.onrender.com" /></details>
     <div class="login-foot">Questions? Southline · 085 174 0783</div>
   </div>
 </div>
@@ -424,6 +422,7 @@
   <!-- MAIN -->
   <main>
     <div class="topbar">
+      <button id="exit-demo" onclick="logout()" title="Leave the demo" style="display:none;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-weight:700;font-size:13px;padding:9px 13px;border-radius:10px;cursor:pointer">← Exit demo</button>
       <div><h1>Call Inbox</h1><div class="sub-h" id="greeting">Loading…</div></div>
       <div class="search">
         <span class="mag"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
@@ -575,6 +574,8 @@ let calls = [];
 let view = 'table';
 let filter = 'all';
 let sortBy = 'urgent';
+// Southline's live backend — the app points here automatically, no setup needed.
+const DEFAULT_SERVER = 'https://southline-ai-receptionist.onrender.com';
 let webhook = localStorage.getItem('sl_webhook') || '';
 let session = (()=>{ try{ return JSON.parse(localStorage.getItem('sl_session')||'{}'); }catch(e){ return {}; } })();
 let syncTimer = null;
@@ -1170,7 +1171,7 @@ function switchAuth(tab){
   if(!login) loadPricing();
 }
 let PLANS=[], selectedPlan='complete', appliedCode=null;
-function planServer(){ return ($('lg-server').value||'').trim().replace(/\/$/,'') || webhook; }
+function planServer(){ return (webhook || DEFAULT_SERVER).replace(/\/$/,''); }
 async function loadPricing(){
   const server=planServer(); if(!server) return;
   try{ const r=await fetch(server+'/pricing'); if(!r.ok) return; const p=await r.json();
@@ -1223,7 +1224,6 @@ async function signup(){
   $('su-err').textContent='';
   if(!business||!email||!password){ $('su-err').textContent='Fill in your business, email and a password.'; return; }
   if(password.length<8){ $('su-err').textContent='Password needs at least 8 characters.'; return; }
-  if(!server){ $('su-err').textContent='Enter your server address (under “Server address”).'; return; }
   $('su-btn').textContent='Taking you to payment…';
   try{
     const r=await fetch(server+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,business,password,website,plan:selectedPlan,discountCode})});
@@ -1236,10 +1236,9 @@ async function signup(){
 async function doLogin(){
   const user=($('lg-user').value||'').trim();
   const pass=$('lg-pass').value||'';
-  let server=($('lg-server').value||'').trim().replace(/\/$/,'') || session.server || webhook;
+  let server=(session.server||webhook||DEFAULT_SERVER).replace(/\/$/,'');
   $('lg-err').textContent='';
   if(!user||!pass){ $('lg-err').textContent='Enter your email and password.'; return; }
-  if(!server){ $('lg-err').textContent='Enter your server address (under “Server address”).'; return; }
   $('lg-btn').textContent='Signing in…';
   try{
     const r=await fetch(server+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,password:pass})});
@@ -1266,6 +1265,7 @@ function logout(){
 }
 function enterApp(){
   $('login-bg').style.display='none'; $('app').style.display='';
+  const ed=$('exit-demo'); if(ed) ed.style.display = (session.mode==='demo')?'inline-flex':'none';
   $('who-state').textContent = session.business || (session.mode==='demo'?'Demo workspace':'');
   applyPlan();
   load(); render();
