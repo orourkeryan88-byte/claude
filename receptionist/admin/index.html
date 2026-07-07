@@ -272,7 +272,7 @@ const SAMPLE={
     {business:'Seapoint Dental', name:'Emma Walsh', phone:'083 555 0105', reason:'Toothache — wants today', urgency:'urgent', receivedAt:AGO(9)},
   ],
   plans:[
-    {id:'complete',name:'AI Receptionist',monthly:80,setup:350,features:Array(10),highlights:['24/7 call answering','Books into Google Calendar','Every lead texted to you','Missed-call text-back','Call summaries & transcripts','Spam screening','Website chat widget','CRM app with insights']},
+    {id:'complete',name:'AI Receptionist',monthly:150,setup:350,features:Array(10),highlights:['24/7 call answering','Books into Google Calendar','Every lead texted to you','Missed-call text-back','Call summaries & transcripts','Spam screening','Website chat widget','CRM app with insights']},
   ],
   config:{welcomeNote:'Demo workspace — connect your live server to manage real clients.'},
 };
@@ -280,7 +280,7 @@ function demoApi(path,opts){
   const body=opts.body?JSON.parse(opts.body):{};
   if(path==='/admin/overview'){
     const act=SAMPLE.clients.filter(c=>c.active);
-    const price={complete:80};
+    const price={complete:150};
     const mrr=act.reduce((s,c)=>s+price[c.plan],0);
     return {clients:SAMPLE.clients.length,activeClients:act.length,pendingClients:SAMPLE.clients.length-act.length,mrr,arr:mrr*12,leadsTotal:SAMPLE.leads.length,byPlan:{},discounts:SAMPLE.discounts.length};
   }
