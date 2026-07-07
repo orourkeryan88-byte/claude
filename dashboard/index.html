@@ -384,7 +384,7 @@
 
       <div class="price-box">
         <div class="price-row"><span>Setup (one-time)</span><b id="su-setup">€350</b></div>
-        <div class="price-row"><span>Then monthly</span><b id="su-monthly">€80 / month</b></div>
+        <div class="price-row"><span>Then monthly</span><b id="su-monthly">€150 / month</b></div>
         <div class="price-note">Cancel anytime. Your receptionist is set up automatically once you pay.</div>
       </div>
       <div class="lerr" id="su-err"></div>
@@ -1192,7 +1192,7 @@ function renderPlans(){
   priceBox();
 }
 function pickPlan(id){ selectedPlan=id; appliedCode=null; $('su-codemsg').textContent=''; renderPlans(); }
-function curPlan(){ return PLANS[0]||{setup:350,monthly:80}; }
+function curPlan(){ return PLANS[0]||{setup:350,monthly:150}; }
 function priceBox(){
   const p=curPlan();
   let setup=p.setup, monthly=p.monthly, note='';
@@ -1303,7 +1303,7 @@ function openUpgrade(feat){
 /* ---------- My receptionist (account view) ---------- */
 function planMeta(){
   const id=session.plan||'pro';
-  return { id, name:session.planName||'AI Receptionist', price:'\u20ac80/mo' };
+  return { id, name:session.planName||'AI Receptionist', price:'\u20ac150/mo' };
 }
 function renderAccount(){
   $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='none';

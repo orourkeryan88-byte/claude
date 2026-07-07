@@ -1,10 +1,10 @@
 /**
- * One plan. €350 setup + €80/month. Everything included.
+ * One plan. €350 setup + €150/month. Everything included.
  * ------------------------------------------------------
  * No tiers, no gating — every client gets the full product. The features
  * list is what the product genuinely does today (nothing aspirational).
  *
- * Price overrides: SETUP_FEE_CENTS (default 35000), MONTHLY_FEE_CENTS (8000).
+ * Price overrides: SETUP_FEE_CENTS (default 35000), MONTHLY_FEE_CENTS (15000).
  *
  * getPlan()/hasFeature()/listPlans() keep the same shape as before so the
  * dashboard, billing and admin code work unchanged.
@@ -15,7 +15,7 @@ const PLAN = {
   name: "AI Receptionist",
   blurb: "Everything included. One price, no tiers.",
   setup: parseInt(process.env.SETUP_FEE_CENTS || "35000", 10) / 100,    // €350
-  monthly: parseInt(process.env.MONTHLY_FEE_CENTS || "8000", 10) / 100, // €80
+  monthly: parseInt(process.env.MONTHLY_FEE_CENTS || "15000", 10) / 100, // €150
   features: ["inbox", "appointments", "owner_sms", "call_log", "pipeline",
     "insights", "copilot", "web_chat", "reminders", "revenue"],
   limits: { seats: 3, history_days: 365 },
