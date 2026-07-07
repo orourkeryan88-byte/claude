@@ -2,7 +2,7 @@
  * Discount codes.
  * ---------------
  * Codes can be global (anyone can use) or tied to one customer email. They
- * discount the SETUP fee, the MONTHLY fee, or both, by a percent or a fixed €.
+ * discount the SETUP fee, the MONTHLY fee, or both, by a percent or a fixed $.
  *
  * Stored in a small JSON file (DISCOUNTS_FILE). The owner manages them from the
  * admin page; the sign-up form validates a typed code against POST /validate-discount.
@@ -48,7 +48,7 @@ function evaluate(code, { email, setup, monthly } = {}) {
   return {
     ok: true,
     discount: d,
-    label: d.type === "percent" ? `${d.amount}% off` : `€${d.amount} off`,
+    label: d.type === "percent" ? `${d.amount}% off` : `$${d.amount} off`,
     appliesTo: d.applies,
     preview: { setup: newSetup, monthly: newMonthly, wasSetup: setup, wasMonthly: monthly },
   };

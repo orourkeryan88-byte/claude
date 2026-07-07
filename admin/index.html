@@ -163,7 +163,7 @@
       <h3>Create a discount code</h3>
       <div class="row3">
         <div><label>Code</label><input id="d-code" placeholder="LAUNCH50" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" /></div>
-        <div><label>Type</label><select id="d-type"><option value="percent">% percent off</option><option value="fixed">€ fixed off</option></select></div>
+        <div><label>Type</label><select id="d-type"><option value="percent">% percent off</option><option value="fixed">$ fixed off</option></select></div>
         <div><label>Amount</label><input id="d-amount" type="number" placeholder="50" /></div>
       </div>
       <div class="row3" style="margin-top:10px">
@@ -334,7 +334,7 @@ async function loadAll(){ await Promise.all([loadOverview(),loadClients(),loadDi
 
 async function loadOverview(){
   try{ const d=await (await api('/admin/overview')).json();
-    const eur=n=>'€'+Math.round(n).toLocaleString('en-IE');
+    const eur=n=>'$'+Math.round(n).toLocaleString('en-IE');
     const k=(l,n)=>`<div class="kpi"><div class="l">${l}</div><div class="n">${n}</div></div>`;
     $('kpis').innerHTML = k('Clients',d.clients)+k('Active',d.activeClients)+k('Pending',d.pendingClients)+
       k('MRR',eur(d.mrr))+k('ARR',eur(d.arr))+k('Leads',d.leadsTotal);
@@ -408,7 +408,7 @@ async function loadDiscounts(){
     $('disc-empty').textContent=list.length?'':'No codes yet.';
     $('disc-body').innerHTML=list.map(d=>`<tr>
       <td><code>${esc(d.code)}</code></td>
-      <td>${d.type==='percent'?d.amount+'%':'€'+d.amount} off</td>
+      <td>${d.type==='percent'?d.amount+'%':'$'+d.amount} off</td>
       <td>${d.applies||'setup'}</td>
       <td>${d.email?esc(d.email):'<span class="muted">anyone</span>'}</td>
       <td>${d.uses||0}${d.maxUses?'/'+d.maxUses:''}</td>
@@ -447,8 +447,8 @@ async function loadProduct(){
     $('plans-body').innerHTML=(d.plans||[]).map(p=>{
       return `<div class="panel" style="margin:0;background:var(--panel2)">
         <span class="tag ${p.id}">${p.name}</span>
-        <div style="font-size:24px;font-weight:900;margin:10px 0 2px">€${p.monthly}<span class="muted" style="font-size:13px">/mo</span></div>
-        <div class="muted">+ €${p.setup} setup · ${p.features.length} features</div>
+        <div style="font-size:24px;font-weight:900;margin:10px 0 2px">$${p.monthly}<span class="muted" style="font-size:13px">/mo</span></div>
+        <div class="muted">+ $${p.setup} setup · ${p.features.length} features</div>
         <ul style="margin:10px 0 0;padding-left:18px;color:#c3d0ee;font-size:12.5px">${(p.highlights||[]).map(h=>`<li>${esc(h)}</li>`).join('')}</ul>
       </div>`;
     }).join('');

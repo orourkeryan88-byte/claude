@@ -23,12 +23,12 @@ const { hashPassword } = require("./auth");
 
 const configured = () => !!process.env.STRIPE_SECRET_KEY;
 const stripe = () => require("stripe")(process.env.STRIPE_SECRET_KEY);
-const euros = (n) => Math.round(n * 100);
+const cents = (n) => Math.round(n * 100);
 
 function mountBilling(app) {
   // Public pricing — the whole tier table, so the gate can render it.
   app.get("/pricing", (_req, res) =>
-    res.json({ currency: "EUR", plans: plans.listPlans() }));
+    res.json({ currency: "USD", plans: plans.listPlans() }));
 
   // Start sign-up: store the pending account, return a Checkout URL.
   app.post("/create-checkout-session", async (req, res) => {
@@ -55,12 +55,12 @@ function mountBilling(app) {
     try {
       const dash = process.env.DASHBOARD_URL || req.headers.origin || "";
       const line_items = [
-        { price_data: { currency: "eur", product_data: { name: `AI Receptionist — ${plan.name} (monthly)` },
-            unit_amount: euros(monthly), recurring: { interval: "month" } }, quantity: 1 },
+        { price_data: { currency: "usd", product_data: { name: `AI Receptionist — ${plan.name} (monthly)` },
+            unit_amount: cents(monthly), recurring: { interval: "month" } }, quantity: 1 },
       ];
       if (setup > 0)
-        line_items.push({ price_data: { currency: "eur", product_data: { name: `AI Receptionist — ${plan.name} setup (one-time)` },
-            unit_amount: euros(setup) }, quantity: 1 });
+        line_items.push({ price_data: { currency: "usd", product_data: { name: `AI Receptionist — ${plan.name} setup (one-time)` },
+            unit_amount: cents(setup) }, quantity: 1 });
 
       const session = await stripe().checkout.sessions.create({
         mode: "subscription",
@@ -114,7 +114,7 @@ function mountBilling(app) {
     res.json({ received: true });
   });
 
-  console.log(`Billing mounted (${configured() ? "Stripe LIVE" : "no STRIPE_SECRET_KEY — sign-up stores account, payment disabled"}); ${plans.listPlans().map((p) => `${p.name} €${p.monthly}/mo`).join(", ")}`);
+  console.log(`Billing mounted (${configured() ? "Stripe LIVE" : "no STRIPE_SECRET_KEY — sign-up stores account, payment disabled"}); ${plans.listPlans().map((p) => `${p.name} $${p.monthly}/mo`).join(", ")}`);
 }
 
 module.exports = { mountBilling };
