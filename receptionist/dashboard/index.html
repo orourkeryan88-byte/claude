@@ -383,8 +383,8 @@
       </div>
 
       <div class="price-box">
-        <div class="price-row"><span>Setup (one-time)</span><b id="su-setup">€350</b></div>
-        <div class="price-row"><span>Then monthly</span><b id="su-monthly">€150 / month</b></div>
+        <div class="price-row"><span>Setup (one-time)</span><b id="su-setup">$350</b></div>
+        <div class="price-row"><span>Then monthly</span><b id="su-monthly">$150 / month</b></div>
         <div class="price-note">Cancel anytime. Your receptionist is set up automatically once you pay.</div>
       </div>
       <div class="lerr" id="su-err"></div>
@@ -907,10 +907,10 @@ const THEMES = [
 ];
 function theme(p){ for(const t of THEMES){ if(t.re.test(p||'')) return t.key; } return 'General enquiry'; }
 function afterHours(ts){ const d=new Date(ts); const h=d.getHours(), wd=d.getDay(); return wd===0||wd===6||h<9||h>=18; }
-// rough € value of a job by theme — gives the owner a tangible revenue picture
+// rough $ value of a job by theme — gives the owner a tangible revenue picture
 const VALUE={'Leaks & water':200,'Heating & boiler':320,'Drains & blockages':150,'New appointment':140,'Cancellation/reschedule':0,'Pricing question':130,'Complaint':0,'General enquiry':120};
 function leadValue(c){ return VALUE[theme(c.problem)] ?? 120; }
-function money(n){ return '€'+Math.round(n).toLocaleString('en-IE'); }
+function money(n){ return '$'+Math.round(n).toLocaleString('en-IE'); }
 
 function renderInsights(){
   $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-account').style.display='none'; $('view-insights').style.display='';
@@ -953,7 +953,7 @@ function renderInsights(){
         ? card('Booked revenue', money(bookedVal), booked+' jobs won', 'var(--booked)') +
           card('In the pipeline', money(pipelineVal), 'leads to chase', 'var(--brand)')
         : card('Jobs booked', booked, 'won this period', 'var(--booked)') +
-          card('Revenue analytics', '€ —', 'Premium plan', 'var(--mut)') }
+          card('Revenue analytics', '$ —', 'Premium plan', 'var(--mut)') }
       ${card('After-hours caught', ah, can('revenue')?money(ahVal)+' value':'calls saved', 'var(--callback)')}
       ${card('Booking rate', conv+'%', total+' calls', 'var(--ink)')}
     </div>
@@ -1185,8 +1185,8 @@ function renderPlans(){
     const sel=p.id===selectedPlan, prem=p.id==='premium';
     const tag = p.id==='pro'?'<div class="tag">Most popular</div>' : (prem?'<div class="tag">Best value</div>':'');
     return `<div class="tiercard ${sel?'sel':''} ${prem?'premium':''}" onclick="pickPlan('${p.id}')">${tag}
-      <div class="th"><span class="tn">${p.name}</span><span class="tp">€${p.monthly}<span style="font-size:11px;color:#8190ad">/mo</span></span></div>
-      <div class="tsetup">+ €${p.setup} one-time setup</div>
+      <div class="th"><span class="tn">${p.name}</span><span class="tp">$${p.monthly}<span style="font-size:11px;color:#8190ad">/mo</span></span></div>
+      <div class="tsetup">+ $${p.setup} one-time setup</div>
       <div class="tb">${p.blurb||''}</div></div>`;
   }).join('');
   priceBox();
@@ -1197,8 +1197,8 @@ function priceBox(){
   const p=curPlan();
   let setup=p.setup, monthly=p.monthly, note='';
   if(appliedCode&&appliedCode.preview){ setup=appliedCode.preview.setup; monthly=appliedCode.preview.monthly; note=' '+appliedCode.label; }
-  const sline = (appliedCode&&setup!==p.setup)?`<s style="color:#a8a29e">€${p.setup}</s> €${setup}`:`€${setup}`;
-  const mline = (appliedCode&&monthly!==p.monthly)?`<s style="color:#a8a29e">€${p.monthly}</s> €${monthly} / month`:`€${monthly} / month`;
+  const sline = (appliedCode&&setup!==p.setup)?`<s style="color:#a8a29e">$${p.setup}</s> $${setup}`:`$${setup}`;
+  const mline = (appliedCode&&monthly!==p.monthly)?`<s style="color:#a8a29e">$${p.monthly}</s> $${monthly} / month`:`$${monthly} / month`;
   $('su-setup').innerHTML=sline; $('su-monthly').innerHTML=mline;
 }
 async function applyCode(){
@@ -1303,7 +1303,7 @@ function openUpgrade(feat){
 /* ---------- My receptionist (account view) ---------- */
 function planMeta(){
   const id=session.plan||'pro';
-  return { id, name:session.planName||'AI Receptionist', price:'\u20ac150/mo' };
+  return { id, name:session.planName||'AI Receptionist', price:'$150/mo' };
 }
 function renderAccount(){
   $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='none';
@@ -1320,7 +1320,7 @@ function renderAccount(){
     ['Website chat widget', can('web_chat')],
     ['Pipeline board + Insights + Copilot', can('pipeline')],
     ['Reminders + review follow-ups', can('reminders')],
-    ['Revenue analytics (\u20ac recovered)', can('revenue')],
+    ['Revenue analytics ($ recovered)', can('revenue')],
     ['Multi-location / custom voice / priority', can('multi_location')],
   ];
   $('view-account').innerHTML = `
