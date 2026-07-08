@@ -95,6 +95,10 @@ catch (e) { console.warn("Admin module not mounted:", e.message); }
 try { require("./calls").mountCalls(app, () => leads); }
 catch (e) { console.warn("Calls module not mounted:", e.message); }
 
+// Sendable voice demo — talk to the receptionist in the browser, real ElevenLabs voice.
+try { require("./demo-voice").mountDemoVoice(app); }
+catch (e) { console.warn("Demo voice module not mounted:", e.message); }
+
 app.post("/log-lead", async (req, res) => {
   try {
     // Vapi wraps function calls. Support both the wrapped and flat shapes.
