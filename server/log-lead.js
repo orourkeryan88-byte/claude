@@ -95,10 +95,6 @@ catch (e) { console.warn("Admin module not mounted:", e.message); }
 try { require("./calls").mountCalls(app, () => leads); }
 catch (e) { console.warn("Calls module not mounted:", e.message); }
 
-// "Talk to the receptionist" live demo chat (POST /demo-chat).
-try { require("./demo-chat").mountDemoChat(app); }
-catch (e) { console.warn("Demo chat module not mounted:", e.message); }
-
 app.post("/log-lead", async (req, res) => {
   try {
     // Vapi wraps function calls. Support both the wrapped and flat shapes.
