@@ -66,7 +66,7 @@
 <script>
 const SERVER = "https://southline-ai-receptionist.onrender.com";
 const $ = (id)=>document.getElementById(id);
-let history = [], busy = false, recog = null, listening = false, started = false;
+let history = [], busy = false, recog = null, listening = false, started = false, micWanted = false, speaking = false;
 
 function add(role, text){
   const d = document.createElement('div');
@@ -97,6 +97,9 @@ async function send(text){
     $('status').textContent = '';
     if(data.audio){
       const audio = new Audio(data.audio);
+      // Pause the mic while Riley is talking so it doesn't hear itself, then resume.
+      audio.onplay  = ()=>{ speaking=true;  if(micWanted){ try{recog.stop();}catch(e){} } };
+      audio.onended = ()=>{ speaking=false; if(micWanted){ try{recog.start();}catch(e){} } };
       const rep = document.createElement('span'); rep.className='rep'; rep.textContent='🔊 replay';
       rep.onclick = ()=>{ audio.currentTime=0; audio.play().catch(()=>{}); };
       bubble.appendChild(document.createElement('br')); bubble.appendChild(rep);
@@ -116,17 +119,40 @@ $('send').onclick = ()=> send($('text').value);
 $('text').addEventListener('keydown', e=>{ if(e.key==='Enter') send($('text').value); });
 
 // Voice input (browser speech-to-text). Voice OUTPUT is ElevenLabs from the server.
+// Tap ONCE to turn the mic on — it stays listening until you tap it again.
+function setMicUI(on){
+  listening = on;
+  $('mic').classList.toggle('on', on);
+  $('mic-label').textContent = on ? 'Listening — tap to stop' : 'Tap to talk';
+}
+function startRecog(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recog = new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=false; recog.maxAlternatives=1;
+  recog.onstart = ()=>{ if(!speaking) setMicUI(true); };
+  recog.onresult = (e)=>{
+    let finalText='';
+    for(let i=e.resultIndex; i<e.results.length; i++){ if(e.results[i].isFinal) finalText += e.results[i][0].transcript; }
+    finalText = finalText.trim();
+    if(finalText) send(finalText);
+  };
+  recog.onerror = (e)=>{
+    if(e && (e.error==='not-allowed' || e.error==='service-not-allowed')){
+      micWanted=false; setMicUI(false); $('mic-label').textContent='Allow mic access to talk';
+    }
+  };
+  // Browsers auto-stop on silence — restart so it stays on until the user taps off.
+  recog.onend = ()=>{
+    if(micWanted && !speaking){ try{ recog.start(); }catch(e){} }
+    else if(!micWanted){ setMicUI(false); }
+  };
+  try{ recog.start(); }catch(e){}
+}
 $('mic').onclick = ()=>{
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){ $('mic-label').textContent = 'Voice needs Chrome/Safari — type instead'; $('text').focus(); return; }
-  if(listening){ try{recog.stop();}catch(e){} return; }
   greet();
-  recog = new SR(); recog.lang='en-US'; recog.interimResults=false; recog.maxAlternatives=1;
-  recog.onstart = ()=>{ listening=true; $('mic').classList.add('on'); $('mic-label').textContent='Listening… speak now'; };
-  recog.onerror = ()=>{ listening=false; $('mic').classList.remove('on'); $('mic-label').textContent='Didn’t catch that — tap to try again'; };
-  recog.onend   = ()=>{ listening=false; $('mic').classList.remove('on'); if($('mic-label').textContent.startsWith('Listening')) $('mic-label').textContent='Tap to talk'; };
-  recog.onresult= (e)=>{ const t = e.results[0][0].transcript; $('mic-label').textContent='Tap to talk'; send(t); };
-  try{ recog.start(); }catch(e){}
+  if(micWanted){ micWanted=false; try{recog.stop();}catch(e){} setMicUI(false); }
+  else { micWanted=true; startRecog(); }
 };
 // Show the greeting as soon as the page opens.
 window.addEventListener('load', greet);
