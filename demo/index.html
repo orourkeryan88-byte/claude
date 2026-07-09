@@ -101,9 +101,9 @@ async function send(text){
       rep.onclick = ()=>{ audio.currentTime=0; audio.play().catch(()=>{}); };
       bubble.appendChild(document.createElement('br')); bubble.appendChild(rep);
       audio.play().catch(()=>{ $('status').textContent='Tap 🔊 replay to hear it.'; });
-    } else if(data.voice === 'none'){
-      $('status').textContent = 'Voice not switched on yet (add ElevenLabs key on the server).';
     }
+    if(data.diag){ $('status').textContent = '⚠ ' + data.diag; }
+    else if(data.voice === 'none'){ $('status').textContent = 'Voice not switched on yet (add ElevenLabs key on the server).'; }
   }catch(e){
     typing.remove();
     add('ai', "Sorry — I can't reach the line right now. Please try again in a moment.");
