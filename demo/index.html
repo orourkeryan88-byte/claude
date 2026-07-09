@@ -102,8 +102,9 @@ async function send(text){
       bubble.appendChild(document.createElement('br')); bubble.appendChild(rep);
       audio.play().catch(()=>{ $('status').textContent='Tap 🔊 replay to hear it.'; });
     }
-    if(data.diag){ $('status').textContent = '⚠ ' + data.diag; }
-    else if(data.voice === 'none'){ $('status').textContent = 'Voice not switched on yet (add ElevenLabs key on the server).'; }
+    // Only surface a warning if it's genuinely broken (no voice came back).
+    if(!data.audio && data.voice === 'none'){ $('status').textContent = 'Voice not switched on yet (add ElevenLabs key on the server).'; }
+    else if(!data.audio && data.diag){ $('status').textContent = '⚠ ' + data.diag; }
   }catch(e){
     typing.remove();
     add('ai', "Sorry — I can't reach the line right now. Please try again in a moment.");

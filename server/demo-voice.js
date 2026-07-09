@@ -70,6 +70,38 @@ async function elevenAudio(text) {
   } catch (e) { return { audio: null, err: "ElevenLabs fetch failed: " + e.message }; }
 }
 
+// Backup brain — a rule-based receptionist so the demo works even with NO
+// Anthropic key. Answers common questions and books in two steps.
+function scriptedReply(messages) {
+  const users = messages.filter((m) => m.role === "user");
+  const last = (users[users.length - 1] || {}).content || "";
+  const t = last.toLowerCase();
+  const convo = users.map((m) => m.content).join(" ");
+  const hasPhone = /(\+?\d[\s().-]?){10,}/.test(convo);
+  const booking = /\b(book|appointment|schedule|come in|slot|set (it|me) up|reserve)\b/i;
+  const ref = "SL-" + Math.floor(1000 + Math.random() * 9000);
+
+  if (/\b(emergency|pain|hurt|swollen|swelling|broke|broken|knocked|bleeding|chipped)\b/.test(t))
+    return "Oh no — that sounds like it needs to be seen today. I can get you in this afternoon. What's your name and a good number, and I'll lock in the soonest slot?";
+  if (/\b(hour|open|close|when.*(open|close))\b/.test(t))
+    return "We're open Monday through Thursday 8 to 5, and Fridays 8 to 2. Would you like me to book you in?";
+  if (/\b(price|cost|how much|fee|charge|\$)\b/.test(t))
+    return "A new-patient check-up and clean is $99, and anything else the dentist quotes after they see you. Want me to get you scheduled?";
+  if (/\b(where|address|located|location|parking|directions)\b/.test(t))
+    return "We're at 3200 Main Street in Frisco, with free parking right out front. Shall I book you an appointment?";
+  if (/\b(insurance|insured|cover)\b/.test(t))
+    return "Yes, we take most insurance. I can check yours when you come in — would you like to book a visit?";
+  if (/\b(service|offer|do you do|whiten|implant|invisalign|clean|check ?up|veneer|crown|braces)\b/.test(t))
+    return "We do check-ups and cleanings, whitening, Invisalign, crowns, veneers and implants. Would you like to book in for any of those?";
+  if (hasPhone)
+    return `Perfect — you're all set. Your booking reference is ${ref}, and you'll get a confirmation text shortly. Is there anything else I can help you with?`;
+  if (booking.test(convo))
+    return "I'd be happy to book you in! What day and time works best, and can I grab your name and a good phone number?";
+  if (/\b(hi|hello|hey|good (morning|afternoon|evening)|how are you)\b/.test(t))
+    return "Hi there! I can book you an appointment or answer anything about our hours, services or pricing — what can I do for you?";
+  return "I can help you book an appointment, or answer questions about our hours, services or pricing. What would you like to do?";
+}
+
 function mountDemoVoice(app) {
   app.post("/demo-voice", async (req, res) => {
     try {
@@ -81,7 +113,9 @@ function mountDemoVoice(app) {
       }));
 
       const brain = await claudeReply(messages);
-      const reply = brain.text || "Sorry, could you say that once more for me?";
+      // If the AI brain is down (no/invalid key), fall back to the scripted brain
+      // so the demo still talks and books.
+      const reply = brain.text || scriptedReply(messages);
       let audio = null, voice = "none", voiceErr = "";
       if (reply) { const v = await elevenAudio(reply); audio = v.audio; voiceErr = v.err; if (audio) voice = "elevenlabs"; }
 
