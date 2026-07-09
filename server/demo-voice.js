@@ -57,8 +57,11 @@ async function elevenAudio(text) {
       method: "POST",
       headers: { "xi-api-key": EL_KEY, "content-type": "application/json", accept: "audio/mpeg" },
       body: JSON.stringify({
-        text, model_id: "eleven_turbo_v2_5",
-        voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true },
+        text,
+        // multilingual_v2 = ElevenLabs' most natural/human model (worth the small
+        // extra latency for a demo). Settings tuned for a warm, conversational tone.
+        model_id: "eleven_multilingual_v2",
+        voice_settings: { stability: 0.4, similarity_boost: 0.75, style: 0.35, use_speaker_boost: true },
       }),
     });
     if (!r.ok) {
@@ -81,9 +84,9 @@ function scriptedReply(messages) {
   const booking = /\b(book|appointment|schedule|come in|slot|set (it|me) up|reserve)\b/i;
   const ref = "SL-" + Math.floor(1000 + Math.random() * 9000);
 
-  if (/\b(emergency|pain|hurt|swollen|swelling|broke|broken|knocked|bleeding|chipped)\b/.test(t))
+  if (/(emergency|pain|hurt|ache|aching|toothache|swollen|swelling|broke|broken|knocked|bleeding|chipped|killing|sore)/.test(t))
     return "Oh no — that sounds like it needs to be seen today. I can get you in this afternoon. What's your name and a good number, and I'll lock in the soonest slot?";
-  if (/\b(hour|open|close|when.*(open|close))\b/.test(t))
+  if (/(hours?|what time|when.*(open|close)|you open|you close|opening|closing)/.test(t))
     return "We're open Monday through Thursday 8 to 5, and Fridays 8 to 2. Would you like me to book you in?";
   if (/\b(price|cost|how much|fee|charge|\$)\b/.test(t))
     return "A new-patient check-up and clean is $99, and anything else the dentist quotes after they see you. Want me to get you scheduled?";
