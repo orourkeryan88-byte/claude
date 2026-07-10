@@ -68,6 +68,14 @@ const SERVER = "https://southline-ai-receptionist.onrender.com";
 const $ = (id)=>document.getElementById(id);
 let history = [], busy = false, recog = null, listening = false, started = false, micWanted = false, speaking = false;
 
+// Personalization: ?biz=Glow+Med+Spa&type=medspa  (types: medspa, salon, tattoo, dental, service)
+const params = new URLSearchParams(location.search);
+const BIZ  = (params.get('biz') || '').replace(/[^\w\s&'.,\-]/g, '').trim().slice(0, 60) || null;
+const TYPE = (params.get('type') || '').toLowerCase().trim() || (BIZ ? 'medspa' : 'dental');
+const BIZ_NAME = BIZ || 'Bright Smile Dental';
+document.title = 'Talk to our AI receptionist · ' + BIZ_NAME;
+document.querySelector('header h1').textContent = BIZ_NAME;
+
 function add(role, text){
   const d = document.createElement('div');
   d.className = 'msg ' + (role==='ai'?'ai':'me');
@@ -77,7 +85,7 @@ function add(role, text){
 }
 function greet(){
   if(started) return; started = true;
-  add('ai', "Hi, thanks for calling Bright Smile Dental — this is Riley. How can I help you today?");
+  add('ai', "Hi, thanks for calling " + BIZ_NAME + " — this is Riley. How can I help you today?");
 }
 async function send(text){
   text = (text||'').trim();
@@ -89,7 +97,7 @@ async function send(text){
   $('feed').appendChild(typing); $('feed').scrollTop = $('feed').scrollHeight;
   try{
     const r = await fetch(SERVER + '/demo-voice', {method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({messages: history})});
+      body: JSON.stringify({messages: history, biz: BIZ, type: TYPE})});
     const data = await r.json();
     typing.remove();
     const reply = data.reply || "Sorry, could you say that once more?";
