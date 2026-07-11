@@ -206,10 +206,22 @@ function mountDemoVoice(app) {
     try {
       const raw = (req.body && req.body.messages) || [];
       if (!Array.isArray(raw) || !raw.length) return res.status(400).json({ error: "messages required" });
-      const messages = raw.slice(-20).map((m) => ({
+      let messages = raw.slice(-20).map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
         content: String(m.content || "").slice(0, 1500),
-      }));
+      })).filter((m) => m.content.trim());
+      // The API requires user/assistant alternation starting with user — a single
+      // dropped reply on the client would otherwise 400 every request after it.
+      const merged = [];
+      for (const m of messages) {
+        const prev = merged[merged.length - 1];
+        if (prev && prev.role === m.role) prev.content = (prev.content + "\n" + m.content).slice(0, 1500);
+        else merged.push(m);
+      }
+      while (merged.length && merged[0].role !== "user") merged.shift();
+      if (merged.length && merged[merged.length - 1].role !== "user") merged.pop();
+      messages = merged;
+      if (!messages.length) return res.status(400).json({ error: "messages required" });
 
       // Per-prospect personalization (optional): { biz: "Glow Med Spa", type: "medspa" }
       const biz = cleanBiz(req.body && req.body.biz);
