@@ -164,6 +164,9 @@ $('mic').onclick = ()=>{
 };
 // Show the greeting as soon as the page opens.
 window.addEventListener('load', greet);
+// Wake the server the moment the page opens (free hosting sleeps when idle),
+// so it's warm before the visitor sends their first message.
+fetch(SERVER + '/').catch(()=>{});
 </script>
 </body>
 </html>

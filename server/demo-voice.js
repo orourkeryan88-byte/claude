@@ -13,7 +13,12 @@
  */
 const AN_KEY = process.env.ANTHROPIC_API_KEY;
 const EL_KEY = process.env.ELEVENLABS_API_KEY;
-const EL_VOICE = process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM"; // Rachel (warm female)
+// Jessica — expressive, conversational female; noticeably more human than Rachel
+// for short receptionist lines. Override with ELEVENLABS_VOICE_ID if you prefer another.
+const EL_VOICE = process.env.ELEVENLABS_VOICE_ID || "cgSgspJ2msm6clMCkdW9";
+// Haiku answers in well under a second — an Opus-class model adds seconds of
+// "Riley is thinking…" for replies this short. Override with DEMO_MODEL.
+const DEMO_MODEL = process.env.DEMO_MODEL || "claude-haiku-4-5";
 
 // The demo personalizes per prospect: the page passes ?biz=Name&type=medspa
 // through in the POST body, and Riley answers as THAT business. With no
@@ -94,7 +99,7 @@ async function claudeReply(messages, system) {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": AN_KEY, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: "claude-opus-4-8", max_tokens: 250, system: system || buildSystem(null, "dental"), messages }),
+      body: JSON.stringify({ model: DEMO_MODEL, max_tokens: 120, system: system || buildSystem(null, "dental"), messages }),
     });
     if (!r.ok) {
       const body = await r.text().catch(() => "");
@@ -109,15 +114,16 @@ async function claudeReply(messages, system) {
 async function elevenAudio(text) {
   if (!EL_KEY) return { audio: null, err: "no ELEVENLABS_API_KEY on server" };
   try {
-    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${EL_VOICE}`, {
+    // turbo_v2_5 generates in a fraction of multilingual_v2's time — with a
+    // conversational voice like Jessica it stays natural. 64kbps mp3 halves the
+    // payload the phone has to download before it can start speaking.
+    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${EL_VOICE}?output_format=mp3_44100_64`, {
       method: "POST",
       headers: { "xi-api-key": EL_KEY, "content-type": "application/json", accept: "audio/mpeg" },
       body: JSON.stringify({
         text,
-        // multilingual_v2 = ElevenLabs' most natural/human model (worth the small
-        // extra latency for a demo). Settings tuned for a warm, conversational tone.
-        model_id: "eleven_multilingual_v2",
-        voice_settings: { stability: 0.4, similarity_boost: 0.75, style: 0.35, use_speaker_boost: true },
+        model_id: "eleven_turbo_v2_5",
+        voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true },
       }),
     });
     if (!r.ok) {
