@@ -25,21 +25,25 @@
   .msg .rep{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:12px;color:var(--g);cursor:pointer;font-weight:700}
   .msg.typing{color:var(--mut);font-style:italic}
   .status{text-align:center;font-size:12.5px;color:var(--mut);min-height:18px;padding:2px 16px}
-  .dock{padding:12px 16px calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#fff}
-  .mic-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
-  .mic{width:78px;height:78px;border-radius:50%;border:none;background:linear-gradient(140deg,var(--g),var(--g2));color:#fff;
-    font-size:30px;cursor:pointer;box-shadow:0 12px 30px rgba(18,128,92,.4);transition:.15s;display:grid;place-items:center}
-  .mic:active{transform:scale(.94)}
-  .mic.on{background:linear-gradient(140deg,#e11d48,#b91c1c);animation:ring 1.3s infinite}
-  .mic-label{font-size:13px;color:var(--mut);font-weight:600}
-  .row{display:flex;gap:8px;margin-top:12px}
-  .row input{flex:1;border:1px solid var(--line);border-radius:100px;padding:12px 16px;font-size:15px;font-family:inherit;outline:none}
+  .dock{padding:10px 14px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#fff}
+  /* One-tap suggested questions — the main way people try the demo. No mic, no typing, works everywhere. */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none;border:1px solid var(--g);color:var(--g);background:#f2fbf7;border-radius:100px;padding:9px 14px;font-size:13.5px;
+    font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap}
+  .chip:active{background:var(--g);color:#fff}
+  .row{display:flex;gap:8px;align-items:center}
+  .row input{flex:1;border:1px solid var(--line);border-radius:100px;padding:13px 16px;font-size:16px;font-family:inherit;outline:none}
   .row input:focus{border-color:var(--g)}
-  .row .send{border:none;background:var(--g);color:#fff;border-radius:50%;width:44px;height:44px;font-size:17px;cursor:pointer;flex:none}
+  .row button{border:none;color:#fff;border-radius:50%;width:46px;height:46px;font-size:18px;cursor:pointer;flex:none;display:grid;place-items:center}
+  .row .send{background:var(--g)}
+  .row .mic{background:#eef4f1;color:var(--g);border:1px solid var(--line)}
+  .row .mic.on{background:linear-gradient(140deg,#e11d48,#b91c1c);color:#fff;border-color:transparent;animation:ring 1.3s infinite}
+  .hint{text-align:center;font-size:11.5px;color:var(--mut);margin-top:8px}
   footer{text-align:center;font-size:12px;color:var(--mut);padding:12px}
   footer b{color:var(--g)}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(123,255,203,.6)}70%{box-shadow:0 0 0 8px rgba(123,255,203,0)}100%{box-shadow:0 0 0 0 rgba(123,255,203,0)}}
-  @keyframes ring{0%{box-shadow:0 0 0 0 rgba(225,29,72,.5)}70%{box-shadow:0 0 0 16px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
+  @keyframes ring{0%{box-shadow:0 0 0 0 rgba(225,29,72,.5)}70%{box-shadow:0 0 0 10px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
 </style>
 </head>
 <body>
@@ -47,26 +51,25 @@
   <header>
     <div class="badge"><span class="d"></span> AI RECEPTIONIST · LIVE DEMO</div>
     <h1>Bright Smile Dental</h1>
-    <p>Tap the mic and talk to me — I answer, and I book appointments.</p>
+    <p id="sub">Tap a question below to hear me answer. No app, no sign-up.</p>
   </header>
   <div class="feed" id="feed"></div>
   <div class="status" id="status"></div>
   <div class="dock">
-    <div class="mic-wrap">
-      <button class="mic" id="mic" title="Tap to talk">🎤</button>
-      <div class="mic-label" id="mic-label">Tap to talk</div>
-    </div>
+    <div class="chips" id="chips"></div>
     <div class="row">
-      <input id="text" placeholder="…or type a message" />
+      <input id="text" placeholder="Type a question…" autocomplete="off" />
+      <button class="mic" id="mic" title="Tap to talk" style="display:none">🎤</button>
       <button class="send" id="send" title="Send">➤</button>
     </div>
+    <div class="hint" id="hint"></div>
   </div>
   <footer>Powered by <b>Southline</b> — your business, answered 24/7.</footer>
 </div>
 <script>
 const SERVER = "https://southline-ai-receptionist.onrender.com";
 const $ = (id)=>document.getElementById(id);
-let history = [], busy = false, recog = null, listening = false, started = false, micWanted = false, speaking = false;
+let history = [], busy = false, recog = null, started = false, micWanted = false, speaking = false;
 
 // Personalization: ?biz=Glow+Med+Spa&type=medspa  (types: medspa, salon, tattoo, dental, service)
 const params = new URLSearchParams(location.search);
@@ -75,6 +78,46 @@ const TYPE = (params.get('type') || '').toLowerCase().trim() || (BIZ ? 'medspa' 
 const BIZ_NAME = BIZ || 'Bright Smile Dental';
 document.title = 'Talk to our AI receptionist · ' + BIZ_NAME;
 document.querySelector('header h1').textContent = BIZ_NAME;
+
+// One-tap starter questions per business type — this is how most people try it.
+const CHIPS = {
+  medspa:  ["What are your hours?","How much is Botox?","Book me a consult Saturday","Where are you located?"],
+  salon:   ["What are your hours?","How much for balayage?","Can I book Saturday?","Do you do extensions?"],
+  tattoo:  ["Are you open today?","How much for a small piece?","Do you take walk-ins?","Book me a consult"],
+  dental:  ["What are your hours?","How much is a cleaning?","Book me an appointment","Do you take insurance?"],
+  service: ["What are your hours?","Can I get a quote?","Are you free this week?","Can you come out today?"]
+};
+(function renderChips(){
+  const list = CHIPS[TYPE] || CHIPS.dental;
+  list.forEach(q=>{
+    const b = document.createElement('button');
+    b.className='chip'; b.textContent=q;
+    b.onclick = ()=>{ unlockAudio(); send(q); };
+    $('chips').appendChild(b);
+  });
+})();
+
+// --- Audio: ONE reusable element, unlocked on the first tap. iOS / in-app
+// browsers block audio that starts after a network call unless the same element
+// was already played during a user gesture. This is the fix for "no voice". ---
+const player = new Audio();
+let audioUnlocked = false, lastAudio = null;
+const SILENT = "data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA";
+function unlockAudio(){
+  if(audioUnlocked) return; audioUnlocked = true;
+  try{ player.src = SILENT; const p = player.play(); if(p&&p.then) p.then(()=>{player.pause();player.currentTime=0;}).catch(()=>{}); }catch(e){}
+}
+function playAudio(src){
+  lastAudio = src;
+  try{
+    player.src = src; player.currentTime = 0;
+    player.onplay  = ()=>{ speaking=true;  if(micWanted){ try{recog.stop();}catch(e){} } };
+    player.onended = ()=>{ speaking=false; resumeMic(); };
+    player.onerror = ()=>{ speaking=false; resumeMic(); };
+    const pr = player.play();
+    if(pr&&pr.catch) pr.catch(()=>{ $('status').textContent='Tap 🔊 to hear it.'; speaking=false; resumeMic(); });
+  }catch(e){ $('status').textContent='Tap 🔊 to hear it.'; }
+}
 
 function add(role, text){
   const d = document.createElement('div');
@@ -90,9 +133,10 @@ function greet(){
 async function send(text){
   text = (text||'').trim();
   if(!text || busy) return;
+  unlockAudio();
   greet();
   add('me', text); history.push({role:'user', content:text});
-  $('text').value=''; busy = true; $('status').textContent = 'Riley is thinking…';
+  $('text').value=''; busy = true; $('status').textContent = 'Riley is typing…';
   const typing = document.createElement('div'); typing.className='msg ai typing'; typing.textContent='…';
   $('feed').appendChild(typing); $('feed').scrollTop = $('feed').scrollHeight;
   try{
@@ -104,81 +148,61 @@ async function send(text){
     const bubble = add('ai', reply); history.push({role:'assistant', content:reply});
     $('status').textContent = '';
     if(data.audio){
-      const audio = new Audio(data.audio);
-      // Pause the mic while Riley is talking so it doesn't hear itself, then resume.
-      audio.onplay  = ()=>{ speaking=true;  if(micWanted){ try{recog.stop();}catch(e){} } };
-      audio.onended = ()=>{ speaking=false; resumeMic(); };
-      audio.onerror = ()=>{ speaking=false; resumeMic(); };
       const rep = document.createElement('span'); rep.className='rep'; rep.textContent='🔊 replay';
-      rep.onclick = ()=>{ audio.currentTime=0; audio.play().catch(()=>{}); };
+      rep.onclick = ()=> playAudio(data.audio);
       bubble.appendChild(document.createElement('br')); bubble.appendChild(rep);
-      audio.play().catch(()=>{ $('status').textContent='Tap 🔊 replay to hear it.'; speaking=false; resumeMic(); });
-    }
-    // Only surface a warning if it's genuinely broken (no voice came back).
-    if(!data.audio && data.voice === 'none'){ $('status').textContent = 'Voice not switched on yet (add ElevenLabs key on the server).'; }
-    else if(!data.audio && data.diag){ $('status').textContent = '⚠ ' + data.diag; }
+      playAudio(data.audio);
+    } else if(data.voice === 'none'){
+      $('status').textContent = 'Voice not switched on yet.';
+    } else if(data.diag){ $('status').textContent = '⚠ ' + data.diag; }
   }catch(e){
     typing.remove();
-    // Drop the unanswered question from history so the conversation stays in
-    // sync — otherwise every later message inherits the broken exchange.
+    // Drop the unanswered question so the conversation stays in sync.
     if(history.length && history[history.length-1].role==='user') history.pop();
-    add('ai', "Sorry — I can't reach the line right now. Please try again in a moment.");
+    add('ai', "Sorry — I couldn't reach the line just then. Try once more.");
     $('status').textContent = '';
   }
   busy = false;
   resumeMic();
 }
-$('send').onclick = ()=> send($('text').value);
-$('text').addEventListener('keydown', e=>{ if(e.key==='Enter') send($('text').value); });
+$('send').onclick = ()=>{ unlockAudio(); send($('text').value); };
+$('text').addEventListener('keydown', e=>{ if(e.key==='Enter'){ unlockAudio(); send($('text').value); } });
 
-// Voice input (browser speech-to-text). Voice OUTPUT is ElevenLabs from the server.
-// Tap ONCE to turn the mic on — it stays listening until you tap it again.
-function setMicUI(on){
-  listening = on;
-  $('mic').classList.toggle('on', on);
-  $('mic-label').textContent = on ? 'Listening — tap to stop' : 'Tap to talk';
-}
-// Bring the mic back no matter what state recognition ended up in. If a plain
-// start() fails (stale object after an error), rebuild recognition from scratch
-// so the demo never silently goes deaf mid-conversation.
+// ---- Optional voice input. Hidden entirely when the browser can't do it
+// (e.g. the Instagram in-app browser), so there's never a button that fails. ----
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function setMicUI(on){ $('mic').classList.toggle('on', on); }
 function resumeMic(){
   if(!micWanted || speaking) return;
-  try{ recog.start(); }
-  catch(e){ try{ startRecog(); }catch(e2){} }
+  try{ recog.start(); }catch(e){ try{ startRecog(); }catch(e2){} }
 }
 function startRecog(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recog = new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=false; recog.maxAlternatives=1;
   recog.onstart = ()=>{ if(!speaking) setMicUI(true); };
   recog.onresult = (e)=>{
-    let finalText='';
-    for(let i=e.resultIndex; i<e.results.length; i++){ if(e.results[i].isFinal) finalText += e.results[i][0].transcript; }
-    finalText = finalText.trim();
-    if(finalText) send(finalText);
+    let t=''; for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) t+=e.results[i][0].transcript; }
+    t=t.trim(); if(t) send(t);
   };
   recog.onerror = (e)=>{
     if(e && (e.error==='not-allowed' || e.error==='service-not-allowed')){
-      micWanted=false; setMicUI(false); $('mic-label').textContent='Allow mic access to talk';
+      micWanted=false; setMicUI(false); $('hint').textContent='Mic blocked — just type instead.';
     }
   };
-  // Browsers auto-stop on silence — restart so it stays on until the user taps off.
-  recog.onend = ()=>{
-    if(micWanted && !speaking){ setTimeout(resumeMic, 150); }
-    else if(!micWanted){ setMicUI(false); }
-  };
+  recog.onend = ()=>{ if(micWanted && !speaking){ setTimeout(resumeMic,150); } else if(!micWanted){ setMicUI(false); } };
   try{ recog.start(); }catch(e){}
 }
-$('mic').onclick = ()=>{
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){ $('mic-label').textContent = 'Voice needs Chrome/Safari — type instead'; $('text').focus(); return; }
-  greet();
-  if(micWanted){ micWanted=false; try{recog.stop();}catch(e){} setMicUI(false); }
-  else { micWanted=true; startRecog(); }
-};
-// Show the greeting as soon as the page opens.
+if(SR){
+  $('mic').style.display='grid';
+  $('mic').onclick = ()=>{
+    unlockAudio(); greet();
+    if(micWanted){ micWanted=false; try{recog.stop();}catch(e){} setMicUI(false); }
+    else { micWanted=true; startRecog(); }
+  };
+}
+// (No SR = no mic button at all; the chips and typing carry the whole demo.)
+
 window.addEventListener('load', greet);
-// Wake the server the moment the page opens (free hosting sleeps when idle),
-// so it's warm before the visitor sends their first message.
+// Wake the sleeping free server so it's warm before the first question.
 fetch(SERVER + '/').catch(()=>{});
 </script>
 </body>
