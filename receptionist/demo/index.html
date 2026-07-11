@@ -107,21 +107,26 @@ async function send(text){
       const audio = new Audio(data.audio);
       // Pause the mic while Riley is talking so it doesn't hear itself, then resume.
       audio.onplay  = ()=>{ speaking=true;  if(micWanted){ try{recog.stop();}catch(e){} } };
-      audio.onended = ()=>{ speaking=false; if(micWanted){ try{recog.start();}catch(e){} } };
+      audio.onended = ()=>{ speaking=false; resumeMic(); };
+      audio.onerror = ()=>{ speaking=false; resumeMic(); };
       const rep = document.createElement('span'); rep.className='rep'; rep.textContent='🔊 replay';
       rep.onclick = ()=>{ audio.currentTime=0; audio.play().catch(()=>{}); };
       bubble.appendChild(document.createElement('br')); bubble.appendChild(rep);
-      audio.play().catch(()=>{ $('status').textContent='Tap 🔊 replay to hear it.'; });
+      audio.play().catch(()=>{ $('status').textContent='Tap 🔊 replay to hear it.'; speaking=false; resumeMic(); });
     }
     // Only surface a warning if it's genuinely broken (no voice came back).
     if(!data.audio && data.voice === 'none'){ $('status').textContent = 'Voice not switched on yet (add ElevenLabs key on the server).'; }
     else if(!data.audio && data.diag){ $('status').textContent = '⚠ ' + data.diag; }
   }catch(e){
     typing.remove();
+    // Drop the unanswered question from history so the conversation stays in
+    // sync — otherwise every later message inherits the broken exchange.
+    if(history.length && history[history.length-1].role==='user') history.pop();
     add('ai', "Sorry — I can't reach the line right now. Please try again in a moment.");
     $('status').textContent = '';
   }
   busy = false;
+  resumeMic();
 }
 $('send').onclick = ()=> send($('text').value);
 $('text').addEventListener('keydown', e=>{ if(e.key==='Enter') send($('text').value); });
@@ -132,6 +137,14 @@ function setMicUI(on){
   listening = on;
   $('mic').classList.toggle('on', on);
   $('mic-label').textContent = on ? 'Listening — tap to stop' : 'Tap to talk';
+}
+// Bring the mic back no matter what state recognition ended up in. If a plain
+// start() fails (stale object after an error), rebuild recognition from scratch
+// so the demo never silently goes deaf mid-conversation.
+function resumeMic(){
+  if(!micWanted || speaking) return;
+  try{ recog.start(); }
+  catch(e){ try{ startRecog(); }catch(e2){} }
 }
 function startRecog(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -150,7 +163,7 @@ function startRecog(){
   };
   // Browsers auto-stop on silence — restart so it stays on until the user taps off.
   recog.onend = ()=>{
-    if(micWanted && !speaking){ try{ recog.start(); }catch(e){} }
+    if(micWanted && !speaking){ setTimeout(resumeMic, 150); }
     else if(!micWanted){ setMicUI(false); }
   };
   try{ recog.start(); }catch(e){}
