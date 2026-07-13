@@ -177,6 +177,7 @@ function resumeMic(){
   try{ recog.start(); }catch(e){ try{ startRecog(); }catch(e2){} }
 }
 function startRecog(){
+  try{ if(recog){ recog.onend=null; recog.abort(); } }catch(e){}
   recog = new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=false; recog.maxAlternatives=1;
   recog.onstart = ()=>{ if(!speaking) setMicUI(true); };
   recog.onresult = (e)=>{

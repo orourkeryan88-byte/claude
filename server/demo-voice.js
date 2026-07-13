@@ -177,15 +177,17 @@ function scriptedReply(messages, type) {
   const t = last.toLowerCase();
   const convo = users.map((m) => m.content).join(" ");
   const hasPhone = /(\+?\d[\s().-]?){10,}/.test(convo);
-  const booking = /\b(book|appointment|schedule|come in|slot|set (it|me) up|reserve|consult)\b/i;
+  const booking = /\b(book|appointment|schedule|reserve|consult|slot|set (it|me) up|come (in|out|by|over)|availab|free (this|next|to)|this week)\b/i;
   const ref = "SL-" + Math.floor(1000 + Math.random() * 9000);
 
   if (/(emergency|urgent|asap|right away|pain|hurt|ache|aching|toothache|swollen|swelling|broke|broken|knocked|bleeding|chipped|killing|sore)/.test(t))
     return L.urgent;
   if (/(hours?|what time|when.*(open|close)|you open|you close|opening|closing)/.test(t))
     return L.hours;
-  if (/\b(price|cost|how much|fee|charge|\$)\b/.test(t))
+  if (/\b(price|cost|how much|fee|charge|quote|estimate|pricing|\$)\b/.test(t))
     return L.price;
+  if (/walk[\s-]?in/.test(t))
+    return "Walk-ins are welcome whenever we've got space, and you're also welcome to book ahead so you're guaranteed a spot. Want me to reserve you one?";
   if (/\b(where|address|located|location|parking|directions)\b/.test(t))
     return "I'll text you the exact address and parking details with your confirmation — we're easy to find. Shall I book you in?";
   if (/\b(insurance|insured|cover)\b/.test(t))
