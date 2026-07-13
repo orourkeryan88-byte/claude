@@ -73,6 +73,16 @@ const TYPE_PROFILES = {
       "- If asked the address or service area, say you'll confirm the details by text.\n",
     extra: "- Urgent jobs: reassure the caller and take their details for the soonest callout.\n",
   },
+  grooming: {
+    what: "a busy dog grooming salon",
+    facts:
+      "- Hours: Mon–Sat 9am–6pm, closed Sundays.\n" +
+      "- Full groom (wash, cut, blow-dry, nails and ears): small dogs €45, medium €55, large €70.\n" +
+      "- Bath and tidy €30. De-shedding treatment from €40. Nail clipping €12. Ear cleaning €10. Puppy's first groom €35.\n" +
+      "- A typical full groom takes about 1.5 to 2 hours. Most breeds are welcome.\n" +
+      "- By appointment. If asked the address, say you'll text it with the confirmation.\n",
+    extra: "- Ask the dog's breed so you can quote the right price. If a dog is nervous or it's a first groom, reassure the owner and book a calm, unrushed slot.\n",
+  },
 };
 
 function buildSystem(biz, type) {
@@ -168,6 +178,12 @@ const SCRIPT_LINES = {
     services: "Tell me a bit about the job and I'll get the right person out to you. What needs doing?",
     urgent: "That sounds urgent — I can get someone out to you as soon as possible. What's your name and a good number?",
   },
+  grooming: {
+    hours: "We're open Monday to Saturday, 9 to 6. Would you like me to book your dog in?",
+    price: "A full groom is 45 euro for a small dog, 55 for a medium and 70 for a large — that's the wash, cut, blow-dry, nails and ears. What breed is your dog and I'll get you booked?",
+    services: "We do full grooms from 45 euro, a bath and tidy at 30, de-shedding from 40, nail clipping at 12, and a puppy's first groom at 35. Which would you like to book your dog in for?",
+    urgent: "Of course — let me see what we have. What's your name, a good number, and your dog's breed, and I'll find the soonest slot?",
+  },
 };
 
 function scriptedReply(messages, type) {
@@ -192,7 +208,7 @@ function scriptedReply(messages, type) {
     return "I'll text you the exact address and parking details with your confirmation — we're easy to find. Shall I book you in?";
   if (/\b(insurance|insured|cover)\b/.test(t))
     return "I can check that for you when you come in — would you like to book a visit?";
-  if (/\b(service|offer|do you do|whiten|implant|invisalign|clean|check ?up|veneer|crown|braces|botox|filler|facial|laser|balayage|color|cut|tattoo|piercing)\b/.test(t))
+  if (/\b(service|offer|do you do|whiten|implant|invisalign|clean|check ?up|veneer|crown|braces|botox|filler|facial|laser|balayage|color|cut|tattoo|piercing|groom|grooming|bath|de[\s-]?shed|nail|puppy|matted|coat)\b/.test(t))
     return L.services;
   if (hasPhone)
     return `Perfect — you're all set. Your booking reference is ${ref}, and you'll get a confirmation text shortly. Is there anything else I can help you with?`;
