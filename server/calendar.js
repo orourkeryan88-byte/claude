@@ -102,6 +102,18 @@ async function smsCaller(phone, body) {
   } catch (e) { console.warn("caller SMS failed:", e.message); return false; }
 }
 
+// Text the business owner (my client) — used to alert them of bookings,
+// cancellations and reschedules. Falls back to DEFAULT_OWNER_PHONE.
+async function smsOwner(ownerPhone, body) {
+  const to = ownerPhone || process.env.DEFAULT_OWNER_PHONE;
+  if (!to || !process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_FROM_NUMBER) return false;
+  try {
+    const tw = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    await tw.messages.create({ to, from: process.env.TWILIO_FROM_NUMBER, body });
+    return true;
+  } catch (e) { console.warn("owner SMS failed:", e.message); return false; }
+}
+
 /* ---- timezone helpers (no external deps) ---- */
 function tzOffsetMs(date, tz) {
   const f = new Intl.DateTimeFormat("en-US", {
@@ -306,7 +318,7 @@ async function book({ startISO, durationMins, name, phone, reason, business, cal
 }
 
 /* ---------- cancel ---------- */
-async function cancelBooking({ reference, phone }) {
+async function cancelBooking({ reference, phone, ownerPhone }) {
   const b = findBooking({ reference, phone });
   if (!b) return { ok: false, result: "I couldn't find a booking under that — could you check the reference, or the number it was booked with?" };
   if (isLive(b.calId) && b.eventId) {
@@ -314,12 +326,15 @@ async function cancelBooking({ reference, phone }) {
     catch (e) { console.warn("event delete failed:", e.message); }
   }
   updateBooking(b.ref, { status: "cancelled", cancelledAt: new Date().toISOString() });
-  await smsCaller(b.phone, `Your appointment for ${label(Date.parse(b.startISO))} (ref ${b.ref}) has been cancelled. Call us any time to rebook.`);
-  return { ok: true, ref: b.ref, result: `Done — I've cancelled the ${label(Date.parse(b.startISO))} appointment (ref ${b.ref}). Would you like to book another time instead?` };
+  const when = label(Date.parse(b.startISO));
+  await smsCaller(b.phone, `Your appointment for ${when} (ref ${b.ref}) has been cancelled. Call us any time to rebook.`);
+  await smsOwner(ownerPhone,
+    `❌ CANCELLED${b.business ? " — " + b.business : ""}\n${b.name || "A customer"} cancelled their appointment for ${when} (ref ${b.ref}).`);
+  return { ok: true, ref: b.ref, result: `Perfect — I've cancelled the ${when} appointment (ref ${b.ref}). Is there anything else I can help you with?` };
 }
 
 /* ---------- reschedule ---------- */
-async function rescheduleBooking({ reference, phone, datetime, date, time }) {
+async function rescheduleBooking({ reference, phone, datetime, date, time, ownerPhone }) {
   const b = findBooking({ reference, phone });
   if (!b) return { ok: false, result: "I couldn't find a booking under that — could you check the reference, or the number it was booked with?" };
   const cid = b.calId || CAL_ID;
@@ -347,6 +362,8 @@ async function rescheduleBooking({ reference, phone, datetime, date, time }) {
   const oldWhen = label(Date.parse(b.startISO));
   updateBooking(b.ref, { startISO: new Date(instant).toISOString(), movedFrom: b.startISO, movedAt: new Date().toISOString() });
   await smsCaller(b.phone, `Your appointment has moved to ${label(instant)} (ref ${b.ref}).`);
+  await smsOwner(ownerPhone,
+    `🔄 MOVED${b.business ? " — " + b.business : ""}\n${b.name || "A customer"} moved their appointment from ${oldWhen} to ${label(instant)} (ref ${b.ref}).`);
   return { ok: true, ref: b.ref, when: label(instant),
     result: `Done — I've moved you from ${oldWhen} to ${label(instant)}. Same reference, ${b.ref}.` };
 }
@@ -361,9 +378,14 @@ function mountCalendar(app) {
     const a = req.body?.message?.functionCall?.parameters || req.body?.parameters || req.body || {};
     return a.calendarId || req.query.calendarId || meta.calendarId || CAL_ID || undefined;
   };
+  const ownerPhoneOf = (req) => {
+    const meta = req.body?.message?.call?.assistant?.metadata || req.body?.message?.assistant?.metadata || {};
+    const a = req.body?.message?.functionCall?.parameters || req.body?.parameters || req.body || {};
+    return a.ownerPhone || meta.ownerPhone || process.env.DEFAULT_OWNER_PHONE || undefined;
+  };
   const params = (req) => {
     const a = req.body?.message?.functionCall?.parameters || req.body?.parameters || req.body || {};
-    return { ...req.query, ...a, calId: calIdOf(req) };
+    return { ...req.query, ...a, calId: calIdOf(req), ownerPhone: ownerPhoneOf(req) };
   };
 
   async function availability(req, res) {
