@@ -44,6 +44,44 @@ if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
   }
 }
 
+// Optional: Microsoft Teams logging. If a client wants their calls/orders
+// posted into a Teams channel, they create an "Incoming Webhook" (via the
+// Teams Workflows / Power Automate template "Post to a channel when a webhook
+// request is received") and we POST an Adaptive Card to it. The URL can be set
+// per-client (assistant metadata `teamsWebhook`) or server-wide (TEAMS_WEBHOOK_URL).
+// Best-effort: never blocks or breaks the call if Teams is down or unset.
+async function postToTeams(webhookUrl, { title, facts, text }) {
+  if (!webhookUrl) return false;
+  const body = {
+    type: "message",
+    attachments: [{
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
+        type: "AdaptiveCard",
+        version: "1.4",
+        body: [
+          { type: "TextBlock", size: "Medium", weight: "Bolder", text: title, wrap: true },
+          ...(facts && facts.length
+            ? [{ type: "FactSet", facts: facts.map((f) => ({ title: f.k, value: String(f.v) })) }]
+            : []),
+          ...(text ? [{ type: "TextBlock", text, wrap: true, isSubtle: true }] : []),
+        ],
+      },
+    }],
+  };
+  try {
+    const r = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!r.ok) { console.warn("Teams post returned", r.status); return false; }
+    console.log("🟦 Logged to Microsoft Teams");
+    return true;
+  } catch (e) { console.warn("Teams post failed:", e.message); return false; }
+}
+
 // In-memory store so you can eyeball leads at GET /leads during a demo.
 const leads = [];
 
@@ -117,6 +155,7 @@ app.post("/log-lead", async (req, res) => {
     const meta = call?.assistant?.metadata || msg?.assistant?.metadata || {};
     const businessName = meta.businessName || "Your business";
     const ownerPhone = meta.ownerPhone || process.env.DEFAULT_OWNER_PHONE;
+    const teamsWebhook = meta.teamsWebhook || process.env.TEAMS_WEBHOOK_URL;
 
     const lead = {
       business: businessName,
@@ -155,6 +194,18 @@ app.post("/log-lead", async (req, res) => {
     } else {
       console.log("ℹ No SMS sent (log-only mode). Add Twilio creds + ownerPhone metadata to enable texts.");
     }
+
+    // Log it into the client's Microsoft Teams channel, if they use one.
+    await postToTeams(teamsWebhook, {
+      title: `${flag}New ${lead.urgency === "urgent" ? "urgent " : ""}enquiry — ${businessName}`,
+      facts: [
+        { k: "Name", v: lead.name },
+        { k: "Phone", v: lead.phone },
+        { k: "Details", v: lead.reason },
+        { k: "When", v: lead.preferred_time },
+      ],
+      text: `Logged by the AI receptionist at ${new Date(lead.receivedAt).toLocaleString("en-IE")}.`,
+    });
 
     // Tell Vapi what the assistant should say next.
     return res.json({
