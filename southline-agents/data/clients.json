@@ -1,0 +1,34 @@
+{
+  "clients": [
+    {
+      "name": "Cork Cosmetic Clinic",
+      "type": "aesthetic clinic",
+      "town": "Cork",
+      "email": "alsumery@yahoo.co.uk",
+      "phone": "+353 86 195 5536",
+      "contact": "Dr. Mohamed",
+      "address": "Hanover House, 85-89 South Main St, Cork, T12 AV66",
+      "services": "anti-wrinkle injections, lip fillers, dermal fillers",
+      "stage": "client",
+      "created": "2026-07-18 12:00 UTC",
+      "notes": [
+        {
+          "when": "2026-07-18 12:00 UTC",
+          "text": "First client. 1-hour session booked for Monday. Top 3 pitch: local SEO / Google Business Profile, surface Fresha booking on site, branded email instead of yahoo address."
+        },
+        {
+          "when": "2026-07-18 12:49 UTC",
+          "text": "onboarded (stage booked -> client)"
+        }
+      ],
+      "calls": [],
+      "bookings": [
+        {
+          "when": "Monday (next)",
+          "what": "1-hour strategy session",
+          "status": "confirmed"
+        }
+      ]
+    }
+  ]
+}
