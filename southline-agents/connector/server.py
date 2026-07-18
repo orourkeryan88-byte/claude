@@ -37,6 +37,7 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE / "crm"))
 import crm  # noqa: E402
+import notify  # noqa: E402  (same directory)
 
 DEFAULT_CLIENT = os.environ.get("DEFAULT_CLIENT", "Cork Cosmetic Clinic")
 
@@ -76,6 +77,7 @@ def record(kind: str, payload: dict) -> tuple[int, str]:
         return 400, f"unknown event kind '{kind}'"
 
     crm.save(db)
+    notify.client_notification(c, kind, payload)
     return 200, "ok"
 
 
