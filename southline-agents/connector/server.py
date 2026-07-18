@@ -38,6 +38,7 @@ BASE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE / "crm"))
 import crm  # noqa: E402
 import notify  # noqa: E402  (same directory)
+import sms  # noqa: E402
 
 DEFAULT_CLIENT = os.environ.get("DEFAULT_CLIENT", "Cork Cosmetic Clinic")
 
@@ -78,6 +79,8 @@ def record(kind: str, payload: dict) -> tuple[int, str]:
 
     crm.save(db)
     notify.client_notification(c, kind, payload)
+    if kind == "booking":
+        sms.booking_confirmation(c, payload)
     return 200, "ok"
 
 
