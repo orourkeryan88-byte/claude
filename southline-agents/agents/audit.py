@@ -6,7 +6,10 @@ You answer a handful of y/n questions on the command line, it writes the
 client-facing audit document.
 
 Usage:
-  audit.py "Cork Cosmetic Clinic"          # interactive
+  audit.py "Cork Cosmetic Clinic"                  # interactive
+  audit.py "Cork Cosmetic Clinic" --answers nnnyny  # non-interactive:
+      one y/n per question, in order (7 questions). Lets other agents
+      and scripts run audits without a keyboard.
 """
 import sys
 from datetime import date
@@ -61,18 +64,28 @@ def ask(q: str) -> bool:
 
 def main() -> None:
     if len(sys.argv) < 2:
-        sys.exit('Usage: audit.py "Business Name"')
+        sys.exit('Usage: audit.py "Business Name" [--answers ynnyyny]')
     name = sys.argv[1]
+
+    answers = None
+    if "--answers" in sys.argv:
+        raw = sys.argv[sys.argv.index("--answers") + 1].lower()
+        if len(raw) != len(CHECKS) or set(raw) - {"y", "n"}:
+            sys.exit(f"--answers needs exactly {len(CHECKS)} y/n letters "
+                     f"(one per question), e.g. --answers nnnyyny")
+        answers = [ch == "y" for ch in raw]
+
     db = crm.load()
     c = crm.find(db, name) or {"name": name, "type": "business", "town": ""}
 
     svc = c.get("type", "business")
     town = c.get("town", "your area")
 
-    print(f"\nAnswer for {c['name']} (check Google/their site first):\n")
+    if answers is None:
+        print(f"\nAnswer for {c['name']} (check Google/their site first):\n")
     problems, fine = [], []
-    for key, q, bad, good in CHECKS:
-        ok = ask(q)
+    for i, (key, q, bad, good) in enumerate(CHECKS):
+        ok = answers[i] if answers is not None else ask(q)
         (fine if ok else problems).append(
             (q, (good if ok else bad).format(svc=svc, town=town)))
 
