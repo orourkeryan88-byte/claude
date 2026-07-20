@@ -33,42 +33,6 @@
           "status": "confirmed"
         }
       ]
-    },
-    {
-      "name": "Demo Barber",
-      "type": "barber",
-      "town": "Cork",
-      "email": "demo@demo.ie",
-      "phone": "",
-      "contact": "",
-      "stage": "contacted",
-      "created": "2026-07-18 13:26 UTC",
-      "notes": [
-        {
-          "when": "2026-07-18 13:26 UTC",
-          "text": "outreach draft generated"
-        }
-      ],
-      "calls": [],
-      "bookings": []
-    },
-    {
-      "name": "ZZTest Barber",
-      "type": "barber",
-      "town": "Cork",
-      "email": "zz@demo.ie",
-      "phone": "",
-      "contact": "",
-      "stage": "contacted",
-      "created": "2026-07-18 13:28 UTC",
-      "notes": [
-        {
-          "when": "2026-07-18 13:28 UTC",
-          "text": "outreach draft generated"
-        }
-      ],
-      "calls": [],
-      "bookings": []
     }
   ]
 }
