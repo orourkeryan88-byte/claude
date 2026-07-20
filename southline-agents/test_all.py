@@ -117,7 +117,8 @@ def main():
 
     # ---- cleanup: remove every trace of the test client ----
     db = json.loads(DATA.read_text())
-    db["clients"] = [c for c in db["clients"] if c["name"] != TEST]
+    db["clients"] = [c for c in db["clients"]
+                     if c["name"] not in (TEST, "ZZTest Barber")]
     DATA.write_text(json.dumps(db, indent=2, ensure_ascii=False))
     shutil.rmtree(OUT / SLUG, ignore_errors=True)
     for p in [OUT / f"audit-{SLUG}.txt", OUT / "zztest-leads.csv",

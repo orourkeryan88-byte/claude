@@ -70,13 +70,13 @@ def next_invoice_number() -> str:
 
 
 def build_invoice(client_name: str, amount: float, service: str,
-                  iban: str, bill_to: str = "") -> str:
+                  iban: str, bill_to: str = "", issue_date: date | None = None) -> str:
     cfg = load_config()
     bic = bic_from_iban(iban)
     iban_clean = iban.replace(" ", "").upper()
     iban_pretty = " ".join(iban_clean[i:i + 4] for i in range(0, len(iban_clean), 4))
     number = next_invoice_number()
-    today = date.today()
+    today = issue_date or date.today()
     due = today + timedelta(days=7)
 
     warnings = []
@@ -126,14 +126,16 @@ def main() -> None:
     p.add_argument("--service", required=True)
     p.add_argument("--iban", help="defaults to config.json iban")
     p.add_argument("--bill-to", default="", help="client address line")
+    p.add_argument("--date", help="issue date YYYY-MM-DD (default: today)")
     args = p.parse_args()
 
     iban = args.iban or load_config().get("iban")
     if not iban:
         sys.exit("No IBAN given. Pass --iban or set it in config.json.")
 
+    issue_date = date.fromisoformat(args.date) if args.date else None
     text = build_invoice(args.client, args.amount, args.service, iban,
-                         args.bill_to)
+                         args.bill_to, issue_date)
     OUTPUT.mkdir(parents=True, exist_ok=True)
     safe = args.client.lower().replace(" ", "-")
     path = OUTPUT / f"invoice-{safe}.txt"
