@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI Receptionist for Plumbers — Southline</title>
-<meta name="description" content="A receptionist that answers your phone when you're on the tools — takes the job, books it in, and never misses a call." />
+<title>Stop losing jobs to missed calls — Southline</title>
+<meta name="description" content="Every call you miss on a job is a customer ringing the next plumber. An AI receptionist that answers when you can't, books the job, and texts you the lead." />
 <meta name="color-scheme" content="light dark" />
-<meta property="og:title" content="Never lose a job to a missed call again" />
-<meta property="og:description" content="Your own AI receptionist — answers 24/7, books the job, texts you every lead." />
+<meta property="og:title" content="Right now, you're losing jobs — and you don't even know it" />
+<meta property="og:description" content="An AI receptionist that answers when you can't, books the job, and texts you every lead." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230E6B52'/%3E%3Ctext x='50' y='70' font-size='56' text-anchor='middle'%3E%F0%9F%94%A7%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
@@ -38,7 +38,7 @@
   .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
 
   .hero{background:linear-gradient(165deg,var(--hero),var(--brand-deep));color:var(--on-hero);
-    padding:46px 0 40px;position:relative;overflow:hidden}
+    padding:48px 0 42px;position:relative;overflow:hidden}
   .hero::after{content:"";position:absolute;inset:0;background:
     radial-gradient(420px 220px at 100% 0,color-mix(in srgb,var(--gold) 22%,transparent),transparent 70%);pointer-events:none}
   .hero .wrap{position:relative}
@@ -54,10 +54,17 @@
   .lead{font-size:1.12rem}
   .lead b{color:var(--brand);font-weight:750}
 
-  .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;
-    box-shadow:var(--shadow);margin-top:16px}
-  .stat .big{font-family:var(--serif);font-size:2rem;color:var(--brand);letter-spacing:-.02em}
-  .stat p{color:var(--muted);margin-top:4px;font-size:.98rem}
+  /* the story panel */
+  .story{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);
+    border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-top:18px;font-size:1.05rem}
+  .story p + p{margin-top:12px}
+  .story .kick{font-family:var(--serif);font-size:1.15rem;color:var(--brand);font-weight:700}
+  .story b{color:var(--ink);font-weight:750}
+
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;
+    box-shadow:var(--shadow);margin-top:16px;text-align:center}
+  .stat .big{font-family:var(--serif);font-size:2.6rem;color:var(--brand);letter-spacing:-.03em;line-height:1}
+  .stat p{color:var(--muted);margin-top:10px;font-size:.98rem}
 
   .sec-head{font-size:1.5rem;font-weight:800;margin-bottom:6px}
   .sec-head .eyebrow{display:block;color:var(--gold);margin-bottom:10px}
@@ -71,15 +78,16 @@
   .card h3{font-size:1.06rem;font-weight:750}
   .card p{color:var(--muted);font-size:.96rem;margin-top:4px}
 
-  .steps{counter-reset:s;margin-top:8px}
-  .stp{display:flex;gap:15px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
-  .stp:last-child{border-bottom:0}
-  .stp .n{counter-increment:s;flex:0 0 auto;width:34px;height:34px;border-radius:50%;
-    background:var(--gold-soft);color:var(--gold);font-family:var(--serif);font-weight:700;
-    display:grid;place-items:center}
-  .stp .n::before{content:counter(s)}
-  .stp h3{font-size:1.05rem;font-weight:750}
-  .stp p{color:var(--muted);font-size:.95rem;margin-top:3px}
+  .reassure{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:10px}
+  .reassure li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:13px 15px;box-shadow:var(--shadow);font-weight:600}
+  .reassure li svg{flex:0 0 auto;width:20px;height:20px;color:var(--brand);margin-top:2px}
+
+  .faq{margin-top:8px}
+  .qa{padding:16px 0;border-bottom:1px solid var(--line)}
+  .qa:last-child{border-bottom:0}
+  .qa .q{font-weight:750;font-size:1.04rem}
+  .qa .a{color:var(--muted);margin-top:5px;font-size:.98rem}
 
   .value{background:linear-gradient(165deg,var(--hero),var(--brand-deep));color:var(--on-hero);
     border-radius:22px;padding:30px 24px;margin-top:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
@@ -88,14 +96,14 @@
   .value .q{font-family:var(--serif);font-size:1.3rem;line-height:1.35}
   .value .q b{color:var(--gold)}
 
-  .cta{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px 22px;
+  .cta{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px 22px;
     text-align:center;box-shadow:var(--shadow);margin-top:22px}
-  .cta h2{font-size:1.4rem;font-weight:800}
+  .cta h2{font-size:1.45rem;font-weight:800}
   .cta p{color:var(--muted);margin-top:8px}
-  .btn{display:inline-block;margin-top:18px;background:var(--brand);color:#fff;font-weight:700;
-    font-size:1.02rem;padding:14px 26px;border-radius:999px;text-decoration:none;
-    box-shadow:0 8px 20px -8px color-mix(in srgb,var(--brand) 70%,transparent)}
-  .btn.gold{background:var(--gold);color:#241608}
+  .btn{display:inline-block;margin-top:18px;background:var(--gold);color:#241608;font-weight:750;
+    font-size:1.05rem;padding:15px 30px;border-radius:999px;text-decoration:none;
+    box-shadow:0 8px 20px -8px color-mix(in srgb,var(--gold) 70%,transparent)}
+  .cta .small{margin-top:12px;font-size:.85rem;color:var(--muted)}
   .foot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:26px}
   .foot b{color:var(--ink)}
 </style>
@@ -103,65 +111,84 @@
 <div class="doc">
   <header class="hero">
     <div class="wrap">
-      <p class="eyebrow">For plumbers who are never near the phone</p>
-      <h1>Never lose a job to a <em>missed call</em> again.</h1>
-      <p class="sub">A receptionist that answers your phone when you're on the tools — takes the job, books it in, and makes sure not a single call slips away.</p>
+      <p class="eyebrow">For plumbers</p>
+      <h1>Right now, you're losing jobs — <em>and you don't even know it.</em></h1>
+      <p class="sub">Every call you can't get to on a job is a customer ringing the next plumber instead. Here's how you stop it — without changing a thing about how you work.</p>
       <span class="badge">Your own AI receptionist</span>
     </div>
   </header>
 
   <section class="wrap">
-    <p class="lead">Every call you can't get to is a job walking straight to the next plumber. When you're mid-job, that's a boiler, a leak, a <b>€500 call-out</b> gone to someone else — and you never even knew they rang.</p>
+    <h2 class="sec-head"><span class="eyebrow">Sound familiar?</span>Picture your Tuesday.</h2>
+    <div class="story">
+      <p>It's 2pm. You're on your knees fitting a boiler, hands covered in muck. The phone starts going in your pocket — no chance of answering it.</p>
+      <p>That caller? Someone looking for a <b>full boiler install</b> — a two, three grand job. They get no answer. They don't leave a voicemail. They just ring the next plumber down the list.</p>
+      <p class="kick">By the time you're finished up, that job's gone — and you never even knew it came in.</p>
+    </div>
+    <p class="lead" style="margin-top:20px">And it's not a once-off. It's happening <b>every single week</b> — you just never see the ones that got away.</p>
+  </section>
 
+  <section class="wrap">
     <div class="stat">
-      <div class="big">8 in 10</div>
-      <p>callers who reach a voicemail hang up and ring the next plumber instead of leaving a message.</p>
+      <div class="big">€45,000+</div>
+      <p>a year is what a busy tradesman loses to calls they couldn't get to. You only need to miss one or two good jobs a month to be there.</p>
     </div>
   </section>
 
   <section class="wrap">
-    <h2 class="sec-head"><span class="eyebrow">What it does for you</span>Answers, books, and never misses.</h2>
+    <h2 class="sec-head"><span class="eyebrow">The fix, in plain English</span>A receptionist that answers when you can't.</h2>
 
     <div class="card">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1z"/></svg></span>
-      <div><h3>Answers every call, 24/7</h3><p>In your name, day or night — after hours, weekends, and when you're up to your elbows in a job.</p></div>
+      <div><h3>Picks up every call, day or night</h3><p>In your name. After hours, weekends, and the second you can't get to the phone.</p></div>
     </div>
     <div class="card">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
-      <div><h3>Books the job in</h3><p>It finds out what they need, gets their details, and books them straight into your diary.</p></div>
+      <div><h3>Finds out the job &amp; books them in</h3><p>Has a normal chat, gets what they need, and puts them straight in your diary.</p></div>
     </div>
     <div class="card">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></span>
-      <div><h3>Texts you every lead</h3><p>Name, number and the job — on your phone the second the call ends. You ring back when you're free.</p></div>
+      <div><h3>Texts you the lead on the spot</h3><p>Name, number and the job land on your phone the moment the call ends. That boiler install is now yours.</p></div>
     </div>
     <div class="card">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-      <div><h3>Handles the time-wasters</h3><p>Politely deals with sales and spam calls, so you only hear about real work.</p></div>
+      <div><h3>Bins the time-wasters</h3><p>Sales and spam calls get shut down politely. You only hear about real work.</p></div>
     </div>
   </section>
 
   <section class="wrap">
-    <h2 class="sec-head"><span class="eyebrow">How it works</span>Simple, and your number stays the same.</h2>
-    <div class="steps">
-      <div class="stp"><span class="n"></span><div><h3>A customer rings you</h3><p>When you can't pick up, the call quietly forwards to your receptionist.</p></div></div>
-      <div class="stp"><span class="n"></span><div><h3>It answers &amp; books them</h3><p>A natural, friendly chat — job taken, booked in, nothing missed.</p></div></div>
-      <div class="stp"><span class="n"></span><div><h3>You get the text</h3><p>Every lead lands on your phone. Ring them back when you're free, or they're already booked.</p></div></div>
+    <h2 class="sec-head"><span class="eyebrow">The easy part</span>You don't change a thing.</h2>
+    <ul class="reassure">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Your own number stays exactly the same</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Set up and working within a day</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> You still answer calls yourself whenever you want</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> It only catches the ones you'd have missed anyway</li>
+    </ul>
+  </section>
+
+  <section class="wrap">
+    <h2 class="sec-head"><span class="eyebrow">Fair questions</span>The stuff you're thinking.</h2>
+    <div class="faq">
+      <div class="qa"><div class="q">"Will it sound like a robot?"</div><div class="a">No — it holds a proper back-and-forth conversation. Most callers won't cop that it isn't a person.</div></div>
+      <div class="qa"><div class="q">"Do I have to change my number?"</div><div class="a">Not at all. Yours stays the same — it just quietly forwards when you don't pick up.</div></div>
+      <div class="qa"><div class="q">"What if I'm too busy for all this?"</div><div class="a">That's the whole point. You're busy, so you're missing calls. It does the answering so you don't have to.</div></div>
     </div>
   </section>
 
   <section class="wrap">
     <div class="value">
-      <div class="q">One job it saves you covers it for months. On call-outs worth <b>€250–1,000</b>, it pays for itself the first week — then it's pure profit.</div>
+      <div class="q">Look at it this way — <b>one job it saves you pays for months of it.</b> Everything after that is money you were handing to the next plumber.</div>
     </div>
   </section>
 
   <section class="wrap">
     <div class="cta">
-      <h2>Hear it for yourself.</h2>
-      <p>Ring the demo like you're a customer — it answers just like it would for your business. Takes a minute.</p>
-      <a class="btn gold" href="https://orourkeryan88-byte.github.io/relier-/receptionist/demo/">▶ Listen to the demo</a>
+      <h2>Let's have a quick chat.</h2>
+      <p>Ten minutes on the phone — I'll show you roughly how many jobs you're likely missing and exactly how this'd work for you. No hard sell, no pressure.</p>
+      <a class="btn" href="tel:+353851740783">Talk to Ryan</a>
+      <p class="small">Or drop a text and I'll ring you back when it suits.</p>
     </div>
-    <p class="foot">Set up and ready in days · Your existing number stays the same<br>Brought to you by <b>Southline</b></p>
+    <p class="foot">Your existing number stays the same · Set up in a day<br>Brought to you by <b>Southline</b></p>
   </section>
 </div>
 </body>
