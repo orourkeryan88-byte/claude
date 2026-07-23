@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Receptionist for Plumbers — Southline</title>
+<meta name="description" content="A receptionist that answers your phone when you're on the tools — takes the job, books it in, and never misses a call." />
+<meta name="color-scheme" content="light dark" />
+<meta property="og:title" content="Never lose a job to a missed call again" />
+<meta property="og:description" content="Your own AI receptionist — answers 24/7, books the job, texts you every lead." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230E6B52'/%3E%3Ctext x='50' y='70' font-size='56' text-anchor='middle'%3E%F0%9F%94%A7%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<style>
+  :root{
+    --bg:#F5F3EF; --surface:#FFFFFF; --ink:#1C2B26; --muted:#5E6B64;
+    --line:#E4E0D8; --brand:#0E6B52; --brand-deep:#0A3F31; --gold:#C2751A; --gold-soft:#F5E6CD;
+    --hero:#0C3227; --on-hero:#EAF1EC; --on-hero-mut:#A9C2B6;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --shadow:0 1px 2px rgba(12,50,39,.05),0 12px 30px -14px rgba(12,50,39,.20);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0A0E0C; --surface:#111815; --ink:#E7EFEA; --muted:#93A79E; --line:#212C27;
+      --brand:#2FA681; --gold:#E5A64F; --gold-soft:#2A2214; --hero:#08201A; --on-hero:#EAF1EC; --on-hero-mut:#93A79E; }
+  }
+  :root[data-theme="dark"]{ --bg:#0A0E0C; --surface:#111815; --ink:#E7EFEA; --muted:#93A79E; --line:#212C27;
+    --brand:#2FA681; --gold:#E5A64F; --gold-soft:#2A2214; --hero:#08201A; --on-hero:#EAF1EC; --on-hero-mut:#93A79E; }
+  :root[data-theme="light"]{ --bg:#F5F3EF; --surface:#FFFFFF; --ink:#1C2B26; --muted:#5E6B64; --line:#E4E0D8;
+    --brand:#0E6B52; --gold:#C2751A; --gold-soft:#F5E6CD; --hero:#0C3227; --on-hero:#EAF1EC; --on-hero-mut:#A9C2B6; }
+
+  *{box-sizing:border-box}
+  .doc{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;letter-spacing:-.01em;margin:0;padding:0 0 40px}
+  .wrap{max-width:560px;margin-inline:auto;padding-inline:20px}
+  h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.025em;line-height:1.12}
+  p{margin:0}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+
+  .hero{background:linear-gradient(165deg,var(--hero),var(--brand-deep));color:var(--on-hero);
+    padding:46px 0 40px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(420px 220px at 100% 0,color-mix(in srgb,var(--gold) 22%,transparent),transparent 70%);pointer-events:none}
+  .hero .wrap{position:relative}
+  .hero .eyebrow{color:var(--gold)}
+  .hero h1{font-size:2.15rem;font-weight:800;margin:14px 0 0}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero .sub{color:var(--on-hero-mut);font-size:1.08rem;margin-top:16px}
+  .badge{display:inline-block;margin-top:22px;font-size:.72rem;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);
+    padding:6px 13px;border-radius:999px}
+
+  section{padding-top:38px}
+  .lead{font-size:1.12rem}
+  .lead b{color:var(--brand);font-weight:750}
+
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;
+    box-shadow:var(--shadow);margin-top:16px}
+  .stat .big{font-family:var(--serif);font-size:2rem;color:var(--brand);letter-spacing:-.02em}
+  .stat p{color:var(--muted);margin-top:4px;font-size:.98rem}
+
+  .sec-head{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+  .sec-head .eyebrow{display:block;color:var(--gold);margin-bottom:10px}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 18px 18px 16px;
+    box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start}
+  .card + .card{margin-top:12px}
+  .card .ic{flex:0 0 auto;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+    background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand)}
+  .card .ic svg{width:21px;height:21px}
+  .card h3{font-size:1.06rem;font-weight:750}
+  .card p{color:var(--muted);font-size:.96rem;margin-top:4px}
+
+  .steps{counter-reset:s;margin-top:8px}
+  .stp{display:flex;gap:15px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+  .stp:last-child{border-bottom:0}
+  .stp .n{counter-increment:s;flex:0 0 auto;width:34px;height:34px;border-radius:50%;
+    background:var(--gold-soft);color:var(--gold);font-family:var(--serif);font-weight:700;
+    display:grid;place-items:center}
+  .stp .n::before{content:counter(s)}
+  .stp h3{font-size:1.05rem;font-weight:750}
+  .stp p{color:var(--muted);font-size:.95rem;margin-top:3px}
+
+  .value{background:linear-gradient(165deg,var(--hero),var(--brand-deep));color:var(--on-hero);
+    border-radius:22px;padding:30px 24px;margin-top:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .value::after{content:"";position:absolute;inset:0;background:radial-gradient(360px 200px at 0 100%,color-mix(in srgb,var(--gold) 18%,transparent),transparent 70%)}
+  .value>*{position:relative}
+  .value .q{font-family:var(--serif);font-size:1.3rem;line-height:1.35}
+  .value .q b{color:var(--gold)}
+
+  .cta{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px 22px;
+    text-align:center;box-shadow:var(--shadow);margin-top:22px}
+  .cta h2{font-size:1.4rem;font-weight:800}
+  .cta p{color:var(--muted);margin-top:8px}
+  .btn{display:inline-block;margin-top:18px;background:var(--brand);color:#fff;font-weight:700;
+    font-size:1.02rem;padding:14px 26px;border-radius:999px;text-decoration:none;
+    box-shadow:0 8px 20px -8px color-mix(in srgb,var(--brand) 70%,transparent)}
+  .btn.gold{background:var(--gold);color:#241608}
+  .foot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:26px}
+  .foot b{color:var(--ink)}
+</style>
+
+<div class="doc">
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">For plumbers who are never near the phone</p>
+      <h1>Never lose a job to a <em>missed call</em> again.</h1>
+      <p class="sub">A receptionist that answers your phone when you're on the tools — takes the job, books it in, and makes sure not a single call slips away.</p>
+      <span class="badge">Your own AI receptionist</span>
+    </div>
+  </header>
+
+  <section class="wrap">
+    <p class="lead">Every call you can't get to is a job walking straight to the next plumber. When you're mid-job, that's a boiler, a leak, a <b>€500 call-out</b> gone to someone else — and you never even knew they rang.</p>
+
+    <div class="stat">
+      <div class="big">8 in 10</div>
+      <p>callers who reach a voicemail hang up and ring the next plumber instead of leaving a message.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 class="sec-head"><span class="eyebrow">What it does for you</span>Answers, books, and never misses.</h2>
+
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1z"/></svg></span>
+      <div><h3>Answers every call, 24/7</h3><p>In your name, day or night — after hours, weekends, and when you're up to your elbows in a job.</p></div>
+    </div>
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+      <div><h3>Books the job in</h3><p>It finds out what they need, gets their details, and books them straight into your diary.</p></div>
+    </div>
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></span>
+      <div><h3>Texts you every lead</h3><p>Name, number and the job — on your phone the second the call ends. You ring back when you're free.</p></div>
+    </div>
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <div><h3>Handles the time-wasters</h3><p>Politely deals with sales and spam calls, so you only hear about real work.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 class="sec-head"><span class="eyebrow">How it works</span>Simple, and your number stays the same.</h2>
+    <div class="steps">
+      <div class="stp"><span class="n"></span><div><h3>A customer rings you</h3><p>When you can't pick up, the call quietly forwards to your receptionist.</p></div></div>
+      <div class="stp"><span class="n"></span><div><h3>It answers &amp; books them</h3><p>A natural, friendly chat — job taken, booked in, nothing missed.</p></div></div>
+      <div class="stp"><span class="n"></span><div><h3>You get the text</h3><p>Every lead lands on your phone. Ring them back when you're free, or they're already booked.</p></div></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="value">
+      <div class="q">One job it saves you covers it for months. On call-outs worth <b>€250–1,000</b>, it pays for itself the first week — then it's pure profit.</div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="cta">
+      <h2>Hear it for yourself.</h2>
+      <p>Ring the demo like you're a customer — it answers just like it would for your business. Takes a minute.</p>
+      <a class="btn gold" href="https://orourkeryan88-byte.github.io/relier-/demo/">▶ Listen to the demo</a>
+    </div>
+    <p class="foot">Set up and ready in days · Your existing number stays the same<br>Brought to you by <b>Southline</b></p>
+  </section>
+</div>
+</body>
+</html>
