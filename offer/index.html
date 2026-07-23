@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Stop losing jobs to missed calls — Southline</title>
-<meta name="description" content="Every call you miss on a job is a customer ringing the next plumber. An AI receptionist that answers when you can't, books the job, and texts you the lead." />
+<meta name="description" content="An AI receptionist that answers when you can't, books the job, and texts you the lead. €800 setup, €350/month, everything included." />
 <meta name="color-scheme" content="light dark" />
 <meta property="og:title" content="Right now, you're losing jobs — and you don't even know it" />
-<meta property="og:description" content="An AI receptionist that answers when you can't, books the job, and texts you every lead." />
+<meta property="og:description" content="Your own AI receptionist — answers when you can't, books the job, texts you every lead." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230E6B52'/%3E%3Ctext x='50' y='70' font-size='56' text-anchor='middle'%3E%F0%9F%94%A7%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
@@ -54,7 +54,6 @@
   .lead{font-size:1.12rem}
   .lead b{color:var(--brand);font-weight:750}
 
-  /* the story panel */
   .story{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);
     border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-top:18px;font-size:1.05rem}
   .story p + p{margin-top:12px}
@@ -89,11 +88,21 @@
   .qa .q{font-weight:750;font-size:1.04rem}
   .qa .a{color:var(--muted);margin-top:5px;font-size:.98rem}
 
+  /* pricing */
+  .price{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:6px 20px;
+    box-shadow:var(--shadow);margin-top:16px}
+  .prow{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line)}
+  .prow:last-child{border-bottom:0}
+  .prow .pcol{flex:0 0 96px}
+  .pk{font-family:var(--serif);font-size:2rem;color:var(--brand);letter-spacing:-.02em;line-height:1}
+  .pv{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:5px;font-weight:700}
+  .prow p{color:var(--muted);font-size:.97rem}
+
   .value{background:linear-gradient(165deg,var(--hero),var(--brand-deep));color:var(--on-hero);
-    border-radius:22px;padding:30px 24px;margin-top:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    border-radius:22px;padding:30px 24px;margin-top:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
   .value::after{content:"";position:absolute;inset:0;background:radial-gradient(360px 200px at 0 100%,color-mix(in srgb,var(--gold) 18%,transparent),transparent 70%)}
   .value>*{position:relative}
-  .value .q{font-family:var(--serif);font-size:1.3rem;line-height:1.35}
+  .value .q{font-family:var(--serif);font-size:1.28rem;line-height:1.38}
   .value .q b{color:var(--gold)}
 
   .cta{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px 22px;
@@ -166,29 +175,41 @@
     </ul>
   </section>
 
+  <section class="wrap" id="pricing">
+    <h2 class="sec-head"><span class="eyebrow">The investment</span>Straight pricing — no small print.</h2>
+    <div class="price">
+      <div class="prow">
+        <div class="pcol"><div class="pk">€800</div><div class="pv">One-off setup</div></div>
+        <p>We build the whole thing around <b>your</b> business — your services, your prices, your hours, in your voice. Done once, done right.</p>
+      </div>
+      <div class="prow">
+        <div class="pcol"><div class="pk">€350</div><div class="pv">Per month</div></div>
+        <p>Everything in. Answers every call, books every job, texts you every lead. No add-ons, no per-call charges, no catches.</p>
+      </div>
+    </div>
+
+    <div class="value">
+      <div class="q">Now hold that up against the <b>€45,000 a year</b> you're losing to missed calls. One boiler install covers your setup and your first few months — and every job it catches after that is money you'd have handed to the next plumber. <b>It doesn't cost you money. It stops you losing it.</b></div>
+    </div>
+  </section>
+
   <section class="wrap">
     <h2 class="sec-head"><span class="eyebrow">Fair questions</span>The stuff you're thinking.</h2>
     <div class="faq">
       <div class="qa"><div class="q">"Will it sound like a robot?"</div><div class="a">No — it holds a proper back-and-forth conversation. Most callers won't cop that it isn't a person.</div></div>
       <div class="qa"><div class="q">"Do I have to change my number?"</div><div class="a">Not at all. Yours stays the same — it just quietly forwards when you don't pick up.</div></div>
-      <div class="qa"><div class="q">"What if I'm too busy for all this?"</div><div class="a">That's the whole point. You're busy, so you're missing calls. It does the answering so you don't have to.</div></div>
-    </div>
-  </section>
-
-  <section class="wrap">
-    <div class="value">
-      <div class="q">Look at it this way — <b>one job it saves you pays for months of it.</b> Everything after that is money you were handing to the next plumber.</div>
+      <div class="qa"><div class="q">"€350 a month — is it worth it?"</div><div class="a">One job a month it saves you pays for it several times over. Miss even one boiler install and it's cost you far more than a year of this.</div></div>
     </div>
   </section>
 
   <section class="wrap">
     <div class="cta">
       <h2>Let's have a quick chat.</h2>
-      <p>Ten minutes on the phone — I'll show you roughly how many jobs you're likely missing and exactly how this'd work for you. No hard sell, no pressure.</p>
+      <p>Ten minutes on the phone — I'll show you roughly how many jobs you're likely missing and get you set up. Your number stays the same, and you're up and running in a day.</p>
       <a class="btn" href="tel:+353851740783">Talk to Ryan</a>
       <p class="small">Or drop a text and I'll ring you back when it suits.</p>
     </div>
-    <p class="foot">Your existing number stays the same · Set up in a day<br>Brought to you by <b>Southline</b></p>
+    <p class="foot">€800 setup · €350/month · Your number stays the same · Live in a day<br>Brought to you by <b>Southline</b></p>
   </section>
 </div>
 </body>
