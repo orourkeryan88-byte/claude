@@ -1,0 +1,188 @@
+{
+  "name": "Southline AI Receptionist — Post-Call Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "receptionist-call",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Call ended (from Vapi)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-820, 300],
+      "webhookId": "receptionist-call"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalise the call payload from Vapi (works for log_lead / book_appointment\n// function calls and end-of-call reports). Per-client info travels in metadata.\nconst body = $input.first().json.body || $input.first().json;\nconst msg = body.message || body;\nlet args = (msg.functionCall && msg.functionCall.parameters)\n  || (msg.toolCalls && msg.toolCalls[0] && msg.toolCalls[0].function && msg.toolCalls[0].function.arguments)\n  || body.parameters || body;\nif (typeof args === 'string') { try { args = JSON.parse(args); } catch (e) {} }\nconst a = args || {};\nconst meta = (msg.call && msg.call.assistant && msg.call.assistant.metadata) || body.metadata || {};\n\nconst urgency = String(a.urgency || 'normal').toLowerCase();\nconst startISO = a.startISO || a.start || '';\nconst booked = !!(startISO || a.booked);\nconst name = a.name || 'Caller';\nconst phone = a.phone || '';\nconst reason = a.reason || 'General enquiry';\nconst when = a.preferred_time || startISO || '';\nconst business = meta.businessName || a.business || 'your business';\nconst ownerPhone = meta.ownerPhone || '';\nconst endISO = startISO ? new Date(Date.parse(startISO) + 30 * 60000).toISOString() : '';\n\nconst urgentTag = urgency === 'urgent' ? '\\u26A0 URGENT \\u2014 ' : '';\nconst ownerText = `\\uD83D\\uDD14 ${urgentTag}New call \\u2014 ${business}\\nName: ${name}\\nPhone: ${phone}\\nReason: ${reason}\\nWhen: ${when || 'TBC'}`;\nconst callerText = booked\n  ? `Hi ${name}, your appointment with ${business} is confirmed${when ? ' for ' + when : ''}. See you then! Reply here if anything changes.`\n  : `Hi ${name}, thanks for calling ${business} \\u2014 we've got your details and will be in touch shortly.`;\nconst followUpText = `Hi ${name}, just following up on your call to ${business}. Would you like us to get you booked in? Reply YES and we'll sort it.`;\nconst replyText = booked ? 'Lead saved and appointment confirmed.' : 'Lead saved and the team has been notified.';\n\nreturn [{ json: { business, ownerPhone, name, phone, reason, when, urgency, booked, startISO, endISO, ownerText, callerText, followUpText, replyText, receivedAt: new Date().toISOString() } }];"
+      },
+      "id": "parse-call",
+      "name": "Parse call data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-600, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"result\": $json.replyText } }}",
+        "options": {}
+      },
+      "id": "respond-vapi",
+      "name": "Reply to Vapi",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [-380, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "PASTE_YOUR_GOOGLE_SHEET_URL_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Received": "={{ $json.receivedAt }}",
+            "Business": "={{ $json.business }}",
+            "Name": "={{ $json.name }}",
+            "Phone": "={{ $json.phone }}",
+            "Reason": "={{ $json.reason }}",
+            "When": "={{ $json.when }}",
+            "Urgency": "={{ $json.urgency }}",
+            "Booked": "={{ $json.booked }}",
+            "Status": "New"
+          }
+        },
+        "options": {}
+      },
+      "id": "log-sheet",
+      "name": "Log to CRM sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [-160, 300]
+    },
+    {
+      "parameters": {
+        "from": "={{ $env.TWILIO_FROM_NUMBER }}",
+        "to": "={{ $json.ownerPhone }}",
+        "message": "={{ $json.ownerText }}"
+      },
+      "id": "text-owner",
+      "name": "Text the owner",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [60, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "cond-booked",
+              "leftValue": "={{ $json.booked }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "if-booked",
+      "name": "Booked an appointment?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [280, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": "primary"
+        },
+        "start": "={{ $json.startISO }}",
+        "end": "={{ $json.endISO }}",
+        "additionalFields": {
+          "summary": "={{ $json.reason }} — {{ $json.name }}",
+          "description": "=Booked by the AI receptionist.\nCaller: {{ $json.name }}\nPhone: {{ $json.phone }}\nReason: {{ $json.reason }}"
+        }
+      },
+      "id": "create-event",
+      "name": "Create calendar event",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [520, 180]
+    },
+    {
+      "parameters": {
+        "from": "={{ $env.TWILIO_FROM_NUMBER }}",
+        "to": "={{ $json.phone }}",
+        "message": "={{ $json.callerText }}"
+      },
+      "id": "text-caller-confirm",
+      "name": "Text caller — confirmation",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [740, 180]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 1,
+        "unit": "days"
+      },
+      "id": "wait-1-day",
+      "name": "Wait 1 day",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [520, 420],
+      "webhookId": "followup-wait"
+    },
+    {
+      "parameters": {
+        "from": "={{ $env.TWILIO_FROM_NUMBER }}",
+        "to": "={{ $json.phone }}",
+        "message": "={{ $json.followUpText }}"
+      },
+      "id": "text-caller-followup",
+      "name": "Text caller — follow-up",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [740, 420]
+    }
+  ],
+  "connections": {
+    "Call ended (from Vapi)": { "main": [[{ "node": "Parse call data", "type": "main", "index": 0 }]] },
+    "Parse call data": { "main": [[{ "node": "Reply to Vapi", "type": "main", "index": 0 }]] },
+    "Reply to Vapi": { "main": [[{ "node": "Log to CRM sheet", "type": "main", "index": 0 }]] },
+    "Log to CRM sheet": { "main": [[{ "node": "Text the owner", "type": "main", "index": 0 }]] },
+    "Text the owner": { "main": [[{ "node": "Booked an appointment?", "type": "main", "index": 0 }]] },
+    "Booked an appointment?": {
+      "main": [
+        [{ "node": "Create calendar event", "type": "main", "index": 0 }],
+        [{ "node": "Wait 1 day", "type": "main", "index": 0 }]
+      ]
+    },
+    "Create calendar event": { "main": [[{ "node": "Text caller — confirmation", "type": "main", "index": 0 }]] },
+    "Wait 1 day": { "main": [[{ "node": "Text caller — follow-up", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templatecredsSetupCompleted": false },
+  "tags": [{ "name": "Southline" }, { "name": "AI Receptionist" }]
+}

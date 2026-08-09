@@ -1,0 +1,71 @@
+{
+  "name": "Southline AI Receptionist — Daily Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "days", "triggerAtHour": 18, "triggerAtMinute": 0 }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Every day at 6pm",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [-600, 300]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "PASTE_YOUR_GOOGLE_SHEET_URL_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Leads"
+        },
+        "options": {}
+      },
+      "id": "read-sheet",
+      "name": "Read all leads",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [-380, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keep only rows received today, then build a summary message.\nconst rows = $input.all().map(i => i.json);\nconst today = new Date().toISOString().slice(0, 10);\nconst todays = rows.filter(r => String(r.Received || '').slice(0, 10) === today);\n\nconst total = todays.length;\nconst booked = todays.filter(r => String(r.Booked).toLowerCase() === 'true').length;\nconst urgent = todays.filter(r => String(r.Urgency).toLowerCase() === 'urgent');\nconst callbacks = todays.filter(r => String(r.Booked).toLowerCase() !== 'true');\n\nconst business = (todays[0] && todays[0].Business) || 'your business';\nconst ownerPhone = $env.DEFAULT_OWNER_PHONE || '';\n\nlet text = `\\uD83D\\uDCCA ${business} \\u2014 today's calls\\n` +\n  `Total: ${total} | Booked: ${booked} | To call back: ${callbacks.length}`;\nif (urgent.length) {\n  text += `\\n\\u26A0 ${urgent.length} urgent:`;\n  urgent.slice(0, 5).forEach(r => { text += `\\n\\u2022 ${r.Name} ${r.Phone} \\u2014 ${r.Reason}`; });\n}\nif (callbacks.length) {\n  text += `\\n\\nCall back:`;\n  callbacks.slice(0, 8).forEach(r => { text += `\\n\\u2022 ${r.Name} ${r.Phone} \\u2014 ${r.Reason}`; });\n}\n\nreturn [{ json: { ownerPhone, summary: text, total } }];"
+      },
+      "id": "summarise",
+      "name": "Summarise today",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-160, 300]
+    },
+    {
+      "parameters": {
+        "from": "={{ $env.TWILIO_FROM_NUMBER }}",
+        "to": "={{ $json.ownerPhone }}",
+        "message": "={{ $json.summary }}"
+      },
+      "id": "text-summary",
+      "name": "Text owner the summary",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [60, 300]
+    }
+  ],
+  "connections": {
+    "Every day at 6pm": { "main": [[{ "node": "Read all leads", "type": "main", "index": 0 }]] },
+    "Read all leads": { "main": [[{ "node": "Summarise today", "type": "main", "index": 0 }]] },
+    "Summarise today": { "main": [[{ "node": "Text owner the summary", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templatecredsSetupCompleted": false },
+  "tags": [{ "name": "Southline" }, { "name": "AI Receptionist" }]
+}

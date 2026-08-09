@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>AI Receptionist</title>
+<meta name="description" content="Talk to an AI receptionist that answers every call and books your customers in." />
+<meta property="og:title" content="AI Receptionist" />
+<meta property="og:description" content="Talk to an AI receptionist that answers every call and books your customers in." />
+<meta name="twitter:title" content="AI Receptionist" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2312805c'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23fff' font-family='Arial' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" />
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--g:#12805c;--g2:#0f6f50;--ink:#12211b;--mut:#6b7d75;--line:#e3ebe7;--bg:#f4f8f6}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);
+    min-height:100svh;display:flex;flex-direction:column;align-items:center}
+  .wrap{width:100%;max-width:520px;min-height:100svh;display:flex;flex-direction:column;background:#fff}
+  header{background:linear-gradient(140deg,var(--g),var(--g2));color:#fff;padding:20px 20px 22px;text-align:center;position:relative}
+  header .badge{display:inline-flex;align-items:center;gap:7px;background:#ffffff22;border:1px solid #ffffff33;border-radius:100px;
+    padding:5px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
+  header .badge .d{width:8px;height:8px;border-radius:50%;background:#7bffcb;animation:pulse 2s infinite}
+  header h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
+  header p{font-size:13.5px;opacity:.9;margin-top:4px}
+  .feed{flex:1;overflow-y:auto;padding:18px 16px 8px;display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:84%;padding:11px 14px;border-radius:16px;font-size:15px;line-height:1.42}
+  .msg.ai{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+  .msg.me{background:var(--g);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+  .msg .rep{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:12px;color:var(--g);cursor:pointer;font-weight:700}
+  .msg.typing{color:var(--mut);font-style:italic}
+  .status{text-align:center;font-size:12.5px;color:var(--mut);min-height:18px;padding:2px 16px}
+  .dock{padding:10px 14px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#fff}
+  /* One-tap suggested questions — the main way people try the demo. No mic, no typing, works everywhere. */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none;border:1px solid var(--g);color:var(--g);background:#f2fbf7;border-radius:100px;padding:9px 14px;font-size:13.5px;
+    font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap}
+  .chip:active{background:var(--g);color:#fff}
+  .row{display:flex;gap:8px;align-items:center}
+  .row input{flex:1;border:1px solid var(--line);border-radius:100px;padding:13px 16px;font-size:16px;font-family:inherit;outline:none}
+  .row input:focus{border-color:var(--g)}
+  .row button{border:none;color:#fff;border-radius:50%;width:46px;height:46px;font-size:18px;cursor:pointer;flex:none;display:grid;place-items:center}
+  .row .send{background:var(--g)}
+  .row .mic{background:#eef4f1;color:var(--g);border:1px solid var(--line)}
+  .row .mic.on{background:linear-gradient(140deg,#e11d48,#b91c1c);color:#fff;border-color:transparent;animation:ring 1.3s infinite}
+  .hint{text-align:center;font-size:11.5px;color:var(--mut);margin-top:8px}
+  footer{text-align:center;font-size:12px;color:var(--mut);padding:12px}
+  footer b{color:var(--g)}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(123,255,203,.6)}70%{box-shadow:0 0 0 8px rgba(123,255,203,0)}100%{box-shadow:0 0 0 0 rgba(123,255,203,0)}}
+  @keyframes ring{0%{box-shadow:0 0 0 0 rgba(225,29,72,.5)}70%{box-shadow:0 0 0 10px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="badge"><span class="d"></span> AI RECEPTIONIST · LIVE DEMO</div>
+    <h1>Bright Smile Dental</h1>
+    <p id="sub">Tap a question below to hear me answer. No app, no sign-up.</p>
+  </header>
+  <div class="feed" id="feed"></div>
+  <div class="status" id="status"></div>
+  <div class="dock">
+    <div class="chips" id="chips"></div>
+    <div class="row">
+      <input id="text" placeholder="Type a question…" autocomplete="off" />
+      <button class="mic" id="mic" title="Tap to talk" style="display:none">🎤</button>
+      <button class="send" id="send" title="Send">➤</button>
+    </div>
+    <div class="hint" id="hint"></div>
+  </div>
+  <footer>Powered by <b>Southline</b> — your business, answered 24/7.</footer>
+</div>
+<script>
+const SERVER = "https://southline-ai-receptionist.onrender.com";
+const $ = (id)=>document.getElementById(id);
+let history = [], busy = false, recog = null, started = false, micWanted = false, speaking = false;
+
+// Personalization: ?biz=Glow+Med+Spa&type=medspa  (types: medspa, salon, tattoo, dental, service)
+const params = new URLSearchParams(location.search);
+const BIZ  = (params.get('biz') || '').replace(/[^\w\s&'.,\-]/g, '').trim().slice(0, 60) || null;
+const TYPE = (params.get('type') || '').toLowerCase().trim() || (BIZ ? 'medspa' : 'dental');
+const BIZ_NAME = BIZ || 'Bright Smile Dental';
+document.title = 'Talk to our AI receptionist · ' + BIZ_NAME;
+document.querySelector('header h1').textContent = BIZ_NAME;
+
+// One-tap starter questions per business type — this is how most people try it.
+const CHIPS = {
+  medspa:  ["What are your hours?","How much is Botox?","Book me a consult Saturday","Where are you located?"],
+  salon:   ["What are your hours?","How much for balayage?","Can I book Saturday?","Do you do extensions?"],
+  tattoo:  ["Are you open today?","How much for a small piece?","Do you take walk-ins?","Book me a consult"],
+  dental:  ["What are your hours?","How much is a cleaning?","Book me an appointment","Do you take insurance?"],
+  service: ["What are your hours?","Can I get a quote?","Are you free this week?","Can you come out today?"],
+  grooming: ["What are your hours?","How much for a full groom?","Can I book my dog in Saturday?","Do you do nail clipping?"]
+};
+(function renderChips(){
+  const list = CHIPS[TYPE] || CHIPS.dental;
+  list.forEach(q=>{
+    const b = document.createElement('button');
+    b.className='chip'; b.textContent=q;
+    b.onclick = ()=>{ unlockAudio(); send(q); };
+    $('chips').appendChild(b);
+  });
+})();
+
+// --- Audio: ONE reusable element, unlocked on the first tap. iOS / in-app
+// browsers block audio that starts after a network call unless the same element
+// was already played during a user gesture. This is the fix for "no voice". ---
+const player = new Audio();
+let audioUnlocked = false, lastAudio = null;
+const SILENT = "data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA";
+function unlockAudio(){
+  if(audioUnlocked) return; audioUnlocked = true;
+  try{ player.src = SILENT; const p = player.play(); if(p&&p.then) p.then(()=>{player.pause();player.currentTime=0;}).catch(()=>{}); }catch(e){}
+}
+function playAudio(src){
+  lastAudio = src;
+  try{
+    player.src = src; player.currentTime = 0;
+    player.onplay  = ()=>{ speaking=true;  if(micWanted){ try{recog.stop();}catch(e){} } };
+    player.onended = ()=>{ speaking=false; resumeMic(); };
+    player.onerror = ()=>{ speaking=false; resumeMic(); };
+    const pr = player.play();
+    if(pr&&pr.catch) pr.catch(()=>{ $('status').textContent='Tap 🔊 to hear it.'; speaking=false; resumeMic(); });
+  }catch(e){ $('status').textContent='Tap 🔊 to hear it.'; }
+}
+
+function add(role, text){
+  const d = document.createElement('div');
+  d.className = 'msg ' + (role==='ai'?'ai':'me');
+  d.textContent = text;
+  $('feed').appendChild(d); $('feed').scrollTop = $('feed').scrollHeight;
+  return d;
+}
+function greet(){
+  if(started) return; started = true;
+  add('ai', "Hi, thanks for calling " + BIZ_NAME + " — this is Riley. How can I help you today?");
+}
+async function send(text){
+  text = (text||'').trim();
+  if(!text || busy) return;
+  unlockAudio();
+  greet();
+  add('me', text); history.push({role:'user', content:text});
+  $('text').value=''; busy = true; $('status').textContent = 'Riley is typing…';
+  const typing = document.createElement('div'); typing.className='msg ai typing'; typing.textContent='…';
+  $('feed').appendChild(typing); $('feed').scrollTop = $('feed').scrollHeight;
+  try{
+    const r = await fetch(SERVER + '/demo-voice', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({messages: history, biz: BIZ, type: TYPE})});
+    const data = await r.json();
+    typing.remove();
+    const reply = data.reply || "Sorry, could you say that once more?";
+    const bubble = add('ai', reply); history.push({role:'assistant', content:reply});
+    $('status').textContent = '';
+    if(data.audio){
+      const rep = document.createElement('span'); rep.className='rep'; rep.textContent='🔊 replay';
+      rep.onclick = ()=> playAudio(data.audio);
+      bubble.appendChild(document.createElement('br')); bubble.appendChild(rep);
+      playAudio(data.audio);
+    } else if(data.voice === 'none'){
+      $('status').textContent = 'Voice not switched on yet.';
+    } else if(data.diag){ $('status').textContent = '⚠ ' + data.diag; }
+  }catch(e){
+    typing.remove();
+    // Drop the unanswered question so the conversation stays in sync.
+    if(history.length && history[history.length-1].role==='user') history.pop();
+    add('ai', "Sorry — I couldn't reach the line just then. Try once more.");
+    $('status').textContent = '';
+  }
+  busy = false;
+  resumeMic();
+}
+$('send').onclick = ()=>{ unlockAudio(); send($('text').value); };
+$('text').addEventListener('keydown', e=>{ if(e.key==='Enter'){ unlockAudio(); send($('text').value); } });
+
+// ---- Optional voice input. Hidden entirely when the browser can't do it
+// (e.g. the Instagram in-app browser), so there's never a button that fails. ----
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function setMicUI(on){ $('mic').classList.toggle('on', on); }
+function resumeMic(){
+  if(!micWanted || speaking) return;
+  try{ recog.start(); }catch(e){ try{ startRecog(); }catch(e2){} }
+}
+function startRecog(){
+  try{ if(recog){ recog.onend=null; recog.abort(); } }catch(e){}
+  recog = new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=false; recog.maxAlternatives=1;
+  recog.onstart = ()=>{ if(!speaking) setMicUI(true); };
+  recog.onresult = (e)=>{
+    let t=''; for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) t+=e.results[i][0].transcript; }
+    t=t.trim(); if(t) send(t);
+  };
+  recog.onerror = (e)=>{
+    if(e && (e.error==='not-allowed' || e.error==='service-not-allowed')){
+      micWanted=false; setMicUI(false); $('hint').textContent='Mic blocked — just type instead.';
+    }
+  };
+  recog.onend = ()=>{ if(micWanted && !speaking){ setTimeout(resumeMic,150); } else if(!micWanted){ setMicUI(false); } };
+  try{ recog.start(); }catch(e){}
+}
+if(SR){
+  $('mic').style.display='grid';
+  $('mic').onclick = ()=>{
+    unlockAudio(); greet();
+    if(micWanted){ micWanted=false; try{recog.stop();}catch(e){} setMicUI(false); }
+    else { micWanted=true; startRecog(); }
+  };
+}
+// (No SR = no mic button at all; the chips and typing carry the whole demo.)
+
+window.addEventListener('load', greet);
+// Wake the sleeping free server so it's warm before the first question.
+fetch(SERVER + '/').catch(()=>{});
+</script>
+</body>
+</html>

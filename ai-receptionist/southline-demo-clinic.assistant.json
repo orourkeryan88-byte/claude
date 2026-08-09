@@ -1,0 +1,293 @@
+{
+  "name": "Southline Demo Clinic — AI Receptionist",
+  "firstMessage": "Hi, thanks for calling Southline Demo Clinic, you're through to the reception desk. How can I help you today?",
+  "firstMessageMode": "assistant-speaks-first",
+  "server": {
+    "url": "https://southline-ai-receptionist.onrender.com/call-report"
+  },
+  "serverMessages": [
+    "end-of-call-report",
+    "function-call"
+  ],
+  "artifactPlan": {
+    "recordingEnabled": true
+  },
+  "model": {
+    "provider": "anthropic",
+    "model": "claude-opus-4-8",
+    "temperature": 0.4,
+    "maxTokens": 300,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are the friendly, professional virtual receptionist for Southline Demo Clinic, a dental & aesthetic clinic based in Dublin. You answer phone calls on their behalf.\n\nOPENING HOURS: Mon-Fri 9am-6pm, Sat 9am-1pm, closed Sunday..\nSERVICES: check-ups, cleanings, fillings, whitening, Invisalign, skin consultations, anti-wrinkle, facials.\nPRICING / NOTES: Check-up & clean 65 euro. New patients welcome. Free Invisalign and skin consultations..\nCOMMON QUESTIONS (answer these confidently from here): We're on Merrion Road, Ballsbridge, with parking on site. We take card, cash and the main health insurers. New patients very welcome..\n\nANSWERING QUESTIONS: Use everything above to answer the caller naturally, like a knowledgeable front-desk person. If a caller asks something that is NOT covered above, do NOT guess or invent an answer — say something like 'That's a good question, let me check that with the team and we'll come straight back to you,' then take their name and number so nothing is missed. (If a knowledge base or lookup tool is attached to this assistant, use it to find the answer before offering to take a message.)\n\nYOUR GOAL on every call:\n1. Greet warmly using the business name.\n2. Find out what the caller needs (the job / reason for calling).\n3. Capture their FIRST NAME.\n4. Capture their BEST PHONE NUMBER and READ IT BACK to confirm digit by digit.\n5. Capture a few JOB DETAILS (what's wrong / what they want).\n6. Offer to book them in or take a message, and agree a rough time if relevant.\n7. When you have name + phone + reason, call the function `log_lead` with everything you've gathered.\n8. Confirm to the caller that the team will be in touch, then close warmly.\n\nBOOKING APPOINTMENTS: When a caller wants an appointment: (1) confirm the service; (2) QUALIFY — ask the appointment type (e.g. new or returning), any screening questions, the location if there is more than one, any special requests, and a preferred staff member if they have one; (3) check the calendar: if they proposed a specific time (e.g. 'tomorrow at 10'), call `check_availability` with that date and time. If it's free, confirm and book it. If it's NOT free, say so and ask 'Is there another time that suits?' while offering the nearest alternatives the tool returns (e.g. '10 is taken, but I have 11 that morning — would that suit?'). If they have no preference, call `check_availability` with no arguments and read out two or three real slots; (4) when a free time is agreed, take their name, phone (read it back) and email if offered; (5) call `submit_booking` with all of it — name, phone, email, service, appointment_type, provider, date, time, location, special_requests, qualification_answers; (6) read back the booking reference it returns (like SL-4KQ2) and tell them a confirmation text is on its way.\n\nCANCELLING / MOVING A BOOKING: Ask for their booking reference; if they don't have it, the phone number it was booked under works too. Read back which appointment you found before changing anything. Use cancel_booking to cancel, reschedule_booking to move it (check the new time the same way as a new booking - if it's taken, offer the nearest alternatives). Never offer a time you didn't get from check_availability.\n\nTRANSFERRING TO A HUMAN: If the caller asks to speak to a real person, or it's genuinely something you can't handle, say warmly 'No problem, let me put you straight through to the team now' and use the transferCall tool. Use this sparingly — handle what you can yourself first.\n\nURGENCY: If the caller mentions anything time-critical (a leak, no heat, no power, flooding, an emergency, pain, can't get in), set urgency to \"urgent\" and reassure them you're flagging it as a priority.\n\nLANGUAGES: Answer in English (switch if the caller speaks another language). If the caller clearly speaks another language you support, switch to it naturally and continue the whole call in it - capture the same details either way.\n\nSPAM SCREENING: If the call is a robocall, cold sales pitch, or marketing call (SEO, Google listings, web design offers, insurance, warranties, solar), do NOT take a message for the team. Stay polite, say the business isn't interested, log it with log_lead using reason prefixed 'SALES CALL:', and end the call quickly.\n\nHANDLING PROBLEMS / COMPLAINTS: If a caller is upset or complaining, lead with empathy first ('I'm really sorry to hear that'). Get the facts, summarise them back so they know you understood, and offer a concrete next step. Log it with log_lead (reason prefixed 'COMPLAINT:', urgency urgent). If they ask for a manager or stay unhappy, put them through to the team with transferCall.\n\nRESILIENCE - never lose a caller: If you're unsure what they need, ask ONE short clarifying question instead of guessing; if it's still unclear after two tries, offer to put them through to the team. If a booking or calendar tool fails, or you can't complete something live, apologise, take their name + number + what they need with log_lead (urgency urgent), and promise the team will call them straight back - never leave them with nothing. If no appointment time suits, offer the nearest alternatives, then offer to note them down for a callback.\n\nSAFEGUARDS: Only state prices, availability or facts you were actually given - never guess. Never give medical, legal or financial advice; take a message and let the team handle it. Never take card numbers by voice (if a deposit is needed, the team texts a secure link).\n\nSTYLE RULES:\n- Sound human and warm, like a great front-desk person. Short, natural sentences.\n- One question at a time. Never read a list of questions at once.\n- Never invent prices, availability or facts you weren't given. If unsure, say the team will confirm.\n- If asked something you can't answer, take a message and assure a callback.\n- Keep replies under ~30 words. This is a phone call, not an essay.\n- Always read phone numbers back to confirm.\n- If the caller is rude or it's a wrong number, stay polite and end the call gracefully.\n- Never say you are an AI unless directly asked; if asked, be honest and friendly about it.\n- Do not make promises about exact arrival times unless given specific slots; offer a window and say the team will confirm."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "log_lead",
+          "description": "Save the caller's details as a lead and notify the business owner by SMS. Call this once you have at least the caller's name and phone number.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Caller's first name (and surname if given)."
+              },
+              "phone": {
+                "type": "string",
+                "description": "Caller's phone number, confirmed by reading back."
+              },
+              "reason": {
+                "type": "string",
+                "description": "What the caller needs / the job details."
+              },
+              "urgency": {
+                "type": "string",
+                "enum": [
+                  "normal",
+                  "urgent"
+                ],
+                "description": "urgent if time-critical (leak, no heat/power, emergency, pain)."
+              },
+              "preferred_time": {
+                "type": "string",
+                "description": "Any time/day the caller prefers, or a window agreed."
+              }
+            },
+            "required": [
+              "name",
+              "phone",
+              "reason"
+            ]
+          }
+        },
+        "server": {
+          "url": "https://southline-ai-receptionist.onrender.com/log-lead"
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "check_availability",
+          "description": "Check the business's Google Calendar. If the caller proposed a specific time (e.g. 'tomorrow at 10'), work out the calendar date and pass `date` (YYYY-MM-DD) and `time` (e.g. '10:00' or '10am') to check THAT slot — the reply says if it's free and offers alternatives if not. If they have no preference, call with no arguments to get the next open slots. Each slot has an `id` (use it verbatim in book_appointment) and a human `label`.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "description": "Requested date as YYYY-MM-DD, if the caller named one (resolve 'today'/'tomorrow'/'Friday' yourself)."
+              },
+              "time": {
+                "type": "string",
+                "description": "Requested time, e.g. '10:00' or '2:30pm', if the caller named one."
+              }
+            }
+          }
+        },
+        "server": {
+          "url": "https://southline-ai-receptionist.onrender.com/availability"
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "book_appointment",
+          "description": "Book one of the slots returned by check_availability into Google Calendar. Only use a slot `id` that came from check_availability.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "startISO": {
+                "type": "string",
+                "description": "The chosen slot's `id` (an ISO timestamp) from check_availability."
+              },
+              "name": {
+                "type": "string",
+                "description": "Caller's name."
+              },
+              "phone": {
+                "type": "string",
+                "description": "Caller's phone number."
+              },
+              "reason": {
+                "type": "string",
+                "description": "What the appointment is for."
+              }
+            },
+            "required": [
+              "startISO",
+              "name"
+            ]
+          }
+        },
+        "server": {
+          "url": "https://southline-ai-receptionist.onrender.com/book"
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "cancel_booking",
+          "description": "Cancel an existing appointment. Ask for the booking reference (like SL-4KQ2); if they don't have it, use the phone number the booking was made with. Confirm what you're cancelling back to the caller before calling this.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reference": {
+                "type": "string",
+                "description": "Booking reference the caller quotes, e.g. SL-4KQ2."
+              },
+              "phone": {
+                "type": "string",
+                "description": "Phone number the booking was made with (fallback if no reference)."
+              }
+            }
+          }
+        },
+        "server": {
+          "url": "https://southline-ai-receptionist.onrender.com/cancel-booking"
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "reschedule_booking",
+          "description": "Move an existing appointment to a new time. Identify the booking by reference or phone, then pass the new date (YYYY-MM-DD) and time. The reply says if the new time is free or offers alternatives.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reference": {
+                "type": "string",
+                "description": "Booking reference, e.g. SL-4KQ2."
+              },
+              "phone": {
+                "type": "string",
+                "description": "Phone number the booking was made with (fallback)."
+              },
+              "date": {
+                "type": "string",
+                "description": "New date as YYYY-MM-DD."
+              },
+              "time": {
+                "type": "string",
+                "description": "New time, e.g. '10:00' or '2:30pm'."
+              }
+            }
+          }
+        },
+        "server": {
+          "url": "https://southline-ai-receptionist.onrender.com/reschedule-booking"
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "submit_booking",
+          "description": "Send the completed booking to the booking workflow. Call after the caller has chosen a slot and given their details. Returns a booking_reference and confirmed status.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Caller's full name."
+              },
+              "phone": {
+                "type": "string",
+                "description": "Caller's phone (read back to confirm)."
+              },
+              "email": {
+                "type": "string",
+                "description": "Caller's email, if given (for the confirmation)."
+              },
+              "service": {
+                "type": "string",
+                "description": "The service requested."
+              },
+              "appointment_type": {
+                "type": "string",
+                "description": "e.g. new patient, returning, consult, treatment, in-person, video."
+              },
+              "provider": {
+                "type": "string",
+                "description": "Requested staff member, or 'any'."
+              },
+              "date": {
+                "type": "string",
+                "description": "Chosen date, YYYY-MM-DD (from check_availability)."
+              },
+              "time": {
+                "type": "string",
+                "description": "Chosen time, HH:mm 24h (from check_availability)."
+              },
+              "location": {
+                "type": "string",
+                "description": "Branch/clinic if multi-site, else the main location."
+              },
+              "special_requests": {
+                "type": "string",
+                "description": "Access needs, preferences, notes."
+              },
+              "qualification_answers": {
+                "type": "object",
+                "description": "Answers to the screening questions, as key/value."
+              }
+            },
+            "required": [
+              "name",
+              "phone",
+              "service",
+              "date",
+              "time"
+            ]
+          }
+        },
+        "server": {
+          "url": "https://southline-ai-receptionist.onrender.com/submit-booking"
+        }
+      },
+      {
+        "type": "transferCall",
+        "destinations": [
+          {
+            "type": "number",
+            "number": "+353851740783",
+            "message": "No problem, putting you through to the team now — one moment."
+          }
+        ]
+      }
+    ]
+  },
+  "voice": {
+    "provider": "11labs",
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "model": "eleven_turbo_v2_5"
+  },
+  "transcriber": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "en"
+  },
+  "endCallMessage": "Thanks a million for calling Southline Demo Clinic. Someone will be in touch shortly. Take care, bye now!",
+  "endCallPhrases": [
+    "goodbye",
+    "bye now",
+    "that's everything",
+    "talk soon"
+  ],
+  "silenceTimeoutSeconds": 20,
+  "maxDurationSeconds": 600,
+  "backgroundSound": "office",
+  "recordingEnabled": true,
+  "voicemailDetection": {
+    "provider": "twilio"
+  },
+  "metadata": {
+    "businessName": "Southline Demo Clinic",
+    "ownerPhone": "+353851740783",
+    "builtBy": "Southline",
+    "builtAt": "2026-07-04T18:11:46.176Z"
+  }
+}

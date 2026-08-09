@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Southline CRM — Call Inbox</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2312805c'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23ffffff' font-family='Arial' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b1917">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Southline">
+<style>
+  :root{
+    --bg:#faf9f6; --panel:#ffffff; --ink:#1c1917; --mut:#78716c; --line:#e9e5dd;
+    --brand:#12805c; --brand2:#2f9d77; --accent:#12805c; --ink-btn:#1c1917;
+    --new:#44403c; --callback:#c2410c; --booked:#12805c; --closed:#a8a29e; --urgent:#b91c1c;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 4px 12px rgba(16,24,40,.06);
+    --shadow-lg:0 16px 44px rgba(16,24,40,.14);
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    font-feature-settings:"cv11","ss01";letter-spacing:-.006em}
+  h1,h2,h3,h4{letter-spacing:-.02em}
+
+  /* ===== REFINED LAYER — modern, clean, premium (Linear/Attio direction) ===== */
+  :root{ --tier:#4f46e5; --tier-pre:#0f172a; }
+  aside{background:#1b1917;box-shadow:inset -1px 0 0 rgba(255,255,255,.05)}
+  .brand{color:#fff}
+  .brand .mk{background:#12805c;color:#fff;box-shadow:none;border-radius:9px}
+  .nav a{border-radius:8px;font-weight:500;color:#a6adbb;transition:.12s}
+  .nav a.active,.nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+  .nav .ic{display:inline-flex;width:17px;height:17px;opacity:.85}
+  .nav .ic svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7}
+  .stat{border-radius:var(--r);transition:box-shadow .16s,transform .16s}
+  .stat:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+  .btn.primary{background:var(--ink-btn);color:#fff;box-shadow:0 1px 2px rgba(16,24,40,.16)}
+  .btn.primary:hover{filter:none;background:#1e293b}
+  /* plan badge in sidebar — flat, restrained */
+  .plan-badge{margin:2px 6px 12px;padding:8px 11px;border-radius:9px;font-weight:600;font-size:12px;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid rgba(255,255,255,.09);
+    background:rgba(255,255,255,.04);color:#c7cdd8}
+  .plan-badge .up{font-size:11px;font-weight:700;color:#fff;background:#12805c;padding:3px 9px;border-radius:7px;cursor:pointer}
+  .plan-badge.tier-premium{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff}
+  .plan-badge.tier-premium .up{background:#1c1917;border:1px solid rgba(255,255,255,.2)}
+  /* locked nav item */
+  .nav a.locked{opacity:.45}
+  .nav a.locked::after{content:"";width:12px;height:12px;margin-left:auto;opacity:.7;
+    background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='11' width='14' height='9' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 018 0v4' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat}
+  /* tier picker on signup */
+  .planpick{display:flex;flex-direction:column;gap:9px}
+  .tiercard{border:1px solid #38342c;border-radius:12px;padding:13px 14px;cursor:pointer;transition:.14s;background:#141210;position:relative}
+  .tiercard:hover{border-color:#57524a}
+  .tiercard.sel{border-color:#2f9d77;box-shadow:0 0 0 3px rgba(18,128,92,.28)}
+  .tiercard .th{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .tiercard .tn{font-weight:700;font-size:15px;color:#fff}
+  .tiercard .tp{font-weight:800;font-size:15px;color:#9ed4bd}
+  .tiercard .tsetup{font-size:11.5px;color:#a8a29e;font-weight:500}
+  .tiercard .tb{font-size:12px;color:#a8a29e;margin-top:4px}
+  .tiercard .tag{position:absolute;top:-9px;right:12px;font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:2px 9px;border-radius:20px;background:#12805c;color:#fff}
+  .tiercard.premium .tag{background:#fff;color:#1c1917}
+  .btn-apply{cursor:pointer;border:1px solid #38342c;background:#141210;font-weight:600;border-radius:9px;padding:0 15px;color:#9ed4bd}
+  .btn-apply:hover{border-color:#2f9d77}
+  a{color:var(--brand);text-decoration:none}
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+
+  /* SIDEBAR */
+  aside{background:#1b1917;color:#d6d3cd;padding:18px 14px;display:flex;flex-direction:column;gap:6px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.4px;color:#fff;padding:6px 8px 16px}
+  .brand .mk{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#0e0d0b;font-weight:900}
+  .nav{display:flex;flex-direction:column;gap:2px}
+  .nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#b8b3ab;font-weight:600;cursor:pointer}
+  .nav a.active,.nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+  .nav .ic{width:18px;text-align:center}
+  aside .foot{margin-top:auto;font-size:12px;color:#7e8db0;padding:10px 8px;line-height:1.5}
+
+  /* MAIN */
+  main{display:flex;flex-direction:column;min-width:0}
+  .topbar{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:5}
+  .topbar h1{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:21px;margin:0;letter-spacing:-.01em}
+  .topbar .spacer{flex:1}
+  .search{position:relative}
+  .search input{width:280px;max-width:40vw;padding:9px 12px 9px 34px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;background:#fbfcfe}
+  .search input:focus{outline:none;border-color:var(--brand)}
+  .search .mag{position:absolute;left:11px;top:9px;color:var(--mut)}
+  .btn{cursor:pointer;border:none;font-weight:700;font-size:13.5px;padding:9px 15px;border-radius:9px;display:inline-flex;align-items:center;gap:7px;transition:.12s}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(255,122,89,.3)}
+  .btn.primary:hover{filter:brightness(1.04)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+
+  .content{padding:22px 24px;overflow:auto}
+
+  /* STAT CARDS */
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+  @media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px 16px;box-shadow:var(--shadow)}
+  .stat .lab{color:var(--mut);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:7px}
+  .stat .num{font-size:30px;font-weight:850;margin-top:6px;line-height:1}
+  .stat .sub{font-size:12px;color:var(--mut);margin-top:3px}
+  .stat.urgent .num{color:var(--urgent)}
+  .stat .ring{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+  /* TOOLBAR */
+  .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .tabs{display:inline-flex;background:#eef1f7;border-radius:10px;padding:3px}
+  .tabs button{border:none;background:transparent;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;color:var(--mut);cursor:pointer}
+  .tabs button.active{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+  .filters{display:inline-flex;gap:6px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:#fff;padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--mut);cursor:pointer}
+  .chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+
+  /* TABLE */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);padding:12px 16px;border-bottom:1px solid var(--line);background:#fbfcfe;font-weight:700}
+  tbody td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:#f7f9fd}
+  tbody tr:last-child td{border-bottom:none}
+  .who{display:flex;align-items:center;gap:11px}
+  .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;font-size:13px;flex:none}
+  .who .nm{font-weight:700}.who .ph{font-size:12.5px;color:var(--mut)}
+  .prob{max-width:340px;color:#3f3a33}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px}
+  .pill .d{width:7px;height:7px;border-radius:50%}
+  .pill.new{background:#efedea;color:#44403c}.pill.new .d{background:var(--new)}
+  .pill.callback{background:#faeee4;color:#9a3412}.pill.callback .d{background:var(--callback)}
+  .pill.booked{background:#e6f2ec;color:#0d6448}.pill.booked .d{background:var(--booked)}
+  .pill.closed{background:#f0efec;color:#78716c}.pill.closed .d{background:var(--closed)}
+  .badge-urg{background:#f9e8e6;color:#9f1d1d;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;margin-left:8px}
+  .ago{font-size:12.5px;color:var(--mut)}
+  .rowcb{display:inline-flex;gap:6px}
+  .icon-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;font-weight:700;font-size:12.5px;cursor:pointer;color:var(--brand)}
+  .icon-btn:hover{background:#f0f5ff}
+  .empty{padding:50px;text-align:center;color:var(--mut)}
+
+  /* BOARD */
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:1000px){.board{grid-template-columns:1fr 1fr}}
+  .col{background:#eef1f7;border-radius:13px;padding:10px;min-height:200px}
+  .col h3{margin:4px 6px 10px;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);display:flex;justify-content:space-between}
+  .col h3 .cnt{background:#fff;border-radius:999px;padding:1px 9px;color:var(--ink)}
+  .col.drop{outline:2px dashed var(--brand);outline-offset:-4px}
+  .kcard{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow);cursor:grab}
+  .kcard:active{cursor:grabbing}
+  .kcard .kt{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .kcard .kt .nm{font-weight:800}
+  .kcard .kp{font-size:13px;color:#4a453d;margin-bottom:8px}
+  .kcard .kf{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mut)}
+  .kcard.urg{border-left:3px solid var(--urgent)}
+
+  /* DRAWER */
+  .drawer-bg{position:fixed;inset:0;background:rgba(15,27,52,.45);display:none;z-index:20}
+  .drawer-bg.show{display:block}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:440px;max-width:94vw;background:#fff;box-shadow:var(--shadow-lg);transform:translateX(100%);transition:.25s;z-index:21;display:flex;flex-direction:column}
+  .drawer.show{transform:none}
+  .drawer .dh{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;gap:13px;align-items:center}
+  .drawer .dh .x{margin-left:auto;cursor:pointer;color:var(--mut);font-size:20px;background:none;border:none}
+  .drawer .db{padding:20px 22px;overflow:auto;flex:1}
+  .drawer .nm{font-weight:850;font-size:19px}
+  .drawer .sub{color:var(--mut);font-size:13px}
+  .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0 18px}
+  .di{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:11px}
+  .di .l{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700}
+  .di .v{font-weight:700;margin-top:3px}
+  .section-t{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:800;margin:18px 0 9px}
+  .statusrow{display:flex;gap:7px;flex-wrap:wrap}
+  .statusrow .chip{cursor:pointer}
+  textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font-family:inherit;font-size:13.5px;resize:vertical;min-height:70px}
+  textarea:focus{outline:none;border-color:var(--brand)}
+  .note{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13.5px}
+  /* call record (summary / transcript / recording) */
+  .callsum{background:#f7f8fa;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13.5px;line-height:1.55;color:#3f3a33}
+  .tr-toggle{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--mut)}
+  .tr-toggle:hover{color:var(--brand)}
+  .transcript{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12.5px;line-height:1.7;color:#57524a;max-height:260px;overflow:auto;white-space:pre-wrap}
+  /* my receptionist (account) */
+  .acct-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;max-width:980px}
+  @media(max-width:900px){.acct-grid{grid-template-columns:1fr}}
+  .acct-card{padding:22px}
+  .acct-kicker{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+  .acct-plan{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:30px;margin-top:8px}
+  .acct-price{font-family:"Inter",sans-serif;font-style:normal;font-size:14px;font-weight:700;color:var(--brand);margin-left:6px}
+  .acct-biz{color:var(--mut);font-size:13px;margin:4px 0 14px}
+  .acct-feat{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .acct-feat:last-child{border-bottom:none}
+  .acct-feat .tick{color:var(--brand);font-weight:800}
+  .acct-feat.off{color:var(--mut)} .acct-feat.off .tick{color:#c9c4ba}
+  .acct-num{font-size:24px;font-weight:800;letter-spacing:-.01em;margin:8px 0 10px}
+  .acct-help{color:var(--mut);font-size:13px;line-height:1.55;margin-top:8px}
+  .acct-code{display:inline-block;background:#f4f2ec;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-weight:700;margin-top:8px;font-size:14px}
+  /* calendar grid */
+  .cal-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+  .cal-nav{display:flex;align-items:center;gap:7px}
+  .cal-nav .btn{padding:8px 13px}
+  .cal-grid{display:grid;grid-template-columns:56px repeat(7,1fr);border-left:1px solid var(--line);border-top:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .cal-corner{background:var(--panel);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .cal-dh{background:#faf9f6;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 4px;text-align:center;font-weight:800;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+  .cal-dh span{display:block;font-size:17px;color:var(--ink);margin-top:2px;font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500}
+  .cal-dh.today span{color:var(--brand)}
+  .cal-tl{border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:10.5px;color:var(--mut);text-align:right;padding:2px 6px;font-family:"JetBrains Mono",monospace}
+  .cal-cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:34px;cursor:pointer;position:relative;transition:background .1s}
+  .cal-cell:hover{background:#f5faf7}
+  .cal-ev{margin:1px;padding:2px 5px;border-radius:5px;font-size:10.5px;line-height:1.25;cursor:pointer;overflow:hidden}
+  .cal-ev b{font-weight:800}
+  .cal-ev.bk{background:#e6f2ec;color:#0d6448;border:1px solid #bfe3d2}
+  .cal-ev.blk{background:#faeee4;color:#9a3412;border:1px solid #f0d4bf}
+  @media(max-width:820px){.cal-grid{font-size:11px}.cal-tl{font-size:9px}.cal-ev{font-size:9px}}
+  /* insights bar charts */
+  .chartcard h4{margin:0 0 2px}
+  .chart-sub{font-size:12px;color:var(--mut);margin-bottom:14px}
+  .bars{display:flex;align-items:flex-end;gap:2px;height:120px}
+  .bars .b{flex:1;min-width:4px;background:var(--brand);border-radius:4px 4px 0 0;position:relative;cursor:default;transition:opacity .1s}
+  .bars .b:hover{opacity:.75}
+  .bars .b .tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1c1917;color:#fff;
+    font-size:11.5px;font-weight:600;padding:4px 8px;border-radius:6px;white-space:nowrap;display:none;z-index:3}
+  .bars .b:hover .tip{display:block}
+  .bars .b.zero{background:#e9e5dd}
+  .axis{display:flex;gap:2px;margin-top:6px}
+  .axis span{flex:1;text-align:center;font-size:10.5px;color:var(--mut);overflow:hidden;white-space:nowrap}
+  .note .meta{font-size:11.5px;color:var(--mut);margin-top:5px}
+  .dcta{display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--line)}
+  .dcta .btn{flex:1;justify-content:center}
+  .btn.call{background:var(--booked);color:#fff}
+  .btn.blue{background:var(--brand);color:#fff}
+
+  /* MODAL (log call / connect) */
+  .modal-bg{position:fixed;inset:0;background:rgba(15,27,52,.45);display:none;align-items:center;justify-content:center;z-index:30}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;border-radius:14px;width:440px;max-width:94vw;box-shadow:var(--shadow-lg);overflow:hidden}
+  .modal .mh{padding:18px 20px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between;align-items:center}
+  .modal .mb{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+  .modal .x{cursor:pointer;border:none;background:none;font-size:18px;color:var(--mut)}
+  .fld{display:flex;flex-direction:column;gap:5px}
+  .fld label{font-size:12px;font-weight:700;color:var(--mut)}
+  .fld input,.fld select{border:1px solid var(--line);border-radius:9px;padding:10px;font-size:13.5px;font-family:inherit}
+  .fld input:focus,.fld select:focus{outline:none;border-color:var(--brand)}
+  .mf{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1c1917;color:#fff;padding:12px 18px;border-radius:11px;font-size:13.5px;box-shadow:var(--shadow-lg);z-index:40;display:none}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 0 rgba(16,185,129,.6);animation:p 2s infinite}
+  @keyframes p{70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+
+  /* --- polish --- */
+  .topbar .sub-h{font-size:12px;color:var(--mut);font-weight:600;margin-top:2px}
+  .stat{position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}
+  .stat:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,24,40,.10)}
+  .stat .num{transition:color .2s}
+  .sortwrap{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--mut);font-size:12.5px;font-weight:700}
+  .sortwrap select{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#fff;font-weight:700;color:var(--ink)}
+  .sortwrap select:focus{outline:none;border-color:var(--brand)}
+  tbody tr{transition:background .12s}
+  .rowcb .icon-btn{opacity:.35;transition:opacity .12s}
+  tbody tr:hover .rowcb .icon-btn{opacity:1}
+  @media(min-width:1001px){ .rowcb .icon-btn{opacity:.4} tbody tr:hover .icon-btn{opacity:1} }
+  @keyframes flash{0%{background:#fff7ed}60%{background:#fff7ed}100%{background:transparent}}
+  .flash{animation:flash 2.2s ease-out}
+  .kcard{transition:transform .12s,box-shadow .12s}
+  .kcard:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,24,40,.12)}
+  .chip{transition:.12s}
+  .chip:hover{border-color:var(--brand);color:var(--brand)}
+  .chip.active:hover{color:#fff}
+  .icon-btn{transition:.12s}
+  .av{box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+  .toast{animation:toastin .25s ease}
+  @keyframes toastin{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+  .db::-webkit-scrollbar,.content::-webkit-scrollbar{width:9px}
+  .db::-webkit-scrollbar-thumb,.content::-webkit-scrollbar-thumb{background:#d7deea;border-radius:8px}
+  .mobile-only{display:none}
+  /* login gate */
+  .login-bg{position:fixed;inset:0;background:radial-gradient(1000px 600px at 70% -10%,#26221c,#141210 60%),#141210;display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .login-card{background:#1b1917;border:1px solid #2d2a24;border-radius:18px;padding:30px;width:380px;max-width:94vw;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+  .login-brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:20px}
+  .login-brand .mk{width:34px;height:34px;border-radius:9px;background:#12805c;display:grid;place-items:center;color:#fff;font-weight:900}
+  .login-sub{color:#a8a29e;font-size:13.5px;margin:6px 0 20px}
+  .login-tabs{display:flex;background:#141210;border:1px solid #38342c;border-radius:11px;padding:3px;margin:18px 0 18px}
+  .ltab{flex:1;border:none;background:transparent;color:#a8a29e;font-weight:700;font-size:13.5px;padding:9px;border-radius:9px;cursor:pointer}
+  .ltab.active{background:#12805c;color:#fff}
+  .price-box{background:#141210;border:1px solid #38342c;border-radius:12px;padding:14px;margin:4px 0 12px}
+  .price-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;color:#d6d3cd;font-size:14px}
+  .price-row b{color:#fff}
+  .price-note{color:#8a857c;font-size:12px;margin-top:6px}
+  .lfld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .lfld label{font-size:12px;color:#b8b3ab;font-weight:700}
+  .lfld input,.ladv input{background:#141210;border:1px solid #38342c;color:#f5f5f4;padding:12px;border-radius:10px;font-size:14px;font-family:inherit;width:100%}
+  .lfld input:focus,.ladv input:focus{outline:none;border-color:#2f9d77}
+  .ladv{margin-bottom:12px}
+  .ladv summary{color:#a8a29e;font-size:12.5px;cursor:pointer;margin-bottom:8px}
+  .lerr{color:#f87171;font-size:13px;min-height:18px;margin-bottom:6px;font-weight:600}
+  .btn-login{width:100%;border:none;background:#12805c;color:#fff;font-weight:700;font-size:15px;padding:13px;border-radius:11px;cursor:pointer;transition:.12s}
+  .btn-login:hover{background:#0d6448}.btn-login:active{transform:translateY(1px)}
+  .btn-demo{width:100%;border:1px solid #38342c;background:transparent;color:#d6d3cd;font-weight:700;font-size:13.5px;padding:11px;border-radius:11px;cursor:pointer;margin-top:10px}
+  .btn-demo:hover{border-color:#2f9d77}
+  .login-foot{color:#8a857c;font-size:12px;text-align:center;margin-top:18px}
+  /* appointments agenda */
+  .appts{display:flex;flex-direction:column}
+  .appt{display:grid;grid-template-columns:230px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
+  .appt:last-child{border-bottom:none}
+  .appt:hover{background:#f7f9fd}
+  .appt-when{display:flex;align-items:center;gap:11px}
+  .cal-ic{width:38px;height:38px;border-radius:10px;background:#e8effd;display:grid;place-items:center;font-size:18px}
+  .aw-t{font-weight:800}.aw-s{font-size:11.5px;color:var(--booked);font-weight:700}
+  @media(max-width:820px){.appt{grid-template-columns:1fr;gap:8px}}
+  /* insights */
+  .ins-head{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:21px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .ins-badge{background:#e6f2ec;color:#0d6448;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:8px;letter-spacing:.2px}
+  .ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.ins-grid{grid-template-columns:1fr}}
+  .ins-card{padding:18px}
+  .ins-card h4{margin:0 0 14px;font-size:15px}
+  .theme-row{margin-bottom:12px}
+  .theme-top{display:flex;justify-content:space-between;font-size:13.5px;color:#4a453d;margin-bottom:5px;font-weight:600}
+  .bar{height:8px;background:#eef1f7;border-radius:6px;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#0ea5e9);border-radius:6px}
+  .ins-note{color:var(--mut);font-size:12.5px;margin-top:10px}
+  .rec{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:9px;font-size:14px;color:#3f3a33;line-height:1.5}
+  /* copilot draft */
+  .copilot{margin-top:14px}
+  .copilot-btn{width:100%;border:1px solid var(--line);background:#f7f8fa;color:var(--ink);font-weight:600;font-size:13.5px;padding:11px;border-radius:10px;cursor:pointer;transition:.12s}
+  .copilot-btn:hover{border-color:var(--brand);color:var(--brand)}
+  .copilot-out{margin-top:10px;background:#f7f8fa;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13.5px;color:#3f3a33;display:none;white-space:pre-wrap;line-height:1.5}
+  .copilot-out.show{display:block}
+  .copilot-copy{margin-top:8px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-weight:700;font-size:12.5px;cursor:pointer;color:var(--brand)}
+
+  /* responsive */
+  @media(max-width:820px){
+    .app{grid-template-columns:1fr}
+    aside{flex-direction:row;align-items:center;gap:4px;padding:10px 12px;overflow-x:auto}
+    aside .brand{padding:0 10px 0 4px}
+    aside .nav{flex-direction:row}
+    aside .nav a{padding:8px 10px;white-space:nowrap}
+    aside .nav a span:not(.ic){display:none}
+    aside .foot{display:none}
+    .topbar{flex-wrap:wrap;padding:12px 16px}
+    .search input{width:100%;max-width:none}
+    .search{order:5;flex:1 0 100%}
+    .content{padding:16px}
+    .stats{grid-template-columns:1fr 1fr}
+    .drawer{width:100%}
+    .sortwrap{display:none}
+  }
+</style>
+</head>
+<body>
+<!-- LOGIN GATE -->
+<div class="login-bg" id="login-bg">
+  <div class="login-card">
+    <div class="login-brand"><div class="mk">S</div> Southline CRM</div>
+    <div class="login-tabs">
+      <button id="tab-login" class="ltab active" onclick="switchAuth('login')">Log in</button>
+      <button id="tab-signup" class="ltab" onclick="switchAuth('signup')">Create account</button>
+    </div>
+
+    <!-- LOG IN -->
+    <div id="pane-login">
+      <div class="lfld"><label>Email</label><input id="lg-user" type="email" placeholder="you@yourbusiness.ie" autocomplete="username" /></div>
+      <div class="lfld"><label>Password</label><input id="lg-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" /></div>
+      <div class="lerr" id="lg-err"></div>
+      <button class="btn-login" id="lg-btn" onclick="doLogin()">Log in</button>
+      <button class="btn-demo" onclick="useDemo()">View the demo (sample data)</button>
+    </div>
+
+    <!-- CREATE ACCOUNT -->
+    <div id="pane-signup" style="display:none">
+      <div class="lfld"><label>Business name</label><input id="su-biz" placeholder="Joe's Plumbing" /></div>
+      <div class="lfld"><label>Website <span style="color:#8a857c;text-transform:none">(optional — we'll auto-set up your AI from it)</span></label><input id="su-web" placeholder="www.yourbusiness.ie" /></div>
+      <div class="lfld"><label>Email</label><input id="su-email" type="email" placeholder="you@yourbusiness.ie" /></div>
+      <div class="lfld"><label>Choose a password</label><input id="su-pass" type="password" placeholder="At least 8 characters" /></div>
+
+      <div class="lfld" style="margin-top:12px"><label>Discount code <span style="color:#8a857c;text-transform:none">(optional)</span></label>
+        <div style="display:flex;gap:8px">
+          <input id="su-code" placeholder="e.g. LAUNCH50" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" />
+          <button type="button" class="btn-apply" onclick="applyCode()">Apply</button>
+        </div>
+        <div id="su-codemsg" style="font-size:12.5px;margin-top:6px"></div>
+      </div>
+
+      <div class="price-box">
+        <div class="price-row"><span>Setup (one-time)</span><b id="su-setup">$350</b></div>
+        <div class="price-row"><span>Then monthly</span><b id="su-monthly">$150 / month</b></div>
+        <div class="price-note">Cancel anytime. Your receptionist is set up automatically once you pay.</div>
+      </div>
+      <div class="lerr" id="su-err"></div>
+      <button class="btn-login" id="su-btn" onclick="signup()">Subscribe &amp; create account →</button>
+    </div>
+
+    <div class="login-foot">Questions? Southline · 085 174 0783</div>
+  </div>
+</div>
+
+<div class="app" id="app" style="display:none">
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="brand"><div class="mk">S</div> Southline CRM</div>
+    <div id="plan-badge" class="plan-badge" style="display:none"></div>
+    <nav class="nav">
+      <a class="active"><span class="ic"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.6a2 2 0 01-.5 2.1L8.1 9.6a16 16 0 006 6l1.2-1.2a2 2 0 012.1-.4c.8.3 1.7.5 2.6.6a2 2 0 011.7 2z"/></svg></span> Call Inbox</a>
+      <a onclick="setView('calendar')"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span> Calendar</a>
+      <a onclick="setView('appts')"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span> Appointments</a>
+      <a data-feat="pipeline" onclick="navFeat('pipeline','board')"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg></span> Pipeline</a>
+      <a data-feat="insights" onclick="navFeat('insights','insights')"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span> Insights</a>
+      <a onclick="filterUrgent()"><span class="ic"><svg viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span> Urgent</a>
+      <a onclick="setView('account')"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span> My receptionist</a>
+      <a onclick="openConnect()"><span class="ic"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.5.5l3-3A5 5 0 0013.5 3.5L12 5"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3A5 5 0 0010.5 20.5L12 19"/></svg></span> Connect line</a>
+    </nav>
+    <div class="foot">
+      <div id="who-state" style="color:#d6d3cd;font-weight:700;margin-bottom:4px"></div>
+      <div id="conn-state">Demo data (offline)</div>
+      <a id="install-btn" onclick="installApp()" style="display:none;margin-top:8px;padding:7px 11px;border:1px solid rgba(255,255,255,.14);border-radius:8px;color:#fff;font-weight:600;cursor:pointer;font-size:12px;text-align:center">Install the app</a>
+      <a onclick="logout()" style="display:inline-block;margin-top:8px;color:#b8b3ab;cursor:pointer;font-weight:700">Log out →</a>
+      Southline · AI Receptionist<br>085 174 0783
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="topbar">
+      <button id="exit-demo" onclick="logout()" title="Leave the demo" style="display:none;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-weight:700;font-size:13px;padding:9px 13px;border-radius:10px;cursor:pointer">← Exit demo</button>
+      <div><h1>Call Inbox</h1><div class="sub-h" id="greeting">Loading…</div></div>
+      <div class="search">
+        <span class="mag"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+        <input id="search" placeholder="Search name, number or problem…" oninput="render()" />
+      </div>
+      <div class="spacer"></div>
+      <button class="btn ghost" onclick="openConnect()">Connect live line</button>
+      <button class="btn primary" onclick="openLog()">+ Log a call</button>
+    </div>
+
+    <div class="content">
+      <div class="stats" id="stats"></div>
+
+      <div class="toolbar">
+        <div class="tabs">
+          <button id="tab-table" class="active" onclick="setView('table')">☰ Table</button>
+          <button id="tab-board" onclick="setView('board')">Pipeline</button>
+        </div>
+        <div class="filters" id="filters"></div>
+        <div class="sortwrap">Sort
+          <select id="sort" onchange="setSort(this.value)">
+            <option value="urgent">Urgent first</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="view-table" class="card">
+        <table>
+          <thead><tr>
+            <th>Caller</th><th>Problem / reason</th><th>Status</th><th>Received</th><th>Next action</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty" style="display:none">No calls match. Try a different filter.</div>
+      </div>
+
+      <div id="view-board" class="board" style="display:none"></div>
+      <div id="view-appts" style="display:none"></div>
+      <div id="view-insights" style="display:none"></div>
+      <div id="view-account" style="display:none"></div>
+      <div id="view-calendar" style="display:none"></div>
+    </div>
+  </main>
+</div>
+
+<!-- DRAWER (call detail) -->
+<div class="drawer-bg" id="drawer-bg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dh">
+    <div class="av" id="d-av">SB</div>
+    <div><div class="nm" id="d-name">—</div><div class="sub" id="d-phone">—</div></div>
+    <button class="x" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="db">
+    <div class="dgrid">
+      <div class="di"><div class="l">Problem</div><div class="v" id="d-problem">—</div></div>
+      <div class="di"><div class="l">Urgency</div><div class="v" id="d-urgency">—</div></div>
+      <div class="di"><div class="l">Preferred time</div><div class="v" id="d-time">—</div></div>
+      <div class="di"><div class="l">Received</div><div class="v" id="d-received">—</div></div>
+    </div>
+
+    <div id="d-callrec" style="display:none">
+      <div class="section-t">Call record</div>
+      <div id="d-summary" class="callsum"></div>
+      <audio id="d-audio" controls preload="none" style="width:100%;margin-top:9px;display:none"></audio>
+      <details id="d-transcript-wrap" style="margin-top:9px;display:none">
+        <summary class="tr-toggle">Full transcript</summary>
+        <div id="d-transcript" class="transcript"></div>
+      </details>
+    </div>
+
+    <div class="section-t">Status</div>
+    <div class="statusrow" id="d-statusrow"></div>
+
+    <div class="section-t">Copilot</div>
+    <div class="copilot">
+      <button class="copilot-btn" onclick="draftFollowUp()">Draft a follow-up message</button>
+      <div class="copilot-out" id="copilot-out"></div>
+      <button class="copilot-copy" id="copilot-copy" style="display:none" onclick="copyDraft()">Copy</button>
+    </div>
+
+    <div class="section-t">Notes</div>
+    <textarea id="d-note" placeholder="Add a note — e.g. 'Called back, left voicemail' …"></textarea>
+    <button class="btn ghost" style="margin-top:8px" onclick="addNote()">＋ Add note</button>
+    <div id="d-notes"></div>
+  </div>
+  <div class="dcta">
+    <a class="btn call" id="d-callbtn" href="#">📞 Call back</a>
+    <button class="btn blue" onclick="markBooked()">✓ Mark booked</button>
+  </div>
+</div>
+
+<!-- MODAL: Log a call -->
+<div class="modal-bg" id="log-bg">
+  <div class="modal">
+    <div class="mh">Log a call <button class="x" onclick="closeModal('log-bg')">✕</button></div>
+    <div class="mb">
+      <div class="fld"><label>Caller name</label><input id="f-name" placeholder="e.g. Sarah Byrne" /></div>
+      <div class="fld"><label>Phone</label><input id="f-phone" placeholder="e.g. 087 555 0192" /></div>
+      <div class="fld"><label>Problem / reason for call</label><input id="f-problem" placeholder="e.g. Leak under kitchen sink" /></div>
+      <div class="fld"><label>Preferred time</label><input id="f-time" placeholder="e.g. This afternoon" /></div>
+      <div class="fld"><label>Urgency</label><select id="f-urg"><option value="normal">Normal</option><option value="urgent">Urgent</option></select></div>
+    </div>
+    <div class="mf">
+      <button class="btn ghost" onclick="closeModal('log-bg')">Cancel</button>
+      <button class="btn primary" onclick="saveLog()">Save call</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Connect live line -->
+<div class="modal-bg" id="conn-bg">
+  <div class="modal">
+    <div class="mh">Connect your live line <button class="x" onclick="closeModal('conn-bg')">✕</button></div>
+    <div class="mb">
+      <p style="margin:0;color:var(--mut);font-size:13px">Paste your lead webhook's address. The dashboard will pull in calls captured by your AI receptionist automatically. (Your webhook from <code>server/log-lead.js</code> — e.g. <code>https://your-app.onrender.com</code>.)</p>
+      <div class="fld"><label>Webhook base URL</label><input id="f-webhook" placeholder="https://your-app.onrender.com" /></div>
+    </div>
+    <div class="mf">
+      <button class="btn ghost" onclick="disconnect()">Disconnect</button>
+      <button class="btn primary" onclick="connect()">Connect & sync</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===========================================================
+   Southline CRM — call tracking dashboard
+   - Tracks every call: who, the problem, who to call back, status
+   - Table + HubSpot-style pipeline (drag between stages)
+   - Saves to localStorage; optional live sync from the webhook
+   =========================================================== */
+const $ = id => document.getElementById(id);
+const STAGES = [
+  {key:'new',      label:'New'},
+  {key:'callback', label:'To call back'},
+  {key:'booked',   label:'Booked'},
+  {key:'closed',   label:'Closed'}
+];
+const STATUS_LABEL = {new:'New', callback:'To call back', booked:'Booked', closed:'Closed'};
+const AV_COLORS = ['#2563eb','#0ea5e9','#7c3aed','#db2777','#f59e0b','#10b981','#ef4444','#0891b2'];
+
+let calls = [];
+let view = 'table';
+let filter = 'all';
+let sortBy = 'urgent';
+// Southline's live backend — the app points here automatically, no setup needed.
+const DEFAULT_SERVER = 'https://southline-ai-receptionist.onrender.com';
+let webhook = localStorage.getItem('sl_webhook') || '';
+let session = (()=>{ try{ return JSON.parse(localStorage.getItem('sl_session')||'{}'); }catch(e){ return {}; } })();
+let syncTimer = null;
+let freshIds = new Set();      // newly added calls to flash-highlight
+let lastStat = {};             // for count-up animation
+
+/* ---------- seed + persistence ---------- */
+const SEED = [
+  {name:'Sarah Byrne', phone:'087 555 0192', problem:'Leak under kitchen sink, water escaping', urgency:'urgent', status:'callback', time:'Today, 2–4pm', mins:8, notes:[],
+   summary:'Sarah has a leak under her kitchen sink and water is escaping onto the floor. She has turned off the isolation valve. She needs someone today between 2–4pm and gave her mobile as the best contact. Marked urgent.',
+   transcript:'AI: Hi, thanks for calling, you\'re through to the reception desk. How can I help you today?\nSarah: Hi, I\'ve got water coming out from under my kitchen sink, it\'s going everywhere.\nAI: Sorry to hear that — that sounds urgent. Have you been able to turn off the water at the valve under the sink?\nSarah: Yeah, I found the little tap and turned it off, it\'s slowed down a lot.\nAI: That\'s the right thing to do. Can I take your name and the best number to reach you?\nSarah: Sarah Byrne, 087 555 0192.\nAI: Thanks Sarah. When suits you for someone to come out — we could do today between 2 and 4?\nSarah: Today 2 to 4 works, please.\nAI: Perfect, I\'ve flagged it as urgent and the team will text you to confirm. Anything else?\nSarah: No, that\'s everything, thanks.\nAI: You\'re welcome — help is on the way. Bye now.'},
+  {name:'David Kelly', phone:'086 555 0102', problem:'New patient — wants a check-up & clean', urgency:'normal', status:'new', time:'Next week', mins:26, notes:[]},
+  {name:'Aoife Murphy', phone:'085 555 0103', problem:'Cut & colour booking for Saturday', urgency:'normal', status:'booked', time:'Sat 11am w/ Emma', mins:54, notes:[{t:'Booked in with Emma, confirmed by text.', at:Date.now()-1000*60*40}]},
+  {name:'Mark Doyle', phone:'087 555 0104', problem:'Quote for a full bathroom refit', urgency:'normal', status:'new', time:'Callback today', mins:73, notes:[]},
+  {name:'Emma Walsh', phone:'083 555 0105', problem:'Dog off his food & lethargic, wants him seen', urgency:'urgent', status:'callback', time:'Today 4.30pm', mins:95, notes:[]},
+  {name:'Liam O\'Connor', phone:'089 555 0106', problem:'Boiler making a banging noise, no hot water', urgency:'urgent', status:'new', time:'ASAP', mins:120, notes:[]},
+  {name:'Niamh Ryan', phone:'085 555 0107', problem:'Asked about prices, said she\'d ring back', urgency:'normal', status:'closed', time:'—', mins:180, notes:[{t:'Price given, not ready to book yet.', at:Date.now()-1000*60*170}]},
+  {name:'Tom Fitzgerald', phone:'086 555 0108', problem:'Blocked drain in back garden', urgency:'normal', status:'booked', time:'Tomorrow am', mins:240, notes:[]},
+  // earlier history so the trends read properly
+  {name:'Grace Nolan', phone:'087 555 0109', problem:'Radiator cold downstairs, wants a service', urgency:'normal', status:'closed', time:'—', mins:60*26, notes:[]},
+  {name:'Paul Brennan', phone:'086 555 0110', problem:'Quote to re-tile an ensuite', urgency:'normal', status:'booked', time:'Done — last Wed', mins:60*30, notes:[]},
+  {name:'Ciara Duffy', phone:'083 555 0111', problem:'Toilet running constantly, water bill worry', urgency:'normal', status:'closed', time:'—', mins:60*52, notes:[]},
+  {name:'John Farrell', phone:'089 555 0112', problem:'Outdoor tap replacement', urgency:'normal', status:'booked', time:'Done — last week', mins:60*76, notes:[]},
+  {name:'Mary Keane', phone:'085 555 0113', problem:'No hot water in the mornings', urgency:'urgent', status:'closed', time:'—', mins:60*99, notes:[]},
+  {name:'Dara Lynch', phone:'087 555 0114', problem:'Wants a full heating check before winter', urgency:'normal', status:'booked', time:'Done', mins:60*124, notes:[]},
+  {name:'Eve Whelan', phone:'086 555 0115', problem:'Dripping shower head', urgency:'normal', status:'closed', time:'—', mins:60*150, notes:[]},
+  {name:'Rob Casey', phone:'083 555 0116', problem:'Dishwasher plumbing for a new kitchen', urgency:'normal', status:'booked', time:'Done', mins:60*196, notes:[]},
+  {name:'Anna Field', phone:'089 555 0117', problem:'Leak stain on ceiling under bathroom', urgency:'urgent', status:'closed', time:'—', mins:60*230, notes:[]},
+  {name:'Sean Óg Byrne', phone:'085 555 0118', problem:'Price for a power flush', urgency:'normal', status:'closed', time:'—', mins:60*260, notes:[]},
+  {name:'Laura Hyland', phone:'087 555 0119', problem:'New washing machine install', urgency:'normal', status:'booked', time:'Done', mins:60*300, notes:[]}
+];
+function load(){
+  const saved = localStorage.getItem('sl_calls');
+  if(saved){ try{ calls = JSON.parse(saved); }catch(e){ calls=[]; } }
+  // Only seed sample data in demo mode. A logged-in client starts empty and
+  // fills from their own real leads via sync.
+  if(!calls.length && session.mode!=='client'){
+    calls = SEED.map((s,i)=>({ id:'seed'+i, ...s, received: Date.now()-s.mins*60000 }));
+    save();
+  }
+}
+function save(){ localStorage.setItem('sl_calls', JSON.stringify(calls)); }
+
+/* ---------- helpers ---------- */
+function initials(n){ return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function colorFor(n){ let h=0; for(const c of (n||'')) h=(h*31+c.charCodeAt(0))>>>0; return AV_COLORS[h%AV_COLORS.length]; }
+function ago(ts){
+  const m = Math.floor((Date.now()-ts)/60000);
+  if(m<1) return 'just now'; if(m<60) return m+'m ago';
+  const h=Math.floor(m/60); if(h<24) return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function telHref(p){ return 'tel:'+(p||'').replace(/[^\d+]/g,''); }
+function matchesFilter(c){
+  if(filter==='urgent') return c.urgency==='urgent';
+  if(filter==='all') return true;
+  return c.status===filter;
+}
+function searched(list){
+  const q = ($('search').value||'').toLowerCase().trim();
+  if(!q) return list;
+  return list.filter(c => (c.name+' '+c.phone+' '+c.problem).toLowerCase().includes(q));
+}
+
+/* ---------- render ---------- */
+function sortList(list){
+  const arr = list.slice();
+  if(sortBy==='newest') arr.sort((a,b)=>b.received-a.received);
+  else if(sortBy==='oldest') arr.sort((a,b)=>a.received-b.received);
+  else if(sortBy==='name') arr.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  else arr.sort((a,b)=>(b.urgency==='urgent')-(a.urgency==='urgent') || b.received-a.received); // urgent
+  return arr;
+}
+function render(){
+  updateGreeting(); renderStats(); renderFilters();
+  const list = sortList(searched(calls.filter(matchesFilter)));
+  if(view==='table') renderTable(list);
+  else if(view==='board') renderBoard();
+  else if(view==='insights') renderInsights();
+  else if(view==='account') renderAccount();
+  else if(view==='calendar') renderCalendar();
+  else renderAppts();
+  $('view-calendar').style.display = view==='calendar' ? '' : 'none';
+  // flash any freshly-added rows/cards once
+  if(freshIds.size){
+    requestAnimationFrame(()=>{
+      freshIds.forEach(id=>{ const elr=document.querySelector(`[data-id="${id}"]`); if(elr) elr.classList.add('flash'); });
+      freshIds.clear();
+    });
+  }
+}
+function renderStats(){
+  const c=calls;
+  const cards=[
+    {lab:'Total calls', num:c.length, sub:'all time', ring:'#94a3b8'},
+    {lab:'New', num:c.filter(x=>x.status==='new').length, sub:'need triage', ring:'var(--new)'},
+    {lab:'To call back', num:c.filter(x=>x.status==='callback').length, sub:'owe a callback', ring:'var(--callback)'},
+    {lab:'Booked', num:c.filter(x=>x.status==='booked').length, sub:'jobs won', ring:'var(--booked)'},
+  ];
+  const urg=c.filter(x=>x.urgency==='urgent'&&x.status!=='closed').length;
+  const all=[...cards,{lab:'Urgent open',num:urg,sub:'act now',ring:'',urgent:true}];
+  const firstPaint = !lastStat.done;
+  $('stats').innerHTML = all.map((s,i)=>`
+    <div class="stat ${s.urgent?'urgent':''}">
+      <div class="lab">${s.urgent?'Urgent open':`<span class="ring" style="background:${s.ring}"></span>${s.lab}`}</div>
+      <div class="num" id="num-${i}">${firstPaint?0:s.num}</div><div class="sub">${s.sub}</div></div>`).join('');
+  if(firstPaint){ all.forEach((s,i)=>countUp($('num-'+i), s.num)); lastStat.done=true; }
+}
+function countUp(eln, to){
+  if(!eln) return; const dur=600, t0=performance.now();
+  const step=now=>{ const p=Math.min(1,(now-t0)/dur); eln.textContent=Math.round(to*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function renderFilters(){
+  const defs=[['all','All'],['new','New'],['callback','To call back'],['booked','Booked'],['closed','Closed'],['urgent','Urgent']];
+  $('filters').innerHTML = defs.map(([k,l])=>`<button class="chip ${filter===k?'active':''}" onclick="setFilter('${k}')">${l}</button>`).join('');
+}
+function renderTable(list){
+  $('view-table').style.display=''; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='none'; $('view-account').style.display='none';
+  $('tab-table').classList.add('active'); $('tab-board').classList.remove('active');
+  $('empty').style.display = list.length?'none':'block';
+  $('tbody').innerHTML = list.map(c=>`
+    <tr data-id="${c.id}" onclick="openDrawer('${c.id}')">
+      <td><div class="who"><div class="av" style="background:${colorFor(c.name)}">${initials(c.name)}</div>
+        <div><div class="nm">${esc(c.name)}</div><div class="ph">${esc(c.phone)}</div></div></div></td>
+      <td class="prob">${esc(c.problem)}${c.urgency==='urgent'?'<span class="badge-urg">URGENT</span>':''}</td>
+      <td><span class="pill ${c.status}"><span class="d"></span>${STATUS_LABEL[c.status]}</span></td>
+      <td class="ago">${ago(c.received)}</td>
+      <td><div class="rowcb" onclick="event.stopPropagation()">
+        <a class="icon-btn" href="${telHref(c.phone)}" onclick="markCallback('${c.id}')">📞 Call back</a>
+      </div></td>
+    </tr>`).join('');
+}
+function renderBoard(){
+  $('view-table').style.display='none'; $('view-board').style.display='grid'; $('view-appts').style.display='none'; $('view-insights').style.display='none'; $('view-account').style.display='none';
+  $('tab-board').classList.add('active'); $('tab-table').classList.remove('active');
+  const q=($('search').value||'').toLowerCase().trim();
+  const inSearch = c => !q || (c.name+' '+c.phone+' '+c.problem).toLowerCase().includes(q);
+  $('view-board').innerHTML = STAGES.map(st=>{
+    const items = calls.filter(c=>c.status===st.key && inSearch(c)).sort((a,b)=>(b.urgency==='urgent')-(a.urgency==='urgent')||b.received-a.received);
+    return `<div class="col" data-stage="${st.key}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event)">
+      <h3>${st.label}<span class="cnt">${items.length}</span></h3>
+      ${items.map(c=>`
+        <div class="kcard ${c.urgency==='urgent'?'urg':''}" data-id="${c.id}" draggable="true" ondragstart="dragStart(event,'${c.id}')" onclick="openDrawer('${c.id}')">
+          <div class="kt"><div class="av" style="background:${colorFor(c.name)};width:28px;height:28px;font-size:11px">${initials(c.name)}</div>
+            <div class="nm">${esc(c.name)}</div></div>
+          <div class="kp">${esc(c.problem)}</div>
+          <div class="kf"><span>${esc(c.phone)}</span><span>${ago(c.received)}</span></div>
+        </div>`).join('') || '<div style="color:#9aa7c2;font-size:12.5px;padding:8px 6px">Nothing here</div>'}
+    </div>`;
+  }).join('');
+}
+
+/* ---------- Calendar: the shared diary the AI books into ---------- */
+let calWeekStart = null; // Monday of the shown week
+function mondayOf(d){ const x=new Date(d); const day=(x.getDay()+6)%7; x.setHours(0,0,0,0); x.setDate(x.getDate()-day); return x; }
+function renderCalendar(){
+  ['view-table','view-board','view-appts','view-insights','view-account'].forEach(v=>$(v).style.display='none');
+  $('view-calendar').style.display='';
+  $('tab-table').classList.remove('active'); $('tab-board').classList.remove('active');
+  if(!calWeekStart) calWeekStart = mondayOf(new Date());
+  const OPEN=9, CLOSE=18, STEP=30; // 9am–6pm, 30-min rows
+  const days=[...Array(7)].map((_,i)=>{ const d=new Date(calWeekStart); d.setDate(d.getDate()+i); return d; });
+  const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const rangeLbl = days[0].toLocaleDateString('en-IE',{day:'numeric',month:'short'})+' – '+days[6].toLocaleDateString('en-IE',{day:'numeric',month:'short'});
+  let head = `<div class="cal-head"><div><h2 style="font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500;font-size:24px;margin:0">Calendar</h2>
+      <div class="acct-help" style="margin-top:2px">Add appointments and blocks — the AI checks this before it books any caller in.</div></div>
+    <div class="cal-nav"><button class="btn ghost" onclick="calMove(-7)">‹</button>
+      <button class="btn ghost" onclick="calToday()">This week</button>
+      <button class="btn ghost" onclick="calMove(7)">›</button>
+      <span style="font-weight:800;margin-left:8px">${rangeLbl}</span></div></div>`;
+  // grid header
+  let grid = `<div class="cal-grid"><div class="cal-corner"></div>`;
+  days.forEach((d,i)=>{ const today=d.toDateString()===new Date().toDateString();
+    grid += `<div class="cal-dh ${today?'today':''}">${dayNames[i]}<span>${d.getDate()}</span></div>`; });
+  // time rows
+  for(let mins=OPEN*60; mins<CLOSE*60; mins+=STEP){
+    const hh=Math.floor(mins/60), mm=mins%60;
+    const tlab = (mm===0)? (((hh%12)||12)+(hh<12?'am':'pm')) : '';
+    grid += `<div class="cal-tl">${tlab}</div>`;
+    days.forEach(d=>{
+      const cell=new Date(d); cell.setHours(hh,mm,0,0);
+      grid += `<div class="cal-cell" data-iso="${cell.toISOString()}" onclick="calAdd('${cell.toISOString()}')"></div>`;
+    });
+  }
+  grid += `</div>`;
+  $('view-calendar').innerHTML = `<div class="card acct-card" style="padding:20px">${head}${grid}
+    <div id="cal-msg" style="font-size:12.5px;margin-top:10px;min-height:16px"></div>
+    <div class="acct-help" style="margin-top:6px">Green = booked by the AI · Amber = you blocked it · click any empty slot to add your own. Once Google Calendar is connected, your own calendar events block the AI too.</div></div>`;
+  loadCalEvents(days);
+}
+function calMove(n){ calWeekStart.setDate(calWeekStart.getDate()+n); renderCalendar(); }
+function calToday(){ calWeekStart=mondayOf(new Date()); renderCalendar(); }
+async function loadCalEvents(days){
+  const srv=session.server||webhook;
+  if(!srv){ $('cal-msg').innerHTML='<span style="color:var(--mut)">Demo workspace — log in as a client (or connect your line) to load and add real bookings.</span>'; return; }
+  try{
+    const r=await fetch(srv+'/bookings',{cache:'no-store'});
+    const list=await r.json(); if(!Array.isArray(list)) return;
+    const OPEN=9, STEP=30, wStart=days[0].getTime(), wEnd=days[6].getTime()+86400000;
+    list.forEach(b=>{
+      const t=Date.parse(b.startISO); if(isNaN(t)||t<wStart||t>=wEnd) return;
+      const dt=new Date(t); const dayIdx=(dt.getDay()+6)%7;
+      // snap to the matching cell
+      const iso=new Date(days[dayIdx]); iso.setHours(dt.getHours(),dt.getMinutes()<30?0:30,0,0);
+      const cell=document.querySelector(`.cal-cell[data-iso="${iso.toISOString()}"]`);
+      if(!cell) return;
+      const block=/^blocked/i.test(b.name||'');
+      const ev=document.createElement('div');
+      ev.className='cal-ev '+(block?'blk':'bk');
+      ev.innerHTML=`<b>${dt.toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit'})}</b> ${esc(block?(b.reason||'Blocked'):(b.name||'Booking'))}`;
+      ev.title=(block?'Blocked: ':'')+(b.reason||'')+' · '+(b.ref||'')+' — click to free up';
+      ev.onclick=(e)=>{ e.stopPropagation(); calFree(b.ref); };
+      cell.appendChild(ev);
+    });
+  }catch(e){ $('cal-msg').innerHTML='<span style="color:var(--urgent)">Couldn\'t reach the calendar — check the server connection.</span>'; }
+}
+async function calAdd(iso){
+  const srv=session.server||webhook; const msg=$('cal-msg');
+  if(!srv){ msg.innerHTML='<span style="color:var(--urgent)">Log in as a client to add real bookings.</span>'; return; }
+  const when=new Date(iso).toLocaleString('en-IE',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  const what=prompt(`Add to your calendar for ${when}:\n\n• Type a customer name to BOOK an appointment\n• Or type "Block" / "Lunch" etc. to block the time so the AI won't book it`,'');
+  if(what===null||!what.trim()) return;
+  const isBlock=/^(block|blocked|lunch|closed|off|holiday|busy)/i.test(what.trim());
+  const body = isBlock
+    ? { startISO:iso, name:'BLOCKED', reason:what.trim(), business:session.business||'' }
+    : { startISO:iso, name:what.trim(), reason:'Appointment (added in the app)', business:session.business||'' };
+  try{
+    const r=await fetch(srv+'/book',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(d.ok){ msg.style.color='var(--booked)'; msg.textContent=(isBlock?'Blocked ':'Booked ')+when+' · ref '+d.ref+' — the AI now sees this slot as taken.'; renderCalendar(); }
+    else { msg.style.color='var(--urgent)'; msg.textContent=d.result||'That slot is already taken.'; }
+  }catch(e){ msg.style.color='var(--urgent)'; msg.textContent='Could not reach the server.'; }
+}
+async function calFree(ref){
+  const srv=session.server||webhook; if(!srv||!ref) return;
+  if(!confirm('Free up this slot? The AI will be able to book it again.')) return;
+  try{ const r=await fetch(srv+'/cancel-booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference:ref})});
+    const d=await r.json(); toast(d.ok?('Freed up '+ref):'Could not free that slot'); renderCalendar();
+  }catch(e){ toast('Could not reach the server'); }
+}
+
+function renderAppts(){
+  $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display=''; $('view-insights').style.display='none'; $('view-account').style.display='none';
+  $('tab-table').classList.remove('active'); $('tab-board').classList.remove('active');
+  const q=($('search').value||'').toLowerCase().trim();
+  const list = calls.filter(c=>c.status==='booked' && (!q || (c.name+' '+c.phone+' '+c.problem+' '+(c.time||'')).toLowerCase().includes(q)))
+    .sort((a,b)=>b.received-a.received);
+  const bookedHtml = !list.length
+    ? '<div class="card"><div class="empty">No appointments from calls yet. When the AI books a caller in, it shows up here.</div></div>'
+    : `<div class="card"><div class="appts">`+ list.map(c=>`
+    <div class="appt" data-id="${c.id}" onclick="openDrawer('${c.id}')">
+      <div class="appt-when"><div class="cal-ic">📅</div><div><div class="aw-t">${esc(c.time||'Time TBC')}</div><div class="aw-s">booked by the AI</div></div></div>
+      <div class="appt-mid"><div class="who"><div class="av" style="background:${colorFor(c.name)}">${initials(c.name)}</div>
+        <div><div class="nm">${esc(c.name)}</div><div class="ph">${esc(c.problem)}</div></div></div></div>
+      <div class="appt-act" onclick="event.stopPropagation()"><a class="icon-btn" href="${telHref(c.phone)}">📞 ${esc(c.phone)}</a></div>
+    </div>`).join('') + `</div></div>`;
+
+  // ---- The diary: every slot the AI treats as taken, + block-a-time ----
+  const srv = session.server || webhook;
+  $('view-appts').innerHTML = `
+    <div class="card acct-card" style="margin-bottom:18px">
+      <div class="acct-kicker">The diary — times the AI will NOT book over</div>
+      <div class="acct-help" style="margin:8px 0 12px">Block a time below (lunch, a job, personal) and the receptionist treats it as taken — callers get offered the nearest free slot instead. Try blocking a slot, then ask the AI for that exact time.</div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+        <input id="blk-date" type="date" style="border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-family:inherit" />
+        <input id="blk-time" type="time" step="1800" style="border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-family:inherit" />
+        <input id="blk-label" placeholder="Label (e.g. Lunch, On a job)" style="border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-family:inherit;min-width:170px" />
+        <button class="btn primary" onclick="blockTime()">Block this time</button>
+      </div>
+      <div id="blk-msg" style="font-size:12.5px;margin-top:8px;min-height:16px"></div>
+      <div id="diary-list" style="margin-top:10px">${srv?'<div class="acct-help">Loading the diary…</div>':'<div class="acct-help">Demo workspace — log in as a client (or connect your line) to see the live diary. Once Google Calendar is connected, anything in your own calendar also blocks the AI automatically.</div>'}</div>
+    </div>
+    ${bookedHtml}`;
+  if(srv) loadDiary();
+}
+async function loadDiary(){
+  const srv = session.server || webhook; const box=$('diary-list'); if(!srv||!box) return;
+  try{
+    const r=await fetch(srv+'/bookings',{cache:'no-store'});
+    const list=await r.json();
+    if(!Array.isArray(list)||!list.length){ box.innerHTML='<div class="acct-help">Nothing in the diary yet — every AI booking and blocked time will appear here.</div>'; return; }
+    list.sort((a,b)=>Date.parse(a.startISO)-Date.parse(b.startISO));
+    box.innerHTML = list.map(b=>{
+      const when=new Date(b.startISO).toLocaleString('en-IE',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+      const isBlock=/^blocked/i.test(b.name||'');
+      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px">
+        <span style="font-weight:800;min-width:150px">${when}</span>
+        <span style="flex:1">${esc(isBlock?(b.reason||'Blocked'):(b.name+' — '+(b.reason||'appointment')))}</span>
+        <span class="mono" style="font-size:11px;color:var(--mut)">${esc(b.ref||'')}</span>
+        <button class="icon-btn" onclick="freeSlot('${esc(b.ref)}')">Free up</button>
+      </div>`;
+    }).join('');
+  }catch(e){ box.innerHTML='<div class="acct-help">Couldn\'t reach the diary — check the server connection.</div>'; }
+}
+async function blockTime(){
+  const srv=session.server||webhook; const msg=$('blk-msg');
+  const dt=$('blk-date').value, tm=$('blk-time').value, label=($('blk-label').value||'').trim()||'Blocked by owner';
+  msg.style.color='var(--mut)';
+  if(!srv){ msg.style.color='var(--urgent)'; msg.textContent='Demo workspace — log in as a client to use the live diary.'; return; }
+  if(!dt||!tm){ msg.style.color='var(--urgent)'; msg.textContent='Pick a date and a time.'; return; }
+  try{
+    const startISO=new Date(dt+'T'+tm).toISOString();
+    const r=await fetch(srv+'/book',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({startISO,name:'BLOCKED',reason:label,business:session.business||''})});
+    const d=await r.json();
+    if(d.ok){ msg.style.color='var(--booked)'; msg.textContent='Blocked — the AI will not book '+tm+' on '+dt+'. (Ref '+d.ref+')'; loadDiary(); }
+    else { msg.style.color='var(--urgent)'; msg.textContent=d.result||'That time is already taken.'; }
+  }catch(e){ msg.style.color='var(--urgent)'; msg.textContent='Could not reach the server.'; }
+}
+async function freeSlot(ref){
+  const srv=session.server||webhook; if(!srv||!ref) return;
+  try{ const r=await fetch(srv+'/cancel-booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference:ref})});
+    const d=await r.json(); toast(d.ok?('Freed up '+ref):'Could not free that slot'); loadDiary();
+  }catch(e){ toast('Could not reach the server'); }
+}
+
+/* ---------- Insights agent (Fin-style analytics) ---------- */
+const THEMES = [
+  {key:'Leaks & water', re:/leak|flood|burst|water|drip|overflow/i},
+  {key:'Heating & boiler', re:/boiler|heat|radiator|no hot water|gas|furnace/i},
+  {key:'Drains & blockages', re:/drain|block|clog|toilet|sewer/i},
+  {key:'New appointment', re:/book|appointment|check-?up|consult|quote|estimate|visit/i},
+  {key:'Cancellation/reschedule', re:/cancel|reschedule|change|move/i},
+  {key:'Pricing question', re:/price|cost|how much|charge|quote/i},
+  {key:'Complaint', re:/complaint|unhappy|not happy|disappoint/i},
+  {key:'General enquiry', re:/.*/i},
+];
+function theme(p){ for(const t of THEMES){ if(t.re.test(p||'')) return t.key; } return 'General enquiry'; }
+function afterHours(ts){ const d=new Date(ts); const h=d.getHours(), wd=d.getDay(); return wd===0||wd===6||h<9||h>=18; }
+// rough $ value of a job by theme — gives the owner a tangible revenue picture
+const VALUE={'Leaks & water':200,'Heating & boiler':320,'Drains & blockages':150,'New appointment':140,'Cancellation/reschedule':0,'Pricing question':130,'Complaint':0,'General enquiry':120};
+function leadValue(c){ return VALUE[theme(c.problem)] ?? 120; }
+function money(n){ return '$'+Math.round(n).toLocaleString('en-IE'); }
+
+function renderInsights(){
+  $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-account').style.display='none'; $('view-insights').style.display='';
+  $('tab-table').classList.remove('active'); $('tab-board').classList.remove('active');
+  const c=calls;
+  const total=c.length, booked=c.filter(x=>x.status==='booked').length;
+  const callbacks=c.filter(x=>x.status==='callback').length;
+  const urgent=c.filter(x=>x.urgency==='urgent').length;
+  const ah=c.filter(x=>afterHours(x.received)).length;
+  const conv= total? Math.round(booked/total*100):0;
+  // estimated revenue
+  const bookedVal=c.filter(x=>x.status==='booked').reduce((s,x)=>s+leadValue(x),0);
+  const pipelineVal=c.filter(x=>x.status==='new'||x.status==='callback').reduce((s,x)=>s+leadValue(x),0);
+  const ahVal=c.filter(x=>afterHours(x.received)).reduce((s,x)=>s+leadValue(x),0);
+  // themes
+  const counts={}; c.forEach(x=>{ const t=theme(x.problem); counts[t]=(counts[t]||0)+1; });
+  const themes=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topTheme=themes[0]?themes[0][0]:'—';
+  // busiest hour
+  const byHour={}; c.forEach(x=>{ const h=new Date(x.received).getHours(); byHour[h]=(byHour[h]||0)+1; });
+  const peak=Object.entries(byHour).sort((a,b)=>b[1]-a[1])[0];
+  const peakLabel=peak?`${((peak[0])%12)||12}${peak[0]<12?'am':'pm'}`:'—';
+
+  // recommendations (rules-based agent)
+  const recs=[];
+  if(pipelineVal>0) recs.push(`There's roughly <b>${money(pipelineVal)}</b> of work sitting in new + call-back leads — chase these today.`);
+  if(ahVal>0) recs.push(`About <b>${money(ahVal)}</b> of that came in <b>after hours</b> — money the AI caught that you'd otherwise have missed.`);
+  if(callbacks>0) recs.push(`You owe <b>${callbacks}</b> call-back${callbacks>1?'s':''} — clear these first; they're warm leads waiting.`);
+  if(urgent>0) recs.push(`<b>${urgent}</b> urgent call${urgent>1?'s':''} came in — make sure those got actioned fast.`);
+  if(ah>0) recs.push(`<b>${ah}</b> call${ah>1?'s':''} arrived <b>after hours / weekends</b> — these are the ones you'd have missed without the AI.`);
+  if(topTheme!=='—') recs.push(`Most calls are about <b>${topTheme}</b> — add a clear line on this to your website &amp; the AI's FAQ to deflect even more.`);
+  if(conv<40 && total>3) recs.push(`Booking rate is <b>${conv}%</b> — a quick follow-up text to the unbooked callers usually lifts this.`);
+  if(!recs.length) recs.push('Everything looks handled — no outstanding call-backs. Nice.');
+
+  const card=(lab,num,sub,col)=>`<div class="stat"><div class="lab">${lab}</div><div class="num" style="color:${col||'var(--ink)'}">${num}</div><div class="sub">${sub}</div></div>`;
+  $('view-insights').innerHTML = `
+    <div class="ins-head"><span class="ins-badge">Insights</span> What your calls are telling you</div>
+    <div class="stats" style="margin-bottom:18px">
+      ${ can('revenue')
+        ? card('Booked revenue', money(bookedVal), booked+' jobs won', 'var(--booked)') +
+          card('In the pipeline', money(pipelineVal), 'leads to chase', 'var(--brand)')
+        : card('Jobs booked', booked, 'won this period', 'var(--booked)') +
+          card('Revenue analytics', '$ —', 'Premium plan', 'var(--mut)') }
+      ${card('After-hours caught', ah, can('revenue')?money(ahVal)+' value':'calls saved', 'var(--callback)')}
+      ${card('Booking rate', conv+'%', total+' calls', 'var(--ink)')}
+    </div>
+    <div class="ins-grid">
+      <div class="card ins-card">
+        <h4>Why people are calling</h4>
+        ${themes.map(([t,n])=>{ const pct=Math.round(n/total*100); return `
+          <div class="theme-row"><div class="theme-top"><span>${t}</span><span>${n} · ${pct}%</span></div>
+            <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;}).join('')}
+        <div class="ins-note">Busiest around <b>${peakLabel}</b>.</div>
+      </div>
+      <div class="card ins-card">
+        <h4>Recommended next moves</h4>
+        ${recs.map(r=>`<div class="rec">${r}</div>`).join('')}
+      </div>
+    </div>
+    <div class="ins-grid" style="margin-top:18px">
+      ${chartCard('Calls per day','Last 14 days',dayBars(c))}
+      ${chartCard('Calls by hour','When your phone rings — all time',hourBars(c))}
+    </div>`;
+}
+/* ---------- insights charts (single series, hover tooltips) ---------- */
+function chartCard(title,sub,inner){
+  return `<div class="card ins-card chartcard"><h4>${title}</h4><div class="chart-sub">${sub}</div>${inner}</div>`;
+}
+function barRow(bins,labels){
+  const max=Math.max(1,...bins.map(b=>b.n));
+  const bars=bins.map(b=>{
+    const h=b.n? Math.max(6,Math.round(b.n/max*100)) : 2;
+    return `<div class="b ${b.n?'':'zero'}" style="height:${h}%"><span class="tip">${b.tip}</span></div>`;
+  }).join('');
+  return `<div class="bars">${bars}</div><div class="axis">${labels.map(l=>`<span>${l}</span>`).join('')}</div>`;
+}
+function dayBars(c){
+  const days=[...Array(14)].map((_,i)=>{
+    const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-(13-i));
+    return d;
+  });
+  const bins=days.map(d=>{
+    const next=new Date(d); next.setDate(d.getDate()+1);
+    const n=c.filter(x=>x.received>=d.getTime()&&x.received<next.getTime()).length;
+    return { n, tip:`${d.toLocaleDateString('en-IE',{weekday:'short',day:'numeric',month:'short'})} — ${n} call${n===1?'':'s'}` };
+  });
+  const labels=days.map((d,i)=> i%2? '' : d.toLocaleDateString('en-IE',{weekday:'narrow'}));
+  return barRow(bins,labels);
+}
+function hourBars(c){
+  const bins=[...Array(24)].map((_,h)=>{
+    const n=c.filter(x=>new Date(x.received).getHours()===h).length;
+    const lab=((h%12)||12)+(h<12?'am':'pm');
+    return { n, tip:`${lab} — ${n} call${n===1?'':'s'}` };
+  });
+  const labels=[...Array(24)].map((_,h)=> h%4? '' : ((h%12)||12)+(h<12?'a':'p'));
+  return barRow(bins,labels);
+}
+
+/* ---------- drag & drop (pipeline) ---------- */
+let dragId=null;
+function dragStart(e,id){ dragId=id; e.dataTransfer.effectAllowed='move'; }
+function dragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drop'); }
+function dragLeave(e){ e.currentTarget.classList.remove('drop'); }
+function dropCard(e){
+  e.preventDefault(); e.currentTarget.classList.remove('drop');
+  const stage=e.currentTarget.dataset.stage;
+  const c=calls.find(x=>x.id===dragId);
+  if(c && c.status!==stage){ c.status=stage; save(); render(); toast(`${c.name} moved to “${STATUS_LABEL[stage]}”`); }
+  dragId=null;
+}
+
+/* ---------- drawer ---------- */
+let activeId=null;
+function openDrawer(id){
+  const c=calls.find(x=>x.id===id); if(!c) return; activeId=id;
+  $('d-av').textContent=initials(c.name); $('d-av').style.background=colorFor(c.name);
+  $('d-name').textContent=c.name; $('d-phone').textContent=c.phone;
+  $('d-problem').textContent=c.problem;
+  $('d-urgency').innerHTML = c.urgency==='urgent'?'<span style="color:var(--urgent)">Urgent</span>':'Normal';
+  $('d-time').textContent=c.time||'—';
+  $('d-received').textContent=new Date(c.received).toLocaleString('en-IE',{weekday:'short',hour:'2-digit',minute:'2-digit'});
+  $('d-callbtn').href=telHref(c.phone);
+  $('d-statusrow').innerHTML = STAGES.map(s=>`<button class="chip ${c.status===s.key?'active':''}" onclick="setStatus('${s.key}')">${s.label}</button>`).join('');
+  // call record: AI summary, recording playback, full transcript (from /call-report)
+  const hasRec = c.summary || c.transcript || c.recordingUrl;
+  $('d-callrec').style.display = hasRec ? '' : 'none';
+  if(hasRec){
+    $('d-summary').textContent = c.summary || 'Call captured — transcript below.';
+    const au=$('d-audio');
+    if(c.recordingUrl){ au.src=c.recordingUrl; au.style.display=''; } else { au.removeAttribute('src'); au.style.display='none'; }
+    const tw=$('d-transcript-wrap');
+    if(c.transcript){ tw.style.display=''; tw.open=false; $('d-transcript').textContent=c.transcript; } else tw.style.display='none';
+  }
+  renderNotes(c);
+  const co=$('copilot-out'); if(co){ co.classList.remove('show'); co.textContent=''; } $('copilot-copy').style.display='none';
+  $('drawer').classList.add('show'); $('drawer-bg').classList.add('show');
+}
+function closeDrawer(){ $('drawer').classList.remove('show'); $('drawer-bg').classList.remove('show'); activeId=null; }
+
+/* ---------- Copilot: draft a follow-up for this caller ---------- */
+function draftFollowUp(){
+  const c=calls.find(x=>x.id===activeId); if(!c) return;
+  const biz=session.business||'the team';
+  const first=(c.name||'there').split(' ')[0];
+  const reason=(c.problem||'your enquiry').replace(/^Complaint —\s*/i,'').toLowerCase();
+  let msg;
+  if(c.status==='booked'){
+    msg=`Hi ${first}, it's ${biz} — just confirming your appointment${c.time&&c.time!=='—'?' for '+c.time:''}. We've got you in the diary. Reply here if anything changes — see you then!`;
+  } else if(c.urgency==='urgent'){
+    msg=`Hi ${first}, ${biz} here — we got your message about ${reason} and we're treating it as a priority. Can we call you straight back? What's the best number and time?`;
+  } else if(/complaint/i.test(c.problem||'')){
+    msg=`Hi ${first}, it's ${biz}. I'm really sorry about ${reason}. I'd like to put this right — when's a good time for a quick call today so we can sort it for you?`;
+  } else if(c.status==='callback'||c.status==='new'){
+    msg=`Hi ${first}, it's ${biz} returning your call about ${reason}. We'd love to help — would you like us to book you in? Reply with a day/time that suits, or let us know a good time to ring you.`;
+  } else {
+    msg=`Hi ${first}, it's ${biz} following up on your call about ${reason}. Anything we can help you with? Happy to get you booked in whenever suits.`;
+  }
+  const out=$('copilot-out'); out.textContent=msg; out.classList.add('show'); $('copilot-copy').style.display='inline-block';
+}
+function copyDraft(){
+  const t=$('copilot-out').textContent; if(!t) return;
+  navigator.clipboard?.writeText(t).then(()=>toast('Follow-up copied — paste into a text/WhatsApp.'),()=>{});
+}
+function renderNotes(c){
+  $('d-notes').innerHTML = (c.notes||[]).slice().reverse().map(n=>`
+    <div class="note">${esc(n.t)}<div class="meta">${ago(n.at)}</div></div>`).join('');
+}
+function setStatus(s){ const c=calls.find(x=>x.id===activeId); if(!c)return; c.status=s; save(); openDrawer(activeId); render(); toast(`Status → ${STATUS_LABEL[s]}`); }
+function markBooked(){ setStatus('booked'); }
+function addNote(){
+  const c=calls.find(x=>x.id===activeId); if(!c)return;
+  const t=$('d-note').value.trim(); if(!t)return;
+  c.notes=c.notes||[]; c.notes.push({t,at:Date.now()}); $('d-note').value=''; save(); renderNotes(c);
+}
+function markCallback(id){ const c=calls.find(x=>x.id===id); if(c&&c.status==='new'){ c.status='callback'; save(); setTimeout(render,50); } }
+
+/* ---------- log a call ---------- */
+function openLog(){ ['f-name','f-phone','f-problem','f-time'].forEach(i=>$(i).value=''); $('f-urg').value='normal'; $('log-bg').classList.add('show'); }
+function saveLog(){
+  const name=$('f-name').value.trim()||'Unknown caller';
+  const call={ id:'c'+Date.now(), name, phone:$('f-phone').value.trim()||'(no number)',
+    problem:$('f-problem').value.trim()||'General enquiry', time:$('f-time').value.trim()||'—',
+    urgency:$('f-urg').value, status:'new', received:Date.now(), notes:[] };
+  calls.unshift(call); freshIds.add(call.id); save(); closeModal('log-bg'); render(); toast('Call logged');
+}
+
+/* ---------- connect live webhook ---------- */
+function openConnect(){ $('f-webhook').value=webhook; $('conn-bg').classList.add('show'); }
+function connect(){
+  webhook=($('f-webhook').value||'').trim().replace(/\/$/,'');
+  localStorage.setItem('sl_webhook',webhook); closeModal('conn-bg');
+  if(webhook){ startSync(); toast('Connected — syncing calls from your line'); }
+}
+function disconnect(){ webhook=''; localStorage.removeItem('sl_webhook'); if(syncTimer)clearInterval(syncTimer); $('conn-state').textContent='Demo data (offline)'; closeModal('conn-bg'); toast('Disconnected'); }
+async function syncNow(){
+  // Logged-in client: pull only their own leads from /my-leads (scoped server-side).
+  const url = session.token ? session.server+'/my-leads' : (webhook ? webhook+'/leads' : '');
+  if(!url) return;
+  const headers = session.token ? { 'Authorization':'Bearer '+session.token } : {};
+  try{
+    const r=await fetch(url,{cache:'no-store', headers});
+    if(r.status===401){ toast('Session expired — please log in again.'); logout(); return; }
+    if(!r.ok) throw 0;
+    const data=await r.json();
+    let added=0;
+    data.forEach(l=>{
+      const key=(l.phone||'')+'|'+(l.receivedAt||'');
+      const rec={ summary:l.summary||'', transcript:l.transcript||'', recordingUrl:l.recordingUrl||'', channel:l.channel||'' };
+      const existing=calls.find(c=>c._k===key);
+      if(existing){
+        // call-report data lands after the lead — merge it into the record we already have
+        let changed=false;
+        for(const k of ['summary','transcript','recordingUrl']){ if(rec[k] && !existing[k]){ existing[k]=rec[k]; changed=true; } }
+        if(changed) save();
+        return;
+      }
+      const nid='w'+Date.now()+Math.random().toString(36).slice(2,6);
+      calls.unshift({ id:nid, _k:key,
+        name:l.name||'Unknown caller', phone:l.phone||'(no number)',
+        problem:l.reason||'General enquiry', time:l.preferred_time||'—',
+        urgency:l.urgency||'normal', status:'new',
+        received: l.receivedAt?Date.parse(l.receivedAt):Date.now(), notes:[], ...rec });
+      freshIds.add(nid); added++;
+    });
+    if(added){ save(); render(); toast(`${added} new call${added>1?'s':''} from your line`); }
+    const host=(session.server||webhook||'').replace(/^https?:\/\//,'');
+    $('conn-state').innerHTML='<span class="live-dot"></span> Live — '+host;
+  }catch(e){ $('conn-state').textContent='⚠ Can\'t reach line'; }
+}
+function startSync(){ syncNow(); if(syncTimer)clearInterval(syncTimer); syncTimer=setInterval(syncNow, 15000); }
+
+/* ---------- misc ---------- */
+function setView(v){ view=v; render(); }
+function setFilter(f){ filter=f; render(); }
+function setSort(v){ sortBy=v; render(); }
+function filterUrgent(){ filter='urgent'; setView('table'); }
+function closeModal(id){ $(id).classList.remove('show'); }
+function updateGreeting(){
+  const h=new Date().getHours(), part=h<12?'morning':h<18?'afternoon':'evening';
+  const cb=calls.filter(x=>x.status==='callback').length;
+  $('greeting').textContent=`Good ${part} — ${cb} call${cb===1?'':'s'} to return · ${new Date().toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'})}`;
+}
+let toastT=null;
+function toast(m){ const t=$('toast'); t.textContent=m; t.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>t.style.display='none',3000); }
+[...document.querySelectorAll('.modal-bg')].forEach(bg=>bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('show'); }));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeDrawer(); document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show')); }
+});
+
+/* ---------- login gate ---------- */
+function switchAuth(tab){
+  const login = tab==='login';
+  $('pane-login').style.display = login?'':'none';
+  $('pane-signup').style.display = login?'none':'';
+  $('tab-login').classList.toggle('active', login);
+  $('tab-signup').classList.toggle('active', !login);
+  if(!login) loadPricing();
+}
+let PLANS=[], selectedPlan='complete', appliedCode=null;
+function planServer(){ return (webhook || DEFAULT_SERVER).replace(/\/$/,''); }
+async function loadPricing(){
+  const server=planServer(); if(!server) return;
+  try{ const r=await fetch(server+'/pricing'); if(!r.ok) return; const p=await r.json();
+    PLANS=p.plans||[]; selectedPlan=(PLANS[0]||{id:'complete'}).id;
+    priceBox();
+  }catch(e){}
+}
+function renderPlans(){
+  const box=$('su-plans'); if(!box) return;
+  box.innerHTML = PLANS.map(p=>{
+    const sel=p.id===selectedPlan, prem=p.id==='premium';
+    const tag = p.id==='pro'?'<div class="tag">Most popular</div>' : (prem?'<div class="tag">Best value</div>':'');
+    return `<div class="tiercard ${sel?'sel':''} ${prem?'premium':''}" onclick="pickPlan('${p.id}')">${tag}
+      <div class="th"><span class="tn">${p.name}</span><span class="tp">$${p.monthly}<span style="font-size:11px;color:#8190ad">/mo</span></span></div>
+      <div class="tsetup">+ $${p.setup} one-time setup</div>
+      <div class="tb">${p.blurb||''}</div></div>`;
+  }).join('');
+  priceBox();
+}
+function pickPlan(id){ selectedPlan=id; appliedCode=null; $('su-codemsg').textContent=''; renderPlans(); }
+function curPlan(){ return PLANS[0]||{setup:350,monthly:150}; }
+function priceBox(){
+  const p=curPlan();
+  let setup=p.setup, monthly=p.monthly, note='';
+  if(appliedCode&&appliedCode.preview){ setup=appliedCode.preview.setup; monthly=appliedCode.preview.monthly; note=' '+appliedCode.label; }
+  const sline = (appliedCode&&setup!==p.setup)?`<s style="color:#a8a29e">$${p.setup}</s> $${setup}`:`$${setup}`;
+  const mline = (appliedCode&&monthly!==p.monthly)?`<s style="color:#a8a29e">$${p.monthly}</s> $${monthly} / month`:`$${monthly} / month`;
+  $('su-setup').innerHTML=sline; $('su-monthly').innerHTML=mline;
+}
+async function applyCode(){
+  const code=($('su-code').value||'').trim(); const msg=$('su-codemsg');
+  if(!code){ msg.textContent=''; appliedCode=null; priceBox(); return; }
+  const server=planServer(); const p=curPlan();
+  const email=($('su-email').value||'').trim();
+  try{
+    const r=await fetch(server+'/validate-discount',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,email,setup:p.setup,monthly:p.monthly})});
+    const d=await r.json();
+    if(d.ok){ appliedCode=d; msg.style.color='#0b9e6e'; msg.textContent='✓ '+d.label+' applied'; }
+    else { appliedCode=null; msg.style.color='#e2466b'; msg.textContent=d.reason||'Invalid code'; }
+  }catch(e){ msg.style.color='#e2466b'; msg.textContent='Could not check that code.'; }
+  priceBox();
+}
+async function signup(){
+  const business=($('su-biz').value||'').trim();
+  const website=($('su-web').value||'').trim();
+  const email=($('su-email').value||'').trim();
+  const password=$('su-pass').value||'';
+  const discountCode=($('su-code').value||'').trim();
+  let server=planServer();
+  $('su-err').textContent='';
+  if(!business||!email||!password){ $('su-err').textContent='Fill in your business, email and a password.'; return; }
+  if(password.length<8){ $('su-err').textContent='Password needs at least 8 characters.'; return; }
+  $('su-btn').textContent='Taking you to payment…';
+  try{
+    const r=await fetch(server+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,business,password,website,plan:selectedPlan,discountCode})});
+    const data=await r.json().catch(()=>({}));
+    if(data.url){ window.location.href=data.url; return; }       // -> Stripe Checkout
+    $('su-err').textContent=data.error||'Could not start checkout.';
+  }catch(e){ $('su-err').textContent='Could not reach the server. Check the address.'; }
+  $('su-btn').textContent='Subscribe & create account →';
+}
+async function doLogin(){
+  const user=($('lg-user').value||'').trim();
+  const pass=$('lg-pass').value||'';
+  let server=(session.server||webhook||DEFAULT_SERVER).replace(/\/$/,'');
+  $('lg-err').textContent='';
+  if(!user||!pass){ $('lg-err').textContent='Enter your email and password.'; return; }
+  $('lg-btn').textContent='Signing in…';
+  try{
+    const r=await fetch(server+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,password:pass})});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok){ $('lg-err').textContent=data.error||'Wrong email or password.'; $('lg-btn').textContent='Log in'; return; }
+    session={ mode:'client', server, token:data.token, business:data.business, user,
+      plan:data.plan||'complete', planName:data.planName||'AI Receptionist', features:data.features||[] };
+    localStorage.setItem('sl_session',JSON.stringify(session));
+    calls=[]; localStorage.removeItem('sl_calls'); // start from their real data
+    enterApp(); toast('Welcome back, '+(data.business||''));
+  }catch(e){ $('lg-err').textContent='Could not reach the server. Check the address.'; }
+  $('lg-btn').textContent='Log in';
+}
+function useDemo(){
+  session={ mode:'demo' };
+  localStorage.setItem('sl_session',JSON.stringify(session));
+  enterApp();
+}
+function logout(){
+  if(syncTimer) clearInterval(syncTimer);
+  session={}; localStorage.removeItem('sl_session'); localStorage.removeItem('sl_calls'); calls=[];
+  $('app').style.display='none'; $('login-bg').style.display='flex';
+  $('lg-pass').value='';
+}
+function enterApp(){
+  $('login-bg').style.display='none'; $('app').style.display='';
+  const ed=$('exit-demo'); if(ed) ed.style.display = (session.mode==='demo')?'inline-flex':'none';
+  $('who-state').textContent = session.business || (session.mode==='demo'?'Demo workspace':'');
+  applyPlan();
+  load(); render();
+  if(session.token){ startSync(); }
+  else if(webhook){ startSync(); }
+}
+/* ---------- plan / feature gating ---------- */
+// Demo and preset env clients see everything; paying clients see their tier.
+function planFeatures(){
+  if(session.mode==='demo' || !session.features) return null; // null = everything unlocked
+  return session.features;
+}
+function can(feat){ const f=planFeatures(); return !f || f.includes(feat); }
+function applyPlan(){
+  const badge=$('plan-badge');
+  if(session.mode==='client' && session.planName){
+    badge.style.display='flex';
+    badge.className='plan-badge tier-'+(session.plan||'pro');
+    badge.innerHTML=`<span>${session.planName||'AI Receptionist'}</span>`;
+  } else badge.style.display='none';
+  // lock nav items the plan doesn't include
+  document.querySelectorAll('.nav a[data-feat]').forEach(a=>{
+    a.classList.toggle('locked', !can(a.getAttribute('data-feat')));
+  });
+}
+function navFeat(feat,viewName){
+  if(!can(feat)){ openUpgrade(feat); return; }
+  setView(viewName);
+}
+function openUpgrade(feat){
+  const names={pipeline:'Pipeline board',insights:'AI Insights',copilot:'Copilot',web_chat:'Website chat',revenue:'Revenue analytics',reminders:'Reminders'};
+  alert(`${names[feat]||'That feature'} is part of a higher plan.\n\nUpgrade your plan to unlock it — call Southline on 085 174 0783 or reply to your welcome email and we'll switch it on instantly.`);
+}
+
+/* ---------- My receptionist (account view) ---------- */
+function planMeta(){
+  const id=session.plan||'pro';
+  return { id, name:session.planName||'AI Receptionist', price:'$150/mo' };
+}
+function renderAccount(){
+  $('view-table').style.display='none'; $('view-board').style.display='none'; $('view-appts').style.display='none'; $('view-insights').style.display='none';
+  $('view-account').style.display='';
+  $('tab-table').classList.remove('active'); $('tab-board').classList.remove('active');
+  const p=planMeta();
+  const demo=session.mode==='demo';
+  const feats=[
+    ['24/7 call answering', true],
+    ['Appointment booking (Google Calendar)', true],
+    ['Every lead texted to you', true],
+    ['Missed-call text-back', true],
+    ['Call summaries, transcripts & recordings', can('insights')],
+    ['Website chat widget', can('web_chat')],
+    ['Pipeline board + Insights + Copilot', can('pipeline')],
+    ['Reminders + review follow-ups', can('reminders')],
+    ['Revenue analytics ($ recovered)', can('revenue')],
+    ['Multi-location / custom voice / priority', can('multi_location')],
+  ];
+  $('view-account').innerHTML = `
+    <div class="acct-grid">
+      <div class="card acct-card">
+        <div class="acct-kicker">Your plan</div>
+        <div class="acct-plan">${p.name} <span class="acct-price">${p.price}</span></div>
+        <div class="acct-biz">${esc(session.business||'Demo workspace')}${demo?' \u00b7 sample data':''}</div>
+        <div class="acct-feats">
+          ${feats.map(([f,on])=>`<div class="acct-feat ${on?'':'off'}"><span class="tick">${on?'\u2713':'\u2013'}</span>${f}</div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card acct-card">
+          <div class="acct-kicker">Your AI number</div>
+          <div class="acct-num" id="acct-num">${demo?'+353 1 555 0100':'Being assigned \u2014 shown here once live'}</div>
+          <div class="acct-help">Forward missed calls to it from your existing number \u2014 dial:</div>
+          <code class="acct-code">**61*YOUR-AI-NUMBER#</code>
+          <div class="acct-help">Your own number never changes. Dial <code>##61#</code> to switch it off.</div>
+        </div>
+        ${demo ? '' : `<div class="card acct-card" style="margin-top:16px">
+          <div class="acct-kicker">Change password</div>
+          <input id="cp-cur" type="password" placeholder="Current password" style="margin-top:8px" />
+          <input id="cp-new" type="password" placeholder="New password (8+ characters)" style="margin-top:8px" />
+          <div id="cp-msg" style="font-size:12.5px;margin-top:8px;min-height:16px"></div>
+          <button class="btn primary" style="margin-top:4px" onclick="changePassword()">Update password</button>
+        </div>`}
+        <div class="card acct-card" style="margin-top:16px">
+          <div class="acct-kicker">Get this app on your phone</div>
+          <div class="acct-help" style="margin-top:6px">iPhone: Share \u2192 "Add to Home Screen". Android: menu \u2192 "Install app".</div>
+          <div class="acct-kicker" style="margin-top:16px">Support</div>
+          <div class="acct-help" style="margin-top:6px">Southline \u00b7 <a href="tel:0851740783" style="font-weight:700">085 174 0783</a> \u00b7 <a href="mailto:agencysouthline@gmail.com" style="font-weight:700">agencysouthline@gmail.com</a></div>
+        </div>
+      </div>
+    </div>`;
+}
+async function changePassword(){
+  const cur=$('cp-cur').value||'', nw=$('cp-new').value||'', msg=$('cp-msg');
+  msg.style.color='var(--mut)';
+  if(nw.length<8){ msg.style.color='var(--urgent)'; msg.textContent='New password must be at least 8 characters.'; return; }
+  try{
+    const r=await fetch(session.server+'/change-password',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.token},
+      body:JSON.stringify({currentPassword:cur,newPassword:nw})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok){ msg.style.color='var(--booked)'; msg.textContent='Password updated. Use it next time you log in.'; $('cp-cur').value=''; $('cp-new').value=''; }
+    else { msg.style.color='var(--urgent)'; msg.textContent=d.error||'Could not update password.'; }
+  }catch(e){ msg.style.color='var(--urgent)'; msg.textContent='Could not reach the server.'; }
+}
+
+/* ---------- app install (PWA) ---------- */
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault(); installEvt=e;
+  const b=$('install-btn'); if(b) b.style.display='';
+});
+// iOS never fires beforeinstallprompt — offer the Add-to-Home-Screen route instead
+if(/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.matchMedia('(display-mode: standalone)').matches){
+  addEventListener('DOMContentLoaded',()=>{ const b=$('install-btn'); if(b) b.style.display=''; });
+}
+async function installApp(){
+  if(installEvt){ installEvt.prompt(); const r=await installEvt.userChoice; if(r.outcome==='accepted'){ $('install-btn').style.display='none'; toast('App installed — check your home screen'); } installEvt=null; return; }
+  // iOS has no prompt API — show the two-tap instructions
+  alert('To install on iPhone/iPad:\n\n1. Tap the Share button (square with arrow)\n2. Tap "Add to Home Screen"\n\nThe CRM then opens like a normal app.');
+}
+
+/* ---------- boot ---------- */
+(function boot(){
+  let signup = null;
+  try{ signup = new URLSearchParams(location.search).get('signup'); }catch(e){}
+  if(session.mode && !signup){ enterApp(); return; }
+  $('login-bg').style.display='flex';
+  if(signup==='success'){
+    switchAuth('login');
+    $('lg-err').style.color='#34d399';
+    $('lg-err').textContent='Payment received — your receptionist is being set up. Log in to your inbox.';
+  } else if(signup==='cancel'){
+    switchAuth('signup');
+    $('su-err').textContent='Payment cancelled — you can try again any time.';
+  }
+})();
+</script>
+</body>
+</html>

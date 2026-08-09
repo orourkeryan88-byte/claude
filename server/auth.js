@@ -1,0 +1,130 @@
+/**
+ * Per-client accounts & login for the CRM.
+ * ----------------------------------------
+ * Each client gets a username + password. They log into the SAME dashboard URL
+ * and see ONLY their own leads (scoped by their business name on the server —
+ * this is the secure part; a login screen alone is not security).
+ *
+ * Accounts live in the CLIENT_ACCOUNTS env var (JSON array). Create one with:
+ *   node scripts/create-client-account.js "joes@plumbing.ie" "Joe's Plumbing" "theirPassword"
+ * and paste the printed object into CLIENT_ACCOUNTS.
+ *
+ * Endpoints added:
+ *   POST /login      { username, password }  -> { token, business }
+ *   GET  /my-leads   (Authorization: Bearer <token>) -> only that client's leads
+ */
+
+const crypto = require("crypto");
+const store = require("./store");
+const plans = require("./plans");
+
+function hashPassword(password, salt) {
+  salt = salt || crypto.randomBytes(16).toString("hex");
+  const hash = crypto.scryptSync(String(password), salt, 32).toString("hex");
+  return { salt, hash };
+}
+function verifyPassword(password, salt, hash) {
+  try {
+    const h = crypto.scryptSync(String(password), salt, 32).toString("hex");
+    return crypto.timingSafeEqual(Buffer.from(h), Buffer.from(hash));
+  } catch (e) { return false; }
+}
+
+function loadAccounts() {
+  // From env (production) …
+  if (process.env.CLIENT_ACCOUNTS) {
+    try { return JSON.parse(process.env.CLIENT_ACCOUNTS); } catch (e) { console.warn("CLIENT_ACCOUNTS is not valid JSON"); }
+  }
+  // … else a demo account so the login works out of the box for testing.
+  const demo = hashPassword("demo1234");
+  return [{ username: "demo@clinic.com", business: "Southline Demo Clinic", salt: demo.salt, hash: demo.hash }];
+}
+
+const tokens = new Map(); // token -> { business, exp }
+const TOKEN_TTL = 12 * 60 * 60 * 1000;
+
+function issueToken(business, plan, username) {
+  const t = crypto.randomBytes(24).toString("hex");
+  tokens.set(t, { business, plan: plan || plans.DEFAULT_PLAN, username: username || "", exp: Date.now() + TOKEN_TTL });
+  return t;
+}
+function readToken(req) {
+  const h = req.headers.authorization || "";
+  const t = h.startsWith("Bearer ") ? h.slice(7) : (req.query.token || "");
+  const rec = tokens.get(t);
+  if (!rec) return null;
+  if (rec.exp < Date.now()) { tokens.delete(t); return null; }
+  return rec;
+}
+
+// Look up an account: env accounts (always active) first, then the sign-up store.
+function getAccount(envAccounts, username) {
+  const u = String(username || "").toLowerCase();
+  const env = envAccounts.find((a) => (a.username || "").toLowerCase() === u);
+  if (env) return { ...env, active: true };
+  return store.find(username) || null;
+}
+
+// Mount onto the existing app. getLeads() returns the in-memory leads array.
+function mountAuth(app, getLeads) {
+  const envAccounts = loadAccounts();
+
+  app.post("/login", (req, res) => {
+    const { username, password } = req.body || {};
+    const acct = getAccount(envAccounts, username);
+    if (!acct || !verifyPassword(password, acct.salt, acct.hash)) {
+      return res.status(401).json({ error: "Wrong email or password." });
+    }
+    if (acct.active === false) {
+      return res.status(402).json({ error: "Your subscription isn't active yet — finish payment, then log in." });
+    }
+    const plan = plans.getPlan(acct.plan);
+    res.json({ token: issueToken(acct.business, plan.id, acct.username), business: acct.business,
+      plan: plan.id, planName: plan.name, features: plan.features });
+  });
+
+  // Client changes their own password (must give the current one).
+  app.post("/change-password", (req, res) => {
+    const rec = readToken(req);
+    if (!rec) return res.status(401).json({ error: "Please log in again." });
+    const { currentPassword, newPassword } = req.body || {};
+    if (!newPassword || String(newPassword).length < 8)
+      return res.status(400).json({ error: "New password must be at least 8 characters." });
+    const acct = getAccount(envAccounts, rec.username);
+    if (!acct) return res.status(404).json({ error: "Account not found." });
+    if (!store.find(rec.username))
+      return res.status(400).json({ error: "This is a preset account — ask Southline to change its password." });
+    if (!verifyPassword(currentPassword, acct.salt, acct.hash))
+      return res.status(401).json({ error: "Your current password isn't right." });
+    const { salt, hash } = hashPassword(newPassword);
+    store.upsert({ username: rec.username, salt, hash });
+    res.json({ ok: true });
+  });
+
+  app.get("/my-leads", (req, res) => {
+    const rec = readToken(req);
+    if (!rec) return res.status(401).json({ error: "Please log in again." });
+    const all = (getLeads && getLeads()) || [];
+    // spam-screened calls stay out of the client's inbox (owner can audit via /admin/leads)
+    res.json(all.filter((l) => (l.business || "") === rec.business && !l.spam));
+  });
+
+  app.get("/me", (req, res) => {
+    const rec = readToken(req);
+    if (!rec) return res.status(401).json({ error: "not logged in" });
+    const plan = plans.getPlan(rec.plan);
+    res.json({ business: rec.business, plan: plan.id, planName: plan.name, features: plan.features });
+  });
+
+  // Provisioning progress for the logged-in client.
+  app.get("/setup-status", (req, res) => {
+    const rec = readToken(req);
+    if (!rec) return res.status(401).json({ error: "not logged in" });
+    const acct = (store.read() || []).find((a) => a.business === rec.business);
+    res.json({ business: rec.business, provisioning: (acct && acct.provisioning) || { status: "ready", steps: [] } });
+  });
+
+  console.log(`Client login mounted (${envAccounts.length} preset account${envAccounts.length === 1 ? "" : "s"} + sign-ups; POST /login, GET /my-leads)`);
+}
+
+module.exports = { mountAuth, hashPassword, verifyPassword, _tokens: tokens };

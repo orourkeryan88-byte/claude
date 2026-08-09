@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stop losing jobs to missed calls — Southline</title>
+<meta name="description" content="An AI receptionist that answers when you can't, books the job, and texts you the lead. €800 setup, €350/month, everything included." />
+<meta name="color-scheme" content="light dark" />
+<meta property="og:title" content="Right now, you're losing jobs — and you don't even know it" />
+<meta property="og:description" content="Your own AI receptionist — answers when you can't, books the job, texts you every lead." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230E6B52'/%3E%3Ctext x='50' y='70' font-size='56' text-anchor='middle'%3E%F0%9F%94%A7%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<style>
+  :root{
+    --bg:#F5F3EF; --surface:#FFFFFF; --ink:#1C2B26; --muted:#5E6B64;
+    --line:#E4E0D8; --brand:#0E6B52; --brand-deep:#0A3F31; --gold:#C2751A; --gold-soft:#F5E6CD;
+    --hero:#0C3227; --on-hero:#EAF1EC; --on-hero-mut:#A9C2B6;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --shadow:0 1px 2px rgba(12,50,39,.05),0 12px 30px -14px rgba(12,50,39,.20);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0A0E0C; --surface:#111815; --ink:#E7EFEA; --muted:#93A79E; --line:#212C27;
+      --brand:#2FA681; --gold:#E5A64F; --gold-soft:#2A2214; --hero:#08201A; --on-hero:#EAF1EC; --on-hero-mut:#93A79E; }
+  }
+  :root[data-theme="dark"]{ --bg:#0A0E0C; --surface:#111815; --ink:#E7EFEA; --muted:#93A79E; --line:#212C27;
+    --brand:#2FA681; --gold:#E5A64F; --gold-soft:#2A2214; --hero:#08201A; --on-hero:#EAF1EC; --on-hero-mut:#93A79E; }
+  :root[data-theme="light"]{ --bg:#F5F3EF; --surface:#FFFFFF; --ink:#1C2B26; --muted:#5E6B64; --line:#E4E0D8;
+    --brand:#0E6B52; --gold:#C2751A; --gold-soft:#F5E6CD; --hero:#0C3227; --on-hero:#EAF1EC; --on-hero-mut:#A9C2B6; }
+
+  *{box-sizing:border-box}
+  .doc{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;letter-spacing:-.01em;margin:0;padding:0 0 40px}
+  .wrap{max-width:560px;margin-inline:auto;padding-inline:20px}
+  h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.025em;line-height:1.12}
+  p{margin:0}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+
+  .hero{background:linear-gradient(165deg,var(--hero),var(--brand-deep));color:var(--on-hero);
+    padding:48px 0 42px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(420px 220px at 100% 0,color-mix(in srgb,var(--gold) 22%,transparent),transparent 70%);pointer-events:none}
+  .hero .wrap{position:relative}
+  .hero .eyebrow{color:var(--gold)}
+  .hero h1{font-size:2.15rem;font-weight:800;margin:14px 0 0}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero .sub{color:var(--on-hero-mut);font-size:1.08rem;margin-top:16px}
+  .badge{display:inline-block;margin-top:22px;font-size:.72rem;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);
+    padding:6px 13px;border-radius:999px}
+
+  section{padding-top:38px}
+  .lead{font-size:1.12rem}
+  .lead b{color:var(--brand);font-weight:750}
+
+  .story{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);
+    border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-top:18px;font-size:1.05rem}
+  .story p + p{margin-top:12px}
+  .story .kick{font-family:var(--serif);font-size:1.15rem;color:var(--brand);font-weight:700}
+  .story b{color:var(--ink);font-weight:750}
+
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;
+    box-shadow:var(--shadow);margin-top:16px;text-align:center}
+  .stat .big{font-family:var(--serif);font-size:2.6rem;color:var(--brand);letter-spacing:-.03em;line-height:1}
+  .stat p{color:var(--muted);margin-top:10px;font-size:.98rem}
+
+  .sec-head{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+  .sec-head .eyebrow{display:block;color:var(--gold);margin-bottom:10px}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 18px 18px 16px;
+    box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start}
+  .card + .card{margin-top:12px}
+  .card .ic{flex:0 0 auto;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+    background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand)}
+  .card .ic svg{width:21px;height:21px}
+  .card h3{font-size:1.06rem;font-weight:750}
+  .card p{color:var(--muted);font-size:.96rem;margin-top:4px}
+
+  .reassure{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:10px}
+  .reassure li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:13px 15px;box-shadow:var(--shadow);font-weight:600}
+  .reassure li svg{flex:0 0 auto;width:20px;height:20px;color:var(--brand);margin-top:2px}
+
+  .faq{margin-top:8px}
+  .qa{padding:16px 0;border-bottom:1px solid var(--line)}
+  .qa:last-child{border-bottom:0}
+  .qa .q{font-weight:750;font-size:1.04rem}
+  .qa .a{color:var(--muted);margin-top:5px;font-size:.98rem}
+
+  /* pricing */
+  .price{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:6px 20px;
+    box-shadow:var(--shadow);margin-top:16px}
+  .prow{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line)}
+  .prow:last-child{border-bottom:0}
+  .prow .pcol{flex:0 0 96px}
+  .pk{font-family:var(--serif);font-size:2rem;color:var(--brand);letter-spacing:-.02em;line-height:1}
+  .pv{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:5px;font-weight:700}
+  .prow p{color:var(--muted);font-size:.97rem}
+
+  .value{background:linear-gradient(165deg,var(--hero),var(--brand-deep));color:var(--on-hero);
+    border-radius:22px;padding:30px 24px;margin-top:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .value::after{content:"";position:absolute;inset:0;background:radial-gradient(360px 200px at 0 100%,color-mix(in srgb,var(--gold) 18%,transparent),transparent 70%)}
+  .value>*{position:relative}
+  .value .q{font-family:var(--serif);font-size:1.28rem;line-height:1.38}
+  .value .q b{color:var(--gold)}
+
+  .cta{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px 22px;
+    text-align:center;box-shadow:var(--shadow);margin-top:22px}
+  .cta h2{font-size:1.45rem;font-weight:800}
+  .cta p{color:var(--muted);margin-top:8px}
+  .btn{display:inline-block;margin-top:18px;background:var(--gold);color:#241608;font-weight:750;
+    font-size:1.05rem;padding:15px 30px;border-radius:999px;text-decoration:none;
+    box-shadow:0 8px 20px -8px color-mix(in srgb,var(--gold) 70%,transparent)}
+  .cta .small{margin-top:12px;font-size:.85rem;color:var(--muted)}
+  .foot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:26px}
+  .foot b{color:var(--ink)}
+</style>
+
+<div class="doc">
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">For plumbers</p>
+      <h1>Right now, you're losing jobs — <em>and you don't even know it.</em></h1>
+      <p class="sub">Every call you can't get to on a job is a customer ringing the next plumber instead. Here's how you stop it — without changing a thing about how you work.</p>
+      <span class="badge">Your own AI receptionist</span>
+    </div>
+  </header>
+
+  <section class="wrap">
+    <h2 class="sec-head"><span class="eyebrow">Sound familiar?</span>Picture your Tuesday.</h2>
+    <div class="story">
+      <p>It's 2pm. You're on your knees fitting a boiler, hands covered in muck. The phone starts going in your pocket — no chance of answering it.</p>
+      <p>That caller? Someone looking for a <b>full boiler install</b> — a two, three grand job. They get no answer. They don't leave a voicemail. They just ring the next plumber down the list.</p>
+      <p class="kick">By the time you're finished up, that job's gone — and you never even knew it came in.</p>
+    </div>
+    <p class="lead" style="margin-top:20px">And it's not a once-off. It's happening <b>every single week</b> — you just never see the ones that got away.</p>
+  </section>
+
+  <section class="wrap">
+    <div class="stat">
+      <div class="big">€45,000+</div>
+      <p>a year is what a busy tradesman loses to calls they couldn't get to. You only need to miss one or two good jobs a month to be there.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 class="sec-head"><span class="eyebrow">The fix, in plain English</span>A receptionist that answers when you can't.</h2>
+
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1z"/></svg></span>
+      <div><h3>Picks up every call, day or night</h3><p>In your name. After hours, weekends, and the second you can't get to the phone.</p></div>
+    </div>
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+      <div><h3>Finds out the job &amp; books them in</h3><p>Has a normal chat, gets what they need, and puts them straight in your diary.</p></div>
+    </div>
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></span>
+      <div><h3>Texts you the lead on the spot</h3><p>Name, number and the job land on your phone the moment the call ends. That boiler install is now yours.</p></div>
+    </div>
+    <div class="card">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <div><h3>Bins the time-wasters</h3><p>Sales and spam calls get shut down politely. You only hear about real work.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 class="sec-head"><span class="eyebrow">The easy part</span>You don't change a thing.</h2>
+    <ul class="reassure">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No long contract — cancel any time</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Set up and working within a day</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> You still answer calls yourself whenever you want</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> It only catches the ones you'd have missed anyway</li>
+    </ul>
+    <p class="lead" style="margin-top:18px">And here's the bit lads love: <b>you get your own dedicated number for it</b> — so your personal phone isn't ringing a hundred times a day. The receptionist fields the calls, and only the real jobs land on your phone as a text. Your evenings are your own again.</p>
+  </section>
+
+  <section class="wrap" id="pricing">
+    <h2 class="sec-head"><span class="eyebrow">The investment</span>Straight pricing — no small print.</h2>
+    <div class="price">
+      <div class="prow">
+        <div class="pcol"><div class="pk">€800</div><div class="pv">One-off setup</div></div>
+        <p>We build the whole thing around <b>your</b> business — your services, your prices, your hours, in your voice. Done once, done right.</p>
+      </div>
+      <div class="prow">
+        <div class="pcol"><div class="pk">€350</div><div class="pv">Per month</div></div>
+        <p>Everything in. Answers every call, books every job, texts you every lead. No add-ons, no per-call charges, no catches.</p>
+      </div>
+    </div>
+
+    <div class="value">
+      <div class="q">Now hold that up against the <b>€45,000 a year</b> you're losing to missed calls. One boiler install covers your setup and your first few months — and every job it catches after that is money you'd have handed to the next plumber. <b>It doesn't cost you money. It stops you losing it.</b></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 class="sec-head"><span class="eyebrow">Fair questions</span>The stuff you're thinking.</h2>
+    <div class="faq">
+      <div class="qa"><div class="q">"Will it sound like a robot?"</div><div class="a">No — it holds a proper back-and-forth conversation. Most callers won't cop that it isn't a person.</div></div>
+      <div class="qa"><div class="q">"How long does it take to set up?"</div><div class="a">Usually up and running within a day. I handle the whole setup for you, built around your business.</div></div>
+      <div class="qa"><div class="q">"€350 a month — is it worth it?"</div><div class="a">One job a month it saves you pays for it several times over. Miss even one boiler install and it's cost you far more than a year of this.</div></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="cta">
+      <h2>Let's have a quick chat.</h2>
+      <p>Ten minutes on the phone — I'll show you roughly how many jobs you're likely missing and get you set up. You're up and running in a day.</p>
+      <a class="btn" href="tel:0851740783">Talk to Ryan</a>
+      <p class="small">Ryan · Founder, Southline — or drop a text and I'll ring you back when it suits.</p>
+    </div>
+    <p class="foot">€800 setup · €350/month · Live in a day<br>Brought to you by <b>Southline</b></p>
+  </section>
+</div>
+</body>
+</html>

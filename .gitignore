@@ -1,0 +1,12 @@
+node_modules/
+.env
+server/.env
+clients/
+*.log
+.DS_Store
+server/accounts.json
+server/discounts.json
+server/product-config.json
+admin-app/out/
+server/bookings.json
+ghl-transfer-pack.zip

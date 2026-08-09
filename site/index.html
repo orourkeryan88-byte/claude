@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Southline — the receptionist that never sleeps</title>
+<meta name="description" content="An AI receptionist that answers every call, books appointments, and texts you the lead — for a fraction of the cost of hiring. Built in Dublin." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%230a0a0a'/%3E%3Ctext x='50' y='70' font-size='62' text-anchor='middle' fill='%23ffffff' font-family='Georgia' font-style='italic'%3ES%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0a; --paper:#ffffff; --paper2:#f6f5f2; --line:#e7e4dd; --mut:#8a867e;
+    --dot:#12805c; --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Inter",-apple-system,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;letter-spacing:-.011em;overflow-x:hidden}
+  h1,h2,h3{margin:0;font-weight:500;letter-spacing:-.03em;line-height:.98}
+  .serif{font-family:"Fraunces",Georgia,serif}
+  .ital{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500}
+  .mono{font-family:"JetBrains Mono",monospace;font-weight:500;letter-spacing:.02em}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 28px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
+
+  /* scroll progress */
+  #progress{position:fixed;top:0;left:0;height:2px;background:var(--ink);width:0;z-index:100}
+
+  /* nav */
+  nav{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;transition:transform .4s var(--ease),background .3s,border-color .3s;
+    border-bottom:1px solid transparent;mix-blend-mode:difference;color:#fff}
+  nav.solid{mix-blend-mode:normal;color:var(--ink);background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-color:var(--line)}
+  nav.hide{transform:translateY(-100%)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-.02em}
+  .brand .m{width:26px;height:26px;border-radius:7px;background:currentColor;display:grid;place-items:center}
+  .brand .m span{color:var(--paper);font-family:"Fraunces",serif;font-style:italic;font-size:16px;mix-blend-mode:difference}
+  .navlinks{display:flex;gap:28px;align-items:center;font-size:14px;font-weight:500}
+  .navlinks a.cta{border:1px solid currentColor;padding:8px 15px;border-radius:100px;font-weight:600}
+  @media(max-width:760px){.navlinks a:not(.cta){display:none}}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;padding:15px 26px;border-radius:100px;
+    cursor:pointer;border:1px solid var(--ink);transition:.25s var(--ease);position:relative;will-change:transform}
+  .btn.fill{background:var(--ink);color:var(--paper)}
+  .btn.fill:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.18)}
+  .btn.hollow{background:transparent;color:var(--ink)}
+  .btn.hollow:hover{background:var(--ink);color:var(--paper)}
+  .arrow{transition:transform .25s var(--ease)}
+  .btn:hover .arrow{transform:translateX(4px)}
+
+  /* reveal system */
+  [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+  [data-reveal].in{opacity:1;transform:none}
+  [data-reveal="clip"]{opacity:1;transform:none;clip-path:inset(0 100% 0 0);transition:clip-path 1.1s var(--ease)}
+  [data-reveal="clip"].in{clip-path:inset(0 0 0 0)}
+  [data-reveal="scale"]{opacity:0;transform:scale(1.06)}
+  [data-reveal="scale"].in{opacity:1;transform:none}
+  .stagger>*{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .stagger.in>*{opacity:1;transform:none}
+
+  /* HERO */
+  .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 60px;position:relative}
+  .hero .kick{margin-bottom:26px}
+  .hero h1{font-size:clamp(46px,9vw,132px);font-weight:500}
+  .hero h1 .word{display:inline-block;overflow:hidden;vertical-align:top}
+  .hero h1 .word i{display:inline-block;transform:translateY(110%);transition:transform 1s var(--ease)}
+  .hero.lit h1 .word i{transform:none}
+  .hero h1 .word:nth-child(2) i{transition-delay:.06s}
+  .hero h1 .word:nth-child(3) i{transition-delay:.12s}
+  .hero h1 .word:nth-child(4) i{transition-delay:.18s}
+  .hero h1 .word:nth-child(5) i{transition-delay:.24s}
+  .hero h1 .word:nth-child(6) i{transition-delay:.30s}
+  .hero-sub{max-width:540px;margin:32px 0 38px;font-size:clamp(17px,2vw,21px);color:#33312c;line-height:1.5;
+    opacity:0;transform:translateY(20px);transition:.9s var(--ease) .5s}
+  .hero.lit .hero-sub{opacity:1;transform:none}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;opacity:0;transform:translateY(20px);transition:.9s var(--ease) .65s}
+  .hero.lit .hero-cta{opacity:1;transform:none}
+  .hero-meta{position:absolute;right:28px;bottom:60px;text-align:right;font-size:13px;color:var(--mut);line-height:1.7;
+    opacity:0;transition:.9s var(--ease) .9s}
+  .hero.lit .hero-meta{opacity:1}
+  @media(max-width:760px){.hero-meta{display:none}}
+  .scrollcue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-size:11px;color:var(--mut);
+    letter-spacing:.2em;text-transform:uppercase;font-family:"JetBrains Mono",monospace}
+  .scrollcue::after{content:"";display:block;width:1px;height:34px;background:var(--line);margin:10px auto 0;
+    animation:cue 2.2s var(--ease) infinite}
+  @keyframes cue{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}
+    55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+  /* marquee */
+  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;overflow:hidden;white-space:nowrap;margin-top:20px}
+  .marquee .track{display:inline-block;animation:scrollx 34s linear infinite}
+  .marquee span{font-family:"Fraunces",serif;font-style:italic;font-size:26px;margin:0 30px;color:#bdb9b0}
+  .marquee span b{color:var(--ink);font-style:normal;font-weight:500}
+  @keyframes scrollx{to{transform:translateX(-50%)}}
+
+  /* generic section */
+  section{position:relative}
+  .pad{padding:130px 0}
+  .lead{font-size:clamp(30px,4.6vw,58px);font-weight:500;line-height:1.02;max-width:16ch}
+  .lead em{font-family:"Fraunces",serif;font-style:italic}
+  .colw{max-width:620px}
+
+  /* the cost / counter */
+  .cost{background:var(--ink);color:var(--paper)}
+  .cost .eyebrow{color:#8a867e}
+  .bignum{font-family:"Fraunces",serif;font-size:clamp(70px,15vw,220px);line-height:.9;font-weight:500;letter-spacing:-.04em}
+  .cost .sub{color:#b8b4ab;max-width:38ch;font-size:18px;line-height:1.55;margin-top:24px}
+
+  /* pinned scrollytelling */
+  .pin-outer{position:relative}
+  .pin{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;overflow:hidden}
+  @media(max-width:820px){.pin{grid-template-columns:1fr;height:auto;position:static;padding:40px 0}}
+  .pin-left{padding-left:8px}
+  .pin-left .step-index{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--mut)}
+  .pin-step{position:absolute;inset:auto 0;opacity:0;transform:translateY(24px);transition:.6s var(--ease);pointer-events:none}
+  .pin-step.on{opacity:1;transform:none;pointer-events:auto}
+  @media(max-width:820px){.pin-step{position:static;opacity:1;transform:none;margin-bottom:40px}}
+  .pin-step h3{font-size:clamp(30px,4vw,52px);margin:14px 0 16px}
+  .pin-step p{color:#4a463f;font-size:18px;line-height:1.6;max-width:44ch}
+  .pin-right{position:relative;height:70vh;display:grid;place-items:center}
+  @media(max-width:820px){.pin-right{height:auto}}
+  .pin-visual{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.96);transition:.6s var(--ease)}
+  .pin-visual.on{opacity:1;transform:none}
+  @media(max-width:820px){.pin-visual{position:static;opacity:1;transform:none}}
+  .glyph{font-family:"Fraunces",serif;font-style:italic;font-size:clamp(90px,16vw,220px);line-height:1;
+    color:var(--ink);text-align:center}
+  .glyph small{display:block;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:13px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--mut);margin-top:18px}
+  .pin-prog{position:absolute;left:8px;bottom:12%;display:flex;flex-direction:column;gap:8px}
+  @media(max-width:820px){.pin-prog{display:none}}
+  .pin-prog b{width:2px;height:34px;background:var(--line);display:block}
+  .pin-prog b.on{background:var(--ink)}
+
+  /* device frame */
+  .device{border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.28);background:#fff}
+  .device .bar{display:flex;gap:7px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--paper2)}
+  .device .bar i{width:11px;height:11px;border-radius:50%;background:#d9d5cc;display:block}
+  .device img{width:100%;display:block}
+  .showcase{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  @media(max-width:900px){.showcase{grid-template-columns:1fr;gap:36px}}
+
+  /* stacking feature cards */
+  .stack{position:relative}
+  .card{position:sticky;top:90px;background:var(--paper);border:1px solid var(--line);border-radius:20px;
+    padding:44px;margin-bottom:26px;box-shadow:0 30px 60px -40px rgba(0,0,0,.2)}
+  .card:nth-child(1){top:90px}.card:nth-child(2){top:110px}.card:nth-child(3){top:130px}
+  .card:nth-child(4){top:150px}.card:nth-child(5){top:170px}
+  .card .n{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--mut)}
+  .card h3{font-size:clamp(26px,3.4vw,40px);margin:12px 0 14px}
+  .card p{color:#4a463f;font-size:17.5px;line-height:1.6;max-width:52ch}
+  .card .big{font-family:"Fraunces",serif;font-style:italic;font-size:clamp(40px,7vw,90px);color:var(--paper2);
+    position:absolute;right:38px;top:28px;line-height:1;pointer-events:none}
+
+  /* horizontal scroll */
+  .hori-outer{height:300vh;position:relative}
+  .hori-sticky{position:sticky;top:0;height:100svh;display:flex;align-items:center;overflow:hidden}
+  .hori-track{display:flex;gap:26px;padding:0 28px;will-change:transform}
+  .htile{flex:0 0 clamp(280px,42vw,460px);height:58vh;border:1px solid var(--line);border-radius:20px;padding:36px;
+    display:flex;flex-direction:column;justify-content:space-between;background:var(--paper2)}
+  .htile:nth-child(even){background:var(--ink);color:var(--paper)}
+  .htile .k{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase;opacity:.6}
+  .htile h4{font-size:clamp(24px,3vw,40px);font-weight:500;letter-spacing:-.03em;line-height:1.02}
+  @media(max-width:820px){.hori-outer{height:auto}.hori-sticky{height:auto;display:block;padding:60px 0}
+    .hori-track{flex-direction:column;transform:none!important}.htile{flex:auto;height:auto;min-height:240px}}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+  @media(max-width:760px){.stats{grid-template-columns:1fr}}
+  .stat{padding:44px 8px;border-bottom:1px solid var(--line)}
+  .stat:not(:last-child){border-right:1px solid var(--line)}
+  @media(max-width:760px){.stat{border-right:none!important}}
+  .stat .v{font-family:"Fraunces",serif;font-size:clamp(48px,7vw,92px);line-height:1}
+  .stat .l{color:var(--mut);font-size:14.5px;margin-top:10px;max-width:26ch}
+
+  /* pricing */
+  .price{background:var(--ink);color:var(--paper);border-radius:24px;padding:56px;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+  @media(max-width:820px){.price{grid-template-columns:1fr;padding:38px}}
+  .price .amt{font-family:"Fraunces",serif;font-size:clamp(64px,11vw,120px);line-height:.9}
+  .price .amt small{font-size:22px;color:#b8b4ab;font-family:"Inter"}
+  .price ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+  .price li{display:flex;gap:12px;align-items:baseline;font-size:16px;color:#e9e6df}
+  .price li::before{content:"—";color:#6f6b63}
+
+  /* faq */
+  .faq-item{border-top:1px solid var(--line);padding:26px 0;cursor:pointer}
+  .faq-item:last-child{border-bottom:1px solid var(--line)}
+  .faq-q{display:flex;justify-content:space-between;gap:20px;font-size:clamp(19px,2.4vw,26px);font-weight:500;letter-spacing:-.02em}
+  .faq-q .pm{font-family:"Fraunces",serif;transition:transform .3s var(--ease)}
+  .faq-item.open .pm{transform:rotate(45deg)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .5s var(--ease);color:#4a463f;font-size:17px;line-height:1.6}
+  .faq-item.open .faq-a{max-height:220px;padding-top:16px}
+
+  /* final cta */
+  .final{text-align:center;padding:150px 0}
+  .final h2{font-size:clamp(42px,8vw,120px);font-weight:500}
+
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--mut);font-size:14px}
+  .foot-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;align-items:flex-end}
+  .foot-grid a{color:var(--ink)}
+
+  /* cursor dot (desktop) */
+  #dot{position:fixed;width:9px;height:9px;border-radius:50%;background:var(--ink);pointer-events:none;z-index:200;
+    transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;mix-blend-mode:difference;left:-20px;top:-20px}
+  @media(hover:none){#dot{display:none}}
+  .parallax{will-change:transform}
+  ::selection{background:var(--ink);color:var(--paper)}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="dot"></div>
+
+<nav id="nav">
+  <a class="brand" href="#top"><span class="m"><span>S</span></span> Southline</a>
+  <div class="navlinks">
+    <a href="#how">How it works</a>
+    <a href="#work">What it does</a>
+    <a href="#price">Pricing</a>
+    <a class="cta" href="https://orourkeryan88-byte.github.io/relier-/receptionist/dashboard/">Get started</a>
+  </div>
+</nav>
+
+<a id="top"></a>
+<header class="hero wrap" id="hero">
+  <div class="kick eyebrow" data-reveal>Southline · AI receptionist · Dublin</div>
+  <h1 class="serif">
+    <span class="word"><i>Never</i></span> <span class="word"><i>miss</i></span>
+    <span class="word"><i>another</i></span><br>
+    <span class="word"><i class="ital">customer</i></span> <span class="word"><i>call.</i></span>
+  </h1>
+  <p class="hero-sub">A receptionist that answers every call in one ring, books the appointment, screens the time-wasters, and texts you the lead — day, night, weekend. For less than a coffee a day.</p>
+  <div class="hero-cta">
+    <a class="btn fill" href="https://orourkeryan88-byte.github.io/relier-/receptionist/">Hear it answer a call <span class="arrow">→</span></a>
+    <a class="btn hollow" href="#price">See pricing</a>
+  </div>
+  <div class="hero-meta mono">Answers in 1 ring<br>Books · texts · screens<br>From $150 / month</div>
+  <div class="scrollcue">Scroll</div>
+</header>
+
+<div class="marquee">
+  <div class="track">
+    <span>Plumbers <b>·</b> Dentists <b>·</b> Salons <b>·</b> Vets <b>·</b> Electricians <b>·</b> Clinics <b>·</b> Roofers <b>·</b> Barbers <b>·</b> Physios <b>·</b> Garages <b>·</b> </span>
+    <span>Plumbers <b>·</b> Dentists <b>·</b> Salons <b>·</b> Vets <b>·</b> Electricians <b>·</b> Clinics <b>·</b> Roofers <b>·</b> Barbers <b>·</b> Physios <b>·</b> Garages <b>·</b> </span>
+  </div>
+</div>
+
+<!-- THE COST -->
+<section class="cost pad">
+  <div class="wrap">
+    <div class="eyebrow" data-reveal>The quiet leak</div>
+    <div style="margin-top:30px" class="colw">
+      <div class="bignum" data-count="27" data-prefix="" data-suffix="%">0%</div>
+    </div>
+    <p class="sub" data-reveal>of calls to small businesses go unanswered. Every missed call is a customer who rings the next name on Google. That's real money walking out the door — <em class="ital" style="color:#fff">silently</em>.</p>
+    <div style="margin-top:60px;display:flex;gap:60px;flex-wrap:wrap">
+      <div><div class="bignum" style="font-size:clamp(44px,8vw,96px)" data-count="2772" data-prefix="$" data-suffix="">$0</div><p class="sub" style="margin-top:8px">lost in an average month from missed jobs</p></div>
+      <div><div class="bignum" style="font-size:clamp(44px,8vw,96px)" data-count="24" data-prefix="" data-suffix="/7">0/7</div><p class="sub" style="margin-top:8px">hours your phone should be answered</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<section class="pad wrap">
+  <p class="lead" data-reveal>So we built a receptionist that <em>never</em> sleeps, never eats lunch, and never puts a customer on hold.</p>
+</section>
+
+<!-- HOW — pinned scrollytelling -->
+<section id="how" class="wrap">
+  <div class="eyebrow" data-reveal style="margin-bottom:10px">How it works</div>
+  <div class="pin-outer" id="pinOuter">
+    <div class="pin">
+      <div class="pin-left">
+        <div class="pin-step on" data-step="0"><div class="step-index">01 — Answer</div><h3 class="serif">It picks up<br>in one ring.</h3><p>A caller rings your number. When you can't get to it, the call rolls to your AI receptionist — warm, natural, in your business's name. No hold music, no voicemail.</p></div>
+        <div class="pin-step" data-step="1"><div class="step-index">02 — Understand</div><h3 class="serif">It knows<br>your business.</h3><p>Trained on your hours, services and prices. It answers questions, screens cold-sales calls, and works out exactly what the caller needs — in any language they speak.</p></div>
+        <div class="pin-step" data-step="2"><div class="step-index">03 — Book</div><h3 class="serif">It books<br>the job.</h3><p>Checks your real Google Calendar, offers open slots, and locks it in — with a reference and a confirmation text. If the time's taken, it offers the nearest one.</p></div>
+        <div class="pin-step" data-step="3"><div class="step-index">04 — Hand off</div><h3 class="serif">You get<br>the lead.</h3><p>Every call lands in your pocket — a text with the name, number and reason, plus a full transcript and recording in your app. You just show up.</p></div>
+      </div>
+      <div class="pin-right">
+        <div class="pin-prog"><b class="on"></b><b></b><b></b><b></b></div>
+        <div class="pin-visual on" data-vis="0"><div class="glyph">☏<small>Ring · Answer</small></div></div>
+        <div class="pin-visual" data-vis="1"><div class="glyph">✽<small>Understand · Screen</small></div></div>
+        <div class="pin-visual" data-vis="2"><div class="glyph">✔<small>Check · Book</small></div></div>
+        <div class="pin-visual" data-vis="3"><div class="glyph">✉<small>Text · Log</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="pad wrap">
+  <div class="showcase">
+    <div>
+      <div class="eyebrow" data-reveal>The owner's app</div>
+      <h2 class="serif" data-reveal style="font-size:clamp(32px,5vw,64px);margin:16px 0 20px">Every call,<br>in your pocket.</h2>
+      <p class="colw" data-reveal style="color:#4a463f;font-size:18px;line-height:1.6">A CRM that installs on your phone like any app. See who rang, what they needed, who's booked, and who to call back — with the recording and an AI summary of every call. No missed lead ever slips through.</p>
+      <div style="margin-top:26px" data-reveal><a class="btn hollow" href="https://orourkeryan88-byte.github.io/relier-/receptionist/dashboard/">Open the demo app <span class="arrow">→</span></a></div>
+    </div>
+    <div class="device parallax" data-reveal="scale" data-speed="-14">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <img src="img/app-inbox.png" alt="Southline CRM call inbox" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES — stacking cards -->
+<section class="pad wrap" id="work">
+  <div class="eyebrow" data-reveal style="margin-bottom:30px">What it does</div>
+  <div class="stack">
+    <div class="card"><span class="big serif">01</span><div class="n">ANSWER</div><h3 class="serif">24/7 call answering</h3><p>Picks up every call in your name, day or night, weekends and holidays. No wages, no sick days, no attitude — just a calm, professional voice every single time.</p></div>
+    <div class="card"><span class="big serif">02</span><div class="n">BOOK</div><h3 class="serif">Real calendar booking</h3><p>Reads your live Google Calendar, offers genuine open slots, and books the appointment with a reference and confirmation text. Reschedules and cancels over the phone too.</p></div>
+    <div class="card"><span class="big serif">03</span><div class="n">CAPTURE</div><h3 class="serif">Every lead, texted to you</h3><p>Name, number, and what they need — in your pocket seconds after the call, with a full transcript and recording waiting in your app.</p></div>
+    <div class="card"><span class="big serif">04</span><div class="n">PROTECT</div><h3 class="serif">Missed-call text-back & spam screening</h3><p>If a call slips through, it texts the caller back automatically. Cold-sales and robocalls get screened out, so your inbox stays clean.</p></div>
+    <div class="card"><span class="big serif">05</span><div class="n">GROW</div><h3 class="serif">A CRM that shows the money</h3><p>Pipeline, insights, and the revenue you'd otherwise have lost — all in one app you can hand to your whole team.</p></div>
+  </div>
+</section>
+
+<!-- HORIZONTAL -->
+<section class="hori-outer" id="hori">
+  <div class="hori-sticky">
+    <div class="hori-track" id="horiTrack">
+      <div class="htile"><div class="k">Always on</div><h4 class="serif">While you're<br>on the job.</h4></div>
+      <div class="htile"><div class="k">Any language</div><h4 class="serif">Switches to<br>the caller's<br>language.</h4></div>
+      <div class="htile"><div class="k">Human when it matters</div><h4 class="serif">Transfers<br>real emergencies<br>to you.</h4></div>
+      <div class="htile"><div class="k">Your voice</div><h4 class="serif">Sounds like<br>your front<br>desk.</h4></div>
+      <div class="htile"><div class="k">Set up for you</div><h4 class="serif">Live on your<br>number in<br>a day.</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="pad wrap">
+  <div class="stats">
+    <div class="stat" data-reveal><div class="v" data-count="1" data-suffix=" ring">0 ring</div><div class="l">Answered before the caller gives up.</div></div>
+    <div class="stat" data-reveal><div class="v" data-count="10" data-suffix="×">0×</div><div class="l">Cheaper than hiring a receptionist.</div></div>
+    <div class="stat" data-reveal><div class="v" data-count="58" data-suffix="%">0%</div><div class="l">Of missed leads recoverable with instant text-back.</div></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="price" class="pad wrap">
+  <div class="eyebrow" data-reveal style="margin-bottom:26px">Simple pricing</div>
+  <div class="price" data-reveal="scale">
+    <div>
+      <div class="eyebrow" style="color:#8a867e">One plan · everything included</div>
+      <div class="amt serif">$150<small> / month</small></div>
+      <div style="color:#b8b4ab;margin-top:8px">+ $350 one-time setup · cancel anytime</div>
+      <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+        <a class="btn fill" style="background:#fff;color:#0a0a0a;border-color:#fff" href="https://orourkeryan88-byte.github.io/relier-/receptionist/dashboard/">Get started <span class="arrow">→</span></a>
+        <a class="btn hollow" style="color:#fff;border-color:#4a463f" href="tel:0851740783">Book a call</a>
+      </div>
+    </div>
+    <ul>
+      <li>24/7 call answering in your name</li>
+      <li>Books into your Google Calendar</li>
+      <li>Every lead texted to you instantly</li>
+      <li>Missed-call text-back</li>
+      <li>Call summaries, transcripts & recordings</li>
+      <li>Spam & sales-call screening</li>
+      <li>Website chat widget</li>
+      <li>The CRM app for your whole team</li>
+    </ul>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="pad wrap">
+  <div class="eyebrow" data-reveal style="margin-bottom:20px">Questions</div>
+  <div id="faq">
+    <div class="faq-item"><div class="faq-q">Do I need a new phone number? <span class="pm">+</span></div><div class="faq-a">No. You keep your existing number. You just forward calls you don't answer to your AI number — your customers dial exactly what they always have.</div></div>
+    <div class="faq-item"><div class="faq-q">Will it sound robotic? <span class="pm">+</span></div><div class="faq-a">No — it uses a natural human voice, and you choose which one. Most callers can't tell. It's warm, it's brief, and it never puts anyone on hold.</div></div>
+    <div class="faq-item"><div class="faq-q">What if it can't handle a call? <span class="pm">+</span></div><div class="faq-a">It's built to never dead-end. If it's unsure, it takes a message; if it's an emergency or the caller wants a person, it transfers to you. Nothing is ever lost.</div></div>
+    <div class="faq-item"><div class="faq-q">How fast can I go live? <span class="pm">+</span></div><div class="faq-a">Usually within a day. We build it for your business, connect your calendar, and hand you the number and the app — done for you.</div></div>
+    <div class="faq-item"><div class="faq-q">How much is it, really? <span class="pm">+</span></div><div class="faq-a">$350 to set up and $150 a month, everything included. Cheaper than one missed job — and far cheaper than a wage.</div></div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final wrap">
+  <div class="eyebrow" data-reveal>Ready when you are</div>
+  <h2 class="serif" data-reveal style="margin:22px 0 34px">Your phone,<br><em class="ital">finally answered.</em></h2>
+  <div data-reveal style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <a class="btn fill" href="https://orourkeryan88-byte.github.io/relier-/receptionist/dashboard/">Get started <span class="arrow">→</span></a>
+    <a class="btn hollow" href="https://orourkeryan88-byte.github.io/relier-/receptionist/">Hear the demo</a>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot-grid">
+    <div>
+      <div class="brand" style="color:var(--ink);margin-bottom:12px"><span class="m"><span>S</span></span> Southline</div>
+      The AI receptionist for small businesses.<br>Dublin, Ireland.
+    </div>
+    <div style="text-align:right;line-height:2">
+      <a href="https://orourkeryan88-byte.github.io/relier-/receptionist/">Live demo</a> ·
+      <a href="https://orourkeryan88-byte.github.io/relier-/receptionist/dashboard/">The app</a><br>
+      <a href="tel:0851740783">085 174 0783</a> · <a href="mailto:agencysouthline@gmail.com">agencysouthline@gmail.com</a><br>
+      <span style="color:var(--mut)">© Southline 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+// hero intro
+requestAnimationFrame(()=>requestAnimationFrame(()=>$('#hero').classList.add('lit')));
+
+// reveal on scroll
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
+  if(e.target.dataset.count!==undefined)countUp(e.target); io.unobserve(e.target);}})},{threshold:.18});
+$$('[data-reveal],[data-count]').forEach(el=>io.observe(el));
+// stagger children
+$$('.stagger').forEach(el=>io.observe(el));
+
+// count up
+function countUp(el){
+  const target=+el.dataset.count, pre=el.dataset.prefix||'', suf=el.dataset.suffix||'';
+  const dur=1400, t0=performance.now(), fmt=n=>n.toLocaleString('en-IE');
+  function tick(t){const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);
+    el.textContent=pre+fmt(Math.round(target*e))+suf; if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);
+}
+
+// nav show/hide + solid
+let lastY=0; const nav=$('#nav');
+function onScroll(){
+  const y=window.scrollY;
+  nav.classList.toggle('solid', y>60);
+  nav.classList.toggle('hide', y>lastY && y>400);
+  lastY=y;
+  // progress
+  const h=document.documentElement.scrollHeight-innerHeight;
+  $('#progress').style.width=(y/h*100)+'%';
+  // parallax
+  $$('.parallax').forEach(el=>{const r=el.getBoundingClientRect();const c=(r.top+r.height/2-innerHeight/2);
+    const sp=+(el.dataset.speed||-10); el.style.transform=`translateY(${c*sp/100}px)`;});
+  // pinned scrollytelling
+  pin();
+  // horizontal
+  horiScroll();
+}
+// pinned steps
+const pinOuter=$('#pinOuter');
+function pin(){
+  if(!pinOuter) return;
+  const r=pinOuter.getBoundingClientRect();
+  const total=pinOuter.offsetHeight-innerHeight;
+  const p=Math.min(1,Math.max(0,-r.top/total));
+  const steps=$$('.pin-step'), vis=$$('.pin-visual'), bars=$$('.pin-prog b');
+  const idx=Math.min(steps.length-1,Math.floor(p*steps.length));
+  steps.forEach((s,i)=>s.classList.toggle('on',i===idx));
+  vis.forEach((s,i)=>s.classList.toggle('on',i===idx));
+  bars.forEach((b,i)=>b.classList.toggle('on',i<=idx));
+}
+// horizontal scroll
+const horiEl=$('#hori'), horiTrack=$('#horiTrack');
+function horiScroll(){
+  if(!horiEl||!horiTrack||innerWidth<820) return;
+  const r=horiEl.getBoundingClientRect();
+  const total=horiEl.offsetHeight-innerHeight;
+  if(total<=0) return;
+  const p=Math.min(1,Math.max(0,-r.top/total));
+  const dist=horiTrack.scrollWidth-innerWidth+56;
+  horiTrack.style.transform=`translateX(${-p*dist}px)`;
+}
+// make pin-outer tall enough for its steps
+if(pinOuter){pinOuter.style.height=(innerWidth>820?'340vh':'auto');}
+
+addEventListener('scroll',onScroll,{passive:true});
+addEventListener('resize',()=>{if(pinOuter)pinOuter.style.height=(innerWidth>820?'340vh':'auto');onScroll();});
+onScroll();
+
+// faq
+$$('.faq-item').forEach(it=>it.addEventListener('click',()=>it.classList.toggle('open')));
+
+// cursor dot + magnetic buttons (desktop)
+if(matchMedia('(hover:hover)').matches){
+  const dot=$('#dot'); let dx=0,dy=0,tx=0,ty=0;
+  addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;});
+  (function loop(){dx=lerp(dx,tx,.2);dy=lerp(dy,ty,.2);dot.style.left=dx+'px';dot.style.top=dy+'px';requestAnimationFrame(loop);})();
+  $$('.btn,a.cta,.faq-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{dot.style.width='42px';dot.style.height='42px';dot.style.background='#12805c';});
+    el.addEventListener('mouseleave',()=>{dot.style.width='9px';dot.style.height='9px';dot.style.background='#0a0a0a';});
+  });
+  $$('.btn').forEach(b=>{
+    b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();
+      b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.15}px,${(e.clientY-r.top-r.height/2)*.25}px)`;});
+    b.addEventListener('mouseleave',()=>b.style.transform='');
+  });
+}
+</script>
+</body>
+</html>

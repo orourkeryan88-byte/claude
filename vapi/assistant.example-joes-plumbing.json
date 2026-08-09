@@ -1,0 +1,62 @@
+{
+  "_comment": "EXAMPLE — a finished client config (Joe's Plumbing). This is the TEMPLATE with every {{PLACEHOLDER}} filled in, so you can see what 'done' looks like. Copy this shape for each new client.",
+
+  "name": "Joe's Plumbing — AI Receptionist",
+
+  "firstMessage": "Hi, thanks for calling Joe's Plumbing, you're through to the reception desk. How can I help you today?",
+  "firstMessageMode": "assistant-speaks-first",
+
+  "model": {
+    "provider": "anthropic",
+    "model": "claude-opus-4-8",
+    "temperature": 0.4,
+    "maxTokens": 300,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are the friendly, professional virtual receptionist for Joe's Plumbing, a plumbing and heating company based in Dublin. You answer phone calls on their behalf.\n\nOPENING HOURS: Monday to Friday 8am-6pm, Saturday 9am-1pm, closed Sunday. Emergency call-outs available 24/7.\nSERVICES: leak repairs, boiler servicing and repair, bathroom installations, blocked drains, radiator and heating work, general plumbing.\nPRICING / NOTES: standard call-out is 80 euro, emergency call-out is 150 euro. Free quotes for bigger jobs. Covers Dublin city and south county Dublin.\n\nYOUR GOAL on every call:\n1. Greet warmly using the business name.\n2. Find out what the caller needs (the job / reason for calling).\n3. Capture their FIRST NAME.\n4. Capture their BEST PHONE NUMBER and READ IT BACK to confirm digit by digit.\n5. Capture a few JOB DETAILS (what's wrong / what they want).\n6. Offer to book them in or take a message, and agree a rough time if relevant.\n7. When you have name + phone + reason, call the function `log_lead` with everything you've gathered.\n8. Confirm to the caller that the team will be in touch, then close warmly.\n\nURGENCY: If the caller mentions anything time-critical (a leak, no heat, no power, flooding, an emergency), set urgency to \"urgent\" and reassure them you're flagging it as a priority.\n\nSTYLE RULES:\n- Sound human and warm, like a great front-desk person. Short, natural sentences.\n- One question at a time. Never read a list of questions at once.\n- Never invent prices, availability or facts you weren't given. If unsure, say the team will confirm.\n- Keep replies under ~30 words. This is a phone call, not an essay.\n- Always read phone numbers back to confirm.\n- Never say you are an AI unless directly asked; if asked, be honest and friendly about it."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "log_lead",
+          "description": "Save the caller's details as a lead and notify the business owner by SMS. Call this once you have at least the caller's name and phone number.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "Caller's first name (and surname if given)." },
+              "phone": { "type": "string", "description": "Caller's phone number, confirmed by reading back." },
+              "reason": { "type": "string", "description": "What the caller needs / the job details." },
+              "urgency": { "type": "string", "enum": ["normal", "urgent"] },
+              "preferred_time": { "type": "string", "description": "Any time/day the caller prefers." }
+            },
+            "required": ["name", "phone", "reason"]
+          }
+        },
+        "server": { "url": "https://your-webhook.example.com/log-lead" }
+      }
+    ]
+  },
+
+  "voice": {
+    "provider": "11labs",
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "model": "eleven_turbo_v2_5"
+  },
+
+  "transcriber": { "provider": "deepgram", "model": "nova-2", "language": "en" },
+
+  "endCallMessage": "Thanks a million for calling Joe's Plumbing. Someone will be in touch shortly. Take care, bye now!",
+  "endCallPhrases": ["goodbye", "bye now", "that's everything", "talk soon"],
+
+  "silenceTimeoutSeconds": 20,
+  "maxDurationSeconds": 600,
+  "backgroundSound": "office",
+  "recordingEnabled": true,
+  "voicemailDetection": { "provider": "twilio" },
+  "serverMessages": ["end-of-call-report", "function-call"]
+}
