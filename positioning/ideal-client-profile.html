@@ -1,0 +1,442 @@
+<title>The Bathroom Fitter Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+:root{
+  --paper:#EDEFF1; --surface:#FBFCFC; --surface-2:#E4E8EB;
+  --ink:#10161C; --ink-2:#3B4650; --muted:#68747F;
+  --line:#D3D9DE; --line-strong:#B6C0C8;
+  --accent:#2340C8; --accent-soft:#DEE3F8;
+  --signal:#9A5B06; --signal-soft:#F5E6CE;
+  --good:#186049; --good-soft:#D9EBE3;
+  --invert-bg:#10161C; --invert-fg:#EDEFF1; --invert-muted:#8A96A1;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1116; --surface:#151B22; --surface-2:#1E262E;
+    --ink:#E8ECEF; --ink-2:#B7C0C8; --muted:#8593A0;
+    --line:#28323B; --line-strong:#3A4650;
+    --accent:#8CA2FF; --accent-soft:#1B2440;
+    --signal:#E0A64C; --signal-soft:#33260F;
+    --good:#63C7A2; --good-soft:#0F2A22;
+    --invert-bg:#1E262E; --invert-fg:#E8ECEF; --invert-muted:#8593A0;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1116; --surface:#151B22; --surface-2:#1E262E;
+  --ink:#E8ECEF; --ink-2:#B7C0C8; --muted:#8593A0;
+  --line:#28323B; --line-strong:#3A4650;
+  --accent:#8CA2FF; --accent-soft:#1B2440;
+  --signal:#E0A64C; --signal-soft:#33260F;
+  --good:#63C7A2; --good-soft:#0F2A22;
+  --invert-bg:#1E262E; --invert-fg:#E8ECEF; --invert-muted:#8593A0;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:800px;margin:0 auto;padding:46px 28px 110px}
+p{margin:0 0 14px}
+ul,ol{padding-left:1.15em;margin:0 0 16px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent)}
+
+.kicker{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5.2vw,2.9rem);line-height:1.03;letter-spacing:-.026em;margin:.32em 0 0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:1.5rem;letter-spacing:-.018em;margin:0 0 10px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:1.02rem;margin:30px 0 8px}
+h4{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:24px 0 8px}
+section{padding-top:50px}
+.hdr{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line-strong);padding-bottom:8px;margin-bottom:20px}
+.hdr .idx{font-family:var(--mono);font-size:.7rem;color:var(--accent);letter-spacing:.1em}
+.lede{color:var(--ink-2);margin-bottom:20px}
+
+/* verdict stamp */
+.verdict{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:30px 32px;margin:30px 0 10px}
+.verdict .lab{font-family:var(--mono);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--invert-muted)}
+.verdict .stmt{font-family:var(--display);font-weight:600;font-size:1.28rem;line-height:1.38;letter-spacing:-.012em;margin:12px 0 0}
+.verdict .stmt b{color:#8CA2FF;font-weight:600}
+.verdict .sub{color:var(--invert-muted);font-size:.93rem;margin:16px 0 0;line-height:1.6}
+
+/* spec grid */
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;overflow:hidden;margin:22px 0}
+.spec div{background:var(--surface);padding:13px 15px}
+.spec dt{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.spec dd{margin:5px 0 0;font-family:var(--display);font-weight:600;font-size:1.02rem;letter-spacing:-.01em}
+.spec dd small{display:block;font-family:var(--body);font-weight:400;font-size:.8rem;color:var(--muted);letter-spacing:0;margin-top:2px;line-height:1.4}
+
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:460px}
+th{font-family:var(--mono);font-weight:500;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-strong);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.85rem}
+tr.hi td{background:var(--accent-soft)}
+tr.hi td,tr.hi td:first-child{color:var(--ink)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:22px 24px;margin:20px 0}
+.card > :last-child{margin-bottom:0}
+.callout{border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 18px;border-radius:0 4px 4px 0;margin:20px 0;font-size:.95rem}
+.callout > :last-child{margin-bottom:0}
+.callout .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
+
+/* quotes */
+.quotes{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);margin:16px 0}
+.quotes q{display:block;border-bottom:1px solid var(--line);padding:11px 2px 11px 16px;font-size:1.02rem;color:var(--ink);position:relative;quotes:none}
+.quotes q::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;background:var(--accent);border-radius:1px}
+
+/* persona */
+.persona{display:grid;grid-template-columns:88px 1fr;gap:20px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:22px 24px;margin:20px 0}
+.avatar{width:88px;height:88px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line-strong);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:1.6rem;color:var(--muted);letter-spacing:-.02em}
+.persona .who{font-family:var(--display);font-weight:600;font-size:1.2rem;letter-spacing:-.012em}
+.persona .meta{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.persona p{margin:12px 0 0;font-size:.95rem}
+
+/* scorecard */
+.score{border:1px solid var(--line);border-radius:5px;background:var(--surface);overflow:hidden;margin:22px 0}
+.score-hd{padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-2);font-family:var(--mono);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.score label{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--line);cursor:pointer;font-size:.93rem;color:var(--ink-2)}
+.score label:hover{background:var(--surface-2)}
+.score label .k{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-top:2px}
+.score label.veto{border-left:3px solid var(--signal)}
+.score input{width:17px;height:17px;accent-color:var(--accent);flex:none}
+.score-ft{padding:18px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.tally{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:2.1rem;font-weight:500;line-height:1;color:var(--accent)}
+.tally small{display:block;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.readout{font-size:.93rem;line-height:1.5;padding:11px 13px;border-radius:4px}
+.readout.ok{background:var(--good-soft);color:var(--good);border:1px solid var(--good)}
+.readout.mid{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+.readout.no{background:var(--signal-soft);color:var(--signal);border:1px solid var(--signal)}
+
+/* pitch block */
+.pitch{border:1px solid var(--accent);background:var(--accent-soft);border-radius:5px;padding:22px 24px;margin:22px 0}
+.pitch .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:9px}
+.pitch p{font-size:1.06rem;color:var(--ink);margin:0}
+
+/* seasonality chart */
+.seasonchart{margin:22px 0}
+.seasonchart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+.no-list li::marker{color:var(--signal)}
+footer{margin-top:76px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.65rem;letter-spacing:.06em;color:var(--muted);line-height:1.85}
+
+@media (max-width:640px){
+  .wrap{padding:32px 18px 80px}
+  .persona{grid-template-columns:1fr}
+  .avatar{width:64px;height:64px;font-size:1.2rem}
+  .score-ft{grid-template-columns:1fr}
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="kicker">RELIER · Positioning · Ideal client profile</span>
+  <h1>Your ideal client is a bathroom fitter</h1>
+</header>
+
+<div class="verdict">
+  <span class="lab">The profile</span>
+  <p class="stmt">Owner-operated <b>bathroom installation specialists</b>, £400k–£1.5m turnover, 4–15 staff, 3+ years trading, serving homeowners within 45 minutes of one town — <b>booked out by referrals, with no idea what they'll be doing in ten weeks.</b></p>
+  <p class="sub">Figures are GBP on a UK/Ireland assumption, taken from "tradesmen". The structure holds for US, Canada and Australia — swap the currency and verify the local average job value before you quote anyone.</p>
+</div>
+
+<!-- 01 -->
+<section id="why">
+  <div class="hdr"><span class="idx">01</span><h2>Why this trade and not the others</h2></div>
+  <p class="lede">One question disqualifies most trades: <strong>does the customer need convincing, or just finding?</strong> Emergency plumbing, locksmiths, boiler repair — the customer is already sold and just needs a phone number. There is no funnel to build and no room for you to add value. Bathrooms need convincing.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Test</th><th>Bathroom fitters</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>Average job</td><td class="num">£6,000–£12,000</td><td>Paid media only works when a job carries enough gross profit to absorb acquisition cost</td></tr>
+      <tr><td>Gross margin</td><td class="num">30–40%</td><td>£2,500–£4,500 profit per job. Max allowable CAC is enormous — you can be average and still make him money</td></tr>
+      <tr><td>Sales cycle</td><td>2–6 weeks, survey required</td><td>High consideration means a funnel is genuinely needed, not just a Google listing</td></tr>
+      <tr class="hi"><td>Season</td><td>Strongest Sept–Feb</td><td><strong>The deciding factor.</strong> Counter-seasonal to nearly every other trade, so your retainers survive January</td></tr>
+      <tr><td>Content supply</td><td>Before/after, daily</td><td>The best predictor of ad performance there is — and this trade generates it for free without being asked</td></tr>
+      <tr><td>Buyer</td><td>Homeowners 45–65</td><td>The heaviest Facebook demographic in the market. Cheap reach, thin competition</td></tr>
+      <tr><td>Market</td><td>Thousands of 1–3 crew firms</td><td>Fragmented, no national player owning the category</td></tr>
+      <tr><td>Agency saturation</td><td>Low</td><td>Roofing and solar are picked over. These firms still buy Checkatrade leads and complain about them</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>What I ruled out, and why</h3>
+  <ul class="no-list">
+    <li><strong>Emergency plumbers and electricians</strong> — £150–£400 jobs bought at the moment of panic. No funnel exists to build.</li>
+    <li><strong>Roofing and solar</strong> — where every new agency goes. You'd be the fourth pitch that owner heard this month.</li>
+    <li><strong>Windows and conservatories</strong> — owned by national brands and lead resellers with budgets you can't out-spend.</li>
+    <li><strong>Kitchens</strong> — a close second, and a legitimate alternative. Bigger tickets, but longer cycles, showroom competition, and a slower first win for an agency with no proof yet.</li>
+  </ul>
+</section>
+
+<!-- 02 -->
+<section id="spec">
+  <div class="hdr"><span class="idx">02</span><h2>The spec</h2></div>
+  <p class="lede">Check a prospect against this before the first call, not after.</p>
+  <dl class="spec">
+    <div><dt>Turnover</dt><dd>£400k–£1.5m<small>Under £250k can't afford you. Over £3m hires in-house</small></dd></div>
+    <div><dt>Team</dt><dd>4–15<small>2–4 fitting crews. Under 2 = no capacity</small></dd></div>
+    <div><dt>Trading</dt><dd>3+ years<small>Under 2 they're still learning to run jobs</small></dd></div>
+    <div><dt>Average job</dt><dd>£6,000+<small>Below £3,000 the maths fails. Non-negotiable</small></dd></div>
+    <div><dt>Patch</dt><dd>One town<small>+45 minute radius. Dominate, don't scatter</small></dd></div>
+    <div><dt>Decision-maker</dt><dd>The owner<small>In a van. Decides in a day. No committee</small></dd></div>
+    <div><dt>Current marketing</dt><dd>Referrals only<small>Plus a neglected Facebook page and a lead-reseller habit</small></dd></div>
+    <div><dt>Digital maturity</dt><dd>Low<small>A phone full of job photos and no idea it's an asset</small></dd></div>
+  </dl>
+</section>
+
+<!-- 03 -->
+<section id="person">
+  <div class="hdr"><span class="idx">03</span><h2>The person you're actually selling to</h2></div>
+  <div class="persona">
+    <div class="avatar" aria-hidden="true">D</div>
+    <div>
+      <div class="who">"Dave", 43</div>
+      <div class="meta">Owner · 3 crews · £900k turnover · 11 weeks booked</div>
+      <p>Time-served, went out on his own at 30. Genuinely good at the work and proud of it — the photos on his phone are better than anything on his website, which he paid £1,200 for in 2019 and hasn't touched since.</p>
+      <p>On site or quoting until five. Admin in the van. Quotes typed at nine at the kitchen table. His wife or an office admin answers the phone.</p>
+      <p><strong>What keeps him up:</strong> he's booked eleven weeks out and has no idea what happens in week twelve. Three crews is £9,000 a month of wages going out whether the diary is full or not. Last January was frightening and he hasn't forgotten it.</p>
+    </div>
+  </div>
+
+  <h4>His words — use these verbatim in ads and outreach</h4>
+  <div class="quotes">
+    <q>It's either feast or famine.</q>
+    <q>Checkatrade leads are shocking now — same lead sold to five of us, all price-shoppers.</q>
+    <q>I don't want to be the cheapest, I want people who want it done right.</q>
+    <q>I had a marketing lad before. Took £800 a month, couldn't tell me what I got for it.</q>
+    <q>I'm not being funny, but I haven't got time to be doing TikToks.</q>
+  </div>
+  <p><strong>Where he is:</strong> Facebook — his personal profile more than the business page — local trade and community groups, Instagram if he's under 40, the merchant's trade counter at 7:15am, and WhatsApp constantly.</p>
+</section>
+
+<!-- 04 -->
+<section id="maths">
+  <div class="hdr"><span class="idx">04</span><h2>Why the maths works</h2></div>
+  <p class="lede">Run these numbers in front of him, on his own figures, on the first call. It does more than any case study you don't have yet.</p>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td>Average job value</td><td class="num">£9,000</td></tr>
+      <tr><td>Gross margin</td><td class="num">35%</td></tr>
+      <tr><td>Gross profit per job</td><td class="num">£3,150</td></tr>
+      <tr class="hi"><td>Maximum allowable CAC</td><td class="num">£3,150</td></tr>
+      <tr><td>Lead → home survey</td><td class="num">50%</td></tr>
+      <tr><td>Survey → sale</td><td class="num">40%</td></tr>
+      <tr><td>Lead → sale</td><td class="num">20%</td></tr>
+      <tr><td>Realistic cost per lead (Meta, this trade)</td><td class="num">£30–£80</td></tr>
+      <tr class="hi"><td>Resulting CAC</td><td class="num">£150–£400</td></tr>
+      <tr><td>Acquisition cost as % of gross profit</td><td class="num">5–13%</td></tr>
+    </tbody>
+  </table></div>
+  <div class="pitch">
+    <span class="tag">The pitch, in one sentence</span>
+    <p>"Four extra bathrooms a month is £36,000 of work and about £12,600 of gross profit. It costs you roughly £4,000 all in — my fee and the ad spend together. If I can't get you there in 90 days, I'll tell you before you have to ask."</p>
+  </div>
+  <p>That's an easy yes for a man with £9,000 of wages going out every month. It's also honest, which matters more — the numbers are wide enough to survive a bad first month.</p>
+</section>
+
+<!-- 05 -->
+<section id="scorecard">
+  <div class="hdr"><span class="idx">05</span><h2>Fit scorecard</h2></div>
+  <p class="lede">Ten checks, run before you pitch. The four amber-barred items are vetoes — fail one and it doesn't matter how well he scores on the rest.</p>
+  <div class="score" id="sc">
+    <div class="score-hd">Tick what's true</div>
+    <label class="veto"><span>Average job value is over £6,000<span class="k">Veto · the maths fails below £3,000</span></span><input type="checkbox" data-veto></label>
+    <label class="veto"><span>Has at least two fitting crews and room in the diary<span class="k">Veto · leads he can't service will churn him</span></span><input type="checkbox" data-veto></label>
+    <label class="veto"><span>Someone answers the phone during working hours<span class="k">Veto · slow follow-up triples CAC and gets blamed on you</span></span><input type="checkbox" data-veto></label>
+    <label class="veto"><span>Has photos of finished work — even just on his phone<span class="k">Veto · no raw material, no creative, no result</span></span><input type="checkbox" data-veto></label>
+    <label><span>Bathrooms are the main thing, not one of eight services<span class="k">Positioning</span></span><input type="checkbox"></label>
+    <label><span>Trading three years or more<span class="k">Stability</span></span><input type="checkbox"></label>
+    <label><span>Turnover between £400k and £1.5m<span class="k">Can afford you, hasn't gone in-house</span></span><input type="checkbox"></label>
+    <label><span>Currently buys leads from Checkatrade, MyBuilder or similar<span class="k">Already accepts that leads cost money</span></span><input type="checkbox"></label>
+    <label><span>Owner makes the decision and you're speaking to him<span class="k">Sales cycle</span></span><input type="checkbox"></label>
+    <label><span>Wins on quality, not on being the cheapest quote<span class="k">Ads make a price-fighter poorer, faster</span></span><input type="checkbox"></label>
+    <div class="score-ft">
+      <div class="tally"><span id="tally">0</span><small>of 10</small></div>
+      <div class="readout no" id="readout">Nothing ticked yet.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="no">
+  <div class="hdr"><span class="idx">06</span><h2>Who to walk away from</h2></div>
+  <ul class="no-list">
+    <li><strong>Average job under £3,000.</strong> The maths does not work and no amount of skill on your part fixes it.</li>
+    <li><strong>No capacity.</strong> One crew, booked six months out. You'd be selling him leads he can't service — he churns, and he tells people you didn't work.</li>
+    <li><strong>Won't answer the phone.</strong> Leads sitting until nine at night triple the cost per sale, and it goes on your record, not his.</li>
+    <li><strong>No photos of past work.</strong> Nothing to make ads out of.</li>
+    <li><strong>Jack of all trades.</strong> "Bathrooms, kitchens, extensions, decking, bit of tiling." Nothing to position.</li>
+    <li><strong>Price fighter.</strong> If he wins by being cheapest, ads just make him poorer faster.</li>
+    <li><strong>Wants leads at £15 each</strong> because that's what the resellers charge. He's buying lottery tickets, not marketing. Educate once, then move on.</li>
+    <li><strong>New-build subcontractor.</strong> His customer is a developer. He has no marketing problem for you to solve.</li>
+  </ul>
+</section>
+
+<!-- 07 -->
+<section id="find">
+  <div class="hdr"><span class="idx">07</span><h2>Where to find them</h2></div>
+  <p class="lede">Ranked by how fast each one gets you a real conversation, not by how comfortable it is.</p>
+  <ol>
+    <li><strong>Merchant trade counters, 7–8am.</strong> City Plumbing, Plumbase, trade desks. Unglamorous, and the highest-converting channel available to an agency with no track record. Everyone else is on LinkedIn.</li>
+    <li><strong>Checkatrade, MyBuilder, Rated People listings.</strong> Filter by trade and postcode. Anyone paying for those leads has already conceded that leads cost money — and is already unhappy with the ones he's getting.</li>
+    <li><strong>Local Facebook community groups.</strong> Watch for "can anyone recommend a bathroom fitter?" The firms named repeatedly are proven, referral-dependent, and exactly your profile.</li>
+    <li><strong>Instagram hashtags plus location.</strong> Good photos and under 2,000 followers is the perfect signal: he has the content and no distribution.</li>
+    <li><strong>Bathroom showrooms.</strong> They refer fitting work constantly. One showroom relationship introduces you to five fitters at once.</li>
+    <li><strong>Companies House.</strong> SIC 43.22 / 43.32 filtered by region, cross-referenced against filed accounts for turnover.</li>
+    <li><strong>Trade bodies</strong> — BiKBBI, Which? Trusted Traders, TrustMark directories.</li>
+  </ol>
+</section>
+
+<!-- 08 -->
+<section id="wedge">
+  <div class="hdr"><span class="idx">08</span><h2>Winning the first three with no case studies</h2></div>
+  <p class="lede">You have no proof. Don't pretend otherwise, and don't discount your way in — a cheap price is the one thing you can never undo. Trade instead.</p>
+  <div class="card">
+    <h4 style="margin-top:0">The offer</h4>
+    <p style="margin-bottom:0">"I'll build and run the whole thing for one bathroom firm in this town, free for 60 days, and I'll come and film your next two jobs myself. All I want back is permission to use the results and a video testimonial if it works. After 60 days it's £X a month, or we shake hands and part ways."</p>
+  </div>
+  <p>It costs him nothing but access. It's visibly time-boxed. The filming is a real favour he can see. And the exclusivity — <em>one firm in this town</em> — is the line he'll repeat to other people, which is how your second client finds you.</p>
+  <h3>The outreach that actually gets replies</h3>
+  <p>A 90-second screen recording: his Facebook page, then a competitor two towns over running ads properly, then one specific thing you'd change. Send it with <em>"Made you this, no pitch — happy to just send it over if it's useful."</em> Give it away. The ones who reply are pre-sold.</p>
+  <div class="callout">
+    <span class="tag">Never open with</span>
+    <p>"I help bathroom fitters scale to seven figures." He's heard it, he's blocked the last four people who said it, and it doesn't sound like anyone he's ever met.</p>
+  </div>
+</section>
+
+<!-- 09 -->
+<section id="sell">
+  <div class="hdr"><span class="idx">09</span><h2>What you sell him</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Component</th><th>Price</th></tr></thead>
+    <tbody>
+      <tr><td>Setup — funnel, tracking, first creative shoot</td><td class="num">£750–£1,500 one-off</td></tr>
+      <tr><td>Monthly management</td><td class="num">£1,200–£2,500</td></tr>
+      <tr><td>Ad spend — paid direct to the platforms by him</td><td class="num">£1,500–£3,000</td></tr>
+      <tr class="hi"><td>His all-in monthly cost</td><td class="num">£2,700–£5,500</td></tr>
+      <tr class="hi"><td>His break-even</td><td class="num">One job a month</td></tr>
+    </tbody>
+  </table></div>
+  <p>Sell the outcome as a diary, not as leads: <strong>"a full diary twelve weeks out, that you control."</strong> He doesn't want leads. He wants to stop worrying about January.</p>
+</section>
+
+<!-- 10 -->
+<section id="funnel">
+  <div class="hdr"><span class="idx">10</span><h2>The funnel you build for him</h2></div>
+  <ul>
+    <li><strong>Traffic</strong> — Meta, 25-mile radius, homeowners 40–65. A small Google search budget on <em>bathroom fitters [town]</em> for whoever is already in market.</li>
+    <li><strong>Creative</strong> — before/after carousels, 30-second timelapses, walkthroughs with the fitter talking, and <em>"what a £9,000 bathroom actually gets you."</em> Price transparency is the highest-performing angle in this trade: the entire market hides its pricing and homeowners hate it.</li>
+    <li><strong>Entry point</strong> — "Free design visit and a fixed written quote in 48 hours." Not "get a quote," which is what every competitor says.</li>
+    <li><strong>Landing page</strong> — the promise, the fixed-price guarantee, ten before/afters, three named local testimonials, the process in four steps, a form with four fields.</li>
+    <li><strong>Qualifier</strong> — budget band, property type, timescale, owns or rents. Filters the tyre-kickers out before they eat his evenings.</li>
+    <li><strong>Follow-up</strong> — SMS in five minutes, call in fifteen. Then seven days: design guide → job story → what bathrooms cost and why → proof → objections → book the visit.</li>
+    <li><strong>After the survey</strong> — quote follow-up at day 1, 3, 7 and 14. <strong>Most fitters quote once and never follow up.</strong> This alone is often worth more than the ads.</li>
+    <li><strong>Expansion</strong> — reviews on autopilot, a referral ask at handover, and a reactivation campaign to every quote he's ever sent that went cold.</li>
+  </ul>
+</section>
+
+<!-- 11 -->
+<section id="geo">
+  <div class="hdr"><span class="idx">11</span><h2>One client per town</h2></div>
+  <p>Not out of principle — because it's simultaneously your best sales lever, your best retention lever, and the thing that forces you to expand rather than cannibalise. Say it on the first call: <em>"I only work with one bathroom firm per area. If I take you on, I can't take your competitor."</em></p>
+  <p>Then move one town at a time. Client three in a new town is easier than client one, because by then you have local proof, local creative, and local benchmark data to show.</p>
+</section>
+
+<!-- 12 -->
+<section id="validate">
+  <div class="hdr"><span class="idx">12</span><h2>Validate it in seven days</h2></div>
+  <p class="lede">Don't take my word for the trade. Test it before you build a brand around it.</p>
+  <ol>
+    <li><strong>Days 1–2</strong> — list 40 firms matching the spec from Checkatrade, Instagram and Companies House.</li>
+    <li><strong>Days 3–5</strong> — record 15 personalised 90-second audits. Send them. Ask for nothing.</li>
+    <li><strong>Days 6–7</strong> — count replies. <strong>Three or more out of fifteen means the profile is live</strong> — go build. One or two means fix the message, not the market. Zero almost always means you targeted firms that are too small.</li>
+  </ol>
+  <p>Also open the Meta Ad Library and search bathroom advertisers in three towns near you. Few or no active advertisers isn't a warning sign — it's the opening, and it's exactly what you show Dave in the screen recording.</p>
+</section>
+
+<!-- 13 -->
+<section id="pair">
+  <div class="hdr"><span class="idx">13</span><h2>The second profile — later</h2></div>
+  <p class="lede">Once bathroom fitters are working, add <strong>hard landscapers</strong> — driveways, patios, resin. Same buyer psychology, same £6k–£15k tickets, same before/after content engine, same funnel with different photos.</p>
+  <p>The reason it's these two and not any other pair is the calendar.</p>
+
+  <div class="seasonchart">
+    <svg viewBox="0 0 800 180" role="img" aria-label="Demand through the year: bathroom fitting peaks from September to February, hard landscaping peaks from March to September, and the two combined stay roughly flat all year.">
+      <g font-family="IBM Plex Mono, monospace" font-size="10">
+        <line x1="44" y1="130" x2="784" y2="130" stroke="var(--line-strong)"/>
+        <line x1="44" y1="30" x2="784" y2="30" stroke="var(--line)" stroke-dasharray="2 4"/>
+        <text x="4" y="34" fill="var(--muted)">HIGH</text>
+        <text x="4" y="134" fill="var(--muted)">LOW</text>
+        <!-- bathrooms: high Sep-Feb -->
+        <polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"
+          points="60,44 122,50 184,74 246,98 308,116 370,124 432,120 494,104 556,72 618,46 680,36 742,38"/>
+        <!-- landscaping: high Mar-Sep -->
+        <polyline fill="none" stroke="var(--signal)" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="6 4"
+          points="60,124 122,116 184,88 246,58 308,42 370,36 432,40 494,54 556,84 618,110 680,122 742,126"/>
+        <!-- combined -->
+        <polyline fill="none" stroke="var(--good)" stroke-width="1.5" opacity="0.85"
+          points="60,84 122,83 184,81 246,78 308,79 370,80 432,80 494,79 556,78 618,78 680,79 742,82"/>
+        <g fill="var(--muted)" text-anchor="middle" font-size="9.5" letter-spacing="0.6">
+          <text x="60" y="150">JAN</text><text x="122" y="150">FEB</text><text x="184" y="150">MAR</text>
+          <text x="246" y="150">APR</text><text x="308" y="150">MAY</text><text x="370" y="150">JUN</text>
+          <text x="432" y="150">JUL</text><text x="494" y="150">AUG</text><text x="556" y="150">SEP</text>
+          <text x="618" y="150">OCT</text><text x="680" y="150">NOV</text><text x="742" y="150">DEC</text>
+        </g>
+      </g>
+    </svg>
+    <div class="legend">
+      <span><i style="background:var(--accent)"></i>Bathrooms</span>
+      <span><i style="background:var(--signal)"></i>Hard landscaping</span>
+      <span><i style="background:var(--good)"></i>Both, combined</span>
+    </div>
+  </div>
+  <p class="lede" style="font-size:.88rem;color:var(--muted)">Illustrative demand shape, not measured data — verify against Google Trends for your own region before you build a plan on it.</p>
+
+  <p>Run both and your agency's revenue line is flat all year while every competitor falls off a cliff in January.</p>
+  <div class="callout">
+    <span class="tag">But not yet</span>
+    <p>Do not add the second profile until you have three paying bathroom clients and a playbook you can repeat. Two niches at zero clients isn't diversification, it's dilution.</p>
+  </div>
+</section>
+
+<footer>
+  RELIER — Ideal Client Profile · v1.0<br>
+  Currency and market assumption: GBP, UK/Ireland. Job values, margins and conversion rates are planning assumptions to test against real client data, not measured benchmarks.<br>
+  Verify the seven-day validation result before committing the agency's positioning to this trade.
+</footer>
+</div>
+
+<script>
+(function(){
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#sc input[type=checkbox]'));
+  var tally = document.getElementById('tally');
+  var out = document.getElementById('readout');
+  function render(){
+    var n = boxes.filter(function(b){ return b.checked; }).length;
+    var vetoes = boxes.filter(function(b){ return b.hasAttribute('data-veto'); });
+    var failed = vetoes.filter(function(b){ return !b.checked; }).length;
+    tally.textContent = n;
+    if (n === 0) { out.className = 'readout no'; out.textContent = 'Nothing ticked yet.'; return; }
+    if (failed > 0) {
+      out.className = 'readout no';
+      out.textContent = failed === 1
+        ? 'One veto unticked. Everything else is irrelevant until that is fixed — either he fixes it before you start, or you walk.'
+        : failed + ' vetoes unticked. Walk away. This account will fail and the failure will be attributed to you.';
+      return;
+    }
+    if (n >= 9) { out.className = 'readout ok'; out.textContent = 'Textbook fit. Pitch him this week, and use him for the case study.'; return; }
+    if (n >= 7) { out.className = 'readout ok'; out.textContent = 'Strong fit. All vetoes clear — the gaps are fixable inside the first 30 days.'; return; }
+    out.className = 'readout mid';
+    out.textContent = 'Workable. Vetoes are clear, but name the weak spots on the call and put each one into week one of the roadmap.';
+  }
+  boxes.forEach(function(b){ b.addEventListener('change', render); });
+  render();
+})();
+</script>
