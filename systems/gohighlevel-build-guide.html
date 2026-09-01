@@ -1,0 +1,420 @@
+<title>HighLevel Build Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#EDEFF1;--surface:#FBFCFC;--surface-2:#E4E8EB;
+  --ink:#10161C;--ink-2:#3B4650;--muted:#68747F;
+  --line:#D3D9DE;--line-strong:#B6C0C8;
+  --accent:#2340C8;--accent-soft:#DEE3F8;
+  --signal:#9A5B06;--signal-soft:#F5E6CE;
+  --good:#186049;--good-soft:#D9EBE3;
+  --invert-bg:#10161C;--invert-fg:#EDEFF1;--invert-muted:#8A96A1;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}}
+:root[data-theme="dark"]{
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:42px 26px 110px}
+p{margin:0 0 14px;max-width:70ch}
+ul,ol{max-width:70ch;padding-left:1.15em;margin:0 0 16px}
+li{margin-bottom:6px}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.86em;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.kicker{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,4.8vw,2.8rem);line-height:1.03;letter-spacing:-.026em;margin:.3em 0 0;text-wrap:balance}
+.sub{color:var(--ink-2);margin-top:16px;max-width:64ch}
+h2{font-family:var(--display);font-weight:600;font-size:1.42rem;letter-spacing:-.018em;margin:0 0 8px;display:flex;gap:13px;align-items:baseline}
+h2 .n{font-family:var(--mono);font-size:.72rem;font-weight:400;color:var(--accent);letter-spacing:.1em}
+h3{font-family:var(--display);font-weight:600;font-size:1.03rem;margin:30px 0 8px}
+h4{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:24px 0 8px}
+section{padding-top:50px}
+.phase-hd{border-bottom:1px solid var(--line-strong);padding-bottom:9px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+.time{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.lede{color:var(--ink-2);margin-bottom:18px}
+
+.path{font-family:var(--mono);font-size:.74rem;background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:3px;display:inline-block;white-space:nowrap}
+
+.warn{border-left:3px solid var(--signal);background:var(--signal-soft);padding:15px 18px;border-radius:0 4px 4px 0;margin:22px 0;font-size:.94rem}
+.warn > :last-child{margin-bottom:0}
+.warn .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:20px 22px;margin:18px 0}
+.card > :last-child{margin-bottom:0}
+
+.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.87rem;min-width:460px}
+th{font-family:var(--mono);font-weight:500;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 13px;border-bottom:1px solid var(--line-strong);white-space:nowrap}
+td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+td code{font-size:.82em}
+
+/* workflow spec */
+.wf{border:1px solid var(--line);border-radius:6px;background:var(--surface);margin:20px 0;overflow:hidden}
+.wf-hd{padding:14px 18px;background:var(--invert-bg);color:var(--invert-fg);display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.wf-hd .nm{font-family:var(--display);font-weight:600;font-size:1rem}
+.wf-hd .id{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--invert-muted)}
+.wf-row{display:grid;grid-template-columns:104px 1fr;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);font-size:.88rem}
+.wf-row:last-child{border-bottom:0}
+.wf-row .k{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.wf-row .v{color:var(--ink-2)}
+.wf-row .v b{color:var(--ink);font-weight:600}
+.wf-steps{counter-reset:w;list-style:none;padding:0;margin:0;max-width:none}
+.wf-steps li{counter-increment:w;position:relative;padding-left:30px;margin-bottom:7px}
+.wf-steps li::before{content:counter(w);position:absolute;left:0;top:1px;font-family:var(--mono);font-size:.65rem;color:var(--accent);background:var(--accent-soft);width:20px;height:20px;border-radius:3px;display:grid;place-items:center}
+
+.copyblock{border:1px solid var(--line);border-radius:5px;background:var(--surface);margin:16px 0;overflow:hidden}
+.copyhead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 12px 9px 15px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.copyhead span{font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.copybtn{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);border-radius:3px;padding:4px 10px;cursor:pointer}
+.copybtn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copyblock pre{margin:0;padding:15px 17px;overflow-x:auto;font-family:var(--mono);font-size:.765rem;line-height:1.66;color:var(--ink-2);white-space:pre-wrap}
+
+/* checklist */
+.check{border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:4px;margin:18px 0}
+.check label{display:flex;gap:11px;align-items:flex-start;padding:8px 14px;font-size:.9rem;cursor:pointer;border-radius:3px;color:var(--ink-2)}
+.check label:hover{background:var(--surface-2)}
+.check input{margin:.3em 0 0;accent-color:var(--accent);flex:none;width:15px;height:15px}
+.check input:checked + span{color:var(--muted);text-decoration:line-through}
+.prog{display:flex;align-items:center;gap:12px;padding:12px 14px 8px;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--muted)}
+.bar{flex:1;height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s ease}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+footer{margin-top:76px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.65rem;letter-spacing:.05em;color:var(--muted);line-height:1.85}
+@media (max-width:640px){.wrap{padding:28px 16px 80px}.wf-row{grid-template-columns:1fr;gap:4px}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="kicker">RELIER · Implementation</span>
+  <h1>Building the three systems in HighLevel</h1>
+  <p class="sub">Build order matters — each phase depends on the one before it. Custom fields before forms, forms before workflows, everything before you turn it on. Roughly a day and a half if you don't stop.</p>
+</header>
+
+<div class="warn">
+  <span class="tag">Settle this before you build anything</span>
+  <p><strong>Irish SMS replies.</strong> Half the messages in System 4 ask him to reply — "reply Y", "reply YES". That only works from a <strong>long number your contact can text back</strong>. If HighLevel routes Irish traffic through an alphanumeric Sender ID (a name, not a number), <em>replies are impossible</em> and the whole confirmation mechanic silently dies.</p>
+  <p>So before phase 1: go to <span class="path">Settings → Phone Numbers → Add Number</span> and try to buy an SMS-capable <code>+353</code> mobile number. If none is available, buy a UK <code>+44</code> mobile number — Irish handsets treat it as a normal number and replies work. Send yourself a test and reply to it. <strong>If you can't get two-way SMS, tell me and I'll rewrite the sequences to use email replies and click-tracking instead.</strong></p>
+</div>
+
+<!-- PHASE 0 -->
+<section id="p0">
+  <div class="phase-hd"><h2><span class="n">Phase 0</span> Foundations</h2><span class="time">~45 min</span></div>
+  <p class="lede">Build everything inside a <strong>sub-account</strong>, never the agency view. When it works you snapshot it, and every future client build starts from that snapshot.</p>
+
+  <h3>Create the sub-account</h3>
+  <p><span class="path">Agency view → Sub-Accounts → Create Sub-Account</span> — name it <code>RELIER — Internal</code>. This one runs your own agency's pipeline. Client sub-accounts come later.</p>
+
+  <h3>Business profile</h3>
+  <p><span class="path">Settings → Business Profile</span> — set <strong>Timezone to Europe/Dublin</strong> before you touch a calendar. Get this wrong and every reminder fires at the wrong hour, and fixing it afterwards means rebuilding the wait steps.</p>
+
+  <h3>Email sending</h3>
+  <p><span class="path">Settings → Email Services</span> — connect a sending domain. Use a subdomain like <code>mail.relier.ie</code>, never your root domain: if deliverability tanks, your main domain survives. Add the SPF, DKIM and DMARC records at your registrar and wait for them to verify green before sending anything.</p>
+
+  <h3>Custom Values — do this now, thank yourself later</h3>
+  <p><span class="path">Settings → Custom Values</span>. These are global variables you reference as <code>{{custom_values.name}}</code> in any email, SMS or workflow. Set them once; change the VSL link in one place instead of eleven.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Name</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td><code>vsl_link</code></td><td>Your 6-minute sales video URL</td></tr>
+      <tr><td><code>sales_calendar_link</code></td><td>The 20-min sales call booking page</td></tr>
+      <tr><td><code>onboarding_calendar_link</code></td><td>The 45-min onboarding booking page</td></tr>
+      <tr><td><code>onboarding_form_link</code></td><td>The discovery form URL</td></tr>
+      <tr><td><code>reschedule_link</code></td><td>Sales calendar reschedule URL</td></tr>
+      <tr><td><code>rep_name</code> / <code>rep_mobile</code></td><td>Ryan / your mobile</td></tr>
+      <tr><td><code>agency_name</code></td><td>RELIER</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- PHASE 1 -->
+<section id="p1">
+  <div class="phase-hd"><h2><span class="n">Phase 1</span> The data layer</h2><span class="time">~40 min</span></div>
+  <p class="lede">Fields, tags and pipeline first. Every workflow you build later reads and writes these, and renaming a field after ten workflows reference it is a bad afternoon.</p>
+
+  <h3>Custom fields</h3>
+  <p><span class="path">Settings → Custom Fields → Add Field</span>. All contact-level. Create the folder <code>Trade Client</code> and put them in it.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Field</th><th>Type</th><th>Used by</th></tr></thead>
+    <tbody>
+      <tr><td>Trading Name</td><td>Single line</td><td>Contract</td></tr>
+      <tr><td>Company Reg Number</td><td>Single line</td><td>Contract</td></tr>
+      <tr><td>VAT Number</td><td>Single line</td><td>Contract, invoicing</td></tr>
+      <tr><td>Trade Type</td><td>Dropdown — Attic / Extensions / Garden rooms / Kitchens / Other</td><td>Segmenting</td></tr>
+      <tr><td>Average Job Value</td><td>Number</td><td>Qualification</td></tr>
+      <tr><td>Jobs Per Month Now</td><td>Number</td><td>Qualification</td></tr>
+      <tr><td>Capacity Per Month</td><td>Number</td><td><strong>The veto field</strong></td></tr>
+      <tr><td>Current Lead Source</td><td>Single line</td><td>Discovery</td></tr>
+      <tr><td>Territory Granted</td><td>Single line</td><td>Contract — exclusivity</td></tr>
+      <tr><td>Package</td><td>Dropdown</td><td>Contract</td></tr>
+      <tr><td>Management Fee</td><td>Monetary</td><td>Contract</td></tr>
+      <tr><td>Setup Fee</td><td>Monetary</td><td>Contract</td></tr>
+      <tr><td>Ad Spend Budget</td><td>Monetary</td><td>Contract</td></tr>
+      <tr><td>Start Date</td><td>Date</td><td>Contract, onboarding</td></tr>
+      <tr><td>Signatory Name</td><td>Single line</td><td>Contract</td></tr>
+      <tr><td>Signatory Email</td><td>Email</td><td><strong>Contract recipient</strong></td></tr>
+      <tr><td>Off-Menu Promises</td><td>Multi line</td><td>What you'll be held to</td></tr>
+      <tr><td>Target Number 90 Days</td><td>Single line</td><td>Onboarding call</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Signatory Email is a separate field from the contact email on purpose.</strong> The person who signs is often his wife or his accountant. Send a contract to the wrong inbox and you lose three days.</p>
+
+  <h3>Tags</h3>
+  <p>Create these as you go — GHL makes tags on first use, but agree the naming now or you'll end up with <code>Qualified</code>, <code>qualified</code> and <code>QUALIFIED</code> as three different tags.</p>
+  <div class="copyblock">
+    <div class="copyhead"><span>Tag taxonomy — lowercase, hyphenated, prefixed</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>SOURCE      src-outbound · src-dm-ad · src-referral
+STAGE       stage-qualified · stage-booked · stage-showed
+            stage-noshow · stage-won · stage-lost
+ENGAGEMENT  confirmed-yes · vsl-watched
+DISQUALIFY  disq-capacity · disq-jobvalue · disq-has-agency
+CLIENT      client-onboarding · client-live · client-churned</pre>
+  </div>
+
+  <h3>Pipeline</h3>
+  <p><span class="path">Opportunities → Pipelines → Create Pipeline</span> — name it <code>New Business</code>.</p>
+  <div class="copyblock">
+    <div class="copyhead"><span>Stages, in order</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>1  New Lead
+2  Conversation Started
+3  Qualified
+4  Call Booked
+5  Showed
+6  Won — Intake Pending
+7  Contracted
+8  Onboarding
+9  Live
+10 Lost</pre>
+  </div>
+  <p>Stages 6 through 9 are the ones your automations drive. Everything before stage 6 you move by hand, because judgement is involved.</p>
+</section>
+
+<!-- PHASE 2 -->
+<section id="p2">
+  <div class="phase-hd"><h2><span class="n">Phase 2</span> Forms, calendars, contract</h2><span class="time">~2 hrs</span></div>
+
+  <h3>Form 1 — Sales Intake <span style="font-weight:400;color:var(--muted);font-size:.85rem">(internal, you fill it in)</span></h3>
+  <p><span class="path">Sites → Forms → Builder → + Add Form</span> — name it <code>Sales Intake</code>.</p>
+  <p>Drag in every custom field from phase 1, plus first name, last name, email, phone. Mark Signatory Email, Package, Management Fee, Ad Spend Budget, Start Date and Territory Granted as <strong>required</strong> — this form generates the contract and a blank field means a broken contract.</p>
+  <p>Under form settings set <strong>On Submit → Show message</strong>, not redirect. You're filling this in on Zoom while he watches; a redirect is a distraction.</p>
+
+  <h3>Form 2 — Onboarding Discovery</h3>
+  <p>Same builder, name it <code>Onboarding Discovery</code>. Use the questionnaire from <code>onboarding/templates/02</code>, trimmed to what matters for a trade firm.</p>
+  <div class="warn">
+    <span class="tag">Make these two fields required</span>
+    <p><strong>"Paste 3–5 real customer quotes, word for word"</strong> (multi-line) and <strong>"What number defines success in 90 days"</strong> (single line). Everything else can be optional. If those two come back empty you have no ad copy and no target, and the account starts blind.</p>
+  </div>
+
+  <h3>Calendar 1 — Sales Call</h3>
+  <p><span class="path">Calendars → Calendar Settings → Create Calendar → Simple</span></p>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td>Name</td><td>Sales Call — 20 min</td></tr>
+      <tr><td>Duration</td><td>20 minutes, 15-minute gap between</td></tr>
+      <tr><td>Availability</td><td>Mon–Fri. <strong>Include 7–9am and 5–7pm</strong> — trade owners are on site 9 to 5</td></tr>
+      <tr><td>Minimum notice</td><td>2 hours</td></tr>
+      <tr><td>Booking window</td><td>10 days out maximum. Longer bookings no-show more</td></tr>
+      <tr><td>Confirmation</td><td><strong>Turn the built-in notifications OFF.</strong> Your workflow handles all of it</td></tr>
+    </tbody>
+  </table></div>
+  <p>That last row matters. Leave GHL's default calendar notifications on and your prospect gets two confirmation emails, one of them generic.</p>
+
+  <h3>Calendar 2 — Onboarding Call</h3>
+  <p>Same, 45 minutes, built-in notifications off, booking window 14 days.</p>
+
+  <h3>The contract template</h3>
+  <p><span class="path">Payments → Documents &amp; Contracts → Templates → New Template</span></p>
+  <p>Name it <code>RELIER Service Agreement</code>. Build the body from <code>onboarding/templates/07-service-agreement.md</code>, and insert your custom fields as merge tags so it auto-populates: <code>{{contact.trading_name}}</code>, <code>{{contact.management_fee}}</code>, <code>{{contact.territory_granted}}</code>, <code>{{contact.start_date}}</code>.</p>
+  <p>Add a signature element and set the recipient to the <strong>Signatory Email</strong> field.</p>
+  <div class="warn">
+    <span class="tag">Before you send this to a human</span>
+    <p>Section 13 of that template is a structure for a solicitor, not a finished contract. Get an Irish solicitor to review it once — an hour of their time, and it covers every client you ever sign.</p>
+  </div>
+</section>
+
+<!-- PHASE 3 -->
+<section id="p3">
+  <div class="phase-hd"><h2><span class="n">Phase 3</span> The workflows</h2><span class="time">~4 hrs</span></div>
+  <p class="lede">Seven workflows. Build them in this order — later ones depend on tags earlier ones apply. All via <span class="path">Automation → Workflows → Create Workflow → Start from Scratch</span>.</p>
+
+  <div class="wf">
+    <div class="wf-hd"><span class="nm">Sales Call — Confirm &amp; Remind</span><span class="id">WF-01 · System 4</span></div>
+    <div class="wf-row"><div class="k">Trigger</div><div class="v"><b>Customer Booked Appointment</b> → filter <b>Calendar = Sales Call</b></div></div>
+    <div class="wf-row"><div class="k">Steps</div><div class="v"><ol class="wf-steps">
+      <li><b>Send Email</b> — the confirmation email. Subject: <em>You're booked in for {{appointment.start_time}} — two quick things</em></li>
+      <li><b>Wait</b> → Time Delay → <b>5 minutes</b></li>
+      <li><b>Send SMS</b> — the initial SMS</li>
+      <li><b>Add Tag</b> → <code>stage-booked</code></li>
+      <li><b>Update Opportunity</b> → stage <b>Call Booked</b></li>
+      <li><b>Wait</b> → Appointment Time → <b>24 hours before</b></li>
+      <li><b>Send SMS</b> — "Still good for tomorrow?" · then <b>Send Email</b> — the 24hr email with the local Ad Library fact</li>
+      <li><b>Wait</b> → Appointment Time → <b>1 hour before</b> → <b>Send SMS</b> with the Zoom link</li>
+      <li><b>Wait</b> → Appointment Time → <b>5 minutes before</b> → <b>Send SMS</b> "Starting now"</li>
+    </ol></div></div>
+    <div class="wf-row"><div class="k">Watch for</div><div class="v">Wait steps must be <b>Appointment Time</b> based, not time delays. A delay counts from booking; if he books 40 minutes before the call, a "24 hours before" delay never fires at all.</div></div>
+  </div>
+
+  <div class="wf">
+    <div class="wf-hd"><span class="nm">Confirmation Reply Catcher</span><span class="id">WF-02 · System 4</span></div>
+    <div class="wf-row"><div class="k">Trigger</div><div class="v"><b>Customer Replied</b> → filter Reply Type = SMS</div></div>
+    <div class="wf-row"><div class="k">Steps</div><div class="v"><ol class="wf-steps">
+      <li><b>If/Else</b> — message body contains <code>Y</code> or <code>YES</code></li>
+      <li>True branch → <b>Add Tag</b> <code>confirmed-yes</code> → <b>Internal Notification</b> to you</li>
+      <li>False branch → <b>Internal Notification</b> "Reply needs a human"</li>
+    </ol></div></div>
+    <div class="wf-row"><div class="k">Why</div><div class="v">Anyone <em>without</em> <code>confirmed-yes</code> at the 24-hour mark is your no-show risk. Filter the contact list on that tag the morning of, and ring them.</div></div>
+  </div>
+
+  <div class="wf">
+    <div class="wf-hd"><span class="nm">VSL Watched</span><span class="id">WF-03 · System 4</span></div>
+    <div class="wf-row"><div class="k">Setup</div><div class="v">First create a <b>Trigger Link</b> at <span class="path">Marketing → Trigger Links</span> pointing at your VSL. Use <em>that</em> link in every email instead of the raw URL.</div></div>
+    <div class="wf-row"><div class="k">Trigger</div><div class="v"><b>Trigger Link Clicked</b> → your VSL link</div></div>
+    <div class="wf-row"><div class="k">Steps</div><div class="v"><ol class="wf-steps"><li><b>Add Tag</b> → <code>vsl-watched</code></li><li><b>Internal Notification</b> — "{{contact.first_name}} just watched the VSL"</li></ol></div></div>
+    <div class="wf-row"><div class="k">Why</div><div class="v">A click isn't a watch, but it's the only signal you get. Someone who clicked and books is a different call from someone who didn't — and the notification lets you ring while it's fresh.</div></div>
+  </div>
+
+  <div class="wf">
+    <div class="wf-hd"><span class="nm">No-Show Recovery</span><span class="id">WF-04 · System 4</span></div>
+    <div class="wf-row"><div class="k">Trigger</div><div class="v"><b>Appointment Status</b> → status <b>No Show</b> → filter Calendar = Sales Call</div></div>
+    <div class="wf-row"><div class="k">Steps</div><div class="v"><ol class="wf-steps">
+      <li><b>Add Tag</b> <code>stage-noshow</code></li>
+      <li><b>Wait</b> 10 minutes → <b>Send SMS</b> — "No bother, things come up on site"</li>
+      <li><b>Wait</b> 3 hours → <b>Send Email</b> — the VSL and rebook link</li>
+      <li><b>Wait</b> 3 days → <b>Send SMS</b> · <b>Wait</b> 7 days → <b>Send Email</b></li>
+    </ol></div></div>
+    <div class="wf-row"><div class="k">Watch for</div><div class="v">This only fires if the appointment is <b>marked</b> No Show. Either mark it yourself straight after the call, or set the calendar to auto-mark — otherwise a third of your pipeline sits there untouched.</div></div>
+  </div>
+
+  <div class="wf">
+    <div class="wf-hd"><span class="nm">Intake → Contract</span><span class="id">WF-05 · System 2</span></div>
+    <div class="wf-row"><div class="k">Trigger</div><div class="v"><b>Form Submitted</b> → <b>Sales Intake</b></div></div>
+    <div class="wf-row"><div class="k">Steps</div><div class="v"><ol class="wf-steps">
+      <li><b>Add Tag</b> <code>stage-won</code> · <b>Update Opportunity</b> → <b>Won — Intake Pending</b></li>
+      <li><b>Send Document/Contract</b> → template <b>RELIER Service Agreement</b> → recipient <b>{{contact.signatory_email}}</b></li>
+      <li><b>Send Email</b> — the welcome-aboard email that restates the terms in plain English</li>
+      <li><b>Internal Notification</b> → "NEW CLIENT: {{contact.trading_name}}, {{contact.management_fee}}/mo, starts {{contact.start_date}}"</li>
+      <li><b>Wait 48 hours</b> → <b>If/Else</b>: contract still unsigned → <b>Send SMS</b> "Did that contract come through alright?"</li>
+    </ol></div></div>
+    <div class="wf-row"><div class="k">Watch for</div><div class="v">Step 5 is the one people skip and it's the most valuable step in the workflow. Unsigned contracts go cold in about three days.</div></div>
+  </div>
+
+  <div class="wf">
+    <div class="wf-hd"><span class="nm">Contract Signed → Onboarding</span><span class="id">WF-06 · System 2</span></div>
+    <div class="wf-row"><div class="k">Trigger</div><div class="v"><b>Documents &amp; Contracts</b> → filter <b>Status = Completed</b>, <b>Template = RELIER Service Agreement</b></div></div>
+    <div class="wf-row"><div class="k">Steps</div><div class="v"><ol class="wf-steps">
+      <li><b>Add Tag</b> <code>client-onboarding</code> · <b>Update Opportunity</b> → <b>Contracted</b></li>
+      <li><b>Send Email</b> — "Signed, here's the only homework you'll get" with the onboarding form link and the photo ask</li>
+      <li><b>Create Task</b> — "Set up {{contact.trading_name}} workspace", assigned to you, due in 1 day</li>
+      <li><b>Internal Notification</b> to the team</li>
+      <li><b>Wait 3 days</b> → If form not submitted → <b>Send SMS</b> nudge</li>
+    </ol></div></div>
+  </div>
+
+  <div class="wf">
+    <div class="wf-hd"><span class="nm">Onboarding Form → Calendar → Reminders</span><span class="id">WF-07 · System 2</span></div>
+    <div class="wf-row"><div class="k">Trigger</div><div class="v"><b>Form Submitted</b> → <b>Onboarding Discovery</b></div></div>
+    <div class="wf-row"><div class="k">Steps</div><div class="v"><ol class="wf-steps">
+      <li><b>Update Opportunity</b> → <b>Onboarding</b></li>
+      <li><b>Send Email</b> — "Last step, pick a time" with the onboarding calendar link</li>
+      <li><b>Send Email</b> — the platform access checklist</li>
+      <li><b>Create Tasks</b> — the 14-day launch checklist, assigned with due dates</li>
+    </ol></div></div>
+    <div class="wf-row"><div class="k">Then</div><div class="v">A <b>second workflow</b> triggered by <b>Customer Booked Appointment → Calendar = Onboarding Call</b> runs the 24hr / 1hr / 5min ladder. Same shape as WF-01, warmer copy — he's a client now, not a prospect.</div></div>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-top:0">Cut it here if you're short on time</h4>
+    <p style="margin-bottom:0"><strong>WF-05 and WF-06 alone solve 80% of the buyer's-remorse problem</strong> — contract auto-sends on intake, onboarding form auto-sends on signature. Build those two, run a client through them, then come back for the rest. Building all seven before your first client is how people spend three weeks in HighLevel and never make a call.</p>
+  </div>
+</section>
+
+<!-- PHASE 4 -->
+<section id="p4">
+  <div class="phase-hd"><h2><span class="n">Phase 4</span> Test before anyone real touches it</h2><span class="time">~45 min</span></div>
+  <p class="lede">Create a contact with your own mobile and a spare email address. Run the entire chain end to end. Every agency that skips this sends a client an email addressed to <code>{{contact.first_name}}</code>.</p>
+  <div class="check" id="cl">
+    <div class="prog"><span id="pct">0%</span><span class="bar"><i id="fill"></i></span><span id="cnt">0 / 0</span></div>
+    <label><input type="checkbox"><span>Book yourself into the Sales Call calendar — confirmation email arrives within a minute</span></label>
+    <label><input type="checkbox"><span>Every merge field resolved — no visible <code>{{ }}</code> anywhere in the email</span></label>
+    <label><input type="checkbox"><span>Initial SMS arrives 5 minutes later, from a number you can reply to</span></label>
+    <label><input type="checkbox"><span>Reply "Y" — the <code>confirmed-yes</code> tag lands on the contact</span></label>
+    <label><input type="checkbox"><span>Click the VSL trigger link — <code>vsl-watched</code> tag lands</span></label>
+    <label><input type="checkbox"><span>Book a test appointment 25 hours out and confirm the 24hr reminder fires on time</span></label>
+    <label><input type="checkbox"><span>Mark it No Show — the recovery SMS arrives 10 minutes later</span></label>
+    <label><input type="checkbox"><span>Submit the Sales Intake form — contract arrives at the Signatory Email, not the contact email</span></label>
+    <label><input type="checkbox"><span>Contract shows the right fee, territory and start date, auto-populated</span></label>
+    <label><input type="checkbox"><span>Sign it — onboarding form email arrives and the opportunity moves to Contracted</span></label>
+    <label><input type="checkbox"><span>Submit the onboarding form — calendar email arrives, tasks are created</span></label>
+    <label><input type="checkbox"><span>Book the onboarding call — the reminder ladder starts</span></label>
+    <label><input type="checkbox"><span>Check every email on a phone, not just desktop</span></label>
+    <label><input type="checkbox"><span>Confirm the timezone: a 9am booking says 9am in the email</span></label>
+    <label><input type="checkbox"><span>Delete the test contact and opportunity when you're done</span></label>
+  </div>
+
+  <h3>Then snapshot it</h3>
+  <p><span class="path">Agency view → Snapshots → Create Snapshot</span> from the sub-account. That freezes the whole build — fields, forms, calendars, workflows, pipeline — and every future client sub-account loads from it in about ninety seconds. This is the point where the day and a half you just spent starts paying you back.</p>
+</section>
+
+<section id="after">
+  <div class="phase-hd"><h2><span class="n">Next</span> What this doesn't cover</h2></div>
+  <p><strong>System 1's ad side.</strong> HighLevel can't run your Meta ads. Connect the account at <span class="path">Settings → Integrations → Facebook</span> so lead-form leads flow in, but build and manage campaigns in Ads Manager.</p>
+  <p><strong>The DM conversation.</strong> Connect Instagram and Facebook Messenger under Integrations and every DM lands in <span class="path">Conversations</span>. Do <em>not</em> automate the qualifying questions — the whole point is that it reads like a person. Automate only the first reply, then take over.</p>
+  <p><strong>Client-facing sub-accounts.</strong> Everything above is RELIER's own pipeline. Once you sign a trade firm, spin them a sub-account from a <em>different</em> snapshot — one built around their lead flow, not yours. That's a separate build, and worth doing after client one, not before.</p>
+</section>
+
+<footer>
+  RELIER — HighLevel implementation guide · v1.0<br>
+  Navigation paths verified against HighLevel's support documentation, September 2026. HighLevel ships UI changes often — if a menu has moved, the object you're looking for still exists under a near neighbour.<br>
+  Irish two-way SMS is unverified and must be tested before you rely on any reply-based step.
+</footer>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pre=btn.closest('.copyblock').querySelector('pre');
+      var done=function(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},1600);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pre.textContent).then(done,function(){btn.textContent='Select manually';});}
+      else{var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);done();}
+    });
+  });
+  var KEY='relier-ghl-build-v1';
+  var boxes=Array.prototype.slice.call(document.querySelectorAll('#cl input'));
+  var saved=[];try{saved=JSON.parse(localStorage.getItem(KEY)||'[]')||[];}catch(e){saved=[];}
+  boxes.forEach(function(b,i){if(saved[i])b.checked=true;});
+  var pct=document.getElementById('pct'),cnt=document.getElementById('cnt'),fill=document.getElementById('fill');
+  function render(){
+    var n=boxes.filter(function(b){return b.checked;}).length;
+    var p=boxes.length?Math.round(n/boxes.length*100):0;
+    pct.textContent=p+'%';cnt.textContent=n+' / '+boxes.length;fill.style.width=p+'%';
+  }
+  boxes.forEach(function(b){b.addEventListener('change',function(){
+    render();
+    try{localStorage.setItem(KEY,JSON.stringify(boxes.map(function(x){return x.checked?1:0;})));}catch(e){}
+  });});
+  render();
+})();
+</script>
