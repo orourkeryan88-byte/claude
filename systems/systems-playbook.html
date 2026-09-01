@@ -1,0 +1,621 @@
+<title>The RELIER Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#EDEFF1;--surface:#FBFCFC;--surface-2:#E4E8EB;
+  --ink:#10161C;--ink-2:#3B4650;--muted:#68747F;
+  --line:#D3D9DE;--line-strong:#B6C0C8;
+  --accent:#2340C8;--accent-soft:#DEE3F8;
+  --signal:#9A5B06;--signal-soft:#F5E6CE;
+  --good:#186049;--good-soft:#D9EBE3;
+  --invert-bg:#10161C;--invert-fg:#EDEFF1;--invert-muted:#8A96A1;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}}
+:root[data-theme="dark"]{
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:42px 26px 110px}
+p{margin:0 0 14px;max-width:68ch}
+ul,ol{max-width:68ch;padding-left:1.15em;margin:0 0 16px}
+li{margin-bottom:7px}
+a{color:var(--accent)}
+.kicker{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,4.8vw,2.8rem);line-height:1.03;letter-spacing:-.026em;margin:.3em 0 0;text-wrap:balance}
+.sub{color:var(--ink-2);margin-top:16px;max-width:64ch}
+h2{font-family:var(--display);font-weight:600;font-size:1.45rem;letter-spacing:-.018em;margin:44px 0 10px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:1.04rem;margin:30px 0 8px}
+h4{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:24px 0 8px}
+.lede{color:var(--ink-2);margin-bottom:20px}
+
+/* tabs */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:0;background:var(--paper);padding:14px 0;border-bottom:1px solid var(--line);z-index:6;margin-top:30px}
+.tab{font-family:var(--display);font-weight:600;font-size:.86rem;padding:9px 16px;border-radius:5px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-2);cursor:pointer;display:flex;gap:9px;align-items:baseline}
+.tab .n{font-family:var(--mono);font-size:.62rem;color:var(--muted)}
+.tab:hover{border-color:var(--accent);color:var(--accent)}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab[aria-selected="true"] .n{color:rgba(255,255,255,.72)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.job{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:22px 26px;margin:24px 0}
+.job .lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--invert-muted)}
+.job p{margin:10px 0 0;font-size:1.05rem;line-height:1.5;color:var(--invert-fg);max-width:62ch}
+.job p + p{margin-top:12px;font-size:.95rem;color:var(--invert-muted)}
+
+.flow{margin:24px 0;overflow-x:auto}
+.flow svg{display:block;min-width:640px;width:100%;height:auto}
+
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:480px}
+th{font-family:var(--mono);font-weight:500;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-strong);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.85rem}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:20px 22px;margin:20px 0}
+.card > :last-child{margin-bottom:0}
+.callout{border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 18px;border-radius:0 4px 4px 0;margin:20px 0;font-size:.95rem}
+.callout > :last-child{margin-bottom:0}
+.callout .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
+
+.copyblock{border:1px solid var(--line);border-radius:5px;background:var(--surface);margin:16px 0;overflow:hidden}
+.copyhead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 12px 9px 15px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.copyhead span{font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.copybtn{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);border-radius:3px;padding:4px 10px;cursor:pointer}
+.copybtn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copyblock pre{margin:0;padding:15px 17px;overflow-x:auto;font-family:var(--mono);font-size:.775rem;line-height:1.68;color:var(--ink-2);white-space:pre-wrap}
+
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:0;margin:20px 0;border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.step{display:grid;grid-template-columns:38px 1fr;gap:14px;padding:15px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:0}
+.step .i{font-family:var(--mono);font-size:.72rem;color:var(--accent);padding-top:2px}
+.step .t{font-family:var(--display);font-weight:600;font-size:.98rem;letter-spacing:-.01em}
+.step .d{font-size:.88rem;color:var(--ink-2);margin-top:3px}
+.step .trig{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--good);background:var(--good-soft);padding:4px 8px;border-radius:3px;display:inline-block;margin-top:7px}
+
+.hidden{display:none}
+footer{margin-top:76px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.65rem;letter-spacing:.05em;color:var(--muted);line-height:1.85}
+@media (max-width:640px){.wrap{padding:28px 16px 80px}.tabs{position:static}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="kicker">RELIER · Operating systems</span>
+  <h1>Three systems that run the agency</h1>
+  <p class="sub">Lead generation, onboarding, and the sales machine that stops no-shows. Every script here is written for RELIER selling to the Dublin and Leinster trade firms on your prospect list — paste them as they are, swap the tokens, go.</p>
+</header>
+
+<div class="callout">
+  <span class="tag">One gap in what you sent</span>
+  <p>Your screenshots cover systems <strong>1, 2 and 4</strong>. There's no #3 in any of the four images — in this kind of framework that slot is usually <strong>fulfilment and delivery</strong> (how the work actually gets done once a client is live). Say the word and I'll build it. Your 14-day launch checklist already covers a good chunk of it.</p>
+</div>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" data-t="s1"><span class="n">01</span>Lead Generation</button>
+  <button class="tab" role="tab" aria-selected="false" data-t="s2"><span class="n">02</span>Onboarding</button>
+  <button class="tab" role="tab" aria-selected="false" data-t="s4"><span class="n">04</span>Sales</button>
+</div>
+
+<!-- ============ SYSTEM 1 ============ -->
+<div id="s1" role="tabpanel">
+  <div class="flow">
+    <svg viewBox="0 0 860 130" role="img" aria-label="Lead generation flow: create and post ads, direct messages, appointment setting, booked call, leading to sales.">
+      <g font-family="IBM Plex Mono, monospace">
+        <g>
+          <rect x="2" y="24" width="158" height="70" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+          <text x="16" y="46" font-size="9.5" letter-spacing="1.5" fill="var(--accent)">01</text>
+          <text x="16" y="66" font-size="13.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Post Ads</text>
+          <text x="16" y="82" font-size="9" fill="var(--muted)">Creative = king</text>
+        </g>
+        <g>
+          <rect x="178" y="24" width="158" height="70" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+          <text x="192" y="46" font-size="9.5" letter-spacing="1.5" fill="var(--accent)">02</text>
+          <text x="192" y="66" font-size="13.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Direct Messages</text>
+          <text x="192" y="82" font-size="9" fill="var(--muted)">No friction · trust</text>
+        </g>
+        <g>
+          <rect x="354" y="24" width="158" height="70" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+          <text x="368" y="46" font-size="9.5" letter-spacing="1.5" fill="var(--accent)">03</text>
+          <text x="368" y="66" font-size="13.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Appt Setting</text>
+          <text x="368" y="82" font-size="9" fill="var(--muted)">Qualify &amp; book</text>
+        </g>
+        <g>
+          <rect x="530" y="24" width="158" height="70" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+          <text x="544" y="46" font-size="9.5" letter-spacing="1.5" fill="var(--accent)">04</text>
+          <text x="544" y="66" font-size="13.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Booked Call</text>
+          <text x="544" y="82" font-size="9" fill="var(--muted)">Present &amp; close</text>
+        </g>
+        <g>
+          <rect x="706" y="24" width="152" height="70" rx="4" fill="var(--good-soft)" stroke="var(--good)"/>
+          <text x="782" y="66" font-size="15" font-family="Archivo, sans-serif" font-weight="700" fill="var(--good)" text-anchor="middle">SALES</text>
+        </g>
+        <g stroke="var(--line-strong)" stroke-width="1.5">
+          <line x1="162" y1="59" x2="174" y2="59"/><line x1="338" y1="59" x2="350" y2="59"/>
+          <line x1="514" y1="59" x2="526" y2="59"/><line x1="690" y1="59" x2="702" y2="59"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="job">
+    <span class="lab">The job of this system</span>
+    <p>Turn strangers into booked calls without a landing page, a lead magnet, or a form. The DM is the funnel.</p>
+    <p>You're selling to men who run crews, answer their own phones, and check Instagram in the van. A landing page asks them to fill in a form and wait. A DM asks them to say one word. Qualify hard later — never at the door.</p>
+  </div>
+
+  <h2>Lane A — Outbound, start here</h2>
+  <p class="lede">You already have 22 named firms. Outbound to a known list beats paid traffic when you have no case studies, because you can be specific about <em>their</em> business.</p>
+
+  <h3>The asset: a 90-second screen recording</h3>
+  <div class="steps">
+    <div class="step"><div class="i">0:00</div><div><div class="t">Their site on screen</div><div class="d">"Hi Dave, Ryan here. I was looking at your site this morning."</div></div></div>
+    <div class="step"><div class="i">0:15</div><div><div class="t">The Ad Library reveal</div><div class="d">A competitor two towns over running four ads. "You're running none."</div></div></div>
+    <div class="step"><div class="i">0:45</div><div><div class="t">One specific fix</div><div class="d">Their price page, their gallery, their contact form. One thing, not five.</div></div></div>
+    <div class="step"><div class="i">1:15</div><div><div class="t">The soft exit</div><div class="d">"No pitch. If you want the other two things I spotted, say the word."</div></div></div>
+  </div>
+
+  <div class="copyblock">
+    <div class="copyhead"><span>Outbound email — subject line is just their firm's name</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Subject: Attic Masters
+
+Dave — made you a 90-second video about your site, no pitch attached.
+
+[link]
+
+If it's useful I'll send the other two things I spotted. If not,
+ignore me and I won't chase.
+
+Ryan</pre>
+  </div>
+  <p><strong>"I won't chase" does the heavy lifting.</strong> It removes the thing he's bracing for, and it's true — you don't chase, you send a different video in ten days.</p>
+
+  <h4>Cadence per prospect</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Day</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td class="num">0</td><td>Screen recording sent</td></tr>
+      <tr><td class="num">3</td><td>One line: "Did that come through alright?"</td></tr>
+      <tr><td class="num">10</td><td>Second recording, different angle, no reference to the first</td></tr>
+      <tr><td class="num">24</td><td>Phone the listed number, mid-morning between jobs</td></tr>
+      <tr><td class="num">45</td><td>Long list — one email a quarter</td></tr>
+    </tbody>
+  </table></div>
+  <p>Twenty-two prospects worked properly is enough to land three clients. <strong>Don't add a 23rd until all 22 have reached day 24.</strong></p>
+
+  <h2>Lane B — DM ads, once you have one case study</h2>
+  <h4>Setup</h4>
+  <ul>
+    <li><strong>Objective:</strong> Messages → Instagram Direct or Messenger</li>
+    <li><strong>Geo:</strong> Republic of Ireland, 25-mile radius of Dublin</li>
+    <li><strong>Audience:</strong> broad, plus interests — Checkatrade, construction management, builders merchants. The creative does the targeting.</li>
+    <li><strong>Budget:</strong> €20–€40/day. Below €20 you learn nothing.</li>
+    <li><strong>Placement:</strong> Reels and Stories first.</li>
+  </ul>
+
+  <h3>Six ad angles, in test order</h3>
+  <div class="steps">
+    <div class="step"><div class="i">01</div><div><div class="t">Feast or famine</div><div class="d">"You're booked till March. Grand. What are you doing in April?" Straight to camera, 20 seconds, no music. Name the fear he doesn't say out loud.</div></div></div>
+    <div class="step"><div class="i">02</div><div><div class="t">The Ad Library reveal</div><div class="d">"There are eleven attic firms in North Dublin. Two are running ads. That's the whole opportunity."</div></div></div>
+    <div class="step"><div class="i">03</div><div><div class="t">Price transparency</div><div class="d">"Every attic company in Dublin hides their price. One doesn't. Guess which one gets the calls."</div></div></div>
+    <div class="step"><div class="i">04</div><div><div class="t">The €15 lead</div><div class="d">"If five other lads got the same lead — you're not buying leads, you're buying lottery tickets."</div></div></div>
+    <div class="step"><div class="i">05</div><div><div class="t">Proof-led</div><div class="d">"This firm in Drogheda went from referrals only to eleven booked surveys in six weeks." Becomes your best performer the day you can run it.</div></div></div>
+    <div class="step"><div class="i">06</div><div><div class="t">The capacity filter</div><div class="d">"Don't ring me if you can't take on more work. Genuinely." Filters and builds trust at once — counter-intuitive ads outperform because nobody else runs them.</div></div></div>
+  </div>
+
+  <div class="callout">
+    <span class="tag">Creative rules</span>
+    <p>Shot on a phone, vertical, no agency polish — polish reads as "expensive" to this audience. Captions burned in, most watch on mute. First frame is a face or a screen, never a logo. 20–40 seconds.</p>
+  </div>
+
+  <h2>Stage 2 — The DM conversation</h2>
+  <div class="copyblock">
+    <div class="copyhead"><span>Opening reply — within 5 minutes</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Thanks for messaging. Before I say anything useful — are you
+actually looking to take on more work at the minute, or just
+having a look?</pre>
+  </div>
+  <p>Opening with permission to say no is what makes him answer honestly. Everyone else opens with a pitch.</p>
+
+  <h3>Four qualifying questions — one at a time, never as a list</h3>
+  <ol>
+    <li><strong>Capacity.</strong> "How many jobs a month are you doing now, and how many could you handle?"</li>
+    <li><strong>Job value.</strong> "What's an average job for you, roughly?"</li>
+    <li><strong>Current source.</strong> "Where's the work coming from at the moment?"</li>
+    <li><strong>Follow-up speed.</strong> "When someone rings, who picks up?"</li>
+  </ol>
+  <p>A wall of questions in a DM reads like a form and gets ignored.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>His answer</th><th>Your read</th></tr></thead>
+    <tbody>
+      <tr><td>"Booked out, couldn't take more"</td><td>Not now. Ask when the diary opens, diarise it, don't sell.</td></tr>
+      <tr><td>Average job under €6,000</td><td>The maths doesn't work. Say so honestly and move on.</td></tr>
+      <tr><td>"All word of mouth"</td><td><strong>Ideal.</strong> Dormant potential, no agency to displace.</td></tr>
+      <tr><td>"Tried Facebook ads, waste of money"</td><td>Ask what he ran and for how long. Usually two weeks with no tracking — an easy, honest correction.</td></tr>
+      <tr><td>"The wife takes the calls"</td><td>Good. A human answers. Speed-to-lead is fixable.</td></tr>
+      <tr><td>Already has an agency</td><td>Ask what he's getting. Either he's happy — walk away cleanly — or you've found your opening.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="copyblock">
+    <div class="copyhead"><span>The transition to a call</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Right, that all stacks up. I'd rather show you than type it —
+20 minutes on a call, I'll walk you through what I'd run for you
+specifically and you can tell me if it's mad. No pitch deck, no
+pressure. Does Thursday morning suit?</pre>
+  </div>
+  <p><strong>Offer two specific slots, not a calendar link.</strong> Trade owners don't open calendar links from a phone on a site. Get the verbal yes first, then send the link to confirm.</p>
+
+  <h2>Weekly numbers</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Metric</th><th>Target</th><th>If it's below</th></tr></thead>
+    <tbody>
+      <tr><td>Recordings sent</td><td class="num">15/week</td><td>Nothing else matters until this is hit</td></tr>
+      <tr><td>Outbound reply rate</td><td class="num">20%+</td><td>Under 10% — the message is wrong</td></tr>
+      <tr><td>Cost per DM conversation</td><td class="num">€8–€25</td><td>Creative fatigue or wrong angle</td></tr>
+      <tr><td>Conversation → booked</td><td class="num">25%+</td><td>Under 15% — you're pitching too early</td></tr>
+      <tr><td>Booked → showed</td><td class="num">70%+</td><td>System 4 isn't built</td></tr>
+      <tr><td>Showed → closed</td><td class="num">20–30%</td><td>You're presenting before diagnosing</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ============ SYSTEM 2 ============ -->
+<div id="s2" role="tabpanel" class="hidden">
+  <div class="job">
+    <span class="lab">The job of this system</span>
+    <p>Eliminate buyer's remorse. The 48 hours after someone signs is when doubt creeps in — he's told his wife he's spending €2,000 a month with a lad he met on Instagram.</p>
+    <p>Every hour of silence in that window is an hour for the decision to rot. Something lands in his inbox within 60 seconds of yes, and again every time he finishes a step. He should never be waiting on you.</p>
+  </div>
+
+  <h2>The trigger chain</h2>
+  <div class="steps">
+    <div class="step"><div class="i">01</div><div><div class="t">Sales Intake Form</div><div class="d">You fill it in <em>live, on the call</em>. Commercial details only, 90 seconds.</div><span class="trig">Manual → triggers the contract</span></div></div>
+    <div class="step"><div class="i">02</div><div><div class="t">Contract Sent</div><div class="d">Auto-populated and in the signatory's inbox inside 60 seconds. No scrambling, no manual work.</div><span class="trig">On signature → send onboarding form</span></div></div>
+    <div class="step"><div class="i">03</div><div><div class="t">Onboarding Form</div><div class="d">The discovery questionnaire. The only homework he gets.</div><span class="trig">On submit → send calendar link</span></div></div>
+    <div class="step"><div class="i">04</div><div><div class="t">Onboarding Calendar</div><div class="d">He books the 45-minute call whenever suits.</div><span class="trig">On booking → start reminder ladder</span></div></div>
+    <div class="step"><div class="i">05</div><div><div class="t">Reminders</div><div class="d">24hr, 1hr, 5min. Same ladder as System 4, warmer tone — he's a client now.</div><span class="trig">100% automated</span></div></div>
+    <div class="step"><div class="i">06</div><div><div class="t">Onboarding Call + Presentation</div><div class="d">45 minutes, same template deck every time. The consistency is what makes it feel like an operation.</div><span class="trig">You run this one</span></div></div>
+  </div>
+
+  <div class="callout">
+    <span class="tag">The single highest-leverage line in this whole system</span>
+    <p>Don't let him leave the sales call before step 1 is done. Fill the intake form in while you're still on Zoom: <em>"Give me 90 seconds, I'll get this started now so the contract's with you before you've made a cup of tea."</em> That sentence alone kills most buyer's remorse.</p>
+  </div>
+
+  <h2>Step 1 — Sales Intake Form</h2>
+  <p class="lede">Commercial details only. You fill this in, not him.</p>
+  <div class="card">
+    <p>Legal business name + trading name · company registration number · VAT number and status · billing contact (name, email, mobile) · billing address · <strong>signatory name and email</strong> (often a spouse or accountant, not him) · package · management fee · setup fee · ad spend budget · start date · <strong>territory granted</strong> · <strong>anything promised on the call that isn't standard</strong>.</p>
+    <p style="margin-bottom:0">Those last two matter most. Write the exclusivity area down now or you'll argue about it in month four — and log every off-menu promise, because that's what you'll be held to.</p>
+  </div>
+
+  <h2>Step 2 — Contract</h2>
+  <div class="copyblock">
+    <div class="copyhead"><span>Contract email — fires on intake submit</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Subject: Welcome aboard {{Company}} — contract attached
+
+{{FirstName}},
+
+Grand — that's us started. Contract's below, takes about two
+minutes to sign on your phone.
+
+It's four pages and there's nothing hidden in it. The short
+version: {{FEE}} a month, {{AD_SPEND}} of ad spend paid directly
+by you to Meta and Google, 90 days to start and then rolling
+monthly on 30 days' notice. You own every account and every bit
+of creative, always.
+
+Sign here: {{CONTRACT_LINK}}
+
+The second you sign, you'll get one form from me. Fill that in
+and we're moving.
+
+Ryan</pre>
+  </div>
+  <p><strong>Restate the terms in the email body.</strong> He signs on a phone and won't read the PDF. Terms he's seen in plain English can't become a nasty surprise in month two.</p>
+
+  <h2>Step 3 — Onboarding Form</h2>
+  <div class="copyblock">
+    <div class="copyhead"><span>Onboarding form email — fires on signature</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Subject: Signed — here's the only homework you'll get
+
+That's signed, {{FirstName}}, thanks.
+
+One form and it's the only one you'll get from me. About 15
+minutes: {{FORM_LINK}}
+
+Two questions on it matter more than all the rest, so give them
+a minute each:
+
+- Paste 3-5 real reviews or things customers have said to you,
+  word for word. Don't tidy them up. Your ads get written out of
+  these, not out of my imagination.
+
+- What number would make this obviously worth it in 90 days?
+  Be specific — "six extra surveys a month" beats "more leads".
+
+And when you get a chance, WhatsApp me 20 photos off your phone.
+Before-and-afters, jobs in progress, your crew working, the van.
+Doesn't matter if they're rough. Rough is what performs.
+
+Ryan</pre>
+  </div>
+  <p><strong>The photo ask goes here, not later.</strong> Creative supply is the biggest predictor of how the account performs, and he is at peak willingness in this exact hour.</p>
+
+  <h2>Step 4 — Calendar</h2>
+  <div class="copyblock">
+    <div class="copyhead"><span>Calendar email — fires on form submit</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Subject: Last step — pick a time and we'll get going
+
+Form's in, {{FirstName}}, that's everything I need.
+
+Last thing: grab 45 minutes whenever suits — {{CALENDAR_LINK}}
+
+On that call I'll show you the actual plan: the ads we're
+running, what the page looks like, what happens when someone
+enquires, and what you'll see from me every week.
+
+If you can, be at a laptop rather than the van — there's a fair
+bit to look at.
+
+Ryan</pre>
+  </div>
+
+  <h2>Step 6 — The onboarding call</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Min</th><th>Section</th></tr></thead>
+    <tbody>
+      <tr><td class="num">0–5</td><td>Welcome. Introduce your side by name and role.</td></tr>
+      <tr><td class="num">5–12</td><td><strong>Play his business back to him</strong> from the onboarding form. Proves you read it.</td></tr>
+      <tr><td class="num">12–20</td><td>The plan: campaigns, creative angles, landing page, the offer.</td></tr>
+      <tr><td class="num">20–28</td><td><strong>What happens when a lead comes in — and the five-minute rule.</strong> Get him to agree out loud. This commitment decides whether the account works.</td></tr>
+      <tr><td class="num">28–35</td><td>The 90-day roadmap. Reset expectations: weeks 1–2 build, 3–6 learning, 7–12 optimisation.</td></tr>
+      <tr><td class="num">35–40</td><td>How you work: weekly written update on a fixed day, monthly call, response times, escalation to you personally.</td></tr>
+      <tr><td class="num">40–45</td><td>What you need from him: approvals in 2 days, photos monthly, honest numbers. Next steps with dates.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Send the recap within two hours — what was agreed, the target number, the start date, and his three commitments in writing.</p>
+
+  <h2>Behind the scenes</h2>
+  <p class="lede">These fire silently. He never sees them; they're what stops things falling through cracks.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Automation</th><th>Fires on</th></tr></thead>
+    <tbody>
+      <tr><td>Create client record with all intake fields</td><td>Contract signed</td></tr>
+      <tr><td>Move deal stage: Sold → Contracted → Onboarding → Active</td><td>Each step</td></tr>
+      <tr><td>Create folder, shared drive, WhatsApp or Slack channel</td><td>Contract signed</td></tr>
+      <tr><td>Generate the 14-day launch checklist as assigned tasks</td><td>Contract signed</td></tr>
+      <tr><td>Notify the team</td><td>Contract signed</td></tr>
+      <tr><td>Send the platform access checklist</td><td>Onboarding form submitted</td></tr>
+      <tr><td>Diarise day 30 review, day 60 testimonial, day 75 renewal</td><td>Call booked</td></tr>
+      <tr><td>Start the 14-day launch countdown</td><td>Onboarding call complete</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>The stack</h2>
+  <div class="card">
+    <h4 style="margin-top:0">Option A — all in one</h4>
+    <p><strong>GoHighLevel.</strong> Forms, e-sign contracts, calendar, SMS, email, pipeline and automations in one place, roughly $97–$297/month. One tool, one place things break. Recommended if you're starting today.</p>
+    <h4>Option B — modular</h4>
+    <p style="margin-bottom:0">Tally (free) or Typeform · PandaDoc / SignWell for e-sign · Cal.com (free) or Calendly · Twilio or ClickSend for Irish SMS · Make.com as the glue · Notion or Airtable as the database.</p>
+  </div>
+  <div class="callout">
+    <span class="tag">Build order — do not build all of it at once</span>
+    <p>Steps 2 and 3 first: contract auto-sends on intake, onboarding form auto-sends on signature. That's 80% of the remorse problem solved in an afternoon. Add the calendar and reminders after client two. Add the behind-the-scenes automations after client three, when you actually know what falls through.</p>
+  </div>
+</div>
+
+<!-- ============ SYSTEM 4 ============ -->
+<div id="s4" role="tabpanel" class="hidden">
+  <div class="job">
+    <span class="lab">The job of this system</span>
+    <p>Stop no-shows, and make sure whoever does show is pre-sold and pre-qualified. A 40% show rate and a 75% show rate are two completely different businesses at the same ad spend.</p>
+    <p>Every step asks for a small action — watch this, reply YES, accept the invite. Each micro-commitment raises the cost of ghosting. People don't no-show because they lost interest; they no-show because nothing happened between booking and the call to make it feel real.</p>
+  </div>
+
+  <h2>The ladder</h2>
+  <div class="steps">
+    <div class="step"><div class="i">01</div><div><div class="t">Confirmation Email</div><div class="d">Instant. Watch the VSL · accept the invite · reply YES.</div></div></div>
+    <div class="step"><div class="i">02</div><div><div class="t">Booking Page</div><div class="d">Seen before booking. VSL + case studies + FAQs do the pre-selling.</div></div></div>
+    <div class="step"><div class="i">03</div><div><div class="t">Initial SMS</div><div class="d">5 minutes after booking. Confirms time and date, from a real number.</div></div></div>
+    <div class="step"><div class="i">04</div><div><div class="t">24hr Reminder</div><div class="d">Confirm + share a specific local win. The one that does the work.</div></div></div>
+    <div class="step"><div class="i">05</div><div><div class="t">1hr Reminder</div><div class="d">Zoom link ready.</div></div></div>
+    <div class="step"><div class="i">06</div><div><div class="t">5min Reminder</div><div class="d">Final Zoom link. "I'm on."</div></div></div>
+  </div>
+
+  <div class="copyblock">
+    <div class="copyhead"><span>1 — Confirmation email, sends instantly</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Subject: You're booked in for {{Day}} at {{Time}} — two quick things
+
+{{FirstName}},
+
+You're down for {{Day}} {{Date}} at {{Time}}. Zoom link is in the
+calendar invite.
+
+Two things before we talk, both quick:
+
+1. WATCH THIS — 6 MINUTES. {{VSL_LINK}}
+   It's me walking through exactly what I'd build for an attic firm
+   and what it costs. If you watch it, our call goes from a sales
+   pitch to a proper conversation about your business. If you don't,
+   we'll spend the first fifteen minutes on things this video
+   already answers.
+
+2. ACCEPT THE CALENDAR INVITE so it's in your diary, not just mine.
+
+And reply YES to this email so I know you got it.
+
+One thing I'd ask: if something comes up and you can't make it,
+just tell me. I'd genuinely rather you moved it than left me
+sitting on Zoom. Move it here: {{RESCHEDULE_LINK}}
+
+Ryan
+RELIER</pre>
+  </div>
+  <div class="card">
+    <p><strong>Why "reply YES" works:</strong> a two-second action turns a passive booking into an active commitment — and it tells you who's engaged. Anyone who hasn't replied YES by the 24-hour mark is your no-show risk. Ring them.</p>
+    <p style="margin-bottom:0"><strong>Why the reschedule link is prominent:</strong> offering the exit lowers the no-show rate. A moved call is live; a no-show is dead. Never hide it.</p>
+  </div>
+
+  <h2>2 — The booking page</h2>
+  <p>Above the fold: <em>"20 minutes. I'll show you exactly what I'd run for your firm."</em> Subhead: <em>"No deck, no pressure. If it's not a fit I'll tell you on the call."</em> Calendar embed immediately visible, never below the fold.</p>
+  <p>Below it, in order: the <strong>6-minute VSL</strong> (problem → why referrals cap you → what the system is → a real example → what it costs → who it's not for), then <strong>case studies</strong>, then <strong>FAQs</strong>.</p>
+  <div class="callout">
+    <span class="tag">Before you have case studies</span>
+    <p>Replace the case-study block with "I'm building my first Irish case studies right now, which is why the first two firms get it at cost." Honesty converts better than a fake logo wall, and it sets up the wedge offer.</p>
+  </div>
+  <h4>The seven FAQs to answer before the call</h4>
+  <ul>
+    <li>What does it cost? <em>(Give a real range. Refusing to say costs you more calls than the number does.)</em></li>
+    <li>How long before I see leads?</li>
+    <li>Do I need to be on camera?</li>
+    <li>What if I can't handle the extra work?</li>
+    <li>I've tried Facebook ads before and it didn't work — why is this different?</li>
+    <li>Am I tied into a contract?</li>
+    <li>Do you work with my competitors? <em>(One firm per area. Say it here.)</em></li>
+  </ul>
+
+  <div class="copyblock">
+    <div class="copyhead"><span>3 — Initial SMS, 5 minutes after booking</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Ryan from RELIER here — got you down for {{Day}} at {{Time}}.
+Sent you an email with a short video, worth a watch before we
+talk. Any bother, just text this number back.</pre>
+  </div>
+
+  <div class="copyblock">
+    <div class="copyhead"><span>4 — 24hr reminder, SMS then email</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>SMS:
+Still good for tomorrow {{Time}}, {{FirstName}}? Just reply Y or N
+— no hassle either way if you need to move it.
+
+EMAIL
+Subject: Tomorrow at {{Time}} — and something you might find useful
+
+{{FirstName}},
+
+Quick confirm for tomorrow at {{Time}}.
+
+One thing worth seeing before we talk — I pulled the Meta Ad
+Library for attic firms in your area this morning. Out of nine
+firms within ten miles of you, two are running ads. I'll show you
+what they're running and what I'd do differently on the call.
+
+Reply Y to confirm, or move it here if tomorrow's gone pear-shaped:
+{{RESCHEDULE_LINK}}
+
+Ryan</pre>
+  </div>
+  <p><strong>Do the research before this email.</strong> A specific, local, verifiable fact pulled that morning turns a maybe into a definite. Generic reminders get ignored; this one gets replies.</p>
+
+  <div class="copyblock">
+    <div class="copyhead"><span>5 &amp; 6 — the final two</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>1 HOUR:
+One hour, {{FirstName}}. Zoom's here when you're ready: {{ZOOM_LINK}}
+
+5 MINUTES:
+Starting now — {{ZOOM_LINK}}. I'm on.</pre>
+  </div>
+  <p><strong>Five minutes, not zero.</strong> He's finishing a call or parking the van. Sending at the exact start time means he joins at eight minutes past, if at all.</p>
+
+  <h2>No-show recovery</h2>
+  <div class="copyblock">
+    <div class="copyhead"><span>Fires 10 minutes after a missed call, then 3 hours</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>SMS (+10 min):
+No bother {{FirstName}} — things come up on site. Grab another
+slot whenever suits: {{RESCHEDULE_LINK}}
+
+EMAIL (+3 hrs):
+Missed you today, {{FirstName}} — genuinely no problem. Here's the
+video I was going to walk you through anyway: {{VSL_LINK}}
+
+If it's useful, book back in here: {{RESCHEDULE_LINK}}
+If the timing's wrong, tell me and I'll leave you alone.</pre>
+  </div>
+  <p>Then day 3 and day 10. Around a third of no-shows rebook if you make it easy and stay pleasant. <strong>Being annoyed costs you a third of your pipeline.</strong></p>
+
+  <h2>The call — 20 minutes</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Min</th><th>What happens</th></tr></thead>
+    <tbody>
+      <tr><td class="num">0–2</td><td>Small talk. Ask about the job he's on. Genuinely.</td></tr>
+      <tr><td class="num">2–7</td><td><strong>Diagnose, don't pitch.</strong> "Talk me through what happens when someone rings you." Let him talk. Take notes he can see you taking.</td></tr>
+      <tr><td class="num">7–10</td><td>Play back what you heard, in his words.</td></tr>
+      <tr><td class="num">10–15</td><td><strong>Show the maths on his numbers.</strong> This is where the sale happens — not the portfolio.</td></tr>
+      <tr><td class="num">15–18</td><td>The offer. One package, one price, one start date. Never three tiers.</td></tr>
+      <tr><td class="num">18–20</td><td>"Do you want to go ahead?" Then stop talking.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <span class="tag">The close everyone gets wrong</span>
+    <p>After you ask, say nothing. The silence is uncomfortable for about four seconds and then he answers. Fill it and you've talked yourself out of the sale.</p>
+    <p>When he says "I'll have a think": <em>"Course. Can I ask — is it the money, the timing, or you're not sure it'll work?"</em> Then handle the real objection instead of the polite one. If it's timing, book the specific follow-up date before you hang up.</p>
+  </div>
+  <p><strong>The moment he says yes, System 2 fires.</strong></p>
+
+  <h2>Show-rate benchmarks</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Stage</th><th>Poor</th><th>Good</th><th>What to fix</th></tr></thead>
+    <tbody>
+      <tr><td>Booked → showed</td><td class="num">&lt;50%</td><td class="num">75%+</td><td>The ladder isn't built or isn't sending</td></tr>
+      <tr><td>Replied YES</td><td class="num">&lt;40%</td><td class="num">70%+</td><td>Confirmation email too long or has no ask</td></tr>
+      <tr><td>VSL watched</td><td class="num">&lt;25%</td><td class="num">50%+</td><td>Video too long — cut to 6 minutes</td></tr>
+      <tr><td>Showed → closed</td><td class="num">&lt;15%</td><td class="num">25–35%</td><td>You're pitching before diagnosing</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<footer>
+  RELIER — Operating systems · v1.0<br>
+  Systems 1, 2 and 4 built from the framework in your screenshots. System 3 (fulfilment &amp; delivery) is not yet built.<br>
+  All copy is written for RELIER selling to Dublin and Leinster trade firms. Swap {{tokens}} before sending.
+</footer>
+</div>
+
+<script>
+(function(){
+  var tabs=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels={s1:document.getElementById('s1'),s2:document.getElementById('s2'),s4:document.getElementById('s4')};
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){
+      tabs.forEach(function(x){x.setAttribute('aria-selected',String(x===t));});
+      Object.keys(panels).forEach(function(k){panels[k].classList.toggle('hidden',k!==t.dataset.t);});
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pre=btn.closest('.copyblock').querySelector('pre');
+      var done=function(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},1600);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(pre.textContent).then(done,function(){btn.textContent='Select manually';});
+      }else{
+        var r=document.createRange();r.selectNodeContents(pre);
+        var s=window.getSelection();s.removeAllRanges();s.addRange(r);done();
+      }
+    });
+  });
+})();
+</script>
