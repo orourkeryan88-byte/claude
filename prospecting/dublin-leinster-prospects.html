@@ -1,0 +1,251 @@
+<title>Leinster Prospect List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#EDEFF1;--surface:#FBFCFC;--surface-2:#E4E8EB;
+  --ink:#10161C;--ink-2:#3B4650;--muted:#68747F;
+  --line:#D3D9DE;--line-strong:#B6C0C8;
+  --accent:#2340C8;--accent-soft:#DEE3F8;
+  --signal:#9A5B06;--signal-soft:#F5E6CE;
+  --good:#186049;--good-soft:#D9EBE3;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+}}
+:root[data-theme="dark"]{
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 100px}
+p{margin:0 0 12px;max-width:68ch}
+a{color:var(--accent)}
+.kicker{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.4vw,2.6rem);line-height:1.05;letter-spacing:-.024em;margin:.3em 0 0;text-wrap:balance}
+.sub{color:var(--ink-2);margin-top:14px;max-width:66ch}
+
+.notice{border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 18px;border-radius:0 4px 4px 0;margin:24px 0;font-size:.93rem}
+.notice > :last-child{margin-bottom:0}
+.notice .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;overflow:hidden;margin:26px 0}
+.stats div{background:var(--surface);padding:13px 15px}
+.stats dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stats dd{margin:5px 0 0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:500;font-size:1.5rem;letter-spacing:-.02em;color:var(--accent)}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:26px 0 6px;position:sticky;top:0;background:var(--paper);padding:12px 0;z-index:5;border-bottom:1px solid var(--line)}
+.chip{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:99px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-2);cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#q{font-family:var(--mono);font-size:.78rem;padding:6px 11px;border:1px solid var(--line-strong);border-radius:99px;background:var(--surface);color:var(--ink);min-width:170px;flex:1;max-width:250px}
+#q:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.count{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:auto}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:20px}
+.p{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.p .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.p h3{font-family:var(--display);font-weight:600;font-size:1.05rem;letter-spacing:-.012em;margin:0;line-height:1.25}
+.tradechip{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:99px;white-space:nowrap;border:1px solid currentColor;flex:none}
+.t-attic{color:var(--accent)}
+.t-ext{color:var(--good)}
+.t-garden{color:var(--signal)}
+.t-kitchen{color:var(--muted)}
+.contacts{display:flex;flex-direction:column;gap:3px;font-family:var(--mono);font-size:.75rem;line-height:1.55}
+.contacts a{text-decoration:none;border-bottom:1px solid transparent}
+.contacts a:hover{border-bottom-color:currentColor}
+.contacts .addr{color:var(--muted);font-size:.72rem}
+.note{font-size:.88rem;color:var(--ink-2);margin:0}
+.hook{background:var(--accent-soft);border-radius:4px;padding:10px 12px;font-size:.85rem;color:var(--ink);line-height:1.5}
+.hook b{font-family:var(--mono);font-size:.56rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px;font-weight:500}
+.flag{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--signal);background:var(--signal-soft);padding:5px 9px;border-radius:3px}
+footer{margin-top:70px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.65rem;letter-spacing:.05em;color:var(--muted);line-height:1.85}
+h2{font-family:var(--display);font-weight:600;font-size:1.4rem;letter-spacing:-.018em;margin:56px 0 10px}
+ol{max-width:66ch;padding-left:1.15em}
+li{margin-bottom:7px}
+@media (max-width:640px){.wrap{padding:28px 16px 70px}.grid{grid-template-columns:1fr}.controls{position:static}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="kicker">RELIER · Prospecting · Dublin &amp; Leinster</span>
+  <h1>22 high-ticket trade firms to call</h1>
+  <p class="sub">Half attic and loft conversion specialists, half other high-ticket trades — extensions, garden rooms and bespoke kitchens. Every firm here sells a job big enough to carry paid acquisition.</p>
+</header>
+
+<div class="notice">
+  <span class="tag">Verify before you dial</span>
+  <p>This session's network policy blocked direct access to every <code>.ie</code> company website, so <strong>none of these details come from me loading the firm's own contact page.</strong> They come from search-index snippets. Numbers go stale, and two entries below have obvious problems flagged on the card. Check the website before you ring — and it costs you nothing, because opening with "I was just on your site" is a better opener anyway.</p>
+</div>
+
+<dl class="stats">
+  <div><dt>Firms</dt><dd>22</dd></div>
+  <div><dt>Attic / loft</dt><dd>10</dd></div>
+  <div><dt>Other trades</dt><dd>12</dd></div>
+  <div><dt>With phone</dt><dd>20</dd></div>
+  <div><dt>Need checking</dt><dd>3</dd></div>
+</dl>
+
+<div class="controls">
+  <button class="chip" data-f="all" aria-pressed="true">All</button>
+  <button class="chip" data-f="attic" aria-pressed="false">Attic</button>
+  <button class="chip" data-f="ext" aria-pressed="false">Extensions</button>
+  <button class="chip" data-f="garden" aria-pressed="false">Garden rooms</button>
+  <button class="chip" data-f="kitchen" aria-pressed="false">Kitchens</button>
+  <input id="q" type="search" placeholder="Search name, area…" aria-label="Search prospects">
+  <span class="count" id="count"></span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<h2>How to work this list</h2>
+<ol>
+  <li><strong>Verify, then record.</strong> Open each site, confirm the number, and screen-record 90 seconds while you're there: their page, a competitor running ads properly, one thing you'd change.</li>
+  <li><strong>Send with no pitch.</strong> "Made you this, no pitch — happy to just send it over if it's useful." The ones who reply are pre-sold.</li>
+  <li><strong>Call the mobile-only ones first.</strong> A mobile number and a Gmail address means the owner answers his own phone. No gatekeeper, no committee, decision in a day.</li>
+  <li><strong>Check the Meta Ad Library</strong> for each firm before you call. If they're running nothing, that's your whole opening. If they are, you'll know what they've already tried.</li>
+  <li><strong>Ask about capacity in the first two minutes.</strong> Every firm here can sell a €25k–€60k job. Not all of them can take on more work — and selling leads to a firm with no capacity is how you lose a client in month two.</li>
+  <li><strong>One firm per patch.</strong> Greenoak works D14/D16, Attic Living works Drogheda, Noel Dempsey works from Rathnew. Signing two competitors in one area costs you both.</li>
+</ol>
+
+<h2>One legal note</h2>
+<p>Most of these are limited companies, where B2B electronic marketing with a clear opt-out is standard practice. Some are sole traders, and under Irish and EU rules (GDPR plus ePrivacy) sole traders get treated more like individuals for unsolicited electronic marketing. Phone calls to a listed business number and personalised, opt-out-able email are the safe lane; bulk unsolicited email is not. If you scale this into a real outbound operation, spend an hour with an advisor.</p>
+
+<footer>
+  RELIER — Dublin &amp; Leinster prospect list · compiled September 2026<br>
+  Source: web search index snippets. Company websites were unreachable from this environment, so no detail here was read from a firm's own contact page.<br>
+  Treat every number as unverified until you have checked it.
+</footer>
+</div>
+
+<script>
+var DATA=[
+{n:"Attic Masters",t:"attic",tl:"Attic conversion",ph:"087 204 6994",em:"david.b.mulcahy@icloud.com",ad:"Verona, Seafield Rd, Killiney, A96 KP94 · Dublin",w:"atticmasters.ie",
+ note:"Trading since 2005. Named contact: David.",
+ hook:"He's running a 20-year-old business off a personal iCloud address. Lead with that gently — it signals nobody has ever built him a proper enquiry system."},
+{n:"The Attic Man",t:"attic",tl:"Attic conversion",ph:"087 233 5220",em:"",ad:"Unit 225 Blanchardstown Corp Park 2, Ballycoolin, D15 WK11",w:"theatticman.ie",
+ note:"Family-run, 30+ years claimed, thousands of conversions.",
+ hook:"A directory lists a second number (087 705 0026). Two numbers floating around means untracked enquiries — which is exactly the problem you fix, and a concrete thing to open with.",
+ flag:"Two different numbers in circulation — confirm which is live"},
+{n:"Attic Living",t:"attic",tl:"Attic conversion",ph:"087 463 1144",em:"info@atticliving.ie",ad:"Drogheda · Louth (covers Dublin, Meath, Kildare, Wicklow)",w:"atticliving.ie",
+ note:"Family-run. Publicly claims 540+ customers.",
+ hook:"They publish a customer count. A firm that counts is a firm that measures — the easiest kind to sell reporting to, and the easiest to prove results for."},
+{n:"Convert My Attic",t:"attic",tl:"Attic conversion",ph:"01 685 5118",em:"",ad:"Dublin (covers Meath, Kildare, Wicklow)",w:"convertmyattic.ie",
+ note:"Publishes pricing: from €24,500 + VAT.",
+ hook:"They already show a price publicly, which almost nobody in this trade does. Price transparency is the highest-converting ad angle here and they've done the hard part — they just aren't putting it in front of anyone."},
+{n:"Apex Attics",t:"attic",tl:"Attic conversion",ph:"01 551 8127",em:"",ad:"Old County Glen, D12 · greater Dublin, Meath, Kildare, Wicklow",w:"apexattics.ie",
+ note:"Offers a free no-obligation feasibility study.",
+ hook:"The free feasibility study is already a lead magnet. It has no traffic pointed at it. That's a one-sentence pitch."},
+{n:"Leinster Attics",t:"attic",tl:"Attic conversion",ph:"083 484 0938",em:"info@leinsterattics.ie",ad:"Carbury · Kildare",w:"leinsterattics.ie",
+ note:"Kildare-based, covers Leinster. Mobile-only.",
+ hook:"Mobile-only number on a county-wide operation. The owner is fielding every enquiry himself between jobs — speed-to-lead is almost certainly the biggest win available."},
+{n:"Modern Attic Conversions",t:"attic",tl:"Attic conversion",ph:"01 525 5297 / 083 030 9474",em:"",ad:"Parkhill, Kilnamanagh · Dublin",w:"atticconversionsdublin.com",
+ note:"Runs county landing pages. A sister site quotes from €18,000.",
+ hook:"Already SEO-aware with per-county pages, so they understand marketing spend — you're upgrading an existing belief, not creating one. Warmest technical conversation on this list."},
+{n:"CCS-Attic",t:"attic",tl:"Attic conversion",ph:"085 771 5414",em:"ccsattic19@gmail.com",ad:"Dublin",w:"ccs-attic.com",
+ note:"Gmail address, mobile only.",
+ hook:"Lowest digital maturity here, which means the fastest visible win — but check capacity and job value hard before you commit. Low maturity sometimes means small."},
+{n:"GM Carpentry & Construction",t:"attic",tl:"Attic conversion",ph:"087 615 9429",em:"info@gmcarpentry.ie",ad:"Dublin",w:"gmcarpentry.ie",
+ note:"Carpentry-led firm positioning on attic conversions.",
+ hook:"Ask what share of turnover is attics. If it's under half, they fail the positioning test and you'd be building a funnel for a firm that can't decide what it sells."},
+{n:"PT Attic Conversions",t:"attic",tl:"Attic conversion",ph:"087 912 7682",em:"",ad:"Dublin",w:"",
+ note:"Found via a trade directory listing. No own website located.",
+ hook:"No website at all is the largest upside on this list and the largest risk. One call tells you whether they're a real 3-crew firm or one man with a van.",
+ flag:"No website found — verify the business is trading at scale"},
+
+{n:"Stone Builders",t:"ext",tl:"Extensions",ph:"01 485 3888 / 087 340 2626",em:"info@stonebuilders.ie · adrian@stonebuilders.ie",ad:"51 Bracken Rd, Sandyford Business Park, D18",w:"stonebuilders.ie",
+ note:"30 years combined experience. Named contact: Adrian.",
+ hook:"They run a 'kitchen extensions special offer' page. They already think in offers rather than services — rare in this trade, and it means the strategy conversation starts three steps ahead."},
+{n:"Greenoak Construction",t:"ext",tl:"Extensions",ph:"01 493 3013 / 087 850 2101",em:"",ad:"Unit 18A, 12 Beckett Way, Park West Business Park, D12",w:"greenoak.ie",
+ note:"Named principals: Pat McCabe and Louise Byrne. Works D14/D16, Rathfarnham, Templeogue, Knocklyon.",
+ hook:"The tightest geography on this list — four named suburbs. That's a textbook one-town-per-client account, and the exclusivity line will land harder with them than anyone else here."},
+{n:"Devitt Construction & Carpentry",t:"ext",tl:"Extensions",ph:"087 136 0297",em:"",ad:"Crumlin · Dublin",w:"devittconstruction.com",
+ note:"Family-run. Rear, front, wraparound and sunroom extensions.",
+ hook:"Mobile-only for a full extensions business means the owner is quoting, running crews and answering the phone. Speed-to-lead pitch, not a branding pitch."},
+{n:"Placelift",t:"ext",tl:"Extensions",ph:"",em:"",ad:"South Co. Dublin & Wicklow",w:"placelift.ie",
+ note:"Single-storey exempt-development extensions only. 10–12 week jobs.",
+ hook:"They've productised: one scope, no planning permission, a fixed timeline. That is the single easiest thing to build a funnel around on this entire list — a known offer with a known duration.",
+ flag:"No phone number found — get it from the site or the contact form"},
+
+{n:"Shomera",t:"garden",tl:"Garden rooms",ph:"01 825 8288",em:"info@shomera.ie",ad:"Unit 10, Dunshaughlin Business Park · Meath",w:"shomera.ie",
+ note:"26 years. Category pioneer with a permanent show area.",
+ hook:"The most established firm here — which cuts both ways. Likely already has an agency. Worth a call to learn what the category's mature end is doing, even if they say no."},
+{n:"Garden Rooms",t:"garden",tl:"Garden rooms",ph:"01 862 4888",em:"info@gardenrooms.ie",ad:"Beech Vista Garden Centre, Coldwinters, Ashbourne Rd, Finglas, D11 HC7V",w:"gardenrooms.ie",
+ note:"Trading since 2003. Showroom with published opening hours.",
+ hook:"They're running a €1,500-off sale. Discounting is the one lever that damages the business, and it's usually a symptom of weak lead flow. That diagnosis is your entire first call.",
+ flag:"Source listed the number with too many digits — verify before dialling"},
+{n:"Modern Garden Rooms",t:"garden",tl:"Garden rooms",ph:"087 677 9191",em:"info@moderngardenrooms.ie",ad:"190A Iveragh Rd, Whitehall, D09 RR2R",w:"moderngardenrooms.ie",
+ note:"Since 2008, Dublin and Leinster. Offers free site visits.",
+ hook:"Free site visit is the offer already built. €20k–€40k jobs against a site visit that costs them an hour — the acquisition maths is generous enough to survive a bad first month."},
+{n:"Rooms Outside",t:"garden",tl:"Garden rooms",ph:"01 910 4399",em:"",ad:"Dublin",w:"roomsoutside.ie",
+ note:"15 years building garden studios. Active Facebook page.",
+ hook:"They're already posting to Facebook, so the content exists and someone is making it. You're not asking them to start filming — you're asking to put budget behind what they already do."},
+
+{n:"QK Living",t:"kitchen",tl:"Kitchens & wardrobes",ph:"01 426 7200",em:"info@qkliving.com",ad:"QK House, Greenhills Industrial Estate, Walkinstown, D12",w:"qkliving.ie",
+ note:"40 years. On-site factory alongside the showroom.",
+ hook:"Kitchens and fitted wardrobes under one roof — two distinct offers, two funnels, two seasons. The largest account potential on this list."},
+{n:"The Victorian Kitchen Company",t:"kitchen",tl:"Kitchens & joinery",ph:"01 672 7000 / 087 255 1299",em:"",ad:"Unit 3 Woodlawn Business Park, Swords Rd, K67 N7C1",w:"victoriankitchencompany.ie",
+ note:"25+ years, 1,000+ kitchens, handmade solid timber.",
+ hook:"Premium positioning is already established, so there's no price-fighting risk and no repositioning work. You're purely adding distribution to a proven offer."},
+{n:"Noel Dempsey Design",t:"kitchen",tl:"Kitchens",ph:"0404 64548",em:"",ad:"Unit 1, Charvey Business Park, Rathnew, A67 R990 · Wicklow",w:"noeldempsey.com",
+ note:"30 years. Showroom 20 minutes from South Dublin, appointment only.",
+ hook:"Appointment-only showroom means the booked appointment *is* the conversion event. Cleanest possible thing to track, report on and get paid for."},
+{n:"Newcastle Design",t:"kitchen",tl:"Kitchens",ph:"",em:"info@newcastledesign.ie",ad:"7–8 Charvey Way, Rathnew Business Park, A67 CK18 · Wicklow",w:"newcastledesign.ie",
+ note:"Founded 1997. 4,000 sq ft showroom. Active Instagram.",
+ hook:"High-end work and an active Instagram — the creative supply is confirmed and it's good. Everything needed for a strong account exists except paid distribution.",
+ flag:"No phone number found — email or use the site's contact form"}
+];
+
+var grid=document.getElementById('grid'),count=document.getElementById('count'),q=document.getElementById('q');
+var filter='all';
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function tel(p){return p.split('/')[0].trim().replace(/\s/g,'');}
+function render(){
+  var term=q.value.trim().toLowerCase();
+  var rows=DATA.filter(function(d){
+    if(filter!=='all'&&d.t!==filter)return false;
+    if(!term)return true;
+    return (d.n+' '+d.ad+' '+d.tl+' '+d.note).toLowerCase().indexOf(term)>-1;
+  });
+  count.textContent=rows.length+' of '+DATA.length+' shown';
+  grid.innerHTML=rows.map(function(d){
+    var c='';
+    if(d.ph)c+='<a href="tel:'+esc(tel(d.ph))+'">'+esc(d.ph)+'</a>';
+    else c+='<span style="color:var(--muted)">no phone found</span>';
+    if(d.em)c+=d.em.indexOf('·')>-1?'<span>'+esc(d.em)+'</span>':'<a href="mailto:'+esc(d.em)+'">'+esc(d.em)+'</a>';
+    if(d.w)c+='<a href="https://'+esc(d.w)+'" target="_blank" rel="noopener">'+esc(d.w)+'</a>';
+    c+='<span class="addr">'+esc(d.ad)+'</span>';
+    return '<article class="p">'+
+      '<div class="top"><h3>'+esc(d.n)+'</h3><span class="tradechip t-'+d.t+'">'+esc(d.tl)+'</span></div>'+
+      '<div class="contacts">'+c+'</div>'+
+      '<p class="note">'+esc(d.note)+'</p>'+
+      (d.flag?'<div class="flag">⚠ '+esc(d.flag)+'</div>':'')+
+      '<div class="hook"><b>The opening</b>'+esc(d.hook)+'</div>'+
+    '</article>';
+  }).join('');
+}
+Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(b){
+  b.addEventListener('click',function(){
+    filter=b.dataset.f;
+    document.querySelectorAll('.chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});
+    render();
+  });
+});
+q.addEventListener('input',render);
+render();
+</script>
