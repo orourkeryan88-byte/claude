@@ -34,14 +34,72 @@
   --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
 }
 *{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.58;-webkit-font-smoothing:antialiased}
-.wrap{max-width:820px;margin:0 auto;padding:38px 22px 110px}
-p{margin:0 0 12px}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:38px 22px 110px}
+p{margin:0 0 13px}
 a{color:var(--accent)}
 code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--ink)}
 .kicker{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.6vw,2.6rem);line-height:1.04;letter-spacing:-.025em;margin:.3em 0 0;text-wrap:balance}
-.sub{color:var(--ink-2);margin-top:14px;max-width:62ch}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.6vw,2.55rem);line-height:1.04;letter-spacing:-.025em;margin:.3em 0 0;text-wrap:balance}
+.sub{color:var(--ink-2);margin-top:14px}
+h2{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.02em;margin:0 0 10px}
+h3{font-family:var(--display);font-weight:600;font-size:1.08rem;margin:28px 0 8px}
+
+.part{margin:52px 0 0;padding:16px 0 11px;border-bottom:2px solid var(--ink)}
+.part .n{font-family:var(--mono);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+.part .meta{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+.note{color:var(--ink-2);margin:16px 0}
+
+/* concept cards */
+.concepts{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:20px 0}
+.concept{background:var(--surface);padding:16px 20px;border-bottom:1px solid var(--line)}
+.concept:last-child{border-bottom:0}
+.concept .t{font-family:var(--display);font-weight:600;font-size:1rem}
+.concept .d{font-size:.92rem;color:var(--ink-2);margin-top:5px}
+.concept .eg{font-size:.86rem;color:var(--muted);margin-top:6px;font-style:italic}
+
+.diagram{margin:24px 0}
+.diagram svg{width:100%;height:auto;display:block}
+.cap{font-family:var(--mono);font-size:.63rem;letter-spacing:.08em;color:var(--muted);text-align:center;margin-top:8px}
+
+/* click steps */
+ol.clicks{list-style:none;padding:0;margin:16px 0 0;counter-reset:c}
+li.click{counter-increment:c;display:grid;grid-template-columns:24px 30px 1fr;gap:11px;padding:14px 10px 14px 4px;border-bottom:1px solid var(--line);align-items:start}
+li.click:hover{background:var(--surface)}
+li.click.done .do{color:var(--muted);text-decoration:line-through}
+li.click.done .see,li.click.done .cn{opacity:.5}
+li.click input{margin:4px 0 0;accent-color:var(--accent);width:16px;height:16px;flex:none;cursor:pointer}
+.cn{font-family:var(--mono);font-size:.73rem;color:var(--accent);padding-top:3px;font-variant-numeric:tabular-nums}
+.do{font-size:1rem;line-height:1.45}
+.do b{font-weight:600;font-family:var(--display);letter-spacing:-.005em}
+.see{font-size:.87rem;color:var(--muted);margin-top:6px;border-left:2px solid var(--line-strong);padding-left:10px}
+.see::before{content:"You'll see: ";font-family:var(--mono);font-size:.85em;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.tip{font-size:.87rem;color:var(--signal);margin-top:6px;border-left:2px solid var(--signal);padding-left:10px}
+
+.copyblock{border:1px solid var(--line);border-radius:4px;background:var(--surface);margin:10px 0 0;overflow:hidden}
+.copyhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 10px 7px 12px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.copyhead span{font-family:var(--mono);font-size:.59rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.copybtn{font-family:var(--mono);font-size:.59rem;letter-spacing:.09em;text-transform:uppercase;background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);border-radius:3px;padding:3px 9px;cursor:pointer}
+.copybtn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copyblock pre{margin:0;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.74rem;line-height:1.62;color:var(--ink-2);white-space:pre-wrap}
+
+.stop{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:22px 24px;margin:32px 0}
+.stop .lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--invert-muted)}
+.stop p{margin:10px 0 0;color:var(--invert-fg)}
+.stop p.m{color:var(--invert-muted);font-size:.93rem}
+
+.warn{border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 17px;border-radius:0 4px 4px 0;margin:20px 0;font-size:.93rem}
+.warn > :last-child{margin-bottom:0}
+.warn .tag{font-family:var(--mono);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
+
+.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:420px}
+th{font-family:var(--mono);font-weight:500;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 13px;border-bottom:1px solid var(--line-strong)}
+td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
 
 .hud{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding:11px 0;margin:26px 0 0;display:flex;align-items:center;gap:12px}
 .hud .lbl{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
@@ -50,55 +108,16 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.6vw,2.6re
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 .hud button{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;background:var(--surface);color:var(--ink-2);border:1px solid var(--line-strong);border-radius:3px;padding:4px 9px;cursor:pointer;white-space:nowrap}
 .hud button:hover{border-color:var(--accent);color:var(--accent)}
-.hud button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-
-.warn{border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 17px;border-radius:0 4px 4px 0;margin:20px 0;font-size:.93rem}
-.warn > :last-child{margin-bottom:0}
-.warn .tag{font-family:var(--mono);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
-
-.sys{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:24px 26px;margin:46px 0 0}
-.sys .id{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--invert-muted)}
-.sys h2{font-family:var(--display);font-weight:700;font-size:1.6rem;letter-spacing:-.022em;margin:8px 0 0;color:var(--invert-fg)}
-.sys .what{margin:14px 0 0;font-size:1rem;line-height:1.5;color:var(--invert-fg);max-width:62ch}
-.sys .chain{margin:14px 0 0;font-family:var(--mono);font-size:.72rem;line-height:1.7;color:var(--invert-muted);letter-spacing:.02em}
-.sys .time{margin:14px 0 0;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--invert-muted)}
-
-.sess{margin:40px 0 0;padding:12px 0 9px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-.sess h3{font-family:var(--display);font-weight:600;font-size:1.2rem;letter-spacing:-.016em;margin:0}
-.sess .meta{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.sessnote{color:var(--ink-2);font-size:.92rem;margin:13px 0 2px;max-width:64ch}
-
-ol.steps{list-style:none;padding:0;margin:8px 0 0}
-li.step{display:grid;grid-template-columns:26px 34px 1fr;gap:10px;padding:13px 12px 13px 6px;border-bottom:1px solid var(--line);align-items:start}
-li.step:hover{background:var(--surface)}
-li.step.done .act{color:var(--muted);text-decoration:line-through}
-li.step.done .det,li.step.done .num{opacity:.5}
-li.step input{margin:3px 0 0;accent-color:var(--accent);width:16px;height:16px;flex:none;cursor:pointer}
-.num{font-family:var(--mono);font-size:.72rem;color:var(--accent);padding-top:2px;font-variant-numeric:tabular-nums}
-.act{font-family:var(--display);font-weight:600;font-size:.97rem;letter-spacing:-.008em;line-height:1.35}
-.det{font-size:.89rem;color:var(--ink-2);margin-top:4px}
-.det p{margin:0 0 7px}.det p:last-child{margin-bottom:0}
-.path{font-family:var(--mono);font-size:.71rem;background:var(--accent-soft);color:var(--accent);padding:2px 7px;border-radius:3px;display:inline-block;margin-top:5px}
-.why{font-size:.85rem;color:var(--muted);border-left:2px solid var(--line-strong);padding-left:10px;margin-top:7px}
-.fix{font-size:.85rem;color:var(--signal);border-left:2px solid var(--signal);padding-left:10px;margin-top:7px}
-
-.copyblock{border:1px solid var(--line);border-radius:4px;background:var(--surface);margin:9px 0 0;overflow:hidden}
-.copyhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 10px 7px 12px;border-bottom:1px solid var(--line);background:var(--surface-2)}
-.copyhead span{font-family:var(--mono);font-size:.59rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.copybtn{font-family:var(--mono);font-size:.59rem;letter-spacing:.09em;text-transform:uppercase;background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);border-radius:3px;padding:3px 9px;cursor:pointer}
-.copybtn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-.copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.copyblock pre{margin:0;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.735rem;line-height:1.62;color:var(--ink-2);white-space:pre-wrap}
 
 footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--muted);line-height:1.85}
-@media (max-width:600px){.wrap{padding:26px 14px 80px}li.step{grid-template-columns:22px 28px 1fr;gap:8px}}
+@media (max-width:600px){.wrap{padding:26px 14px 80px}li.click{grid-template-columns:20px 26px 1fr;gap:9px}}
 </style>
 
 <div class="wrap">
 <header>
-  <span class="kicker">RELIER · HighLevel runbook · v2</span>
-  <h1>The three systems, built step by step</h1>
-  <p class="sub">Your account already exists, so this starts with an eight-point check and then goes straight into the systems. Each one is self-contained — build it, test it, turn it on, then start the next. Every email and SMS is inline where you paste it.</p>
+  <span class="kicker">RELIER · HighLevel · v3</span>
+  <h1>Your first workflow, click by click</h1>
+  <p class="sub">The last version assumed you'd built workflows before. This one doesn't. Read Part 1 (four minutes), build the workflow in Part 2, then stop for today. Part 3 is the other seven, and they're all the same shape as the first.</p>
 </header>
 
 <div class="hud">
@@ -107,147 +126,87 @@ footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);font-fa
   <button id="resume">Resume</button>
 </div>
 
-<!-- PRE-FLIGHT -->
-<div class="sess"><h3>Pre-flight — check, don't build</h3><span class="meta">P1–P8 · ~15 min</span></div>
-<p class="sessnote">You said HighLevel is set up. These are the eight things the systems below depend on. Each has a fix underneath if it's missing.</p>
-<ol class="steps">
-<li class="step"><input type="checkbox"><span class="num">P1</span><div><div class="act">Timezone is Europe/Dublin</div><div class="det"><div class="path">Settings → Business Profile</div><div class="fix">Fix this before anything else. Every wait step in every workflow below is timezone-relative — set it wrong and you rebuild them all.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">P2</span><div><div class="act">Sending domain shows all records verified green</div><div class="det"><div class="path">Settings → Email Services</div><div class="fix">If it's on your root domain rather than a subdomain like <code>mail.relier.ie</code>, move it. Deliverability problems shouldn't be able to touch your main domain.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">P3</span><div><div class="act">You have an SMS-capable number — and replies reach you</div><div class="det">Text your own mobile from it, then reply. The reply must appear under Conversations.<div class="fix">This is the one that silently breaks everything. If replies don't arrive, buy a UK <code>+44</code> mobile number instead — Irish handsets treat it normally. If neither works, tell me and I'll rebuild the sequences around email and click-tracking.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">P4</span><div><div class="act">Call forwarding points at your mobile</div><div class="det"><div class="path">Settings → Phone Numbers → edit number → Call Forwarding Number</div><div class="why">So the HighLevel number rings your actual phone and you keep your personal number personal.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">P5</span><div><div class="act">These nine Custom Values exist</div><div class="det"><div class="path">Settings → Custom Values</div>Leave the link ones blank — you fill them as you build.
-<div class="copyblock"><div class="copyhead"><span>Create any that are missing</span><button class="copybtn" data-copy>Copy</button></div><pre>agency_name              RELIER
-rep_name                 Ryan
-rep_mobile               your mobile
-support_email            your email
-vsl_link                 (filled at step 22)
-sales_calendar_link      (filled at step 21)
-reschedule_link          (filled at step 21)
-onboarding_form_link     (filled at step 51)
-onboarding_calendar_link (filled at step 53)</pre></div>
-<div class="why">These are global variables. Change the VSL link in one place instead of eleven.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">P6</span><div><div class="act">Facebook and Instagram are connected</div><div class="det"><div class="path">Settings → Integrations</div><div class="why">So DMs land in Conversations. System 1 depends on it.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">P7</span><div><div class="act">You exist as a user with a real mobile number on the record</div><div class="det"><div class="path">Settings → My Staff</div><div class="why">Internal notifications need somewhere to go.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">P8</span><div><div class="act">Business hours include 7–9am and 5–7pm</div><div class="det"><div class="why">Trade owners are on site 9 to 5. Standard office hours will halve your booking rate.</div></div></div></li>
-</ol>
+<!-- PART 1 -->
+<div class="part"><span class="n">Part 1</span><h2>Five things, in plain English</h2><div class="meta">Read this · 4 min · nothing to click</div></div>
+<p class="note">HighLevel is five ideas wearing a hundred menus. Once these land, the rest is just finding buttons.</p>
 
-<!-- DATA LAYER -->
-<div class="sess"><h3>Data layer — build this first</h3><span class="meta">Steps 1–10 · ~35 min</span></div>
-<p class="sessnote">Every workflow below reads and writes these. Renaming a field after ten workflows reference it is a bad afternoon.</p>
-<ol class="steps">
-<li class="step"><input type="checkbox"><span class="num">1</span><div><div class="act">Create a Custom Fields folder called "Trade Client"</div><div class="det"><div class="path">Settings → Custom Fields</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">2</span><div><div class="act">Create seven Single Line text fields</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Single line</span><button class="copybtn" data-copy>Copy</button></div><pre>Trading Name
-Company Reg Number
-VAT Number
-Current Lead Source
-Territory Granted
-Signatory Name
-Target Number 90 Days</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">3</span><div><div class="act">Create three Number fields</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Number</span><button class="copybtn" data-copy>Copy</button></div><pre>Average Job Value
-Jobs Per Month Now
-Capacity Per Month</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">4</span><div><div class="act">Create three Monetary fields</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Monetary</span><button class="copybtn" data-copy>Copy</button></div><pre>Management Fee
-Setup Fee
-Ad Spend Budget</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">5</span><div><div class="act">Create "Trade Type" dropdown</div><div class="det">Attic conversion · Extensions · Garden rooms · Kitchens · Other</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">6</span><div><div class="act">Create "Package" dropdown</div><div class="det">Two options only. Three tiers on a sales call kills conversion.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">7</span><div><div class="act">Create "Signatory Email" as type Email</div><div class="det"><div class="why">Deliberately separate from the contact email. The person who signs is often his wife or his accountant — wrong inbox costs you three days.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">8</span><div><div class="act">Create "Start Date" (Date) and "Off-Menu Promises" (Multi Line)</div><div class="det"><div class="why">Off-Menu Promises is what you get held to in month three. Write it down on the call.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">9</span><div><div class="act">Create the pipeline "New Business" with ten stages</div><div class="det"><div class="path">Opportunities → Pipelines → Create Pipeline</div>
-<div class="copyblock"><div class="copyhead"><span>In this order</span><button class="copybtn" data-copy>Copy</button></div><pre>New Lead
-Conversation Started
-Qualified
-Call Booked
-Showed
-Won — Intake Pending
-Contracted
-Onboarding
-Live
-Lost</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">10</span><div><div class="act">Pin your tag list somewhere visible</div><div class="det">HighLevel creates tags on first use — agree spelling now or you'll get three versions of "qualified".
-<div class="copyblock"><div class="copyhead"><span>Tag taxonomy</span><button class="copybtn" data-copy>Copy</button></div><pre>src-outbound · src-dm-ad · src-referral
-stage-qualified · stage-booked · stage-showed
-stage-noshow · stage-won · stage-lost
-confirmed-yes · vsl-watched
-disq-capacity · disq-jobvalue · disq-has-agency
-client-onboarding · client-live · long-list</pre></div></div></div></li>
-</ol>
-
-<!-- SYSTEM 1 -->
-<div class="sys">
-  <span class="id">System 1</span>
-  <h2>Lead Generation</h2>
-  <p class="what">Turn strangers into booked calls without a landing page or a form. The DM is the funnel — he says one word, you qualify in conversation, you book him.</p>
-  <p class="chain">POST ADS → DIRECT MESSAGES → APPOINTMENT SETTING → BOOKED CALL</p>
-  <p class="time">Steps 11–20 · ~1 hr</p>
+<div class="concepts">
+  <div class="concept"><div class="t">Contact</div><div class="d">One person. Dave the attic fitter. Everything else hangs off him.</div></div>
+  <div class="concept"><div class="t">Custom field</div><div class="d">An extra box of information stored on that person, that HighLevel doesn't give you by default.</div><div class="eg">"Average Job Value = €28,000" lives in a custom field. His email address doesn't — that's built in.</div></div>
+  <div class="concept"><div class="t">Tag</div><div class="d">A sticker you slap on a contact. That's it. It has no meaning except what you give it.</div><div class="eg">You stick <code>confirmed-yes</code> on Dave when he replies. Later you search "everyone without that sticker" and ring them.</div></div>
+  <div class="concept"><div class="t">Pipeline &amp; opportunity</div><div class="d">The pipeline is a row of columns — New Lead, Qualified, Call Booked. An opportunity is Dave's card, sitting in one of them. You drag it along as he progresses.</div></div>
+  <div class="concept"><div class="t">Workflow</div><div class="d"><strong>The only hard one.</strong> A workflow is: <em>when this happens, do these things in order.</em> Nothing more.</div><div class="eg">When Dave books a call → send him an email → wait 5 minutes → text him → stick a sticker on him.</div></div>
 </div>
-<p class="sessnote"><strong>What HighLevel does here and what it doesn't.</strong> It can't run your Meta ads — build those in Ads Manager. What it does is hold the 22-firm prospect list and never let a follow-up slip. That's the part humans fail at, so that's the part you automate.</p>
-<ol class="steps">
-<li class="step"><input type="checkbox"><span class="num">11</span><div><div class="act">Import the prospect CSV</div><div class="det">The file is at <code>prospecting/dublin-leinster-prospects.csv</code> on your branch.<div class="path">Contacts → Import Contacts</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">12</span><div><div class="act">Map name → Company Name, trade → Trade Type, notes → Notes</div><div class="det">Phone and email map as normal. Skip any row missing a phone until you've verified it.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">13</span><div><div class="act">Tag the whole import <code>src-outbound</code> on the way in</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">14</span><div><div class="act">New workflow: "WF-09 Outbound Cadence"</div><div class="det"><div class="path">Automation → Workflows → Create Workflow → Start from Scratch</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">15</span><div><div class="act">Trigger: Contact Tag → tag added = <code>src-outbound</code></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">16</span><div><div class="act">Add five Create Task actions with Wait steps between them</div><div class="det"><div class="copyblock"><div class="copyhead"><span>The cadence — tasks assigned to you</span><button class="copybtn" data-copy>Copy</button></div><pre>DAY 0   Task: "Record + send screen recording — {{contact.company_name}}"
-        Wait 3 days
-DAY 3   Task: "Nudge — did that come through alright?"
-        Wait 7 days
-DAY 10  Task: "Second recording, different angle"
-        Wait 14 days
-DAY 24  Task: "Phone call — mid-morning between jobs"
-        Wait 21 days
-DAY 45  Remove tag src-outbound → Add tag long-list</pre></div>
-<div class="why">You're not automating the outreach — a templated screen recording is worthless. You're automating the <em>remembering</em>.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">17</span><div><div class="act">Add a Goal Event: tag <code>stage-booked</code> or <code>stage-qualified</code> added → exit workflow</div><div class="det"><div class="why">Without this, a prospect who books on day 4 still gets a "phone him" task on day 24. Nothing looks more amateur than chasing someone you've already closed.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">18</span><div><div class="act">Publish WF-09</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">19</span><div><div class="act">Set up your DM first-reply saved response</div><div class="det"><div class="path">Conversations → Snippets / Quick Replies</div>
-<div class="copyblock"><div class="copyhead"><span>The only DM message you automate</span><button class="copybtn" data-copy>Copy</button></div><pre>Thanks for messaging. Before I say anything useful — are you
-actually looking to take on more work at the minute, or just
-having a look?</pre></div>
-<div class="why">Automate this one line, then take over by hand. The four qualifying questions go one at a time — a wall of questions reads like a form and gets ignored.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">20</span><div><div class="act">Save the four qualifying questions as separate snippets</div><div class="det"><div class="copyblock"><div class="copyhead"><span>One at a time, never as a list</span><button class="copybtn" data-copy>Copy</button></div><pre>1. How many jobs a month are you doing now, and how many could
-   you handle?
-2. What's an average job for you, roughly?
-3. Where's the work coming from at the moment?
-4. When someone rings, who picks up?
 
-THEN:
-Right, that all stacks up. I'd rather show you than type it —
-20 minutes on a call, I'll walk you through what I'd run for you
-specifically and you can tell me if it's mad. No pitch deck, no
-pressure. Does Thursday morning suit?</pre></div>
-<div class="why">Offer two specific slots, not a calendar link. Get the verbal yes first, then send the link to confirm.</div></div></div></li>
-</ol>
+<h3>Every workflow has exactly two parts</h3>
+<div class="diagram">
+  <svg viewBox="0 0 660 290" role="img" aria-label="A workflow canvas: one trigger box at the top, then a vertical line of action boxes below it, each connected by a plus button.">
+    <g font-family="IBM Plex Mono, monospace">
+      <rect x="180" y="8" width="300" height="52" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="330" y="30" font-size="10" letter-spacing="1.6" fill="var(--accent)" text-anchor="middle">THE TRIGGER — ONE ONLY</text>
+      <text x="330" y="48" font-size="13" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)" text-anchor="middle">When Dave books a call</text>
+      <line x1="330" y1="60" x2="330" y2="82" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <circle cx="330" cy="90" r="8" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="330" y="94" font-size="11" fill="var(--muted)" text-anchor="middle">+</text>
+      <line x1="330" y1="98" x2="330" y2="112" stroke="var(--line-strong)" stroke-width="1.5"/>
 
-<!-- SYSTEM 4 -->
-<div class="sys">
-  <span class="id">System 4</span>
-  <h2>Sales — qualify and boost show rates</h2>
-  <p class="what">Stop no-shows and make sure whoever shows is pre-sold. Every step asks for a small action — watch this, reply YES, accept the invite — and each one raises the cost of ghosting.</p>
-  <p class="chain">CONFIRMATION EMAIL → BOOKING PAGE → SMS → 24HR → 1HR → 5MIN → CALL</p>
-  <p class="time">Steps 21–45 · ~2.5 hrs</p>
+      <rect x="180" y="112" width="300" height="34" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="196" y="134" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Send Email</text>
+      <line x1="330" y1="146" x2="330" y2="158" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <circle cx="330" cy="166" r="8" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="330" y="170" font-size="11" fill="var(--muted)" text-anchor="middle">+</text>
+      <line x1="330" y1="174" x2="330" y2="186" stroke="var(--line-strong)" stroke-width="1.5"/>
+
+      <rect x="180" y="186" width="300" height="34" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="196" y="208" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Wait 5 minutes</text>
+      <line x1="330" y1="220" x2="330" y2="232" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <circle cx="330" cy="240" r="8" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="330" y="244" font-size="11" fill="var(--muted)" text-anchor="middle">+</text>
+      <line x1="330" y1="248" x2="330" y2="256" stroke="var(--line-strong)" stroke-width="1.5"/>
+
+      <rect x="180" y="256" width="300" height="34" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="196" y="278" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Send SMS</text>
+
+      <text x="168" y="40" font-size="9.5" fill="var(--muted)" text-anchor="end">starts it</text>
+      <text x="168" y="205" font-size="9.5" fill="var(--muted)" text-anchor="end">the actions,</text>
+      <text x="168" y="219" font-size="9.5" fill="var(--muted)" text-anchor="end">top to bottom</text>
+    </g>
+  </svg>
+  <div class="cap">This is what a workflow looks like on screen. One trigger, then actions in a line.</div>
 </div>
-<p class="sessnote">A 40% show rate and a 75% show rate are two different businesses at the same ad spend. Build this before System 2 — it's the one that pays immediately.</p>
-<ol class="steps">
-<li class="step"><input type="checkbox"><span class="num">21</span><div><div class="act">Create calendar "Sales Call — 20 min", then copy its booking and reschedule links into custom values</div><div class="det">20 min duration · 15 min gap · 2 hr minimum notice · <strong>10-day booking window</strong>.<div class="path">Calendars → Calendar Settings → Create Calendar → Simple</div><div class="why">Bookings further out than 10 days no-show far more often.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">22</span><div><div class="act">Record the 6-minute VSL, upload it, create a Trigger Link pointing at it, paste into <code>vsl_link</code></div><div class="det"><div class="path">Marketing → Trigger Links</div>Structure: the problem (feast or famine) → why referrals cap you → what the system is → a real example → what it costs → who it's not for.<div class="why">Always use the trigger link, never the raw URL — it's the only way you'll know who watched.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">23</span><div><div class="act">Turn OFF the calendar's built-in confirmations and reminders</div><div class="det"><div class="path">Calendar settings → Notifications</div><div class="why">Leave them on and your prospect gets two confirmation emails, one of them generic and off-brand. Your workflow handles all of it.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">24</span><div><div class="act">Build the booking page above the calendar embed</div><div class="det">Headline: <em>"20 minutes. I'll show you exactly what I'd run for your firm."</em> Sub: <em>"No deck, no pressure. If it's not a fit I'll tell you on the call."</em> Calendar visible without scrolling. Then the VSL, then case studies, then FAQs.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">25</span><div><div class="act">Add the seven FAQs under the calendar</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Answer the objections before the call</span><button class="copybtn" data-copy>Copy</button></div><pre>What does it cost?  (Give a real range. Refusing to say costs you
-                     more calls than the number does.)
-How long before I see leads?
-Do I need to be on camera?
-What if I can't handle the extra work?
-I've tried Facebook ads before and it didn't work — why is this
-  different?
-Am I tied into a contract?
-Do you work with my competitors?  (One firm per area. Say it here.)</pre></div>
-<div class="why">No case studies yet? Replace that block with "I'm building my first Irish case studies right now, which is why the first two firms get it at cost." Honesty converts better than a fake logo wall.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">26</span><div><div class="act">New workflow: "WF-01 Sales Call — Confirm &amp; Remind"</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">27</span><div><div class="act">Trigger: Customer Booked Appointment → filter Calendar = Sales Call</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">28</span><div><div class="act">Action: Send Email — the confirmation</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Confirmation email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: You're booked in for {{appointment.start_time}} — two quick things
 
-{{contact.first_name}},
+<p><strong>That's the whole model.</strong> The <b>+</b> circles between boxes are how you add a new action. You click a +, a panel slides in from the right, you pick what you want, you fill it in, you save. Then you do it again. Eight times, and you've built a workflow.</p>
+
+<div class="warn">
+  <span class="tag">The one word that trips everyone up</span>
+  <p><strong>"Wait" is an action, not a setting.</strong> If you want a text to go five minutes after the email, you don't set a delay on the text — you add a <em>Wait</em> box between them. Time is a step, same as an email is a step.</p>
+</div>
+
+<!-- PART 2 -->
+<div class="part"><span class="n">Part 2</span><h2>Build one workflow, slowly</h2><div class="meta">Steps 1–26 · ~40 min · do this today, then stop</div></div>
+<p class="note">You're building the appointment reminder machine — the thing that stops no-shows. Every other workflow is this same shape, so build this one properly and the rest take ten minutes each.</p>
+<div class="warn">
+  <span class="tag">Before step 1</span>
+  <p>You need a calendar called <strong>Sales Call — 20 min</strong> to already exist. If it doesn't: left sidebar → <strong>Calendars</strong> → <strong>Calendar Settings</strong> → <strong>Create Calendar</strong> → <strong>Simple</strong>. 20 minutes, save. Come back here.</p>
+</div>
+
+<ol class="clicks">
+<li class="click"><input type="checkbox"><span class="cn">1</span><div><div class="do">In the far-left sidebar, click <b>Automation</b></div><div class="see">A page with tabs across the top — Workflows, Campaigns, Triggers.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">2</span><div><div class="do">Make sure the <b>Workflows</b> tab is selected</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">3</span><div><div class="do">Click <b>+ Create Workflow</b>, top right</div><div class="see">A box offering "Start from Scratch" or a list of recipes/templates.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">4</span><div><div class="do">Click <b>Start from Scratch</b></div><div class="see">A big empty canvas. In the middle near the top, one box: <b>Add New Trigger</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">5</span><div><div class="do">Top left it says "Untitled Workflow" — click it and rename</div><div class="copyblock"><div class="copyhead"><span>Name</span><button class="copybtn" data-copy>Copy</button></div><pre>WF-01 Sales Call — Confirm &amp; Remind</pre></div><div class="tip">Name it now. Six workflows called "Untitled Workflow" is a real thing that happens.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">6</span><div><div class="do">Click <b>Add New Trigger</b></div><div class="see">A panel slides in from the right with a search box at the top and a long list of triggers underneath.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">7</span><div><div class="do">Type <code>appointment</code> in the search box</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">8</span><div><div class="do">Click <b>Customer Booked Appointment</b></div><div class="tip">Not "Appointment Status" — that's a different one you'll use later for no-shows.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">9</span><div><div class="do">In the same panel, click <b>+ Add filters</b></div><div class="see">A dropdown appears asking what you want to filter on.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">10</span><div><div class="do">Choose <b>Calendar</b>, then pick <b>Sales Call — 20 min</b></div><div class="tip">Without this filter the workflow fires for <em>every</em> calendar you ever create, including the onboarding one. Your new clients would get sales reminders.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">11</span><div><div class="do">Click <b>Save Trigger</b> at the bottom of the panel</div><div class="see">The panel closes. The trigger box on the canvas now says "Customer Booked Appointment". Below it, a small <b>+</b> in a circle.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">12</span><div><div class="do">Click that <b>+</b></div><div class="see">The right panel again, this time a list of <em>actions</em> grouped into categories.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">13</span><div><div class="do">Search <code>email</code> and click <b>Send Email</b></div><div class="see">Boxes for From Name, From Email, Subject, and a big body editor.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">14</span><div><div class="do">Fill in From Name and From Email</div><div class="det">Your name, and an address on your verified sending domain.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">15</span><div><div class="do">Paste the subject line</div><div class="copyblock"><div class="copyhead"><span>Subject</span><button class="copybtn" data-copy>Copy</button></div><pre>You're booked in — two quick things</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">16</span><div><div class="do">Paste the body into the editor</div><div class="copyblock"><div class="copyhead"><span>Email body</span><button class="copybtn" data-copy>Copy</button></div><pre>{{contact.first_name}},
 
 You're down for {{appointment.start_time}}. Zoom link is in the
 calendar invite.
@@ -256,8 +215,8 @@ Two things before we talk, both quick:
 
 1. WATCH THIS — 6 MINUTES. {{custom_values.vsl_link}}
    It's me walking through exactly what I'd build for a firm like
-   yours and what it costs. If you watch it, our call goes from a
-   sales pitch to a proper conversation about your business.
+   yours and what it costs. Watch it and our call goes from a sales
+   pitch to a proper conversation about your business.
 
 2. ACCEPT THE CALENDAR INVITE so it's in your diary, not just mine.
 
@@ -269,97 +228,70 @@ rather you moved it than left me sitting on Zoom:
 
 Ryan
 RELIER</pre></div>
-<div class="why">"Reply YES" is a two-second action that turns a passive booking into an active commitment — and tells you who's engaged.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">29</span><div><div class="act">Action: Wait → Time Delay → 5 minutes</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">30</span><div><div class="act">Action: Send SMS — the initial text</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Initial SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>Ryan from RELIER here — got you down for {{appointment.start_time}}.
+<div class="tip">Those <code>{{ }}</code> bits fill themselves in automatically when it sends. If you'd rather not paste them, click the <code>{ }</code> icon in the editor toolbar and pick them from a list.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">17</span><div><div class="do">Click <b>Save Action</b></div><div class="see">Panel closes. A second box on the canvas under the trigger, and another <b>+</b> beneath it.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">18</span><div><div class="do">Click the new <b>+</b>, search <code>wait</code>, click <b>Wait</b></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">19</span><div><div class="do">Set it to <b>Time Delay</b> → <b>5</b> → <b>Minutes</b> → Save</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">20</span><div><div class="do">Click <b>+</b>, search <code>sms</code>, click <b>Send SMS</b>, paste this, Save</div><div class="copyblock"><div class="copyhead"><span>SMS body</span><button class="copybtn" data-copy>Copy</button></div><pre>Ryan from RELIER here — got you down for {{appointment.start_time}}.
 Sent you an email with a short video, worth a watch before we talk.
-Any bother, just text this number back.</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">31</span><div><div class="act">Action: Add Tag <code>stage-booked</code> → Create/Update Opportunity → stage Call Booked</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">32</span><div><div class="act">Action: Wait → Appointment Time → 24 hours before</div><div class="det"><div class="why">Appointment Time, <strong>not</strong> Time Delay. A delay counts from booking — if he books 40 minutes before the call, a "24 hours" delay never fires at all. This is the single most common build mistake.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">33</span><div><div class="act">Action: Send SMS, then Send Email — the 24-hour pair</div><div class="det"><div class="copyblock"><div class="copyhead"><span>24hr SMS + email</span><button class="copybtn" data-copy>Copy</button></div><pre>SMS:
-Still good for tomorrow, {{contact.first_name}}? Just reply Y or N
-— no hassle either way if you need to move it.
+Any bother, just text this number back.</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">21</span><div><div class="do">Click <b>+</b>, search <code>tag</code>, click <b>Add Contact Tag</b>, type <code>stage-booked</code>, Save</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">22</span><div><div class="do">Click <b>+</b>, search <code>wait</code>, click <b>Wait</b> — but this time choose <b>Appointment Time</b></div><div class="do" style="margin-top:6px">Set it to <b>Before</b> → <b>24</b> → <b>Hours</b> → Save</div><div class="tip"><strong>This is the mistake everyone makes.</strong> Appointment Time counts backwards from the call. A Time Delay counts forwards from booking — so if he books an hour before the call, a "24 hour" delay never fires at all.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">23</span><div><div class="do">Click <b>+</b>, add a <b>Send SMS</b>, paste this, Save</div><div class="copyblock"><div class="copyhead"><span>24-hour SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>Still good for tomorrow, {{contact.first_name}}? Just reply Y or N
+— no hassle either way if you need to move it.</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">24</span><div><div class="do">Add <b>Wait</b> → Appointment Time → Before → <b>1 Hour</b>, then a <b>Send SMS</b></div><div class="copyblock"><div class="copyhead"><span>1-hour SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>One hour, {{contact.first_name}}. Zoom's here when you're ready:
+{{appointment.meeting_location}}</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">25</span><div><div class="do">Add <b>Wait</b> → Appointment Time → Before → <b>5 Minutes</b>, then a final <b>Send SMS</b></div><div class="copyblock"><div class="copyhead"><span>5-minute SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>Starting now — {{appointment.meeting_location}}. I'm on.</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">26</span><div><div class="do">Top right there's a toggle that says <b>Draft</b>. Flip it to <b>Publish</b>. Then click <b>Save</b>.</div><div class="tip">A workflow left on Draft does absolutely nothing. This is the single most common "why isn't it working" answer.</div></div></li>
+</ol>
 
-EMAIL
-Subject: Tomorrow at {{appointment.start_time}} — and something useful
+<div class="stop">
+  <span class="lab">Now test it, then stop for today</span>
+  <p>Go to <b>Calendars</b>, open your Sales Call booking link, and book yourself in using your own email and mobile. The confirmation email should land within a minute and the text five minutes later.</p>
+  <p class="m">Check there's no visible <code>{{ }}</code> anywhere in what arrives — if there is, that merge field name is wrong, and you fix it by opening the action and picking the field from the <code>{ }</code> menu instead of typing it.</p>
+  <p class="m">That's one system live. Genuinely stop here today. Part 3 will still be here tomorrow, and it's all the same shape as what you just did.</p>
+</div>
 
-{{contact.first_name}},
+<!-- PART 3 -->
+<div class="part"><span class="n">Part 3</span><h2>The other seven, same shape</h2><div class="meta">Do these across the next few days</div></div>
+<p class="note">You now know the moves: <b>Automation → Workflows → + Create Workflow → Start from Scratch → name it → Add New Trigger → then + for each action → Publish → Save.</b> Every one below is that, with different contents. Build them in this order.</p>
 
-Quick confirm for tomorrow.
-
-One thing worth seeing before we talk — I pulled the Meta Ad Library
-for firms in your area this morning. Out of nine within ten miles of
-you, two are running ads. I'll show you what they're running and
-what I'd do differently.
-
-Reply Y to confirm, or move it here:
-{{custom_values.reschedule_link}}
-
-Ryan</pre></div>
-<div class="why">Do that Ad Library check the morning it sends. A specific local fact is what turns a maybe into a definite — generic reminders get ignored.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">34</span><div><div class="act">Action: Wait → Appointment Time → 1 hour before → Send SMS</div><div class="det"><div class="copyblock"><div class="copyhead"><span>1hr SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>One hour, {{contact.first_name}}. Zoom's here when you're ready:
-{{appointment.meeting_location}}</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">35</span><div><div class="act">Action: Wait → Appointment Time → 5 minutes before → Send SMS</div><div class="det"><div class="copyblock"><div class="copyhead"><span>5min SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>Starting now — {{appointment.meeting_location}}. I'm on.</pre></div><div class="why">Five minutes, not zero. He's parking the van or finishing a call.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">36</span><div><div class="act">Publish WF-01</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">37</span><div><div class="act">New workflow: "WF-02 Confirmation Reply Catcher"</div><div class="det">Trigger: <strong>Customer Replied</strong>, filter Reply Type = SMS.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">38</span><div><div class="act">Add If/Else on message body contains <code>Y</code> or <code>YES</code></div><div class="det">True → Add Tag <code>confirmed-yes</code> + Internal Notification. False → Internal Notification "reply needs a human".<div class="why">Anyone <em>without</em> <code>confirmed-yes</code> at the 24-hour mark is your no-show risk. Filter on that tag the morning of and ring them.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">39</span><div><div class="act">New workflow: "WF-03 VSL Watched"</div><div class="det">Trigger: Trigger Link Clicked → your VSL link. Actions: Add Tag <code>vsl-watched</code> → Internal Notification "{{contact.first_name}} just watched the VSL".<div class="why">Lets you ring while it's fresh.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">40</span><div><div class="act">New workflow: "WF-04 No-Show Recovery"</div><div class="det">Trigger: Appointment Status → No Show → filter Calendar = Sales Call.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">41</span><div><div class="act">Add the four recovery messages</div><div class="det"><div class="copyblock"><div class="copyhead"><span>No-show ladder</span><button class="copybtn" data-copy>Copy</button></div><pre>Add tag stage-noshow
-Wait 10 minutes → SMS:
+<h3>The three easy ones — 10 minutes each</h3>
+<div class="tw"><table>
+  <thead><tr><th>Workflow</th><th>Trigger</th><th>Actions, in order</th></tr></thead>
+  <tbody>
+    <tr><td>WF-02<br>Reply Catcher</td><td>Customer Replied</td><td>1. <b>If/Else</b> — message contains <code>Y</code> or <code>YES</code><br>2. Yes branch → <b>Add Tag</b> <code>confirmed-yes</code> → <b>Internal Notification</b> to you<br>3. No branch → <b>Internal Notification</b> "needs a human"</td></tr>
+    <tr><td>WF-03<br>VSL Watched</td><td>Trigger Link Clicked → your VSL link</td><td>1. <b>Add Tag</b> <code>vsl-watched</code><br>2. <b>Internal Notification</b> — "{{contact.first_name}} just watched the VSL"</td></tr>
+    <tr><td>WF-04<br>No-Show Recovery</td><td>Appointment Status → <b>No Show</b><br>filter Calendar = Sales Call</td><td>1. <b>Add Tag</b> <code>stage-noshow</code><br>2. <b>Wait</b> 10 minutes → <b>Send SMS</b><br>3. <b>Wait</b> 3 hours → <b>Send Email</b><br>4. <b>Wait</b> 3 days → <b>Send SMS</b></td></tr>
+  </tbody>
+</table></div>
+<div class="copyblock"><div class="copyhead"><span>WF-04 messages</span><button class="copybtn" data-copy>Copy</button></div><pre>+10 MIN SMS:
 No bother {{contact.first_name}} — things come up on site. Grab
 another slot whenever suits: {{custom_values.reschedule_link}}
 
-Wait 3 hours → EMAIL:
-Missed you today — genuinely no problem. Here's the video I was
-going to walk you through anyway: {{custom_values.vsl_link}}
++3 HRS EMAIL — Subject: Missed you today
+Genuinely no problem. Here's the video I was going to walk you
+through anyway: {{custom_values.vsl_link}}
 Book back in here: {{custom_values.reschedule_link}}
 If the timing's wrong, tell me and I'll leave you alone.
 
-Wait 3 days → SMS   ·   Wait 7 days → EMAIL
-Same tone, shorter each time.</pre></div>
-<div class="why">About a third of no-shows rebook if you make it easy and stay pleasant. Being annoyed costs you a third of your pipeline.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">42</span><div><div class="act">Set the Sales Call calendar to auto-mark no-shows</div><div class="det"><div class="why">WF-04 only fires if the appointment is actually marked No Show. Skip this and a third of your pipeline sits there untouched.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">43</span><div><div class="act">Publish WF-02, WF-03 and WF-04</div><div class="det">Check each says Published, not Draft. Draft workflows do nothing.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">44</span><div><div class="act">Book yourself in and run the whole ladder end to end</div><div class="det">Confirmation within a minute, SMS at 5 minutes, reply Y and watch the tag land.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">45</span><div><div class="act">Book a test appointment 25 hours out and confirm the 24hr reminder fires on time</div><div class="det"><div class="why">This is the test that catches timezone mistakes. A 9am booking must say 9am in the email.</div></div></div></li>
-</ol>
-
-<!-- SYSTEM 2 -->
-<div class="sys">
-  <span class="id">System 2</span>
-  <h2>Onboarding — the moment they say YES</h2>
-  <p class="what">Eliminate buyer's remorse. The 48 hours after signing is when doubt creeps in — he's told his wife he's spending €2,000 a month with a lad he met on Instagram. Every hour of silence is an hour for that decision to rot.</p>
-  <p class="chain">INTAKE → CONTRACT → ONBOARDING FORM → CALENDAR → REMINDERS → CALL</p>
-  <p class="time">Steps 46–70 · ~2.5 hrs</p>
++3 DAYS SMS:
+Still worth a chat, {{contact.first_name}}? No pressure either way.</pre></div>
+<div class="warn">
+  <span class="tag">WF-04 needs one extra thing</span>
+  <p>It only fires if an appointment is actually <em>marked</em> No Show. Either mark them yourself right after the call, or set the calendar to auto-mark. Skip this and the workflow sits there doing nothing forever.</p>
 </div>
-<p class="sessnote">Each step fires the next automatically. He should never be waiting on you.</p>
-<ol class="steps">
-<li class="step"><input type="checkbox"><span class="num">46</span><div><div class="act">Create form "Sales Intake"</div><div class="det"><div class="path">Sites → Forms → Builder → + Add Form</div>First name, last name, email, phone, plus all eighteen Trade Client fields.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">47</span><div><div class="act">Mark six fields required</div><div class="det">Signatory Email · Package · Management Fee · Ad Spend Budget · Start Date · Territory Granted<div class="why">This form generates the contract. A blank required field means a broken contract.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">48</span><div><div class="act">Set On Submit to "Show message", not redirect</div><div class="det">You fill this in on Zoom while he watches. A redirect is a distraction.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">49</span><div><div class="act">Create form "Onboarding Discovery"</div><div class="det">Build from <code>onboarding/templates/02</code>, trimmed to 15 minutes for a trade firm.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">50</span><div><div class="act">Make two fields required</div><div class="det"><strong>"Paste 3–5 real customer quotes, word for word"</strong> (multi-line) and <strong>"What number defines success in 90 days"</strong> → map to Target Number 90 Days.<div class="why">Everything else can be optional. Without those two you have no ad copy and no target.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">51</span><div><div class="act">Publish it and paste the URL into <code>onboarding_form_link</code></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">52</span><div><div class="act">Create calendar "Onboarding Call — 45 min", built-in notifications OFF, 14-day window</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">53</span><div><div class="act">Paste its link into <code>onboarding_calendar_link</code></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">54</span><div><div class="act">Create document template "RELIER Service Agreement"</div><div class="det"><div class="path">Payments → Documents &amp; Contracts → Templates → New Template</div>Body from <code>onboarding/templates/07-service-agreement.md</code>.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">55</span><div><div class="act">Insert the merge fields so it auto-populates</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Merge fields</span><button class="copybtn" data-copy>Copy</button></div><pre>{{contact.trading_name}}
-{{contact.company_reg_number}}
-{{contact.vat_number}}
-{{contact.management_fee}}
-{{contact.setup_fee}}
-{{contact.ad_spend_budget}}
-{{contact.territory_granted}}
-{{contact.start_date}}
-{{contact.signatory_name}}</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">56</span><div><div class="act">Add a signature element, recipient = Signatory Email field</div><div class="det">Not the contact email.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">57</span><div><div class="act">Send yourself a test contract and sign it</div><div class="det">Check every merge field resolved and the signature saved.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">58</span><div><div class="act">Book an hour with an Irish solicitor to review it</div><div class="det"><div class="fix">The template is a structure, not a finished contract. One hour covers every client you'll ever sign. Don't send it to a real person before this.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">59</span><div><div class="act">New workflow: "WF-05 Intake → Contract"</div><div class="det">Trigger: Form Submitted → Sales Intake.<div class="why">If you only build one workflow, make it this one and WF-06. Together they're 80% of the remorse problem.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">60</span><div><div class="act">Action: Add Tag <code>stage-won</code> → Update Opportunity → Won — Intake Pending</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">61</span><div><div class="act">Action: Send Document/Contract → RELIER Service Agreement → recipient <code>{{contact.signatory_email}}</code></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">62</span><div><div class="act">Action: Send Email — welcome aboard, terms restated</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Contract email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Welcome aboard {{contact.trading_name}} — contract attached
+
+<h3>The contract chain — the important two</h3>
+<p>These need a <b>Sales Intake form</b> and a <b>contract template</b> to exist first. Build those before the workflows: <b>Sites → Forms → Builder</b> for the form, and <b>Payments → Documents &amp; Contracts → Templates</b> for the contract.</p>
+<div class="tw"><table>
+  <thead><tr><th>Workflow</th><th>Trigger</th><th>Actions, in order</th></tr></thead>
+  <tbody>
+    <tr><td>WF-05<br>Intake → Contract</td><td>Form Submitted → Sales Intake</td><td>1. <b>Add Tag</b> <code>stage-won</code><br>2. <b>Send Document/Contract</b> → your template → recipient <code>{{contact.signatory_email}}</code><br>3. <b>Send Email</b> — welcome aboard, terms restated<br>4. <b>Internal Notification</b> — new client details<br>5. <b>Wait</b> 48 hours → <b>If/Else</b> unsigned → <b>Send SMS</b> nudge</td></tr>
+    <tr><td>WF-06<br>Signed → Onboarding</td><td>Documents &amp; Contracts<br>Status = <b>Completed</b></td><td>1. <b>Add Tag</b> <code>client-onboarding</code><br>2. <b>Send Email</b> — onboarding form + photo ask<br>3. <b>Create Task</b> — set up their workspace, due 1 day<br>4. <b>Wait</b> 3 days → if form not done → <b>Send SMS</b></td></tr>
+  </tbody>
+</table></div>
+<div class="copyblock"><div class="copyhead"><span>WF-05 step 3 — the welcome email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Welcome aboard {{contact.trading_name}} — contract attached
 
 {{contact.first_name}},
 
@@ -376,17 +308,7 @@ The second you sign, you'll get one form from me. Fill that in
 and we're moving.
 
 Ryan</pre></div>
-<div class="why">Restate the terms in the body — he signs on a phone and won't read the PDF. Terms he's seen in plain English can't become a nasty surprise in month two.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">63</span><div><div class="act">Action: Internal Notification to yourself</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Notification body</span><button class="copybtn" data-copy>Copy</button></div><pre>NEW CLIENT: {{contact.trading_name}}
-{{contact.management_fee}}/mo · starts {{contact.start_date}}
-Territory: {{contact.territory_granted}}
-Off-menu promises: {{contact.off_menu_promises}}</pre></div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">64</span><div><div class="act">Action: Wait 48 hours → If/Else on contract status → if unsigned, Send SMS</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Unsigned nudge</span><button class="copybtn" data-copy>Copy</button></div><pre>{{contact.first_name}} — did that contract come through alright?
-Shout if anything on it needs changing.</pre></div>
-<div class="why">The step people skip and the most valuable one in the workflow. Unsigned contracts go cold in about three days.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">65</span><div><div class="act">New workflow: "WF-06 Contract Signed → Onboarding"</div><div class="det">Trigger: <strong>Documents &amp; Contracts</strong> → Status = Completed, Template = RELIER Service Agreement.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">66</span><div><div class="act">Action: Add Tag <code>client-onboarding</code> → Update Opportunity → Contracted</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">67</span><div><div class="act">Action: Send Email — the onboarding form and the photo ask</div><div class="det"><div class="copyblock"><div class="copyhead"><span>Onboarding form email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Signed — here's the only homework you'll get
+<div class="copyblock"><div class="copyhead"><span>WF-06 step 2 — the onboarding email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Signed — here's the only homework you'll get
 
 That's signed, {{contact.first_name}}, thanks.
 
@@ -406,32 +328,26 @@ Before-and-afters, jobs in progress, your crew, the van. Doesn't
 matter if they're rough. Rough is what performs.
 
 Ryan</pre></div>
-<div class="why">The photo ask goes here, not later. Creative supply predicts account performance and he's at peak willingness in this exact hour.</div></div></div></li>
-<li class="step"><input type="checkbox"><span class="num">68</span><div><div class="act">Action: Create Task "Set up {{contact.trading_name}} workspace" due in 1 day → Internal Notification to the team</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">69</span><div><div class="act">Action: Wait 3 days → if form not submitted, Send SMS nudge</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">70</span><div><div class="act">New workflow: "WF-07 Onboarding Form → Calendar", then "WF-08 Onboarding Call Reminders"</div><div class="det"><strong>WF-07</strong> — trigger Form Submitted → Onboarding Discovery. Actions: Update Opportunity → Onboarding · Send Email with <code>{{custom_values.onboarding_calendar_link}}</code> · Send Email with the access checklist · Create the 14-day launch checklist as tasks.<br><br><strong>WF-08</strong> — trigger Customer Booked Appointment → Calendar = Onboarding Call. Same 24hr / 1hr / 5min ladder as WF-01, warmer copy. Add "bring the photos if you haven't sent them" to the 24-hour message.</div></div></li>
-</ol>
 
-<!-- TEST -->
-<div class="sess"><h3>Test the whole chain, then snapshot</h3><span class="meta">Steps 71–80 · ~45 min</span></div>
-<p class="sessnote">Every agency that skips this sends a real client an email addressed to <code>{{contact.first_name}}</code>.</p>
-<ol class="steps">
-<li class="step"><input type="checkbox"><span class="num">71</span><div><div class="act">Create a test contact with your own mobile and a spare email</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">72</span><div><div class="act">Submit the Sales Intake form for it</div><div class="det">Contract must arrive at the <strong>Signatory Email</strong>, not the contact email.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">73</span><div><div class="act">Check the contract shows the right fee, territory and start date</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">74</span><div><div class="act">Sign it — the onboarding form email arrives and the opportunity moves to Contracted</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">75</span><div><div class="act">Submit the onboarding form — calendar email arrives, tasks get created</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">76</span><div><div class="act">Book the onboarding call and confirm the reminder ladder starts</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">77</span><div><div class="act">Mark a test sales call No Show — recovery SMS arrives 10 minutes later</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">78</span><div><div class="act">Read every email on a phone, not just desktop</div><div class="det">No visible <code>{{ }}</code> anywhere.</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">79</span><div><div class="act">Delete the test contact and its opportunity</div></div></li>
-<li class="step"><input type="checkbox"><span class="num">80</span><div><div class="act">Create a snapshot from this sub-account</div><div class="det"><div class="path">Agency view → Snapshots → Create Snapshot</div><div class="why">Freezes the whole build. Every future sub-account loads it in about ninety seconds — this is where the work starts paying you back.</div></div></div></li>
-</ol>
+<h3>The last two</h3>
+<div class="tw"><table>
+  <thead><tr><th>Workflow</th><th>Trigger</th><th>Actions</th></tr></thead>
+  <tbody>
+    <tr><td>WF-07<br>Form → Calendar</td><td>Form Submitted → Onboarding Discovery</td><td><b>Send Email</b> with the onboarding calendar link · <b>Send Email</b> with the platform access checklist · <b>Create Tasks</b> for the 14-day launch checklist</td></tr>
+    <tr><td>WF-08<br>Onboarding Reminders</td><td>Customer Booked Appointment<br>filter Calendar = Onboarding Call</td><td>Copy WF-01 exactly. Warmer wording — he's a client now. Add "bring the photos if you haven't sent them" to the 24-hour message.</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Shortcut for WF-08:</strong> on the Workflows list, find the three dots beside WF-01 and choose <b>Clone</b>. Then change the trigger's calendar filter and soften the wording. Two minutes instead of twenty.</p>
+
+<div class="warn">
+  <span class="tag">When something doesn't work</span>
+  <p>Open the workflow and click the <b>Execution Logs</b> tab at the top. It shows every contact that entered, which step they reached, and where it stopped. Nine times out of ten the answer is: still on Draft, or the trigger had no filter, or a Wait was set to Time Delay instead of Appointment Time.</p>
+</div>
 
 <footer>
-  RELIER — HighLevel runbook · v2 · assumes the account already exists<br>
-  Navigation paths checked against HighLevel support documentation, September 2026. HighLevel ships UI changes often — if a menu has moved, the object still exists under a near neighbour.<br>
-  Pre-flight P3 (two-way Irish SMS) gates roughly a third of the steps below. Step 58 (solicitor review) is not optional.
+  RELIER — HighLevel runbook · v3 · written for a first-time workflow build<br>
+  HighLevel moves buttons between releases. If a label here doesn't match exactly, the thing you want is almost always within one menu of where this says.<br>
+  Get the contract reviewed by an Irish solicitor before it goes to a real client.
 </footer>
 </div>
 
@@ -446,8 +362,8 @@ Ryan</pre></div>
       else{var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);done();}
     });
   });
-  var KEY='relier-ghl-runbook-v2';
-  var steps=Array.prototype.slice.call(document.querySelectorAll('li.step'));
+  var KEY='relier-ghl-runbook-v3';
+  var steps=Array.prototype.slice.call(document.querySelectorAll('li.click'));
   var boxes=steps.map(function(s){return s.querySelector('input');});
   var saved=[];try{saved=JSON.parse(localStorage.getItem(KEY)||'[]')||[];}catch(e){saved=[];}
   boxes.forEach(function(b,i){if(saved[i])b.checked=true;});
@@ -466,9 +382,5 @@ Ryan</pre></div>
     if(next<0)next=boxes.length-1;
     steps[next].scrollIntoView({behavior:'smooth',block:'center'});
   });
-  if(boxes.some(function(b){return b.checked;})){
-    var next=boxes.findIndex(function(b){return !b.checked;});
-    if(next>0)setTimeout(function(){steps[next].scrollIntoView({block:'center'});},80);
-  }
 })();
 </script>
