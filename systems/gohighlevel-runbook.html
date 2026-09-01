@@ -34,72 +34,73 @@
   --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
 }
 *{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:760px;margin:0 auto;padding:38px 22px 110px}
-p{margin:0 0 13px}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:38px 22px 110px}
+p{margin:0 0 14px}
 a{color:var(--accent)}
 code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--ink)}
 .kicker{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.6vw,2.55rem);line-height:1.04;letter-spacing:-.025em;margin:.3em 0 0;text-wrap:balance}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.6vw,2.5rem);line-height:1.05;letter-spacing:-.024em;margin:.3em 0 0;text-wrap:balance}
 .sub{color:var(--ink-2);margin-top:14px}
-h2{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.02em;margin:0 0 10px}
-h3{font-family:var(--display);font-weight:600;font-size:1.08rem;margin:28px 0 8px}
+h2{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.02em;margin:0 0 10px}
+h3{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:30px 0 8px}
 
 .part{margin:52px 0 0;padding:16px 0 11px;border-bottom:2px solid var(--ink)}
 .part .n{font-family:var(--mono);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
 .part .meta{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px}
-
 .note{color:var(--ink-2);margin:16px 0}
 
-/* concept cards */
-.concepts{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:20px 0}
-.concept{background:var(--surface);padding:16px 20px;border-bottom:1px solid var(--line)}
-.concept:last-child{border-bottom:0}
-.concept .t{font-family:var(--display);font-weight:600;font-size:1rem}
-.concept .d{font-size:.92rem;color:var(--ink-2);margin-top:5px}
-.concept .eg{font-size:.86rem;color:var(--muted);margin-top:6px;font-style:italic}
+.words{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:20px 0}
+.word{background:var(--surface);padding:17px 20px;border-bottom:1px solid var(--line)}
+.word:last-child{border-bottom:0}
+.word .t{font-family:var(--display);font-weight:700;font-size:1.05rem}
+.word .d{margin-top:6px}
+.word .d p{margin:0 0 8px}
+.word .d p:last-child{margin-bottom:0}
+.word .eg{font-size:.93rem;color:var(--muted);margin-top:8px;border-left:2px solid var(--line-strong);padding-left:11px}
 
-.diagram{margin:24px 0}
+.diagram{margin:26px 0}
 .diagram svg{width:100%;height:auto;display:block}
 .cap{font-family:var(--mono);font-size:.63rem;letter-spacing:.08em;color:var(--muted);text-align:center;margin-top:8px}
 
-/* click steps */
-ol.clicks{list-style:none;padding:0;margin:16px 0 0;counter-reset:c}
-li.click{counter-increment:c;display:grid;grid-template-columns:24px 30px 1fr;gap:11px;padding:14px 10px 14px 4px;border-bottom:1px solid var(--line);align-items:start}
+ol.clicks{list-style:none;padding:0;margin:16px 0 0}
+li.click{display:grid;grid-template-columns:24px 30px 1fr;gap:11px;padding:15px 10px 15px 4px;border-bottom:1px solid var(--line);align-items:start}
 li.click:hover{background:var(--surface)}
 li.click.done .do{color:var(--muted);text-decoration:line-through}
-li.click.done .see,li.click.done .cn{opacity:.5}
-li.click input{margin:4px 0 0;accent-color:var(--accent);width:16px;height:16px;flex:none;cursor:pointer}
-.cn{font-family:var(--mono);font-size:.73rem;color:var(--accent);padding-top:3px;font-variant-numeric:tabular-nums}
-.do{font-size:1rem;line-height:1.45}
-.do b{font-weight:600;font-family:var(--display);letter-spacing:-.005em}
-.see{font-size:.87rem;color:var(--muted);margin-top:6px;border-left:2px solid var(--line-strong);padding-left:10px}
-.see::before{content:"You'll see: ";font-family:var(--mono);font-size:.85em;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
-.tip{font-size:.87rem;color:var(--signal);margin-top:6px;border-left:2px solid var(--signal);padding-left:10px}
+li.click.done .see,li.click.done .cn,li.click.done .tip{opacity:.5}
+li.click input{margin:5px 0 0;accent-color:var(--accent);width:17px;height:17px;flex:none;cursor:pointer}
+.cn{font-family:var(--mono);font-size:.75rem;color:var(--accent);padding-top:4px;font-variant-numeric:tabular-nums}
+.do{font-size:1.05rem;line-height:1.45}
+.do b{font-weight:700;font-family:var(--display);letter-spacing:-.005em}
+.see{font-size:.93rem;color:var(--muted);margin-top:7px;border-left:2px solid var(--line-strong);padding-left:11px}
+.tip{font-size:.93rem;color:var(--signal);margin-top:7px;border-left:2px solid var(--signal);padding-left:11px}
 
-.copyblock{border:1px solid var(--line);border-radius:4px;background:var(--surface);margin:10px 0 0;overflow:hidden}
+.copyblock{border:1px solid var(--line);border-radius:4px;background:var(--surface);margin:11px 0 0;overflow:hidden}
 .copyhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 10px 7px 12px;border-bottom:1px solid var(--line);background:var(--surface-2)}
 .copyhead span{font-family:var(--mono);font-size:.59rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .copybtn{font-family:var(--mono);font-size:.59rem;letter-spacing:.09em;text-transform:uppercase;background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);border-radius:3px;padding:3px 9px;cursor:pointer}
 .copybtn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 .copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.copyblock pre{margin:0;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.74rem;line-height:1.62;color:var(--ink-2);white-space:pre-wrap}
+.copyblock pre{margin:0;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.75rem;line-height:1.62;color:var(--ink-2);white-space:pre-wrap}
 
-.stop{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:22px 24px;margin:32px 0}
+.stop{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:24px 26px;margin:34px 0}
 .stop .lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--invert-muted)}
-.stop p{margin:10px 0 0;color:var(--invert-fg)}
-.stop p.m{color:var(--invert-muted);font-size:.93rem}
+.stop p{margin:11px 0 0;color:var(--invert-fg)}
+.stop p.m{color:var(--invert-muted);font-size:.96rem}
 
-.warn{border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 17px;border-radius:0 4px 4px 0;margin:20px 0;font-size:.93rem}
+.warn{border-left:3px solid var(--signal);background:var(--signal-soft);padding:15px 18px;border-radius:0 4px 4px 0;margin:22px 0}
 .warn > :last-child{margin-bottom:0}
-.warn .tag{font-family:var(--mono);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
+.warn .tag{font-family:var(--mono);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:6px}
 
-.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:420px}
-th{font-family:var(--mono);font-weight:500;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 13px;border-bottom:1px solid var(--line-strong)}
-td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
-tr:last-child td{border-bottom:0}
-td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+.recipe{border:1px solid var(--line);border-radius:6px;background:var(--surface);margin:20px 0;overflow:hidden}
+.recipe .rh{padding:13px 18px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.recipe .rh .nm{font-family:var(--display);font-weight:700;font-size:1.02rem}
+.recipe .rb{padding:15px 18px}
+.recipe .rb p{margin:0 0 9px}
+.recipe .rb p:last-child{margin-bottom:0}
+.recipe .lb{font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.recipe ol{margin:6px 0 0;padding-left:1.3em}
+.recipe li{margin-bottom:5px}
 
 .hud{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding:11px 0;margin:26px 0 0;display:flex;align-items:center;gap:12px}
 .hud .lbl{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
@@ -115,9 +116,9 @@ footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);font-fa
 
 <div class="wrap">
 <header>
-  <span class="kicker">RELIER · HighLevel · v3</span>
-  <h1>Your first workflow, click by click</h1>
-  <p class="sub">The last version assumed you'd built workflows before. This one doesn't. Read Part 1 (four minutes), build the workflow in Part 2, then stop for today. Part 3 is the other seven, and they're all the same shape as the first.</p>
+  <span class="kicker">RELIER · HighLevel · v4</span>
+  <h1>Read this bit first. Then build one thing.</h1>
+  <p class="sub">No jargon. Short steps. If a step doesn't make sense, that's my fault, not yours — tell me which number and I'll fix it.</p>
 </header>
 
 <div class="hud">
@@ -127,96 +128,106 @@ footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);font-fa
 </div>
 
 <!-- PART 1 -->
-<div class="part"><span class="n">Part 1</span><h2>Five things, in plain English</h2><div class="meta">Read this · 4 min · nothing to click</div></div>
-<p class="note">HighLevel is five ideas wearing a hundred menus. Once these land, the rest is just finding buttons.</p>
+<div class="part"><span class="n">Part 1</span><h2>What the words mean</h2><div class="meta">Just reading · 3 min</div></div>
+<p class="note">HighLevel uses five words a lot. Here is what each one actually means.</p>
 
-<div class="concepts">
-  <div class="concept"><div class="t">Contact</div><div class="d">One person. Dave the attic fitter. Everything else hangs off him.</div></div>
-  <div class="concept"><div class="t">Custom field</div><div class="d">An extra box of information stored on that person, that HighLevel doesn't give you by default.</div><div class="eg">"Average Job Value = €28,000" lives in a custom field. His email address doesn't — that's built in.</div></div>
-  <div class="concept"><div class="t">Tag</div><div class="d">A sticker you slap on a contact. That's it. It has no meaning except what you give it.</div><div class="eg">You stick <code>confirmed-yes</code> on Dave when he replies. Later you search "everyone without that sticker" and ring them.</div></div>
-  <div class="concept"><div class="t">Pipeline &amp; opportunity</div><div class="d">The pipeline is a row of columns — New Lead, Qualified, Call Booked. An opportunity is Dave's card, sitting in one of them. You drag it along as he progresses.</div></div>
-  <div class="concept"><div class="t">Workflow</div><div class="d"><strong>The only hard one.</strong> A workflow is: <em>when this happens, do these things in order.</em> Nothing more.</div><div class="eg">When Dave books a call → send him an email → wait 5 minutes → text him → stick a sticker on him.</div></div>
+<div class="words">
+  <div class="word"><div class="t">A contact</div><div class="d"><p>A person.</p><p>That's the whole thing. Dave the attic fitter is a contact.</p></div></div>
+
+  <div class="word"><div class="t">A tag</div><div class="d"><p>A sticker you put on a person.</p><p>The sticker does nothing by itself. It's just a label so you can find people later.</p></div><div class="eg">You stick <code>confirmed-yes</code> on Dave when he texts back. On the day of the call, you search for everyone <em>without</em> that sticker. Those are the ones who might not show up. You ring them.</div></div>
+
+  <div class="word"><div class="t">A custom field</div><div class="d"><p>A box where you write down a fact about someone.</p><p>HighLevel already gives you boxes for name, phone and email. A custom field is an extra box you make yourself.</p></div><div class="eg">"Average job: €28,000" goes in a box you made. His phone number goes in a box that was already there.</div></div>
+
+  <div class="word"><div class="t">A pipeline</div><div class="d"><p>A row of columns, like a scoreboard.</p><p>Every person gets a card. You slide their card from column to column as things move along.</p></div><div class="eg">Dave's card starts in "New Lead". He books a call, so you slide it to "Call Booked". He signs, so you slide it to "Contracted".</div></div>
+
+  <div class="word"><div class="t">A workflow</div><div class="d"><p><strong>This is the only tricky one. Think of a doorbell.</strong></p><p>When the doorbell rings, you do things in order. Answer the door. Say hello. Put the kettle on.</p><p>A workflow is exactly that. One thing starts it. Then jobs happen, one after another.</p></div><div class="eg">When Dave books a call → send him an email → wait 5 minutes → send him a text → put a sticker on him.</div></div>
 </div>
 
-<h3>Every workflow has exactly two parts</h3>
+<h3>Two more words you'll see on screen</h3>
+<p>HighLevel calls the doorbell a <strong>trigger</strong>. It calls each job an <strong>action</strong>. That's all those words mean.</p>
+
 <div class="diagram">
-  <svg viewBox="0 0 660 290" role="img" aria-label="A workflow canvas: one trigger box at the top, then a vertical line of action boxes below it, each connected by a plus button.">
+  <svg viewBox="0 0 620 300" role="img" aria-label="A workflow on screen: a trigger box at the top, then three action boxes below it in a line, each joined by a small plus button.">
     <g font-family="IBM Plex Mono, monospace">
-      <rect x="180" y="8" width="300" height="52" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-      <text x="330" y="30" font-size="10" letter-spacing="1.6" fill="var(--accent)" text-anchor="middle">THE TRIGGER — ONE ONLY</text>
-      <text x="330" y="48" font-size="13" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)" text-anchor="middle">When Dave books a call</text>
-      <line x1="330" y1="60" x2="330" y2="82" stroke="var(--line-strong)" stroke-width="1.5"/>
-      <circle cx="330" cy="90" r="8" fill="var(--surface)" stroke="var(--line-strong)"/>
-      <text x="330" y="94" font-size="11" fill="var(--muted)" text-anchor="middle">+</text>
-      <line x1="330" y1="98" x2="330" y2="112" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <rect x="160" y="8" width="300" height="56" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="310" y="30" font-size="10" letter-spacing="1.5" fill="var(--accent)" text-anchor="middle">THE DOORBELL</text>
+      <text x="310" y="50" font-size="13.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)" text-anchor="middle">Dave books a call</text>
+      <line x1="310" y1="64" x2="310" y2="84" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <circle cx="310" cy="92" r="9" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="310" y="96" font-size="12" fill="var(--accent)" text-anchor="middle">+</text>
+      <line x1="310" y1="101" x2="310" y2="116" stroke="var(--line-strong)" stroke-width="1.5"/>
 
-      <rect x="180" y="112" width="300" height="34" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
-      <text x="196" y="134" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Send Email</text>
-      <line x1="330" y1="146" x2="330" y2="158" stroke="var(--line-strong)" stroke-width="1.5"/>
-      <circle cx="330" cy="166" r="8" fill="var(--surface)" stroke="var(--line-strong)"/>
-      <text x="330" y="170" font-size="11" fill="var(--muted)" text-anchor="middle">+</text>
-      <line x1="330" y1="174" x2="330" y2="186" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <rect x="160" y="116" width="300" height="36" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="178" y="139" font-size="12.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Send an email</text>
+      <line x1="310" y1="152" x2="310" y2="166" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <circle cx="310" cy="174" r="9" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="310" y="178" font-size="12" fill="var(--accent)" text-anchor="middle">+</text>
+      <line x1="310" y1="183" x2="310" y2="196" stroke="var(--line-strong)" stroke-width="1.5"/>
 
-      <rect x="180" y="186" width="300" height="34" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
-      <text x="196" y="208" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Wait 5 minutes</text>
-      <line x1="330" y1="220" x2="330" y2="232" stroke="var(--line-strong)" stroke-width="1.5"/>
-      <circle cx="330" cy="240" r="8" fill="var(--surface)" stroke="var(--line-strong)"/>
-      <text x="330" y="244" font-size="11" fill="var(--muted)" text-anchor="middle">+</text>
-      <line x1="330" y1="248" x2="330" y2="256" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <rect x="160" y="196" width="300" height="36" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="178" y="219" font-size="12.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Wait 5 minutes</text>
+      <line x1="310" y1="232" x2="310" y2="246" stroke="var(--line-strong)" stroke-width="1.5"/>
+      <circle cx="310" cy="254" r="9" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="310" y="258" font-size="12" fill="var(--accent)" text-anchor="middle">+</text>
+      <line x1="310" y1="263" x2="310" y2="264" stroke="var(--line-strong)" stroke-width="1.5"/>
 
-      <rect x="180" y="256" width="300" height="34" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
-      <text x="196" y="278" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Send SMS</text>
+      <rect x="160" y="264" width="300" height="36" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="178" y="287" font-size="12.5" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Send a text</text>
 
-      <text x="168" y="40" font-size="9.5" fill="var(--muted)" text-anchor="end">starts it</text>
-      <text x="168" y="205" font-size="9.5" fill="var(--muted)" text-anchor="end">the actions,</text>
-      <text x="168" y="219" font-size="9.5" fill="var(--muted)" text-anchor="end">top to bottom</text>
+      <text x="148" y="40" font-size="10" fill="var(--muted)" text-anchor="end">starts it</text>
+      <text x="148" y="212" font-size="10" fill="var(--muted)" text-anchor="end">the jobs,</text>
+      <text x="148" y="226" font-size="10" fill="var(--muted)" text-anchor="end">in order</text>
+      <text x="472" y="178" font-size="10" fill="var(--muted)">click a +</text>
+      <text x="472" y="192" font-size="10" fill="var(--muted)">to add a job</text>
     </g>
   </svg>
-  <div class="cap">This is what a workflow looks like on screen. One trigger, then actions in a line.</div>
+  <div class="cap">This is what you'll be looking at.</div>
 </div>
 
-<p><strong>That's the whole model.</strong> The <b>+</b> circles between boxes are how you add a new action. You click a +, a panel slides in from the right, you pick what you want, you fill it in, you save. Then you do it again. Eight times, and you've built a workflow.</p>
-
 <div class="warn">
-  <span class="tag">The one word that trips everyone up</span>
-  <p><strong>"Wait" is an action, not a setting.</strong> If you want a text to go five minutes after the email, you don't set a delay on the text — you add a <em>Wait</em> box between them. Time is a step, same as an email is a step.</p>
+  <span class="tag">One thing that confuses everybody</span>
+  <p><strong>Waiting is a job too.</strong></p>
+  <p>Say you want the text to go 5 minutes after the email. You do <em>not</em> set that on the text. You add a box in between that says "Wait 5 minutes".</p>
+  <p style="margin-bottom:0">Email box. Then wait box. Then text box. Three boxes, in a line.</p>
 </div>
 
 <!-- PART 2 -->
-<div class="part"><span class="n">Part 2</span><h2>Build one workflow, slowly</h2><div class="meta">Steps 1–26 · ~40 min · do this today, then stop</div></div>
-<p class="note">You're building the appointment reminder machine — the thing that stops no-shows. Every other workflow is this same shape, so build this one properly and the rest take ten minutes each.</p>
+<div class="part"><span class="n">Part 2</span><h2>Now build one</h2><div class="meta">26 steps · about 40 minutes</div></div>
+<p class="note">You're building the thing that reminds people about their call, so they actually turn up. Do this one properly. Every other one is the same shape, so after this they're quick.</p>
+
 <div class="warn">
-  <span class="tag">Before step 1</span>
-  <p>You need a calendar called <strong>Sales Call — 20 min</strong> to already exist. If it doesn't: left sidebar → <strong>Calendars</strong> → <strong>Calendar Settings</strong> → <strong>Create Calendar</strong> → <strong>Simple</strong>. 20 minutes, save. Come back here.</p>
+  <span class="tag">Check this first</span>
+  <p>You need a calendar called <strong>Sales Call — 20 min</strong> already made.</p>
+  <p style="margin-bottom:0">Don't have one? Click <strong>Calendars</strong> on the left. Then <strong>Calendar Settings</strong>. Then <strong>Create Calendar</strong>. Then <strong>Simple</strong>. Set it to 20 minutes. Save. Come back here.</p>
 </div>
 
 <ol class="clicks">
-<li class="click"><input type="checkbox"><span class="cn">1</span><div><div class="do">In the far-left sidebar, click <b>Automation</b></div><div class="see">A page with tabs across the top — Workflows, Campaigns, Triggers.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">2</span><div><div class="do">Make sure the <b>Workflows</b> tab is selected</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">3</span><div><div class="do">Click <b>+ Create Workflow</b>, top right</div><div class="see">A box offering "Start from Scratch" or a list of recipes/templates.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">4</span><div><div class="do">Click <b>Start from Scratch</b></div><div class="see">A big empty canvas. In the middle near the top, one box: <b>Add New Trigger</b>.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">5</span><div><div class="do">Top left it says "Untitled Workflow" — click it and rename</div><div class="copyblock"><div class="copyhead"><span>Name</span><button class="copybtn" data-copy>Copy</button></div><pre>WF-01 Sales Call — Confirm &amp; Remind</pre></div><div class="tip">Name it now. Six workflows called "Untitled Workflow" is a real thing that happens.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">6</span><div><div class="do">Click <b>Add New Trigger</b></div><div class="see">A panel slides in from the right with a search box at the top and a long list of triggers underneath.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">7</span><div><div class="do">Type <code>appointment</code> in the search box</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">8</span><div><div class="do">Click <b>Customer Booked Appointment</b></div><div class="tip">Not "Appointment Status" — that's a different one you'll use later for no-shows.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">9</span><div><div class="do">In the same panel, click <b>+ Add filters</b></div><div class="see">A dropdown appears asking what you want to filter on.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">10</span><div><div class="do">Choose <b>Calendar</b>, then pick <b>Sales Call — 20 min</b></div><div class="tip">Without this filter the workflow fires for <em>every</em> calendar you ever create, including the onboarding one. Your new clients would get sales reminders.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">11</span><div><div class="do">Click <b>Save Trigger</b> at the bottom of the panel</div><div class="see">The panel closes. The trigger box on the canvas now says "Customer Booked Appointment". Below it, a small <b>+</b> in a circle.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">12</span><div><div class="do">Click that <b>+</b></div><div class="see">The right panel again, this time a list of <em>actions</em> grouped into categories.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">13</span><div><div class="do">Search <code>email</code> and click <b>Send Email</b></div><div class="see">Boxes for From Name, From Email, Subject, and a big body editor.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">14</span><div><div class="do">Fill in From Name and From Email</div><div class="det">Your name, and an address on your verified sending domain.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">15</span><div><div class="do">Paste the subject line</div><div class="copyblock"><div class="copyhead"><span>Subject</span><button class="copybtn" data-copy>Copy</button></div><pre>You're booked in — two quick things</pre></div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">16</span><div><div class="do">Paste the body into the editor</div><div class="copyblock"><div class="copyhead"><span>Email body</span><button class="copybtn" data-copy>Copy</button></div><pre>{{contact.first_name}},
+<li class="click"><input type="checkbox"><span class="cn">1</span><div><div class="do">Look at the menu down the far left of the screen. Click <b>Automation</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">2</span><div><div class="do">Along the top you'll see a few words. Click <b>Workflows</b>.</div><div class="see">A mostly empty page. This is where your workflows will live.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">3</span><div><div class="do">Top right corner. Click <b>+ Create Workflow</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">4</span><div><div class="do">A box pops up. Click <b>Start from Scratch</b>.</div><div class="see">A big empty screen. Near the top there's one box that says <b>Add New Trigger</b>. Remember — trigger just means doorbell.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">5</span><div><div class="do">Top left it says "Untitled Workflow". Click it. Give it a name.</div><div class="copyblock"><div class="copyhead"><span>Name</span><button class="copybtn" data-copy>Copy</button></div><pre>Sales Call Reminders</pre></div><div class="tip">Do this now. Otherwise in two weeks you'll have five things all called "Untitled Workflow".</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">6</span><div><div class="do">Click <b>Add New Trigger</b>.</div><div class="see">A panel slides in from the right side. There's a search box at the top and a long list underneath.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">7</span><div><div class="do">In the search box, type <code>appointment</code>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">8</span><div><div class="do">Click <b>Customer Booked Appointment</b>.</div><div class="tip">There's another one called "Appointment Status". Don't click that one. You'll use it later for people who don't show up.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">9</span><div><div class="do">Still in that panel, click <b>+ Add filters</b>.</div><div class="see">A dropdown asking what you want to narrow it down by.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">10</span><div><div class="do">Pick <b>Calendar</b>. Then pick <b>Sales Call — 20 min</b>.</div><div class="tip">This matters. Without it, this runs for every calendar you ever make. Your new clients would start getting sales reminders.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">11</span><div><div class="do">Scroll to the bottom of the panel. Click <b>Save Trigger</b>.</div><div class="see">The panel closes. Your doorbell box is now on screen. Underneath it, a small <b>+</b> in a circle.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">12</span><div><div class="do">Click that <b>+</b>.</div><div class="see">The panel again. This time it's a list of jobs you can add.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">13</span><div><div class="do">Search <code>email</code>. Click <b>Send Email</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">14</span><div><div class="do">Fill in the two boxes at the top: your name, and your email address.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">15</span><div><div class="do">In the Subject box, paste this.</div><div class="copyblock"><div class="copyhead"><span>Subject</span><button class="copybtn" data-copy>Copy</button></div><pre>You're booked in — two quick things</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">16</span><div><div class="do">In the big box underneath, paste this.</div><div class="copyblock"><div class="copyhead"><span>The email</span><button class="copybtn" data-copy>Copy</button></div><pre>{{contact.first_name}},
 
-You're down for {{appointment.start_time}}. Zoom link is in the
-calendar invite.
+You're down for {{appointment.start_time}}. The Zoom link is in
+the calendar invite.
 
 Two things before we talk, both quick:
 
 1. WATCH THIS — 6 MINUTES. {{custom_values.vsl_link}}
    It's me walking through exactly what I'd build for a firm like
-   yours and what it costs. Watch it and our call goes from a sales
-   pitch to a proper conversation about your business.
+   yours, and what it costs. Watch it and our call goes from a
+   sales pitch to a proper chat about your business.
 
 2. ACCEPT THE CALENDAR INVITE so it's in your diary, not just mine.
 
@@ -228,70 +239,111 @@ rather you moved it than left me sitting on Zoom:
 
 Ryan
 RELIER</pre></div>
-<div class="tip">Those <code>{{ }}</code> bits fill themselves in automatically when it sends. If you'd rather not paste them, click the <code>{ }</code> icon in the editor toolbar and pick them from a list.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">17</span><div><div class="do">Click <b>Save Action</b></div><div class="see">Panel closes. A second box on the canvas under the trigger, and another <b>+</b> beneath it.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">18</span><div><div class="do">Click the new <b>+</b>, search <code>wait</code>, click <b>Wait</b></div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">19</span><div><div class="do">Set it to <b>Time Delay</b> → <b>5</b> → <b>Minutes</b> → Save</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">20</span><div><div class="do">Click <b>+</b>, search <code>sms</code>, click <b>Send SMS</b>, paste this, Save</div><div class="copyblock"><div class="copyhead"><span>SMS body</span><button class="copybtn" data-copy>Copy</button></div><pre>Ryan from RELIER here — got you down for {{appointment.start_time}}.
+<div class="tip">The bits in curly brackets fill themselves in when it sends. <code>{{contact.first_name}}</code> becomes "Dave". You don't have to do anything to them.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">17</span><div><div class="do">Click <b>Save Action</b>.</div><div class="see">The panel closes. Now there are two boxes on screen. And a new <b>+</b> under them.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">18</span><div><div class="do">Click the new <b>+</b>. Search <code>wait</code>. Click <b>Wait</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">19</span><div><div class="do">Choose <b>Time Delay</b>. Type <b>5</b>. Choose <b>Minutes</b>. Save.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">20</span><div><div class="do">Click <b>+</b>. Search <code>sms</code>. Click <b>Send SMS</b>. Paste this in. Save.</div><div class="copyblock"><div class="copyhead"><span>The text</span><button class="copybtn" data-copy>Copy</button></div><pre>Ryan from RELIER here — got you down for {{appointment.start_time}}.
 Sent you an email with a short video, worth a watch before we talk.
 Any bother, just text this number back.</pre></div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">21</span><div><div class="do">Click <b>+</b>, search <code>tag</code>, click <b>Add Contact Tag</b>, type <code>stage-booked</code>, Save</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">22</span><div><div class="do">Click <b>+</b>, search <code>wait</code>, click <b>Wait</b> — but this time choose <b>Appointment Time</b></div><div class="do" style="margin-top:6px">Set it to <b>Before</b> → <b>24</b> → <b>Hours</b> → Save</div><div class="tip"><strong>This is the mistake everyone makes.</strong> Appointment Time counts backwards from the call. A Time Delay counts forwards from booking — so if he books an hour before the call, a "24 hour" delay never fires at all.</div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">23</span><div><div class="do">Click <b>+</b>, add a <b>Send SMS</b>, paste this, Save</div><div class="copyblock"><div class="copyhead"><span>24-hour SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>Still good for tomorrow, {{contact.first_name}}? Just reply Y or N
+<li class="click"><input type="checkbox"><span class="cn">21</span><div><div class="do">Click <b>+</b>. Search <code>tag</code>. Click <b>Add Contact Tag</b>. Type <code>stage-booked</code>. Save.</div><div class="see">Four boxes now. You're over half way.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">22</span><div><div class="do">Click <b>+</b>. Search <code>wait</code>. Click <b>Wait</b> again. This time pick <b>Appointment Time</b>.</div><div class="do" style="margin-top:7px">Then set it to <b>Before</b>, <b>24</b>, <b>Hours</b>. Save.</div>
+<div class="tip"><strong>Read this bit twice.</strong> There are two kinds of waiting.<br><br>
+<b>Time Delay</b> means "wait 5 minutes from right now."<br>
+<b>Appointment Time</b> means "wait until 24 hours before his call."<br><br>
+You want the second one here. Here's why. If someone books a call for later the same day, "wait 24 hours" from now would land <em>after</em> the call already happened. So it never sends. Appointment Time counts backwards from the call, so it always works.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">23</span><div><div class="do">Click <b>+</b>. Add another <b>Send SMS</b>. Paste this. Save.</div><div class="copyblock"><div class="copyhead"><span>Day-before text</span><button class="copybtn" data-copy>Copy</button></div><pre>Still good for tomorrow, {{contact.first_name}}? Just reply Y or N
 — no hassle either way if you need to move it.</pre></div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">24</span><div><div class="do">Add <b>Wait</b> → Appointment Time → Before → <b>1 Hour</b>, then a <b>Send SMS</b></div><div class="copyblock"><div class="copyhead"><span>1-hour SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>One hour, {{contact.first_name}}. Zoom's here when you're ready:
+<li class="click"><input type="checkbox"><span class="cn">24</span><div><div class="do">Click <b>+</b>. Add a <b>Wait</b> → <b>Appointment Time</b> → <b>Before</b> → <b>1 Hour</b>. Then add a <b>Send SMS</b> with this.</div><div class="copyblock"><div class="copyhead"><span>One-hour text</span><button class="copybtn" data-copy>Copy</button></div><pre>One hour, {{contact.first_name}}. Zoom's here when you're ready:
 {{appointment.meeting_location}}</pre></div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">25</span><div><div class="do">Add <b>Wait</b> → Appointment Time → Before → <b>5 Minutes</b>, then a final <b>Send SMS</b></div><div class="copyblock"><div class="copyhead"><span>5-minute SMS</span><button class="copybtn" data-copy>Copy</button></div><pre>Starting now — {{appointment.meeting_location}}. I'm on.</pre></div></div></li>
-<li class="click"><input type="checkbox"><span class="cn">26</span><div><div class="do">Top right there's a toggle that says <b>Draft</b>. Flip it to <b>Publish</b>. Then click <b>Save</b>.</div><div class="tip">A workflow left on Draft does absolutely nothing. This is the single most common "why isn't it working" answer.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">25</span><div><div class="do">One more time. <b>Wait</b> → <b>Appointment Time</b> → <b>Before</b> → <b>5 Minutes</b>. Then a last <b>Send SMS</b>.</div><div class="copyblock"><div class="copyhead"><span>Last text</span><button class="copybtn" data-copy>Copy</button></div><pre>Starting now — {{appointment.meeting_location}}. I'm on.</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">26</span><div><div class="do">Top right there's a switch that says <b>Draft</b>. Flip it to <b>Publish</b>. Then click <b>Save</b>.</div><div class="tip"><strong>Don't skip this.</strong> If it says Draft, nothing happens. Ever. This is the number one reason people think HighLevel is broken.</div></div></li>
 </ol>
 
 <div class="stop">
-  <span class="lab">Now test it, then stop for today</span>
-  <p>Go to <b>Calendars</b>, open your Sales Call booking link, and book yourself in using your own email and mobile. The confirmation email should land within a minute and the text five minutes later.</p>
-  <p class="m">Check there's no visible <code>{{ }}</code> anywhere in what arrives — if there is, that merge field name is wrong, and you fix it by opening the action and picking the field from the <code>{ }</code> menu instead of typing it.</p>
-  <p class="m">That's one system live. Genuinely stop here today. Part 3 will still be here tomorrow, and it's all the same shape as what you just did.</p>
+  <span class="lab">Test it, then stop for today</span>
+  <p>Open your Sales Call booking link. Book yourself in, using your own email and your own mobile number.</p>
+  <p>The email should arrive within a minute. The text about five minutes later.</p>
+  <p class="m">If you see curly brackets like <code>{{contact.first_name}}</code> in what arrives, that name was typed wrong. Open that box again, delete it, and use the <code>{ }</code> button in the toolbar to pick it from a list instead.</p>
+  <p class="m">That's one whole system working. Stop there today. Part 3 will keep.</p>
 </div>
 
 <!-- PART 3 -->
-<div class="part"><span class="n">Part 3</span><h2>The other seven, same shape</h2><div class="meta">Do these across the next few days</div></div>
-<p class="note">You now know the moves: <b>Automation → Workflows → + Create Workflow → Start from Scratch → name it → Add New Trigger → then + for each action → Publish → Save.</b> Every one below is that, with different contents. Build them in this order.</p>
+<div class="part"><span class="n">Part 3</span><h2>The rest, another day</h2><div class="meta">Same steps, different words in the boxes</div></div>
+<p class="note">You already know how. Every one below is: <b>Automation → Workflows → + Create Workflow → Start from Scratch → name it → pick the doorbell → click + for each job → flip to Publish → Save.</b></p>
+<p class="note">Do them in this order. The first three take about ten minutes each.</p>
 
-<h3>The three easy ones — 10 minutes each</h3>
-<div class="tw"><table>
-  <thead><tr><th>Workflow</th><th>Trigger</th><th>Actions, in order</th></tr></thead>
-  <tbody>
-    <tr><td>WF-02<br>Reply Catcher</td><td>Customer Replied</td><td>1. <b>If/Else</b> — message contains <code>Y</code> or <code>YES</code><br>2. Yes branch → <b>Add Tag</b> <code>confirmed-yes</code> → <b>Internal Notification</b> to you<br>3. No branch → <b>Internal Notification</b> "needs a human"</td></tr>
-    <tr><td>WF-03<br>VSL Watched</td><td>Trigger Link Clicked → your VSL link</td><td>1. <b>Add Tag</b> <code>vsl-watched</code><br>2. <b>Internal Notification</b> — "{{contact.first_name}} just watched the VSL"</td></tr>
-    <tr><td>WF-04<br>No-Show Recovery</td><td>Appointment Status → <b>No Show</b><br>filter Calendar = Sales Call</td><td>1. <b>Add Tag</b> <code>stage-noshow</code><br>2. <b>Wait</b> 10 minutes → <b>Send SMS</b><br>3. <b>Wait</b> 3 hours → <b>Send Email</b><br>4. <b>Wait</b> 3 days → <b>Send SMS</b></td></tr>
-  </tbody>
-</table></div>
-<div class="copyblock"><div class="copyhead"><span>WF-04 messages</span><button class="copybtn" data-copy>Copy</button></div><pre>+10 MIN SMS:
+<div class="recipe">
+  <div class="rh"><span class="nm">1. Catch the people who reply</span></div>
+  <div class="rb">
+    <p><span class="lb">Doorbell</span><br>Customer Replied</p>
+    <p><span class="lb">Jobs</span></p>
+    <ol>
+      <li>Add an <b>If/Else</b> — set it to: message contains <code>Y</code> or <code>YES</code></li>
+      <li>On the yes side: <b>Add Contact Tag</b> → <code>confirmed-yes</code></li>
+      <li>On the yes side: <b>Internal Notification</b> to yourself</li>
+      <li>On the no side: <b>Internal Notification</b> saying "someone replied, go read it"</li>
+    </ol>
+    <p style="margin-top:11px;color:var(--muted);font-size:.93rem">Why: on the morning of a call, search for everyone without the <code>confirmed-yes</code> sticker. Those are the ones likely to no-show. Ring them.</p>
+  </div>
+</div>
+
+<div class="recipe">
+  <div class="rh"><span class="nm">2. Know who watched your video</span></div>
+  <div class="rb">
+    <p><span class="lb">Doorbell</span><br>Trigger Link Clicked → pick your video link</p>
+    <p><span class="lb">Jobs</span></p>
+    <ol>
+      <li><b>Add Contact Tag</b> → <code>vsl-watched</code></li>
+      <li><b>Internal Notification</b> → "Dave just watched the video"</li>
+    </ol>
+    <p style="margin-top:11px;color:var(--muted);font-size:.93rem">You need to make that link first: <b>Marketing → Trigger Links</b>. Then use that link in your emails instead of the normal one.</p>
+  </div>
+</div>
+
+<div class="recipe">
+  <div class="rh"><span class="nm">3. Chase people who didn't show up</span></div>
+  <div class="rb">
+    <p><span class="lb">Doorbell</span><br>Appointment Status → set it to <b>No Show</b> → filter to your Sales Call calendar</p>
+    <p><span class="lb">Jobs</span></p>
+    <ol>
+      <li><b>Add Contact Tag</b> → <code>stage-noshow</code></li>
+      <li><b>Wait</b> 10 minutes → <b>Send SMS</b></li>
+      <li><b>Wait</b> 3 hours → <b>Send Email</b></li>
+      <li><b>Wait</b> 3 days → <b>Send SMS</b></li>
+    </ol>
+    <div class="copyblock"><div class="copyhead"><span>The three messages</span><button class="copybtn" data-copy>Copy</button></div><pre>AFTER 10 MINUTES (text):
 No bother {{contact.first_name}} — things come up on site. Grab
 another slot whenever suits: {{custom_values.reschedule_link}}
 
-+3 HRS EMAIL — Subject: Missed you today
+AFTER 3 HOURS (email) — Subject: Missed you today
 Genuinely no problem. Here's the video I was going to walk you
 through anyway: {{custom_values.vsl_link}}
 Book back in here: {{custom_values.reschedule_link}}
 If the timing's wrong, tell me and I'll leave you alone.
 
-+3 DAYS SMS:
+AFTER 3 DAYS (text):
 Still worth a chat, {{contact.first_name}}? No pressure either way.</pre></div>
-<div class="warn">
-  <span class="tag">WF-04 needs one extra thing</span>
-  <p>It only fires if an appointment is actually <em>marked</em> No Show. Either mark them yourself right after the call, or set the calendar to auto-mark. Skip this and the workflow sits there doing nothing forever.</p>
+    <p style="margin-top:11px;color:var(--signal);font-size:.93rem"><strong>Important:</strong> this only runs if you actually mark the appointment as "No Show" in the calendar. If you never mark it, this never happens.</p>
+  </div>
 </div>
 
-<h3>The contract chain — the important two</h3>
-<p>These need a <b>Sales Intake form</b> and a <b>contract template</b> to exist first. Build those before the workflows: <b>Sites → Forms → Builder</b> for the form, and <b>Payments → Documents &amp; Contracts → Templates</b> for the contract.</p>
-<div class="tw"><table>
-  <thead><tr><th>Workflow</th><th>Trigger</th><th>Actions, in order</th></tr></thead>
-  <tbody>
-    <tr><td>WF-05<br>Intake → Contract</td><td>Form Submitted → Sales Intake</td><td>1. <b>Add Tag</b> <code>stage-won</code><br>2. <b>Send Document/Contract</b> → your template → recipient <code>{{contact.signatory_email}}</code><br>3. <b>Send Email</b> — welcome aboard, terms restated<br>4. <b>Internal Notification</b> — new client details<br>5. <b>Wait</b> 48 hours → <b>If/Else</b> unsigned → <b>Send SMS</b> nudge</td></tr>
-    <tr><td>WF-06<br>Signed → Onboarding</td><td>Documents &amp; Contracts<br>Status = <b>Completed</b></td><td>1. <b>Add Tag</b> <code>client-onboarding</code><br>2. <b>Send Email</b> — onboarding form + photo ask<br>3. <b>Create Task</b> — set up their workspace, due 1 day<br>4. <b>Wait</b> 3 days → if form not done → <b>Send SMS</b></td></tr>
-  </tbody>
-</table></div>
-<div class="copyblock"><div class="copyhead"><span>WF-05 step 3 — the welcome email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Welcome aboard {{contact.trading_name}} — contract attached
+<h3>Then the two that really matter</h3>
+<p>These two send the contract automatically. Before you build them you need two things made: a form called <b>Sales Intake</b> (<b>Sites → Forms → Builder</b>) and a contract (<b>Payments → Documents &amp; Contracts → Templates</b>).</p>
+
+<div class="recipe">
+  <div class="rh"><span class="nm">4. They say yes → contract goes out</span></div>
+  <div class="rb">
+    <p><span class="lb">Doorbell</span><br>Form Submitted → Sales Intake</p>
+    <p><span class="lb">Jobs</span></p>
+    <ol>
+      <li><b>Add Contact Tag</b> → <code>stage-won</code></li>
+      <li><b>Send Document/Contract</b> → pick your contract → send it to <code>{{contact.signatory_email}}</code></li>
+      <li><b>Send Email</b> — the welcome one below</li>
+      <li><b>Internal Notification</b> to yourself with their details</li>
+      <li><b>Wait</b> 48 hours → <b>If/Else</b> → if not signed yet, <b>Send SMS</b>: "Did that contract come through alright?"</li>
+    </ol>
+    <div class="copyblock"><div class="copyhead"><span>The welcome email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Welcome aboard {{contact.trading_name}} — contract attached
 
 {{contact.first_name}},
 
@@ -308,7 +360,21 @@ The second you sign, you'll get one form from me. Fill that in
 and we're moving.
 
 Ryan</pre></div>
-<div class="copyblock"><div class="copyhead"><span>WF-06 step 2 — the onboarding email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Signed — here's the only homework you'll get
+  </div>
+</div>
+
+<div class="recipe">
+  <div class="rh"><span class="nm">5. They sign → onboarding starts</span></div>
+  <div class="rb">
+    <p><span class="lb">Doorbell</span><br>Documents &amp; Contracts → Status is <b>Completed</b></p>
+    <p><span class="lb">Jobs</span></p>
+    <ol>
+      <li><b>Add Contact Tag</b> → <code>client-onboarding</code></li>
+      <li><b>Send Email</b> — the one below</li>
+      <li><b>Create Task</b> → "Set up their workspace", due tomorrow</li>
+      <li><b>Wait</b> 3 days → if they haven't filled the form, <b>Send SMS</b></li>
+    </ol>
+    <div class="copyblock"><div class="copyhead"><span>The onboarding email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Signed — here's the only homework you'll get
 
 That's signed, {{contact.first_name}}, thanks.
 
@@ -328,26 +394,29 @@ Before-and-afters, jobs in progress, your crew, the van. Doesn't
 matter if they're rough. Rough is what performs.
 
 Ryan</pre></div>
+  </div>
+</div>
 
-<h3>The last two</h3>
-<div class="tw"><table>
-  <thead><tr><th>Workflow</th><th>Trigger</th><th>Actions</th></tr></thead>
-  <tbody>
-    <tr><td>WF-07<br>Form → Calendar</td><td>Form Submitted → Onboarding Discovery</td><td><b>Send Email</b> with the onboarding calendar link · <b>Send Email</b> with the platform access checklist · <b>Create Tasks</b> for the 14-day launch checklist</td></tr>
-    <tr><td>WF-08<br>Onboarding Reminders</td><td>Customer Booked Appointment<br>filter Calendar = Onboarding Call</td><td>Copy WF-01 exactly. Warmer wording — he's a client now. Add "bring the photos if you haven't sent them" to the 24-hour message.</td></tr>
-  </tbody>
-</table></div>
-<p><strong>Shortcut for WF-08:</strong> on the Workflows list, find the three dots beside WF-01 and choose <b>Clone</b>. Then change the trigger's calendar filter and soften the wording. Two minutes instead of twenty.</p>
+<div class="recipe">
+  <div class="rh"><span class="nm">6 and 7. The last two</span></div>
+  <div class="rb">
+    <p><strong>Form filled in → send the calendar.</strong><br>
+    Doorbell: Form Submitted → Onboarding Discovery. Jobs: send an email with your onboarding calendar link, send another with the account access list, and create your 14-day setup tasks.</p>
+    <p style="margin-top:12px"><strong>Onboarding call reminders.</strong><br>
+    This is the exact same thing you built in Part 2, just for a different calendar. So don't build it again — go to your Workflows list, find the three dots next to "Sales Call Reminders", and click <b>Clone</b>. Then change the calendar and soften the wording. Two minutes.</p>
+  </div>
+</div>
 
 <div class="warn">
-  <span class="tag">When something doesn't work</span>
-  <p>Open the workflow and click the <b>Execution Logs</b> tab at the top. It shows every contact that entered, which step they reached, and where it stopped. Nine times out of ten the answer is: still on Draft, or the trigger had no filter, or a Wait was set to Time Delay instead of Appointment Time.</p>
+  <span class="tag">If something doesn't work</span>
+  <p>Open the workflow. Click <b>Execution Logs</b> at the top. It shows you every person who went in, and exactly which step they got stuck on.</p>
+  <p style="margin-bottom:0">Nine times out of ten it's one of three things. It's still on Draft. Or the doorbell had no filter on it. Or a Wait was set to Time Delay when it should have been Appointment Time.</p>
 </div>
 
 <footer>
-  RELIER — HighLevel runbook · v3 · written for a first-time workflow build<br>
-  HighLevel moves buttons between releases. If a label here doesn't match exactly, the thing you want is almost always within one menu of where this says.<br>
-  Get the contract reviewed by an Irish solicitor before it goes to a real client.
+  RELIER — HighLevel runbook · v4 · written for a first build<br>
+  HighLevel moves buttons around between updates. If a name here doesn't match exactly, what you want is nearly always one menu away from where this says.<br>
+  Get a solicitor to look at the contract before you send it to a real person.
 </footer>
 </div>
 
@@ -362,7 +431,7 @@ Ryan</pre></div>
       else{var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);done();}
     });
   });
-  var KEY='relier-ghl-runbook-v3';
+  var KEY='relier-ghl-runbook-v4';
   var steps=Array.prototype.slice.call(document.querySelectorAll('li.click'));
   var boxes=steps.map(function(s){return s.querySelector('input');});
   var saved=[];try{saved=JSON.parse(localStorage.getItem(KEY)||'[]')||[];}catch(e){saved=[];}
