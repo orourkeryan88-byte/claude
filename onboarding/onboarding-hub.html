@@ -1,0 +1,1023 @@
+<title>RELIER Client Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+:root{
+  --paper:#EDEFF1;
+  --surface:#FBFCFC;
+  --surface-2:#E4E8EB;
+  --ink:#10161C;
+  --ink-2:#3B4650;
+  --muted:#68747F;
+  --line:#D3D9DE;
+  --line-strong:#B6C0C8;
+  --accent:#2340C8;
+  --accent-soft:#DEE3F8;
+  --signal:#9A5B06;
+  --signal-soft:#F5E6CE;
+  --good:#186049;
+  --good-soft:#D9EBE3;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1116;
+    --surface:#151B22;
+    --surface-2:#1E262E;
+    --ink:#E8ECEF;
+    --ink-2:#B7C0C8;
+    --muted:#8593A0;
+    --line:#28323B;
+    --line-strong:#3A4650;
+    --accent:#8CA2FF;
+    --accent-soft:#1B2440;
+    --signal:#E0A64C;
+    --signal-soft:#33260F;
+    --good:#63C7A2;
+    --good-soft:#0F2A22;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1116;
+  --surface:#151B22;
+  --surface-2:#1E262E;
+  --ink:#E8ECEF;
+  --ink-2:#B7C0C8;
+  --muted:#8593A0;
+  --line:#28323B;
+  --line-strong:#3A4650;
+  --accent:#8CA2FF;
+  --accent-soft:#1B2440;
+  --signal:#E0A64C;
+  --signal-soft:#33260F;
+  --good:#63C7A2;
+  --good-soft:#0F2A22;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16.5px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:0;max-width:1180px;margin:0 auto}
+
+/* ---------- sidebar ---------- */
+.rail{
+  position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+  border-right:1px solid var(--line);
+  padding:34px 22px 40px;
+  background:var(--paper);
+}
+.brand{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:.14em;text-transform:uppercase;line-height:1}
+.brand span{color:var(--accent)}
+.brand-sub{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:9px;display:block}
+.rail nav{margin-top:30px;display:flex;flex-direction:column;gap:2px}
+.rail nav a{
+  display:grid;grid-template-columns:26px 1fr;align-items:baseline;gap:4px;
+  font-family:var(--display);font-size:.83rem;font-weight:500;
+  color:var(--ink-2);text-decoration:none;padding:6px 8px;border-radius:3px;line-height:1.35;
+}
+.rail nav a .n{font-family:var(--mono);font-size:.66rem;color:var(--muted)}
+.rail nav a:hover{background:var(--surface-2);color:var(--ink)}
+.rail nav a.on{background:var(--accent-soft);color:var(--accent)}
+.rail nav a.on .n{color:var(--accent)}
+.rail .divider{height:1px;background:var(--line);margin:16px 8px 12px}
+.rail-note{font-family:var(--mono);font-size:.6rem;line-height:1.6;color:var(--muted);letter-spacing:.04em;padding:0 8px;margin-top:22px}
+
+/* ---------- main ---------- */
+main{padding:56px 52px 120px;min-width:0}
+.masthead{border-bottom:2px solid var(--ink);padding-bottom:26px;margin-bottom:16px}
+.eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{
+  font-family:var(--display);font-weight:700;font-size:clamp(2.1rem,4.6vw,3.15rem);
+  line-height:1.02;letter-spacing:-.025em;margin:.34em 0 0;text-wrap:balance;
+}
+.standfirst{font-size:1.12rem;color:var(--ink-2);max-width:60ch;margin:18px 0 0}
+
+section{scroll-margin-top:24px;padding-top:52px}
+h2{
+  font-family:var(--display);font-weight:600;font-size:1.62rem;letter-spacing:-.018em;
+  margin:0 0 6px;text-wrap:balance;display:flex;gap:14px;align-items:baseline;
+}
+h2 .n{font-family:var(--mono);font-size:.78rem;font-weight:400;color:var(--accent);letter-spacing:.1em}
+h3{font-family:var(--display);font-weight:600;font-size:1.06rem;letter-spacing:-.006em;margin:34px 0 8px}
+h4{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:26px 0 8px}
+p{margin:0 0 14px;max-width:66ch}
+.lede{color:var(--ink-2);max-width:64ch;margin-bottom:22px}
+ul,ol{max-width:66ch;padding-left:1.15em;margin:0 0 16px}
+li{margin-bottom:6px}
+a{color:var(--accent)}
+strong{font-weight:600}
+hr.rule{border:0;border-top:1px solid var(--line);margin:0}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:22px 24px;margin:20px 0}
+.card > :last-child{margin-bottom:0}
+.callout{border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 18px;border-radius:0 4px 4px 0;margin:20px 0;font-size:.95rem}
+.callout > :last-child{margin-bottom:0}
+.callout .tag{font-family:var(--mono);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:5px}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:480px}
+th{
+  font-family:var(--mono);font-weight:500;font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-strong);white-space:nowrap;
+}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.85rem}
+
+/* phase strip */
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;overflow:hidden;margin:26px 0 8px}
+.phase{background:var(--surface);padding:14px 15px 16px}
+.phase .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;color:var(--accent);text-transform:uppercase}
+.phase .t{font-family:var(--display);font-weight:600;font-size:.98rem;margin-top:5px;letter-spacing:-.01em}
+.phase .d{font-size:.82rem;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+
+/* funnel diagram */
+.funnel{margin:24px 0}
+.funnel svg{width:100%;height:auto;display:block}
+
+/* copy block */
+.copyblock{border:1px solid var(--line);border-radius:5px;background:var(--surface);margin:18px 0;overflow:hidden}
+.copyhead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 12px 9px 15px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.copyhead span{font-family:var(--mono);font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.copybtn{
+  font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);
+  border-radius:3px;padding:4px 10px;cursor:pointer;
+}
+.copybtn:hover{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copyblock pre{
+  margin:0;padding:16px 18px;overflow-x:auto;
+  font-family:var(--mono);font-size:.79rem;line-height:1.68;color:var(--ink-2);white-space:pre-wrap;
+}
+
+/* checklist */
+.check{border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:6px 4px;margin:16px 0}
+.check .grp{font-family:var(--mono);font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);padding:14px 16px 6px}
+.check label{display:flex;gap:11px;align-items:flex-start;padding:6px 16px;font-size:.92rem;cursor:pointer;border-radius:3px;color:var(--ink-2)}
+.check label:hover{background:var(--surface-2)}
+.check input{margin:.35em 0 0;accent-color:var(--accent);flex:none;width:15px;height:15px}
+.check input:checked + span{color:var(--muted);text-decoration:line-through}
+.progress{display:flex;align-items:center;gap:12px;padding:12px 16px 6px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--muted)}
+.bar{flex:1;height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s ease}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:5px;overflow:hidden;margin:22px 0;background:var(--surface)}
+.calc-in{padding:22px 24px;border-right:1px solid var(--line)}
+.calc-out{padding:22px 24px;background:var(--surface-2)}
+.field{display:grid;grid-template-columns:1fr 96px;gap:10px;align-items:center;margin-bottom:11px}
+.field label{font-size:.88rem;color:var(--ink-2)}
+.field input{
+  font-family:var(--mono);font-size:.85rem;font-variant-numeric:tabular-nums;text-align:right;
+  padding:6px 9px;border:1px solid var(--line-strong);border-radius:3px;
+  background:var(--paper);color:var(--ink);width:100%;
+}
+.field input:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.out-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.out-row:last-of-type{border-bottom:0}
+.out-row .lbl{font-size:.86rem;color:var(--ink-2)}
+.out-row .val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:500;font-size:.95rem;color:var(--ink)}
+.out-row.hero .val{font-size:1.35rem;color:var(--accent)}
+.verdict{margin-top:14px;padding:11px 13px;border-radius:4px;font-size:.86rem;line-height:1.5}
+.verdict.ok{background:var(--good-soft);color:var(--good);border:1px solid var(--good)}
+.verdict.warn{background:var(--signal-soft);color:var(--signal);border:1px solid var(--signal)}
+
+.pill{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.pill.client{color:var(--accent)}
+.pill.internal{color:var(--muted)}
+.seclabel{display:flex;gap:10px;align-items:center;margin-bottom:16px}
+
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--muted);line-height:1.8}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:26px 22px}
+  .rail nav{flex-direction:row;flex-wrap:wrap;gap:4px}
+  .rail nav a{grid-template-columns:auto auto}
+  .rail-note{display:none}
+  main{padding:36px 22px 90px}
+  .calc{grid-template-columns:1fr}
+  .calc-in{border-right:0;border-bottom:1px solid var(--line)}
+}
+</style>
+
+<div class="shell">
+<aside class="rail">
+  <div class="brand">RELIER<span>.</span></div>
+  <span class="brand-sub">Client onboarding system</span>
+  <nav id="nav">
+    <a href="#overview"><i class="n">00</i><span>The 14-day path</span></a>
+    <a href="#welcome"><i class="n">01</i><span>Welcome email</span></a>
+    <a href="#intake"><i class="n">02</i><span>Intake questionnaire</span></a>
+    <a href="#access"><i class="n">03</i><span>Access checklist</span></a>
+    <a href="#kickoff"><i class="n">04</i><span>Kickoff call</span></a>
+    <a href="#packet"><i class="n">05</i><span>Welcome packet</span></a>
+    <a href="#checklist"><i class="n">06</i><span>Launch checklist</span></a>
+    <div class="divider"></div>
+    <a href="#funnel"><i class="n">07</i><span>Funnel blueprint</span></a>
+    <a href="#economics"><i class="n">08</i><span>Economics calculator</span></a>
+    <a href="#offer"><i class="n">09</i><span>Offer &amp; messaging</span></a>
+    <a href="#creative"><i class="n">10</i><span>Creative testing</span></a>
+    <a href="#roadmap"><i class="n">11</i><span>90-day roadmap</span></a>
+    <a href="#kpi"><i class="n">12</i><span>KPIs &amp; reporting</span></a>
+    <div class="divider"></div>
+    <a href="#agreement"><i class="n">13</i><span>Service agreement</span></a>
+    <a href="#retention"><i class="n">14</i><span>Retention &amp; saves</span></a>
+  </nav>
+  <p class="rail-note">Sections 01–06 are sent to the client.<br>07–12 are the work.<br>13–14 protect the business.</p>
+</aside>
+
+<main>
+  <header class="masthead">
+    <span class="eyebrow">Operating manual · v1.0</span>
+    <h1>From signature to first campaign live in fourteen days</h1>
+    <p class="standfirst">Everything you send a new client, everything you run internally, and the funnel framework you build for them — in the order you need it.</p>
+  </header>
+
+  <!-- 00 -->
+  <section id="overview">
+    <h2><span class="n">00</span> The 14-day path</h2>
+    <p class="lede">Six phases. Each has one owner and one output. If a phase has no output, it didn't happen.</p>
+    <div class="phases">
+      <div class="phase"><div class="k">Phase 0 · Day 0</div><div class="t">Close</div><div class="d">Signed + deposit</div></div>
+      <div class="phase"><div class="k">Phase 1 · Day 0–1</div><div class="t">Welcome</div><div class="d">Email, form, kickoff booked</div></div>
+      <div class="phase"><div class="k">Phase 2 · Day 2–5</div><div class="t">Discovery</div><div class="d">Intake + access + audit</div></div>
+      <div class="phase"><div class="k">Phase 3 · Day 6–10</div><div class="t">Strategy</div><div class="d">Funnel, offer, roadmap</div></div>
+      <div class="phase"><div class="k">Phase 4 · Day 11–14</div><div class="t">Launch</div><div class="d">Tracking, creative, live</div></div>
+      <div class="phase"><div class="k">Phase 5 · Day 15+</div><div class="t">Operate</div><div class="d">Weekly + monthly rhythm</div></div>
+    </div>
+    <div class="callout">
+      <span class="tag">The rule that saves you</span>
+      <p>Never launch traffic into a downstream you haven't checked. If the offer is weak, the margin is thin, or nobody answers the phone when a lead comes in, more traffic makes the client poorer and the failure gets attributed to you. Say it before launch, in writing.</p>
+    </div>
+  </section>
+
+  <!-- 01 -->
+  <section id="welcome">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">01</span> Welcome email</h2><span class="pill client">Send to client</span></div>
+    <p class="lede">Goes out within one hour of signature. Momentum at signing is a real asset and it decays fast.</p>
+    <div class="copyblock">
+      <div class="copyhead"><span>Subject &amp; body — swap {{tokens}}</span><button class="copybtn" data-copy>Copy</button></div>
+<pre>Subject: Welcome to RELIER, {{FirstName}} — here's what happens next
+
+Hi {{FirstName}},
+
+Signed and countersigned. Welcome to RELIER.
+
+Here's exactly what happens over the next 14 days so nothing is a surprise:
+
+THIS WEEK
+1. Intake form (15 min) — {{INTAKE_FORM_LINK}}
+   This is the most important thing you'll do. The quality of your
+   first 90 days is set by the quality of these answers.
+2. Account access — {{ACCESS_CHECKLIST_LINK}}
+   Nothing gets deleted, nothing gets spent without your sign-off.
+3. Kickoff call — {{DATE_TIME}} — {{CALENDAR_LINK}}
+   60 minutes, cameras on if you can. Agenda attached.
+
+DAYS 6-10 — We come back with your funnel map, offer positioning and
+90-day roadmap. You approve it or you redline it.
+
+DAYS 11-14 — Tracking goes live, first creative ships, campaigns
+turn on.
+
+YOUR TEAM
+{{ACCOUNT_LEAD}} — Account Lead, your day-to-day contact
+{{STRATEGIST}} — Strategy and funnel
+{{MEDIA_BUYER}} — Paid media
+
+HOW TO REACH US
+{{SLACK_OR_EMAIL}}. We reply within one business day, same day for
+anything urgent. Anything on fire, call {{PHONE}}.
+
+The welcome packet is attached — how we work, what we need from you,
+and how we report.
+
+Excited to get moving.
+
+{{YourName}}
+{{Title}}, RELIER</pre>
+    </div>
+    <h4>If the intake doesn't come back</h4>
+    <ul>
+      <li><strong>Day 3</strong> — short nudge, link again.</li>
+      <li><strong>Day 5</strong> — offer to fill it in live on a 20-minute call. Most stalls are avoidance of a blank page.</li>
+      <li><strong>Day 7</strong> — flag the timeline risk in writing. This protects you when the launch date moves.</li>
+    </ul>
+  </section>
+
+  <!-- 02 -->
+  <section id="intake">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">02</span> Intake questionnaire</h2><span class="pill client">Send to client</span></div>
+    <p class="lede">Build it as a form — Tally, Typeform, Google Forms. Target 15–20 minutes; longer and it doesn't come back. The starred questions are the ones that actually change what you build.</p>
+
+    <h3>Business basics</h3>
+    <ul>
+      <li>Legal and trading name · website URLs</li>
+      <li><strong>What do you sell, in one sentence, as a customer would say it?</strong></li>
+      <li>Years trading, team size, revenue band</li>
+      <li>Who has final sign-off? (name, email, phone) · who else must be copied?</li>
+    </ul>
+
+    <h3>The offer</h3>
+    <ul>
+      <li>Products/services and price points · your most profitable offer</li>
+      <li><strong>Average order value, gross margin, and lifetime value — and how you calculated LTV</strong></li>
+      <li>Guarantee, trial, or risk reversal</li>
+      <li>The #1 objection people raise before buying</li>
+    </ul>
+
+    <h3>The customer</h3>
+    <ul>
+      <li>Describe your best customer and the trigger that makes them start looking</li>
+      <li>What are they using instead of you right now — including "nothing"?</li>
+      <li><strong>Paste 3–5 real reviews, quotes or support tickets, verbatim.</strong> Don't paraphrase. This is where the ad copy comes from.</li>
+    </ul>
+
+    <h3>Numbers and targets</h3>
+    <ul>
+      <li>Current spend by channel · current cost per lead and per acquisition · monthly volume</li>
+      <li><strong>What number defines success in 90 days?</strong> "35 qualified calls a month under $180 each" beats "more leads."</li>
+      <li>The most you can pay to acquire a customer and still be happy</li>
+    </ul>
+
+    <h3>What's been tried</h3>
+    <ul>
+      <li>Channels run before and what happened · previous agencies and what went wrong</li>
+      <li><strong>What's working right now that we should not touch?</strong></li>
+      <li>Off-limits: claims, competitors, channels, creative styles</li>
+    </ul>
+
+    <h3>Sales and fulfilment</h3>
+    <ul>
+      <li>Walk through what happens after a lead comes in, step by step</li>
+      <li>Who follows up, how fast, on what channel · lead-to-sale close rate</li>
+      <li><strong>Capacity ceiling — how many new customers a month before quality drops?</strong></li>
+    </ul>
+
+    <h3>Brand and practicalities</h3>
+    <ul>
+      <li>Brand guidelines, photo/video assets, testimonials — links</li>
+      <li>Tone of voice in three words · compliance constraints</li>
+      <li>Who approves creative and how fast · preferred meeting slot and timezone</li>
+      <li>Anything we should know that we didn't ask</li>
+    </ul>
+
+    <div class="card">
+      <h4 style="margin-top:0">Score it the moment it lands</h4>
+      <p style="margin-bottom:0">Rate 1–5: <strong>offer strength · margin headroom · data quality · sales follow-up speed · creative asset supply.</strong> Any score of 1 or 2 becomes a Week 1 fix in the roadmap. These five scores predict the account's outcome better than anything you'll do in the ad manager.</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="access">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">03</span> Access checklist</h2><span class="pill client">Send to client</span></div>
+    <p class="lede">Always request access to accounts the client owns. Never take ownership transfer — they keep the assets if you ever part ways, and saying so out loud wins trust in week one.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Account</th><th>Level</th><th>How to grant</th></tr></thead>
+      <tbody>
+        <tr><td>Google Ads</td><td>Standard</td><td>Tools → Access &amp; security → invite, or link MCC</td></tr>
+        <tr><td>Meta Business</td><td>Partner</td><td>Business Settings → Partners → add Business ID (Ad account, Page, Pixel, Catalogue)</td></tr>
+        <tr><td>Google Analytics 4</td><td>Editor</td><td>Admin → Property Access Management</td></tr>
+        <tr><td>Google Tag Manager</td><td>Publish</td><td>Admin → User Management</td></tr>
+        <tr><td>Search Console</td><td>Full</td><td>Settings → Users and permissions</td></tr>
+        <tr><td>Website CMS</td><td>Admin/Editor</td><td>New named user for the agency</td></tr>
+        <tr><td>Email / CRM</td><td>Admin</td><td>Seat invite</td></tr>
+        <tr><td>Domain / DNS</td><td>Records or named contact</td><td>Needed for tracking, subdomains, email auth</td></tr>
+        <tr><td>Ecom / payments</td><td>Reports only</td><td>Revenue truth, not payouts</td></tr>
+        <tr><td>Shared drive</td><td>Editor</td><td>One folder: RELIER × Client</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout">
+      <span class="tag">Never by email or chat</span>
+      <p>Passwords, 2FA codes, card details. Use a shared password-manager vault for anything that genuinely can't be delegated through the platform.</p>
+    </div>
+    <h4>Your commitments back</h4>
+    <ul>
+      <li>Least-privilege access — the lowest level that does the job.</li>
+      <li>Named users only, never shared logins from your side.</li>
+      <li>Access revoked within 48 hours of a team member leaving the account.</li>
+      <li>Full handover and self-removal within 5 business days of offboarding.</li>
+      <li>Ad spend billed directly to the client's card on the platforms. Your fee invoices separately.</li>
+    </ul>
+    <p><strong>Blocker rule:</strong> any required access outstanding at Day 7 moves the launch date — and you say so the day it happens, not the week after.</p>
+  </section>
+
+  <!-- 04 -->
+  <section id="kickoff">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">04</span> Kickoff call</h2><span class="pill client">Run with client</span></div>
+    <p class="lede">Sixty minutes. The decision-maker must be on it. If the intake hasn't come back, reschedule — running kickoff blind wastes the one meeting where everyone is paying attention.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Time</th><th>Item</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td class="num">0:00</td><td>Introductions and roles</td><td>Who decides, who executes, who to call</td></tr>
+        <tr><td class="num">0:05</td><td>Play their business back to them</td><td>Prove you read the intake; correct assumptions early</td></tr>
+        <tr><td class="num">0:15</td><td>The offer under a microscope</td><td>Price, margin, guarantee, objections. Campaigns fail here, not in the ad account</td></tr>
+        <tr><td class="num">0:25</td><td>The number that matters</td><td>One KPI, one target, one date</td></tr>
+        <tr><td class="num">0:35</td><td>Journey walkthrough</td><td>First click to money in the bank, sales follow-up included</td></tr>
+        <tr><td class="num">0:45</td><td>Constraints</td><td>Budget, capacity ceiling, compliance, brand no-gos</td></tr>
+        <tr><td class="num">0:52</td><td>The next 14 days</td><td>Who does what by when</td></tr>
+        <tr><td class="num">0:58</td><td>Confirm cadence</td><td>Weekly update day, monthly slot, escalation path</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Six questions to always ask out loud</h3>
+    <ol>
+      <li>If we could only move one number in 90 days, which one and why?</li>
+      <li>What would make you say in six months that this was the best money you spent?</li>
+      <li>What would make you fire us?</li>
+      <li>Who inside your business is sceptical about hiring an agency?</li>
+      <li>How fast can you really turn around creative approval — honestly?</li>
+      <li>If we brought you 3× the leads next month, what breaks?</li>
+    </ol>
+    <p>Send a written recap within 24 hours: agreed KPI and target, confirmed budget, decisions, open questions, actions with owners and dates. State in the email that silence counts as agreement.</p>
+  </section>
+
+  <!-- 05 -->
+  <section id="packet">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">05</span> Welcome packet</h2><span class="pill client">Send to client</span></div>
+    <p class="lede">The document that prevents 80% of future friction. Most client conflict is an expectations gap, and this is where you close it before it opens.</p>
+
+    <h3>How we communicate</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Channel</th><th>For</th><th>Response time</th></tr></thead>
+      <tbody>
+        <tr><td>Shared Slack</td><td>Day-to-day, approvals, quick asks</td><td>Same business day</td></tr>
+        <tr><td>Email</td><td>Contractual, formal approvals, invoices</td><td>1 business day</td></tr>
+        <tr><td>Weekly written update</td><td>Numbers, done, next, blocked</td><td>Every week without fail</td></tr>
+        <tr><td>Monthly strategy call</td><td>Review and next month's plan</td><td>45–60 minutes</td></tr>
+        <tr><td>Phone</td><td>Genuine emergencies</td><td>Immediate</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>What we need from you</h3>
+    <ol>
+      <li><strong>Approvals within 2 business days.</strong> Creative sitting in a queue is the single biggest cause of slow results.</li>
+      <li><strong>Five-minute response to inbound leads</strong> in business hours. This moves conversion more than any targeting change available to us.</li>
+      <li><strong>Honest numbers.</strong> Tell us what actually closed. Platform data flatters; your bank account doesn't.</li>
+      <li><strong>One decision-maker.</strong> Committee approval kills momentum.</li>
+      <li><strong>Raw material.</strong> Photos, video, testimonials. The account is only as good as the creative we get to feed it.</li>
+    </ol>
+
+    <h3>What you get from us</h3>
+    <ul>
+      <li>A written weekly update whether the news is good or bad.</li>
+      <li>Reports in plain English — spend, leads, cost per lead, sales, return.</li>
+      <li>We tell you something isn't working before you have to ask.</li>
+      <li>We recommend against spending when spending isn't the answer.</li>
+    </ul>
+
+    <div class="card">
+      <h4 style="margin-top:0">Timeline reality check — put this in writing early</h4>
+      <p><strong>Weeks 1–2:</strong> setup, tracking, creative, launch. No meaningful performance data yet.<br>
+      <strong>Weeks 3–6:</strong> learning phase. Costs are highest and noisiest here. This is normal.<br>
+      <strong>Weeks 7–12:</strong> optimisation. This is where the numbers should start looking like the plan.</p>
+      <p style="margin-bottom:0">Judging paid media on week-two data is the most expensive mistake a client can make. Agreeing this in week one is how you survive week three.</p>
+    </div>
+
+    <h3>Escalation</h3>
+    <p>Unhappy? Tell the account lead first. Not resolved in three business days? Escalate to the founder, with a phone number. Say plainly: we would much rather hear it early and awkwardly than late and politely.</p>
+  </section>
+
+  <!-- 06 -->
+  <section id="checklist">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">06</span> Launch checklist</h2><span class="pill internal">Internal</span></div>
+    <p class="lede">Run this per client. Ticks save to this browser, so you can keep one client's launch open in a tab.</p>
+    <div class="check" id="cl">
+      <div class="progress"><span id="pct">0%</span><span class="bar"><i id="barfill"></i></span><span id="cnt">0 / 0</span></div>
+      <div class="grp">Day 0 · Contract signed</div>
+      <label><input type="checkbox"><span>Countersigned agreement filed; deposit invoiced and confirmed</span></label>
+      <label><input type="checkbox"><span>CRM record created, deal moved to Onboarding</span></label>
+      <label><input type="checkbox"><span>Shared drive folder and Slack channel created, client invited</span></label>
+      <label><input type="checkbox"><span>Team assigned: account lead, strategist, media buyer, creative</span></label>
+      <label><input type="checkbox"><span>Welcome email sent with intake form, access checklist, booking link</span></label>
+      <div class="grp">Days 1–2 · Setup</div>
+      <label><input type="checkbox"><span>Kickoff booked and invite accepted</span></label>
+      <label><input type="checkbox"><span>Access requests sent for every platform</span></label>
+      <label><input type="checkbox"><span>Internal kickoff — team briefed on the deal and the red flags</span></label>
+      <label><input type="checkbox"><span>Sales call recording reviewed; every promise made is logged so delivery matches the pitch</span></label>
+      <div class="grp">Days 2–5 · Discovery</div>
+      <label><input type="checkbox"><span>Intake returned and scored on the five factors</span></label>
+      <label><input type="checkbox"><span>All access granted and verified — log in to each, don't assume</span></label>
+      <label><input type="checkbox"><span>Analytics audit: is any of the existing tracking trustworthy?</span></label>
+      <label><input type="checkbox"><span>Ad account audit: historic spend, CPA, what's already been tested</span></label>
+      <label><input type="checkbox"><span>Landing page audit: speed, mobile, form friction</span></label>
+      <label><input type="checkbox"><span>Competitor scan — 5 competitors' ads, offers and pages</span></label>
+      <label><input type="checkbox"><span>Customer language mined into a swipe file</span></label>
+      <label><input type="checkbox"><span>Kickoff held; recap sent within 24 hours</span></label>
+      <div class="grp">Days 6–10 · Strategy</div>
+      <label><input type="checkbox"><span>Funnel map drafted across all five stages</span></label>
+      <label><input type="checkbox"><span>Offer and messaging brief written</span></label>
+      <label><input type="checkbox"><span>Economics sheet completed — max CAC, target CPL, required budget</span></label>
+      <label><input type="checkbox"><span>90-day roadmap built with named milestones</span></label>
+      <label><input type="checkbox"><span>Strategy presented; approval or redlines captured in writing</span></label>
+      <div class="grp">Days 11–14 · Build and launch</div>
+      <label><input type="checkbox"><span>Tracking live: GA4, GTM, pixels, server-side, call tracking</span></label>
+      <label><input type="checkbox"><span>UTM convention documented and applied</span></label>
+      <label><input type="checkbox"><span>Conversion events tested end to end with a real submission</span></label>
+      <label><input type="checkbox"><span>Landing pages built and QA'd on mobile</span></label>
+      <label><input type="checkbox"><span>Lead routing tested — client confirms they received the test lead</span></label>
+      <label><input type="checkbox"><span>First creative batch approved: 3 concepts × 3 variants minimum</span></label>
+      <label><input type="checkbox"><span>Campaign structure built; budgets, schedules and caps set</span></label>
+      <label><input type="checkbox"><span>Pre-launch QA signed off by a second person</span></label>
+      <label><input type="checkbox"><span>Launched — confirmed in writing the moment spend starts</span></label>
+      <label><input type="checkbox"><span>Reporting dashboard live and shared</span></label>
+      <div class="grp">Day 15+ · Operate</div>
+      <label><input type="checkbox"><span>Weekly written update set as a recurring task</span></label>
+      <label><input type="checkbox"><span>Monthly strategy call recurring in both calendars</span></label>
+      <label><input type="checkbox"><span>Day 30 review booked; Day 60 testimonial ask diarised</span></label>
+    </div>
+    <div class="callout">
+      <span class="tag">Pre-launch QA — second pair of eyes required</span>
+      <p>Correct ad account, payment method and currency · budget caps sane (check for the extra zero) · geo, language, age and exclusions correct · existing customers excluded · every link works and carries UTMs · conversion event fires and attributes · copy proofread and claims compliant · page loads under 3s on mobile · form submits and the lead lands in the client's inbox.</p>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section id="funnel">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">07</span> The funnel blueprint</h2><span class="pill internal">The framework</span></div>
+    <p class="lede">Five stages, one job each. Most agencies obsess over stage two and lose the client's money at stages four and five.</p>
+
+    <div class="funnel">
+      <svg viewBox="0 0 880 190" role="img" aria-label="Five-stage funnel: attention, interest, conversion, follow-up, expansion, with the job and key metric of each stage.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace">
+          <!-- stages -->
+          <g>
+            <rect x="4" y="34" width="158" height="92" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+            <text x="18" y="58" font-size="10" letter-spacing="1.6" fill="var(--accent)">STAGE 1</text>
+            <text x="18" y="80" font-size="15" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Attention</text>
+            <text x="18" y="99" font-size="10" fill="var(--muted)">right message,</text>
+            <text x="18" y="113" font-size="10" fill="var(--muted)">right cost</text>
+          </g>
+          <g>
+            <rect x="180" y="34" width="158" height="92" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+            <text x="194" y="58" font-size="10" letter-spacing="1.6" fill="var(--accent)">STAGE 2</text>
+            <text x="194" y="80" font-size="15" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Interest</text>
+            <text x="194" y="99" font-size="10" fill="var(--muted)">capture the</text>
+            <text x="194" y="113" font-size="10" fill="var(--muted)">contact</text>
+          </g>
+          <g>
+            <rect x="356" y="34" width="158" height="92" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/>
+            <text x="370" y="58" font-size="10" letter-spacing="1.6" fill="var(--accent)">STAGE 3</text>
+            <text x="370" y="80" font-size="15" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Conversion</text>
+            <text x="370" y="99" font-size="10" fill="var(--muted)">make buying the</text>
+            <text x="370" y="113" font-size="10" fill="var(--muted)">obvious step</text>
+          </g>
+          <g>
+            <rect x="532" y="34" width="158" height="92" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+            <text x="546" y="58" font-size="10" letter-spacing="1.6" fill="var(--accent)">STAGE 4</text>
+            <text x="546" y="80" font-size="15" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Follow-up</text>
+            <text x="546" y="99" font-size="10" fill="var(--muted)">convert the 97%</text>
+            <text x="546" y="113" font-size="10" fill="var(--muted)">not ready today</text>
+          </g>
+          <g>
+            <rect x="708" y="34" width="158" height="92" rx="4" fill="var(--surface)" stroke="var(--line-strong)"/>
+            <text x="722" y="58" font-size="10" letter-spacing="1.6" fill="var(--accent)">STAGE 5</text>
+            <text x="722" y="80" font-size="15" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)">Expansion</text>
+            <text x="722" y="99" font-size="10" fill="var(--muted)">raise LTV to</text>
+            <text x="722" y="113" font-size="10" fill="var(--muted)">afford more CAC</text>
+          </g>
+          <!-- arrows -->
+          <line x1="164" y1="80" x2="176" y2="80" stroke="var(--line-strong)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="340" y1="80" x2="352" y2="80" stroke="var(--line-strong)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="516" y1="80" x2="528" y2="80" stroke="var(--line-strong)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="692" y1="80" x2="704" y2="80" stroke="var(--line-strong)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <!-- metric row -->
+          <text x="18" y="152" font-size="9.5" letter-spacing="1.1" fill="var(--muted)">CPM · CTR · HOOK</text>
+          <text x="194" y="152" font-size="9.5" letter-spacing="1.1" fill="var(--muted)">CPL · PAGE CVR</text>
+          <text x="370" y="152" font-size="9.5" letter-spacing="1.1" fill="var(--muted)">CLOSE RATE · AOV</text>
+          <text x="546" y="152" font-size="9.5" letter-spacing="1.1" fill="var(--muted)">SPEED-TO-LEAD</text>
+          <text x="722" y="152" font-size="9.5" letter-spacing="1.1" fill="var(--muted)">LTV : CAC</text>
+          <line x1="4" y1="166" x2="866" y2="166" stroke="var(--line)"/>
+          <text x="4" y="20" font-size="9.5" letter-spacing="1.6" fill="var(--muted)">COLD TRAFFIC</text>
+          <text x="866" y="20" font-size="9.5" letter-spacing="1.6" fill="var(--muted)" text-anchor="end">REPEAT REVENUE</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3>Stage 1 · Attention</h3>
+    <p>Cold: paid social, paid search, YouTube, organic. Warm: retargeting visitors, video viewers, engagers. Hot: brand search, list, referrals. <strong>Start at 70 / 20 / 10</strong> and shift toward warm as the pixel matures.</p>
+    <p><em>Diagnostic:</em> low CTR is a creative or audience problem, not a bidding problem.</p>
+
+    <h3>Stage 2 · Interest — pick one entry point, never two on a page</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Entry point</th><th>Best for</th><th>Typical conversion</th></tr></thead>
+      <tbody>
+        <tr><td>Lead magnet</td><td>High-consideration B2B and services</td><td class="num">20–40%</td></tr>
+        <tr><td>Quiz / assessment</td><td>Products needing diagnosis or variety</td><td class="num">30–50%</td></tr>
+        <tr><td>Free trial / sample</td><td>SaaS, subscription, ecom</td><td class="num">5–15%</td></tr>
+        <tr><td>Book a call</td><td>High ticket, $3k+</td><td class="num">2–8%</td></tr>
+        <tr><td>Direct to product</td><td>Low ticket, impulse</td><td class="num">1–4%</td></tr>
+      </tbody>
+    </table></div>
+    <h4>Landing page anatomy, in order</h4>
+    <ol>
+      <li>Headline — the outcome, not the product</li>
+      <li>Subhead — who it's for and the mechanism</li>
+      <li>Proof above the fold — a number, a logo row, or a face</li>
+      <li>Three benefit blocks in customer language</li>
+      <li>Testimonials with names and specifics</li>
+      <li>Offer stack, itemised</li>
+      <li>Risk reversal</li>
+      <li>FAQ that kills the top five objections</li>
+      <li>One call to action, repeated three or four times, never competing with a second</li>
+    </ol>
+    <p><em>Diagnostic:</em> cheap clicks but expensive leads means the ad promised something the page doesn't deliver.</p>
+
+    <h3>Stage 3 · Conversion</h3>
+    <div class="card">
+      <p style="margin-bottom:6px"><strong>The offer equation</strong></p>
+      <p class="num" style="font-size:.95rem;color:var(--accent);margin-bottom:8px">Value = (Dream outcome × Perceived likelihood) ÷ (Time to result × Effort required)</p>
+      <p style="margin-bottom:0">Four levers. Most businesses only ever pull price — the one lever that damages the business.</p>
+    </div>
+    <p>Assets: sales page or call script · booking page with SMS and email reminders (no-shows destroy high-ticket funnels) · checkout with guest option, wallets and three fields maximum · order bump (+10–30% AOV) and one-click upsell (+15–40% AOV) · abandonment recovery, three emails and one SMS over 72 hours.</p>
+    <p><em>Diagnostic:</em> cheap leads that don't become sales is an offer or sales-process problem. Do not try to fix it with more traffic.</p>
+
+    <h3>Stage 4 · Follow-up — where the money actually is</h3>
+    <p><strong>Contact inbound leads within five minutes.</strong> Conversion falls off a cliff after that, and this one change routinely beats any targeting work you could do instead.</p>
+    <ul>
+      <li><strong>New lead, 7 emails over 14 days:</strong> deliver → story → objection one → proof → objection two → offer → deadline</li>
+      <li><strong>No-show recovery:</strong> instant rebook link, then day 1 and day 3</li>
+      <li><strong>Post-purchase, 5 emails:</strong> confirm → set expectations → onboard → ask for review → cross-sell</li>
+      <li><strong>Long nurture:</strong> weekly value, monthly offer</li>
+    </ul>
+
+    <h3>Stage 5 · Expansion</h3>
+    <p>Referral ask at peak satisfaction · reactivation of dormant buyers · subscription or retainer conversion · cross-sell on purchase history · win-back at 60, 90 and 180 days.</p>
+    <p><strong>Target LTV:CAC of 3:1 or better.</strong> Below 2:1 the business cannot scale on paid media and no amount of media-buying skill fixes that.</p>
+
+    <h3>Funnel diagnostic</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>High CPM, low CTR</td><td>Weak creative or wrong audience</td><td>New hooks, new angles</td></tr>
+        <tr><td>High CTR, low page conversion</td><td>Ad-to-page mismatch</td><td>Match the page headline to the ad promise</td></tr>
+        <tr><td>Good leads, no sales</td><td>Offer or follow-up</td><td>Fix speed-to-lead and the offer, not the ads</td></tr>
+        <tr><td>Sales but no profit</td><td>Broken economics</td><td>Raise price, raise AOV, or cut CAC</td></tr>
+        <tr><td>Works, then dies at week 3</td><td>Creative fatigue</td><td>Refresh on a schedule, not in a panic</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 08 -->
+  <section id="economics">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">08</span> Economics calculator</h2><span class="pill internal">Before you spend a cent</span></div>
+    <p class="lede">Fill this in during discovery, with the client watching. If the required budget exceeds what they can spend, the problem is the offer or the conversion rate — not the ad account. Say that before launch, in writing.</p>
+    <div class="calc">
+      <div class="calc-in">
+        <h4 style="margin-top:0">Inputs</h4>
+        <div class="field"><label for="aov">Average order value</label><input id="aov" type="number" value="1200" min="0" step="10"></div>
+        <div class="field"><label for="gm">Gross margin %</label><input id="gm" type="number" value="60" min="0" max="100" step="1"></div>
+        <div class="field"><label for="cvr">Lead → sale %</label><input id="cvr" type="number" value="20" min="0.1" max="100" step="0.5"></div>
+        <div class="field"><label for="cpl">Actual cost per lead</label><input id="cpl" type="number" value="45" min="0" step="1"></div>
+        <div class="field"><label for="goal">Sales wanted / month</label><input id="goal" type="number" value="20" min="1" step="1"></div>
+        <div class="field"><label for="ltv">Lifetime value</label><input id="ltv" type="number" value="2600" min="0" step="50"></div>
+      </div>
+      <div class="calc-out">
+        <h4 style="margin-top:0">Outputs</h4>
+        <div class="out-row"><span class="lbl">Gross profit per sale</span><span class="val" id="o-gp">—</span></div>
+        <div class="out-row"><span class="lbl">Maximum allowable CAC</span><span class="val" id="o-maxcac">—</span></div>
+        <div class="out-row"><span class="lbl">Target CAC (55% of max)</span><span class="val" id="o-tgtcac">—</span></div>
+        <div class="out-row"><span class="lbl">Maximum cost per lead</span><span class="val" id="o-maxcpl">—</span></div>
+        <div class="out-row"><span class="lbl">Leads needed per month</span><span class="val" id="o-leads">—</span></div>
+        <div class="out-row"><span class="lbl">Your actual CAC</span><span class="val" id="o-cac">—</span></div>
+        <div class="out-row"><span class="lbl">LTV : CAC</span><span class="val" id="o-ratio">—</span></div>
+        <div class="out-row hero"><span class="lbl">Required monthly budget</span><span class="val" id="o-budget">—</span></div>
+        <div class="verdict" id="o-verdict">—</div>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted)">Figures are unit economics only — they exclude your management fee, creative production, and platform overhead. Add those before quoting a client a total monthly commitment.</p>
+  </section>
+
+  <!-- 09 -->
+  <section id="offer">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">09</span> Offer &amp; messaging</h2><span class="pill internal">The framework</span></div>
+    <h3>Mine the language before writing a word</h3>
+    <p>Sources: their reviews and their competitors', support tickets, sales call recordings, forums, and the verbatim quotes from the intake. Tag every line into <strong>Pain · Desire · Objection · Vocabulary.</strong> Ad copy gets assembled from these, not invented.</p>
+
+    <h3>Angles, not adjectives</h3>
+    <p>An angle is a reason to care, not a description. Write at least five before you write a single ad:</p>
+    <ol>
+      <li><strong>Problem/agitate</strong> — name the pain sharply</li>
+      <li><strong>Mechanism</strong> — why this works when the other things didn't</li>
+      <li><strong>Identity</strong> — "for people who…"</li>
+      <li><strong>Comparison</strong> — versus the obvious alternative</li>
+      <li><strong>Proof-led</strong> — a specific result for a specific customer</li>
+      <li><strong>Contrarian</strong> — challenge a belief the market holds</li>
+    </ol>
+    <p>Test angles before you test colours, thumbnails or button copy. Angle is worth roughly ten times the delta of any design tweak.</p>
+
+    <h3>The one-page message brief</h3>
+    <p>Fill one per client, before any creative: <strong>Who</strong> (in their words) · <strong>Problem</strong> (as they'd describe it to a friend) · <strong>Promise</strong> (specific, time-bound) · <strong>Mechanism</strong> · <strong>Proof</strong> (three strongest pieces) · <strong>Objections</strong> (top five, each with a counter) · <strong>Call to action</strong> (one, unambiguous).</p>
+
+    <h4>Headline formulas that survive contact with reality</h4>
+    <ul>
+      <li>Get <em>[outcome]</em> in <em>[timeframe]</em> without <em>[the thing they dread]</em></li>
+      <li>The <em>[category]</em> for <em>[specific person]</em> who <em>[specific situation]</em></li>
+      <li><em>[Number]</em> <em>[customers]</em> used this to <em>[result]</em></li>
+      <li>Stop <em>[painful activity]</em>. Start <em>[desired state]</em>.</li>
+    </ul>
+  </section>
+
+  <!-- 10 -->
+  <section id="creative">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">10</span> Creative testing</h2><span class="pill internal">The framework</span></div>
+    <p class="lede">Creative is the highest-leverage variable in paid media. Targeting is largely automated now; the message is not.</p>
+    <h3>The 3 × 3 × 3 cadence</h3>
+    <p>Every round ships <strong>3 angles × 3 hooks × 3 formats.</strong> Never test one ad against one ad — you'll wait weeks for significance that never arrives.</p>
+    <ul>
+      <li><strong>Angles</strong> — the reason to care</li>
+      <li><strong>Hooks</strong> — the first three seconds or first line</li>
+      <li><strong>Formats</strong> — UGC talking head, static with text, demo, before/after, founder-to-camera, testimonial</li>
+    </ul>
+    <h3>Rules</h3>
+    <ol>
+      <li><strong>One variable per comparison.</strong> Change the hook and the offer together and you've learned nothing.</li>
+      <li><strong>Fund it properly.</strong> Roughly 50 conversions per variant before calling a winner, or 3–5× target CPA in spend before killing one.</li>
+      <li><strong>Kill on a rule, not a feeling</strong> — e.g. cut at 3× target CPA with zero conversions.</li>
+      <li><strong>Winners get scaled, then iterated</strong> — same angle, new hook. Don't retire what works.</li>
+      <li><strong>Refresh on a schedule.</strong> Frequency past ~2.5–3.0 in a 7-day window, or CTR down 30% from peak, means fatigue has arrived. Plan for it instead of reacting.</li>
+    </ol>
+    <h3>The creative brief — one per concept</h3>
+    <p>Angle and the belief it targets · the exact hook · three body points in order · proof element · call to action · format, ratio, duration · <strong>and what you expect to learn if it wins and if it loses.</strong> That last line is what separates testing from guessing.</p>
+    <div class="card">
+      <h4 style="margin-top:0">The asset that compounds</h4>
+      <p style="margin-bottom:0">Keep every ad you've ever run with its spend, CPA, CTR, hook rate and a one-line note on why you think it did what it did. This library is the real agency asset — it's what makes month six cheaper than month one, for every client you take on afterwards.</p>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section id="roadmap">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">11</span> The 90-day roadmap</h2><span class="pill client">Present at strategy handoff</span></div>
+    <h3>Month 1 — Foundation and launch</h3>
+    <p class="lede">Theme: stop the leaks, then turn on the tap.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Week</th><th>Focus</th><th>Success looks like</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>Discovery and audit</td><td>We know the real numbers, not the assumed ones</td></tr>
+        <tr><td class="num">2</td><td>Strategy and build</td><td>Client has signed off the plan and the target CPA</td></tr>
+        <tr><td class="num">3</td><td>Tracking and creative</td><td>A test lead reaches the client's CRM</td></tr>
+        <tr><td class="num">4</td><td>Launch and stabilise</td><td>Data flowing, no wasted spend, first CPL reading</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Milestone:</strong> campaigns live, tracking trustworthy, baseline cost per lead established. <em>Not</em> profitability — anyone promising that in month one is guessing.</p>
+
+    <h3>Month 2 — Learn and optimise</h3>
+    <p class="lede">Theme: find what works and pour into it.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Week</th><th>Focus</th><th>Deliverable</th></tr></thead>
+      <tbody>
+        <tr><td class="num">5</td><td>Creative round two</td><td>Three new angles based on week 4 data</td></tr>
+        <tr><td class="num">6</td><td>Landing page</td><td>A/B test on headline and offer presentation</td></tr>
+        <tr><td class="num">7</td><td>Audience and structure</td><td>Consolidate winners, cut losers, expand</td></tr>
+        <tr><td class="num">8</td><td>Follow-up build</td><td>Nurture, no-show recovery, speed-to-lead fix</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Milestone:</strong> CPL at or below target, two proven creative angles, follow-up automation live.</p>
+
+    <h3>Month 3 — Scale and prove</h3>
+    <p class="lede">Theme: turn a working funnel into a profitable system.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Week</th><th>Focus</th><th>Deliverable</th></tr></thead>
+      <tbody>
+        <tr><td class="num">9</td><td>Scale winners</td><td>Budget up in controlled steps — 20–30% every three days, not doubles</td></tr>
+        <tr><td class="num">10</td><td>Channel test</td><td>Second channel, stated thesis, capped budget</td></tr>
+        <tr><td class="num">11</td><td>LTV work</td><td>Post-purchase, referral ask, reactivation</td></tr>
+        <tr><td class="num">12</td><td>Review</td><td>90-day report and quarter-two roadmap</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Milestone:</strong> target CPA hit consistently, LTV:CAC at 3:1 or better, and a documented playbook of what works for this specific business.</p>
+  </section>
+
+  <!-- 12 -->
+  <section id="kpi">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">12</span> KPIs &amp; reporting</h2><span class="pill internal">Every week, every month</span></div>
+    <p class="lede">Report top-down. Diagnose bottom-up. Clients see tiers one and two on page one; tier three lives in the appendix and in your own dashboards.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Tier</th><th>What it is</th><th>Metrics</th></tr></thead>
+      <tbody>
+        <tr><td>Tier 1</td><td>Business outcomes — what the client cares about</td><td>Revenue attributed · CAC · ROAS · LTV:CAC · payback period</td></tr>
+        <tr><td>Tier 2</td><td>Funnel efficiency — where the problem is</td><td>Cost per lead · lead-to-sale · page conversion · show rate · AOV</td></tr>
+        <tr><td>Tier 3</td><td>Channel mechanics — how you fix it</td><td>CPM · CTR · hook rate · frequency · impression share · creative-level CPA</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Reference ranges</h3>
+    <p>Starting reference points, not promises. Replace them with the client's own history as soon as you have 90 days of it.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Metric</th><th>Typical healthy range</th></tr></thead>
+      <tbody>
+        <tr><td>Landing page conversion — lead magnet</td><td class="num">20–40%</td></tr>
+        <tr><td>Landing page conversion — book a call</td><td class="num">2–8%</td></tr>
+        <tr><td>Ecommerce site conversion</td><td class="num">1–3%</td></tr>
+        <tr><td>Email open rate</td><td class="num">25–45%</td></tr>
+        <tr><td>Lead to sale, inbound with fast follow-up</td><td class="num">10–30%</td></tr>
+        <tr><td>LTV : CAC</td><td class="num">3:1 or better</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Attribution honesty</h3>
+    <ul>
+      <li>Platforms over-report, GA4 under-reports, the client's CRM and bank are the truth.</li>
+      <li>Show platform numbers and client-confirmed sales side by side. Explain the gap once, in plain English, then keep the same method every month.</li>
+      <li>Lock a UTM convention on day one and never change it mid-quarter.</li>
+      <li>Add "how did you hear about us?" to forms. Imperfect, but it catches what pixels miss.</li>
+    </ul>
+
+    <h3>The monthly report</h3>
+    <p>Page one must be readable by someone who knows nothing about advertising: spend, results, cost per result, revenue, return — plus one paragraph on what happened, why, and what you're doing about it. Then: <strong>what we did</strong> (concrete actions, not activity theatre) · <strong>what we learned</strong> (winning and losing creative, and what each ruled out) · <strong>what's blocked</strong> (including anything waiting on the client, by name and date) · <strong>next month's three priorities</strong>, each with an owner, a date, and the number it should move.</p>
+    <p>The "what's blocked" section is the one that earns trust. Write it even when it's uncomfortable — especially then.</p>
+  </section>
+
+  <!-- 13 -->
+  <section id="agreement">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">13</span> Service agreement</h2><span class="pill internal">Structure only</span></div>
+    <div class="callout">
+      <span class="tag">Not legal advice</span>
+      <p>This is a structure to hand to a solicitor or attorney in your jurisdiction before you use it with a real client. Contract, consumer and data-protection law vary by country, and an agency agreement is exactly the document you don't want to improvise.</p>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>Clause</th><th>What it must nail down</th></tr></thead>
+      <tbody>
+        <tr><td>Scope (Schedule A)</td><td>Channels managed, spend ceiling, creative volume per month, landing pages per quarter, reporting cadence — plus an explicit <em>excluded</em> list. Vagueness here causes every future dispute.</td></tr>
+        <tr><td>Fees</td><td>Management fee and invoice date, setup fee, any performance component with its exact definition, and the statement that ad spend is paid by the client directly to the platforms.</td></tr>
+        <tr><td>Term</td><td>90-day initial term (paid media needs a full learning cycle to be judged fairly), then rolling monthly on 30 days' notice.</td></tr>
+        <tr><td>Termination</td><td>Handover of all assets, agency access removed, handover doc within five business days. Client keeps ownership of accounts, creative and data.</td></tr>
+        <tr><td>Client duties</td><td>Timely access, approvals within two business days, accurate information, funded ad accounts, legal compliance of their own claims.</td></tr>
+        <tr><td>IP</td><td>Creative transfers on full payment; you retain your frameworks, templates and process. Portfolio rights unless they opt out in writing.</td></tr>
+        <tr><td>Data protection</td><td>Applicable law plus a processing addendum where you handle personal data on their behalf.</td></tr>
+        <tr><td>No guarantee</td><td>Professional skill and care, with outcomes dependent on platform policy, auction dynamics, their offer, pricing and follow-up. Never put a revenue guarantee in writing you can't honour.</td></tr>
+        <tr><td>Liability</td><td>Capped at fees paid in the preceding three months; no indirect loss; nothing excluded that law won't allow.</td></tr>
+        <tr><td>Non-solicit</td><td>Mutual, twelve months.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 14 -->
+  <section id="retention">
+    <div class="seclabel"><h2 style="margin:0"><span class="n">14</span> Retention &amp; saves</h2><span class="pill internal">Check weekly</span></div>
+    <p class="lede">Clients rarely leave over a bad month. They leave over a bad month plus silence.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Signal</th><th>Severity</th></tr></thead>
+      <tbody>
+        <tr><td>Approvals slipping past five days</td><td>Medium</td></tr>
+        <tr><td>Client stops replying in the channel</td><td>High</td></tr>
+        <tr><td>A new stakeholder appears asking "what are we paying for?"</td><td>High</td></tr>
+        <tr><td>Client asks for a breakdown of hours</td><td>High</td></tr>
+        <tr><td>Two monthly calls missed in a row</td><td>High</td></tr>
+        <tr><td>Results flat for six weeks with no test velocity</td><td>Critical</td></tr>
+        <tr><td>"Reviewing options" or "internal restructure"</td><td>Critical</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>The save play — within 48 hours of a critical signal</h3>
+    <ol>
+      <li><strong>Call, don't email.</strong> No agenda deck.</li>
+      <li><strong>Ask, then shut up.</strong> "Be straight with me — where is this falling short?" Take notes. Do not defend.</li>
+      <li><strong>Reflect it back in writing</strong> the same day, unedited.</li>
+      <li><strong>Bring a plan within three business days:</strong> three specific changes, dates, and the number each should move. Include something at no charge if the fault is yours.</li>
+      <li><strong>Set a 30-day checkpoint</strong> with an explicit success definition — and honour it, including walking away if it isn't met.</li>
+    </ol>
+
+    <h3>When to fire a client</h3>
+    <p>They ask you to make claims that aren't true · they're abusive toward your team (no revenue justifies it) · chronic non-payment · their offer or fulfilment is broken and they refuse to fix it, because no amount of traffic saves that and the failure will be attributed to you.</p>
+    <p>Exit cleanly: written notice, full handover, access removed, final invoice, no bad-mouthing. Ex-clients refer.</p>
+
+    <h3>Renewal and expansion</h3>
+    <ul>
+      <li><strong>Day 60</strong> — ask for the testimonial while the win is fresh.</li>
+      <li><strong>Day 75</strong> — present the next quarter's roadmap <em>before</em> renewal comes up, so renewal becomes a conversation about the plan rather than a referendum on the past.</li>
+      <li><strong>Expansion only when</strong> the primary KPI is being hit consistently, capacity headroom exists, and the second channel has a clear thesis. Never upsell into an underperforming account.</li>
+    </ul>
+  </section>
+
+  <footer>
+    RELIER — Client Onboarding System · v1.0<br>
+    Sections 01–06 go to the client · 07–12 are the work · 13–14 protect the business.<br>
+    Section 13 is a structure for your lawyer, not legal advice. Benchmark ranges are reference points, not promises.
+  </footer>
+</main>
+</div>
+
+<script>
+(function(){
+  // copy buttons
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.copyblock').querySelector('pre');
+      var done = function(){ var t = btn.textContent; btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = t; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pre.textContent).then(done, function(){ btn.textContent = 'Select manually'; });
+      } else {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done();
+      }
+    });
+  });
+
+  // checklist + persistence
+  var KEY = 'relier-onboarding-checklist-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#cl input[type=checkbox]'));
+  var saved = [];
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch(e) { saved = []; }
+  boxes.forEach(function(b,i){ if (saved[i]) b.checked = true; });
+
+  var pct = document.getElementById('pct'), cnt = document.getElementById('cnt'), fill = document.getElementById('barfill');
+  function render(){
+    var n = boxes.filter(function(b){ return b.checked; }).length;
+    var p = boxes.length ? Math.round(n / boxes.length * 100) : 0;
+    pct.textContent = p + '%';
+    cnt.textContent = n + ' / ' + boxes.length;
+    fill.style.width = p + '%';
+  }
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      render();
+      try { localStorage.setItem(KEY, JSON.stringify(boxes.map(function(x){ return x.checked ? 1 : 0; }))); } catch(e){}
+    });
+  });
+  render();
+
+  // economics calculator
+  var ids = ['aov','gm','cvr','cpl','goal','ltv'];
+  var el = {}; ids.forEach(function(i){ el[i] = document.getElementById(i); });
+  var money = function(n){
+    if (!isFinite(n)) return '—';
+    return '$' + Math.round(n).toLocaleString('en-US');
+  };
+  function calc(){
+    var aov = +el.aov.value || 0, gm = (+el.gm.value || 0)/100, cvr = (+el.cvr.value || 0)/100;
+    var cpl = +el.cpl.value || 0, goal = +el.goal.value || 0, ltv = +el.ltv.value || 0;
+    var gp = aov * gm;
+    var maxCac = gp;
+    var tgtCac = gp * 0.55;
+    var maxCpl = cvr > 0 ? maxCac * cvr : NaN;
+    var leads = cvr > 0 ? goal / cvr : NaN;
+    var cac = cvr > 0 ? cpl / cvr : NaN;
+    var ratio = cac > 0 ? ltv / cac : NaN;
+    var budget = isFinite(leads) ? leads * cpl : NaN;
+
+    document.getElementById('o-gp').textContent = money(gp);
+    document.getElementById('o-maxcac').textContent = money(maxCac);
+    document.getElementById('o-tgtcac').textContent = money(tgtCac);
+    document.getElementById('o-maxcpl').textContent = money(maxCpl);
+    document.getElementById('o-leads').textContent = isFinite(leads) ? Math.ceil(leads).toLocaleString('en-US') : '—';
+    document.getElementById('o-cac').textContent = money(cac);
+    document.getElementById('o-ratio').textContent = isFinite(ratio) ? ratio.toFixed(1) + ' : 1' : '—';
+    document.getElementById('o-budget').textContent = money(budget);
+
+    var v = document.getElementById('o-verdict');
+    if (!isFinite(cac) || !isFinite(ratio)) {
+      v.className = 'verdict warn';
+      v.textContent = 'Enter a lead-to-sale rate above zero to model this.';
+    } else if (cac > maxCac) {
+      v.className = 'verdict warn';
+      v.textContent = 'Losing money per sale. Your CAC of ' + money(cac) + ' exceeds the ' + money(maxCac) + ' of gross profit it generates. Fix the offer, the price or the close rate before adding budget.';
+    } else if (ratio < 2) {
+      v.className = 'verdict warn';
+      v.textContent = 'LTV:CAC below 2:1. Technically profitable per sale, but there is no headroom to scale on paid media. Raise AOV, repeat rate, or close rate first.';
+    } else if (ratio < 3) {
+      v.className = 'verdict warn';
+      v.textContent = 'Workable but tight at ' + ratio.toFixed(1) + ':1. Scale carefully and put real effort into stages 4 and 5 of the funnel.';
+    } else {
+      v.className = 'verdict ok';
+      v.textContent = 'Healthy at ' + ratio.toFixed(1) + ':1, with CAC comfortably under the ' + money(maxCac) + ' each sale generates. This account can take budget.';
+    }
+  }
+  ids.forEach(function(i){ el[i].addEventListener('input', calc); });
+  calc();
+
+  // nav highlight
+  var links = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (!en.isIntersecting) return;
+        var i = secs.indexOf(en.target);
+        if (i < 0) return;
+        links.forEach(function(l){ l.classList.remove('on'); });
+        links[i].classList.add('on');
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    secs.forEach(function(s){ if (s) io.observe(s); });
+  }
+})();
+</script>
