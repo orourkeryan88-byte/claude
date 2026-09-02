@@ -1,0 +1,337 @@
+<title>Instagram Outreach System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#EDEFF1;--surface:#FBFCFC;--surface-2:#E4E8EB;
+  --ink:#10161C;--ink-2:#3B4650;--muted:#68747F;
+  --line:#D3D9DE;--line-strong:#B6C0C8;
+  --accent:#2340C8;--accent-soft:#DEE3F8;
+  --signal:#9A5B06;--signal-soft:#F5E6CE;
+  --good:#186049;--good-soft:#D9EBE3;
+  --invert-bg:#10161C;--invert-fg:#EDEFF1;--invert-muted:#8A96A1;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}}
+:root[data-theme="dark"]{
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:38px 22px 110px}
+p{margin:0 0 14px}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.kicker{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.6vw,2.5rem);line-height:1.05;letter-spacing:-.024em;margin:.3em 0 0;text-wrap:balance}
+.sub{color:var(--ink-2);margin-top:14px}
+h2{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.02em;margin:0 0 10px}
+h3{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:30px 0 8px}
+.part{margin:52px 0 0;padding:16px 0 11px;border-bottom:2px solid var(--ink)}
+.part .n{font-family:var(--mono);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+.part .meta{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.note{color:var(--ink-2);margin:16px 0}
+
+ol.clicks{list-style:none;padding:0;margin:16px 0 0}
+li.click{display:grid;grid-template-columns:24px 30px 1fr;gap:11px;padding:15px 10px 15px 4px;border-bottom:1px solid var(--line);align-items:start}
+li.click:hover{background:var(--surface)}
+li.click.done .do{color:var(--muted);text-decoration:line-through}
+li.click.done .see,li.click.done .cn,li.click.done .tip{opacity:.5}
+li.click input{margin:5px 0 0;accent-color:var(--accent);width:17px;height:17px;flex:none;cursor:pointer}
+.cn{font-family:var(--mono);font-size:.75rem;color:var(--accent);padding-top:4px;font-variant-numeric:tabular-nums}
+.do{font-size:1.05rem;line-height:1.45}
+.do b{font-weight:700;font-family:var(--display);letter-spacing:-.005em}
+.see{font-size:.93rem;color:var(--muted);margin-top:7px;border-left:2px solid var(--line-strong);padding-left:11px}
+.tip{font-size:.93rem;color:var(--signal);margin-top:7px;border-left:2px solid var(--signal);padding-left:11px}
+
+.copyblock{border:1px solid var(--line);border-radius:4px;background:var(--surface);margin:11px 0 0;overflow:hidden}
+.copyhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 10px 7px 12px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.copyhead span{font-family:var(--mono);font-size:.59rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.copybtn{font-family:var(--mono);font-size:.59rem;letter-spacing:.09em;text-transform:uppercase;background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);border-radius:3px;padding:3px 9px;cursor:pointer}
+.copybtn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copyblock pre{margin:0;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.76rem;line-height:1.64;color:var(--ink-2);white-space:pre-wrap}
+
+.warn{border-left:3px solid var(--signal);background:var(--signal-soft);padding:15px 18px;border-radius:0 4px 4px 0;margin:22px 0}
+.warn > :last-child{margin-bottom:0}
+.warn .tag{font-family:var(--mono);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:6px}
+
+.stop{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:24px 26px;margin:34px 0}
+.stop .lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--invert-muted)}
+.stop p{margin:11px 0 0;color:var(--invert-fg)}
+.stop p.m{color:var(--invert-muted);font-size:.96rem}
+
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:400px}
+th{font-family:var(--mono);font-weight:500;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line-strong)}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+
+/* chat mock */
+.chat{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:16px;margin:18px 0;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:.95rem;line-height:1.45}
+.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:5px}
+.them{align-self:flex-start;background:var(--surface-2);color:var(--ink);border-bottom-left-radius:5px}
+.gap{align-self:center;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:3px 0}
+
+.day{display:grid;grid-template-columns:72px 1fr;gap:16px;padding:15px 0;border-bottom:1px solid var(--line)}
+.day:last-child{border-bottom:0}
+.day .d{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding-top:3px}
+.day .w{font-size:.98rem}
+.day .w b{font-family:var(--display);font-weight:600}
+.day .w em{display:block;color:var(--muted);font-size:.9rem;font-style:normal;margin-top:4px}
+
+footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--muted);line-height:1.85}
+@media (max-width:600px){.wrap{padding:26px 14px 80px}li.click{grid-template-columns:20px 26px 1fr;gap:9px}.day{grid-template-columns:60px 1fr;gap:12px}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="kicker">RELIER · System 1 · Instagram</span>
+  <h1>Getting calls booked through Instagram DMs</h1>
+  <p class="sub">No ads. No cold email. You talk to them about their own work first, and the business conversation happens later — because they started it.</p>
+</header>
+
+<!-- PART 1 -->
+<div class="part"><span class="n">Part 1</span><h2>Why this works</h2><div class="meta">Just reading · 2 min</div></div>
+
+<p><strong>Their Instagram is their portfolio and they're proud of it.</strong> A finished attic with the light coming in, a dormer going on, the crew on a roof at eight in the morning. They post it because they're good at it.</p>
+
+<p>Now think about who messages them there.</p>
+
+<p>Customers asking for prices. And people selling them things. That's it. <strong>Nobody ever messages them about the actual work.</strong></p>
+
+<p>So that's the gap. You talk to them about the job. Not about marketing, not about leads, not about you. Just the work. And because it's the only message of that kind they've had all month, they reply.</p>
+
+<div class="warn">
+  <span class="tag">The rule for the whole system</span>
+  <p><strong>You never pitch in the DMs.</strong> Not on message one, not on message five.</p>
+  <p style="margin-bottom:0">You have one conversation about their work, and one question that happens to be about their business. If they want to know what you do, they'll ask. Those are the only ones worth talking to anyway.</p>
+</div>
+
+<!-- PART 2 -->
+<div class="part"><span class="n">Part 2</span><h2>Fix your own profile first</h2><div class="meta">Do this before you message anyone</div></div>
+<p class="note">The second you message someone, they tap your name. If your profile is empty you've lost them, and you don't get a second go.</p>
+
+<ol class="clicks">
+<li class="click"><input type="checkbox"><span class="cn">1</span><div><div class="do">Put a real photo of your face as your profile picture.</div><div class="tip">Not a logo. They're deciding whether you're a real person or a bot. A face settles it in half a second.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">2</span><div><div class="do">Write a bio that says who you help, in their words.</div><div class="copyblock"><div class="copyhead"><span>Bio</span><button class="copybtn" data-copy>Copy</button></div><pre>Ryan · RELIER
+I get Irish trades a full diary without Checkatrade leads
+Dublin · one firm per area</pre></div>
+<div class="tip">"Digital marketing agency" means nothing to him. "Without Checkatrade leads" means something, because he's angry about it.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">3</span><div><div class="do">Post at least six things before you start messaging.</div><div class="see">A profile with three posts and nine followers reads as fake. Six real posts reads as small but genuine, which is fine.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">4</span><div><div class="do">Make the posts about trades, not about marketing.</div><div class="copyblock"><div class="copyhead"><span>Six posts to make this week</span><button class="copybtn" data-copy>Copy</button></div><pre>1. A screenshot of the Meta Ad Library showing how few Irish
+   attic firms advertise. "Nine firms in north Dublin. Two
+   running ads."
+
+2. Why hiding your prices costs you jobs.
+
+3. The five-minute rule — what happens when you ring a lead back
+   fast versus that evening.
+
+4. A photo of a good before-and-after (ask permission, or use
+   your own if you've done one).
+
+5. Feast or famine — booked till March, nothing after.
+
+6. What a €15 shared lead actually is.</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">5</span><div><div class="do">If the account is brand new, use it normally for a week before doing outreach.</div><div class="tip">Instagram blocks new accounts that suddenly start following and messaging lots of strangers. Scroll, like things, post. A week of normal use and you'll be fine.</div></div></li>
+</ol>
+
+<!-- PART 3 -->
+<div class="part"><span class="n">Part 3</span><h2>The five-day run for each firm</h2><div class="meta">This is the actual system</div></div>
+<p class="note">You do not message on day one. You show up in their notifications first, so your name is already familiar when the message arrives.</p>
+
+<div class="day"><div class="d">Day 1</div><div class="w"><b>Follow them. Like their three most recent posts.</b><em>That's it. Thirty seconds. Don't message.</em></div></div>
+<div class="day"><div class="d">Day 2</div><div class="w"><b>Leave one real comment on a job photo.</b><em>Specific, not "great work". Something like: "That's a serious bit of steel work for a dormer — how long did that one take you?" He'll usually reply to the comment itself.</em></div></div>
+<div class="day"><div class="d">Day 3</div><div class="w"><b>Reply to one of their stories, if they post them.</b><em>Story replies land straight in the DMs and feel completely normal. "Ha, that weather" is enough. Now you're in his inbox without having sent a cold message.</em></div></div>
+<div class="day"><div class="d">Day 4</div><div class="w"><b>Send the DM.</b><em>The one below. By now he's seen your name three times.</em></div></div>
+<div class="day"><div class="d">Day 8</div><div class="w"><b>If no reply — one more message, different angle.</b><em>Then leave it. Two messages is persistence. Four is harassment.</em></div></div>
+
+<h3>The DM</h3>
+<div class="copyblock"><div class="copyhead"><span>Message one</span><button class="copybtn" data-copy>Copy</button></div><pre>Dave — been seeing your stuff come up, that dormer in Clontarf
+was a lovely job. The way you got the light into it especially.
+
+Random question, and no agenda behind it — do you get much work
+off Instagram itself? Or is it all word of mouth?</pre></div>
+
+<p><strong>Why this one works, line by line:</strong></p>
+<ul>
+  <li><strong>You name an actual job.</strong> Not "your work" — <em>that dormer in Clontarf</em>. He knows instantly you've actually looked.</li>
+  <li><strong>You say something only a person who looked would say.</strong> The light. The steel. The tiling. One specific detail.</li>
+  <li><strong>"No agenda behind it"</strong> answers the question he's already asking.</li>
+  <li><strong>The question is genuinely interesting to him.</strong> Every trade owner has wondered whether the Instagram is worth the effort. Nobody's ever asked him.</li>
+  <li><strong>And it's the qualifying question in disguise.</strong> His answer tells you exactly where his work comes from — which is the thing you needed to know anyway.</li>
+</ul>
+
+<h3>If he doesn't reply — day 8</h3>
+<div class="copyblock"><div class="copyhead"><span>Message two</span><button class="copybtn" data-copy>Copy</button></div><pre>No bother if you're flat out Dave. One thing you might find
+useful either way — I had a look and there are nine attic firms
+within ten miles of you. Two of them are running ads. Everyone
+else is invisible.
+
+Thought you'd want to know. That's me done, I won't keep at you.</pre></div>
+<p>Then stop. "I won't keep at you" is a promise — keep it. About one in ten reply to <em>that</em> message specifically, because it's the first one that gave them something.</p>
+
+<!-- PART 4 -->
+<div class="part"><span class="n">Part 4</span><h2>When he replies</h2><div class="meta">Where most people ruin it</div></div>
+<p class="note">He said something back. Do not pitch. Have the conversation he thinks he's having.</p>
+
+<div class="chat">
+  <div class="msg me">Dave — been seeing your stuff come up, that dormer in Clontarf was a lovely job. The way you got the light into it especially.<br><br>Random question, and no agenda behind it — do you get much work off Instagram itself? Or is it all word of mouth?</div>
+  <div class="msg them">Cheers man. Bit of both to be honest. Mostly word of mouth and Checkatrade but they're gone very dear</div>
+  <div class="msg me">Ah I've heard that a lot lately. Are you finding the same lead is going to four or five lads?</div>
+  <div class="msg them">Every time. All price shoppers</div>
+  <div class="msg me">That'd drive you mad. Are you flat out at the minute anyway or would you take more on?</div>
+  <div class="msg them">Booked till about March but after that I'd want more</div>
+  <div class="gap">— this is the moment —</div>
+  <div class="msg me">Makes sense. That's actually what I do — I get lads like yourself booked out without the shared leads. Not pitching you here, you're grand till March. But if you want I'll show you what I'd run for you, 20 mins, and you can tell me if it's mad. No deck, no pressure.</div>
+</div>
+
+<p><strong>Read what happened there.</strong> Three messages about his work and his frustration. He told you his lead source, his complaint, and his capacity — the three things you needed — without being asked a single sales question.</p>
+
+<p>Then the pivot came with <strong>"you're grand till March"</strong> in it. You gave him permission to say no, in the same sentence as the ask. That's what makes it land.</p>
+
+<h3>What his answers actually mean</h3>
+<div class="tw"><table>
+  <thead><tr><th>He says</th><th>You do</th></tr></thead>
+  <tbody>
+    <tr><td>"Mostly word of mouth"</td><td><strong>Best possible answer.</strong> Nothing to displace, everything to gain. Push for the call.</td></tr>
+    <tr><td>"Checkatrade, they're dear"</td><td>He already pays for leads. Half the sale is done. Agree with him, then pivot.</td></tr>
+    <tr><td>"Flat out, booked for months"</td><td>Don't sell. Ask when the diary opens up. Note the date. Come back then — and he'll remember that you didn't push.</td></tr>
+    <tr><td>"Tried ads, waste of money"</td><td>Ask what he ran and how long. Almost always two weeks with nothing tracked.</td></tr>
+    <tr><td>Jobs under €6,000</td><td>Tell him honestly it wouldn't pay for itself. Walk away well. He'll mention you to someone.</td></tr>
+    <tr><td>"I've a lad doing that"</td><td>"Fair enough — are you happy with what you're getting?" Either yes, and you leave it, or he tells you exactly where the gap is.</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Booking it</h3>
+<div class="copyblock"><div class="copyhead"><span>Getting the time</span><button class="copybtn" data-copy>Copy</button></div><pre>Grand. Thursday morning or Friday after 5, whichever suits better?</pre></div>
+<div class="warn">
+  <span class="tag">Two times, never a link</span>
+  <p>Don't send a booking link into a DM. He's on his phone on a site and he won't open it.</p>
+  <p style="margin-bottom:0">Get him to say a day out loud first. <em>Then</em> send the link to lock it in — "grand, here's the link so it's in both our diaries." That's what starts your reminder system.</p>
+</div>
+
+<!-- PART 5 -->
+<div class="part"><span class="n">Part 5</span><h2>Tracking it in HighLevel</h2><div class="meta">10 steps · about 20 minutes · one time</div></div>
+<p class="note">HighLevel doesn't send the DMs. It just tells you who's on which day, so nobody gets forgotten and nobody gets messaged twice.</p>
+
+<ol class="clicks">
+<li class="click"><input type="checkbox"><span class="cn">6</span><div><div class="do">Left menu → <b>Contacts</b> → <b>Import Contacts</b>. Upload your prospect list.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">7</span><div><div class="do">During the import, add the tag <code>ig-outreach</code> to everyone.</div><div class="tip">This tag is the doorbell that starts everything.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">8</span><div><div class="do">Left menu → <b>Automation</b> → <b>Workflows</b> → <b>+ Create Workflow</b> → <b>Start from Scratch</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">9</span><div><div class="do">Rename it <b>Instagram Outreach</b>, top left.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">10</span><div><div class="do">Click <b>Add New Trigger</b> → search <code>tag</code> → <b>Contact Tag</b> → <b>Added</b> → pick <code>ig-outreach</code>. Save.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">11</span><div><div class="do">Add five tasks with <b>Wait</b> boxes between them, exactly like this.</div><div class="copyblock"><div class="copyhead"><span>The five-day run as tasks</span><button class="copybtn" data-copy>Copy</button></div><pre>Task:  "IG — follow + like 3 posts — {{contact.company_name}}"
+Wait 1 day
+Task:  "IG — leave a real comment on a job photo"
+Wait 1 day
+Task:  "IG — reply to a story"
+Wait 1 day
+Task:  "IG — SEND THE DM"
+Wait 4 days
+Task:  "IG — second message if no reply, then leave it"
+Wait 7 days
+Remove tag: ig-outreach
+Add tag:    long-list</pre></div>
+<div class="tip">Use <b>Time Delay</b> for these waits. There's no appointment involved, so counting from today is right.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">12</span><div><div class="do">Click <b>+</b> → add a <b>Goal Event</b> → tag <code>stage-booked</code> added → end the workflow.</div><div class="tip"><strong>Don't skip this.</strong> Otherwise a man who books on day 5 still gets a "second message" reminder on day 8. Messaging someone you've already signed makes you look like you're not paying attention.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">13</span><div><div class="do">Top right — flip <b>Draft</b> to <b>Publish</b>. Then <b>Save</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">14</span><div><div class="do">Open one contact and check the first task appeared.</div><div class="see">"IG — follow + like 3 posts — Attic Masters" sitting in your task list. If it's there, it works.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">15</span><div><div class="do">Connect Instagram so the replies land in HighLevel too.</div><div class="do" style="margin-top:6px"><b>Settings → Integrations → Facebook/Instagram.</b></div><div class="tip">Optional but worth it. You can still reply from the Instagram app — this just keeps a record of every conversation in one place.</div></div></li>
+</ol>
+
+<div class="stop">
+  <span class="lab">You're set up</span>
+  <p>Every morning, HighLevel tells you exactly who to follow, who to comment on, and who to message.</p>
+  <p class="m">Start with five firms, not all twenty-two. You want the messages to stay personal, and you want room to reply properly when people come back to you.</p>
+</div>
+
+<!-- PART 6 -->
+<div class="part"><span class="n">Part 6</span><h2>Your week, and the numbers</h2></div>
+
+<div class="tw"><table>
+  <thead><tr><th>When</th><th>What</th></tr></thead>
+  <tbody>
+    <tr><td>Morning<br>20 min</td><td>Open your tasks. Do what they say. Follows, comments, DMs.</td></tr>
+    <tr><td>Lunchtime</td><td>Check DMs. Reply to anyone who came back.</td></tr>
+    <tr><td>Evening<br>10 min</td><td>Check again. Tradesmen are on their phones after six.</td></tr>
+    <tr><td>Add new firms</td><td>Five new ones every Monday. No more.</td></tr>
+  </tbody>
+</table></div>
+
+<div class="warn">
+  <span class="tag">Don't go faster than this</span>
+  <p>Instagram will action-block you for following and messaging too many strangers in a day. It usually lasts 24 hours to a week and there's no appeal.</p>
+  <p style="margin-bottom:0">Ten to fifteen follows a day and three to five new DMs is safe. Slow is also better here — you cannot write a specific, genuine message about someone's work at volume anyway.</p>
+</div>
+
+<h3>What to expect</h3>
+<div class="tw"><table>
+  <thead><tr><th>Thing</th><th>Aim for</th></tr></thead>
+  <tbody>
+    <tr><td>DMs sent per week</td><td>15–20</td></tr>
+    <tr><td>Replies</td><td>5 or 6 of them</td></tr>
+    <tr><td>Real conversations</td><td>3</td></tr>
+    <tr><td>Calls booked</td><td>1</td></tr>
+  </tbody>
+</table></div>
+<p><strong>That reply rate is roughly double cold email</strong>, and it's because of the warm-up days and the fact you're asking about their work rather than pitching your own.</p>
+
+<div class="warn">
+  <span class="tag">If nobody's replying</span>
+  <p>It's almost always one of two things.</p>
+  <p><strong>Your message was generic.</strong> If it could be sent to any of the 22 firms without changing a word, it's not the message. Name the actual job, name the actual detail.</p>
+  <p style="margin-bottom:0"><strong>Or you skipped the warm-up.</strong> A DM from someone who followed you four days ago and left a decent comment is a different thing entirely from a DM out of nowhere. The three quiet days are doing more work than the message is.</p>
+</div>
+
+<footer>
+  RELIER — System 1, Instagram version · no ad spend<br>
+  You send every message by hand. HighLevel tracks who and when, it does not do the messaging.<br>
+  Five new firms a week, maximum. The whole thing works because it doesn't look automated — because it isn't.
+</footer>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var pre=btn.closest('.copyblock').querySelector('pre');
+      var done=function(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},1600);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pre.textContent).then(done,function(){btn.textContent='Select manually';});}
+      else{var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);done();}
+    });
+  });
+  var KEY='relier-ig-outreach-v1';
+  var steps=Array.prototype.slice.call(document.querySelectorAll('li.click'));
+  var boxes=steps.map(function(s){return s.querySelector('input');});
+  var saved=[];try{saved=JSON.parse(localStorage.getItem(KEY)||'[]')||[];}catch(e){saved=[];}
+  boxes.forEach(function(b,i){if(saved[i])b.checked=true;});
+  function render(){steps.forEach(function(s,i){s.classList.toggle('done',boxes[i].checked);});}
+  boxes.forEach(function(b){b.addEventListener('change',function(){
+    render();
+    try{localStorage.setItem(KEY,JSON.stringify(boxes.map(function(x){return x.checked?1:0;})));}catch(e){}
+  });});
+  render();
+})();
+</script>
