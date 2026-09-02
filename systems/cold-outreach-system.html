@@ -1,0 +1,361 @@
+<title>Cold Outreach System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#EDEFF1;--surface:#FBFCFC;--surface-2:#E4E8EB;
+  --ink:#10161C;--ink-2:#3B4650;--muted:#68747F;
+  --line:#D3D9DE;--line-strong:#B6C0C8;
+  --accent:#2340C8;--accent-soft:#DEE3F8;
+  --signal:#9A5B06;--signal-soft:#F5E6CE;
+  --good:#186049;--good-soft:#D9EBE3;
+  --invert-bg:#10161C;--invert-fg:#EDEFF1;--invert-muted:#8A96A1;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}}
+:root[data-theme="dark"]{
+  --paper:#0D1116;--surface:#151B22;--surface-2:#1E262E;
+  --ink:#E8ECEF;--ink-2:#B7C0C8;--muted:#8593A0;
+  --line:#28323B;--line-strong:#3A4650;
+  --accent:#8CA2FF;--accent-soft:#1B2440;
+  --signal:#E0A64C;--signal-soft:#33260F;
+  --good:#63C7A2;--good-soft:#0F2A22;
+  --invert-bg:#1E262E;--invert-fg:#E8ECEF;--invert-muted:#8593A0;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:38px 22px 110px}
+p{margin:0 0 14px}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.kicker{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.6vw,2.5rem);line-height:1.05;letter-spacing:-.024em;margin:.3em 0 0;text-wrap:balance}
+.sub{color:var(--ink-2);margin-top:14px}
+h2{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.02em;margin:0 0 10px}
+h3{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:30px 0 8px}
+.part{margin:52px 0 0;padding:16px 0 11px;border-bottom:2px solid var(--ink)}
+.part .n{font-family:var(--mono);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+.part .meta{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.note{color:var(--ink-2);margin:16px 0}
+
+.flowbox{margin:24px 0}
+.flowbox svg{width:100%;height:auto;display:block}
+.cap{font-family:var(--mono);font-size:.63rem;letter-spacing:.08em;color:var(--muted);text-align:center;margin-top:8px}
+
+ol.clicks{list-style:none;padding:0;margin:16px 0 0}
+li.click{display:grid;grid-template-columns:24px 30px 1fr;gap:11px;padding:15px 10px 15px 4px;border-bottom:1px solid var(--line);align-items:start}
+li.click:hover{background:var(--surface)}
+li.click.done .do{color:var(--muted);text-decoration:line-through}
+li.click.done .see,li.click.done .cn,li.click.done .tip{opacity:.5}
+li.click input{margin:5px 0 0;accent-color:var(--accent);width:17px;height:17px;flex:none;cursor:pointer}
+.cn{font-family:var(--mono);font-size:.75rem;color:var(--accent);padding-top:4px;font-variant-numeric:tabular-nums}
+.do{font-size:1.05rem;line-height:1.45}
+.do b{font-weight:700;font-family:var(--display);letter-spacing:-.005em}
+.see{font-size:.93rem;color:var(--muted);margin-top:7px;border-left:2px solid var(--line-strong);padding-left:11px}
+.tip{font-size:.93rem;color:var(--signal);margin-top:7px;border-left:2px solid var(--signal);padding-left:11px}
+
+.copyblock{border:1px solid var(--line);border-radius:4px;background:var(--surface);margin:11px 0 0;overflow:hidden}
+.copyhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 10px 7px 12px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.copyhead span{font-family:var(--mono);font-size:.59rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.copybtn{font-family:var(--mono);font-size:.59rem;letter-spacing:.09em;text-transform:uppercase;background:var(--surface);color:var(--accent);border:1px solid var(--line-strong);border-radius:3px;padding:3px 9px;cursor:pointer}
+.copybtn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copybtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copyblock pre{margin:0;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.75rem;line-height:1.62;color:var(--ink-2);white-space:pre-wrap}
+
+.warn{border-left:3px solid var(--signal);background:var(--signal-soft);padding:15px 18px;border-radius:0 4px 4px 0;margin:22px 0}
+.warn > :last-child{margin-bottom:0}
+.warn .tag{font-family:var(--mono);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:6px}
+
+.stop{background:var(--invert-bg);color:var(--invert-fg);border-radius:6px;padding:24px 26px;margin:34px 0}
+.stop .lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--invert-muted)}
+.stop p{margin:11px 0 0;color:var(--invert-fg)}
+.stop p.m{color:var(--invert-muted);font-size:.96rem}
+
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:400px}
+th{font-family:var(--mono);font-weight:500;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line-strong)}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+
+.script{border:1px solid var(--line);border-radius:6px;background:var(--surface);margin:20px 0;overflow:hidden}
+.script .sh{padding:12px 18px;background:var(--surface-2);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.script .sb{padding:6px 0}
+.script .row{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.script .row:last-child{border-bottom:0}
+.script .tm{font-family:var(--mono);font-size:.73rem;color:var(--accent);padding-top:2px}
+.script .wt{font-size:.97rem}
+.script .wt em{color:var(--muted);font-size:.92rem;display:block;margin-top:4px;font-style:normal}
+
+footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--muted);line-height:1.85}
+@media (max-width:600px){.wrap{padding:26px 14px 80px}li.click{grid-template-columns:20px 26px 1fr;gap:9px}.script .row{grid-template-columns:52px 1fr;gap:10px}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="kicker">RELIER · System 1 · No ads version</span>
+  <h1>Getting calls booked with cold outreach</h1>
+  <p class="sub">No ad spend. No landing page. You have 22 firms and a screen recorder. This is how you turn that into booked calls.</p>
+</header>
+
+<!-- PART 1 -->
+<div class="part"><span class="n">Part 1</span><h2>How it works</h2><div class="meta">Just reading · 2 min</div></div>
+
+<p>You record a short video about <em>their</em> business. You send it. You ask for nothing.</p>
+<p>Most of them ignore it. Some reply. You chat to the ones who reply, work out if they're any good, and book a call.</p>
+<p>Then you follow up with the quiet ones on a schedule, so nobody gets forgotten.</p>
+
+<div class="flowbox">
+  <svg viewBox="0 0 640 118" role="img" aria-label="Five steps: pick a firm, record a video, send it, follow up on a schedule, and when they reply you qualify and book a call.">
+    <g font-family="IBM Plex Mono, monospace">
+      <g><rect x="2" y="26" width="112" height="56" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="58" y="49" font-size="9" letter-spacing="1.2" fill="var(--accent)" text-anchor="middle">STEP 1</text>
+      <text x="58" y="67" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)" text-anchor="middle">Pick a firm</text></g>
+      <g><rect x="134" y="26" width="112" height="56" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="190" y="49" font-size="9" letter-spacing="1.2" fill="var(--accent)" text-anchor="middle">STEP 2</text>
+      <text x="190" y="67" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)" text-anchor="middle">Record 90s</text></g>
+      <g><rect x="266" y="26" width="112" height="56" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="322" y="49" font-size="9" letter-spacing="1.2" fill="var(--accent)" text-anchor="middle">STEP 3</text>
+      <text x="322" y="67" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)" text-anchor="middle">Send it</text></g>
+      <g><rect x="398" y="26" width="112" height="56" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+      <text x="454" y="49" font-size="9" letter-spacing="1.2" fill="var(--accent)" text-anchor="middle">STEP 4</text>
+      <text x="454" y="67" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--ink)" text-anchor="middle">Follow up</text></g>
+      <g><rect x="530" y="26" width="108" height="56" rx="5" fill="var(--good-soft)" stroke="var(--good)"/>
+      <text x="584" y="49" font-size="9" letter-spacing="1.2" fill="var(--good)" text-anchor="middle">THEY REPLY</text>
+      <text x="584" y="67" font-size="12" font-family="Archivo, sans-serif" font-weight="600" fill="var(--good)" text-anchor="middle">Book a call</text></g>
+      <g stroke="var(--line-strong)" stroke-width="1.5">
+        <line x1="116" y1="54" x2="130" y2="54"/><line x1="248" y1="54" x2="262" y2="54"/>
+        <line x1="380" y1="54" x2="394" y2="54"/><line x1="512" y1="54" x2="526" y2="54"/>
+      </g>
+      <text x="454" y="102" font-size="9" fill="var(--muted)" text-anchor="middle">day 3 · 10 · 24 · 45</text>
+    </g>
+  </svg>
+</div>
+
+<div class="warn">
+  <span class="tag">The one rule</span>
+  <p>You send these <strong>one at a time, from your own inbox, by hand.</strong></p>
+  <p style="margin-bottom:0">Do not use HighLevel to blast 22 emails at once. It looks like spam, it lands in junk, and it damages your domain so your <em>real</em> emails stop arriving too. HighLevel's job here is only to remind you who to chase and when.</p>
+</div>
+
+<!-- PART 2 -->
+<div class="part"><span class="n">Part 2</span><h2>Set it up in HighLevel</h2><div class="meta">14 steps · about 30 minutes · one time only</div></div>
+<p class="note">This builds the thing that tells you who to contact each day. You only do this once.</p>
+
+<ol class="clicks">
+<li class="click"><input type="checkbox"><span class="cn">1</span><div><div class="do">On the left menu, click <b>Contacts</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">2</span><div><div class="do">Top right, click <b>Import Contacts</b>. Upload your prospect list.</div><div class="see">A screen asking you to match up the columns from your file.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">3</span><div><div class="do">Match the columns: name, phone, email, and put the trade in <b>Trade Type</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">4</span><div><div class="do">Before you finish, find the box that lets you add a tag. Type <code>src-outbound</code>.</div><div class="tip">This tag is the doorbell. Everything else runs off it, so don't skip it.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">5</span><div><div class="do">Finish the import. Check your 22 people are there.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">6</span><div><div class="do">Left menu → <b>Automation</b>. Top tabs → <b>Workflows</b>. Then <b>+ Create Workflow</b> → <b>Start from Scratch</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">7</span><div><div class="do">Rename it, top left.</div><div class="copyblock"><div class="copyhead"><span>Name</span><button class="copybtn" data-copy>Copy</button></div><pre>Outreach Follow Ups</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">8</span><div><div class="do">Click <b>Add New Trigger</b>. Search <code>tag</code>. Click <b>Contact Tag</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">9</span><div><div class="do">Set it to <b>Added</b>, and pick the tag <code>src-outbound</code>. Save Trigger.</div><div class="see">Your doorbell is now: "whenever someone gets that sticker."</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">10</span><div><div class="do">Click <b>+</b>. Search <code>task</code>. Click <b>Create Task</b>. Fill it in like this and save.</div><div class="copyblock"><div class="copyhead"><span>Task 1 — due today</span><button class="copybtn" data-copy>Copy</button></div><pre>Title:  Record + send video — {{contact.company_name}}
+Due:    0 days
+Assign: you</pre></div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">11</span><div><div class="do">Now add four more, each with a <b>Wait</b> box in between.</div><div class="copyblock"><div class="copyhead"><span>The rest of the chain</span><button class="copybtn" data-copy>Copy</button></div><pre>Wait 3 days
+Task:  "Nudge — did that video come through?"
+
+Wait 7 days
+Task:  "Second video, different angle"
+
+Wait 14 days
+Task:  "Ring them — mid morning, between jobs"
+
+Wait 21 days
+Remove Tag: src-outbound
+Add Tag:    long-list</pre></div>
+<div class="tip">Use <b>Time Delay</b> for these waits, not Appointment Time. There's no appointment involved here, so counting from today is exactly right.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">12</span><div><div class="do">Now the important bit. Click <b>+</b> and add a <b>Goal Event</b>.</div><div class="do" style="margin-top:7px">Set it to: tag <code>stage-booked</code> added → then end the workflow.</div><div class="tip"><strong>Don't skip this one.</strong> Without it, someone who books a call on day 4 still gets a "ring them" reminder on day 24. Chasing a man you've already signed makes you look like you're not paying attention.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">13</span><div><div class="do">Top right, flip <b>Draft</b> to <b>Publish</b>. Click <b>Save</b>.</div></div></li>
+<li class="click"><input type="checkbox"><span class="cn">14</span><div><div class="do">Go to <b>Contacts</b>, open one person, and check a task appeared for them.</div><div class="see">A task in your list saying "Record + send video — [their name]". If it's there, it works.</div></div></li>
+</ol>
+
+<div class="stop">
+  <span class="lab">That's the setup done</span>
+  <p>HighLevel will now hand you a list of who to contact, every day, forever. You never have to remember anyone again.</p>
+  <p class="m">The rest of this page is what you actually say. That part is the work.</p>
+</div>
+
+<!-- PART 3 -->
+<div class="part"><span class="n">Part 3</span><h2>The video</h2><div class="meta">90 seconds · this is the whole system</div></div>
+<p class="note">Free tool: <b>Loom</b>. Install it, click record, share your screen, talk. It gives you a link when you stop.</p>
+
+<div class="script">
+  <div class="sh">What to have open before you hit record</div>
+  <div class="sb">
+    <div class="row"><div class="tm">Tab 1</div><div class="wt">Their website or Facebook page</div></div>
+    <div class="row"><div class="tm">Tab 2</div><div class="wt">The Meta Ad Library, searched for their trade in a nearby town<em>facebook.com/ads/library — set country to Ireland, type "attic conversions"</em></div></div>
+  </div>
+</div>
+
+<div class="script">
+  <div class="sh">What to say</div>
+  <div class="sb">
+    <div class="row"><div class="tm">0:00</div><div class="wt">"Hi Dave, Ryan here. I was having a look at your site this morning."<em>Show their site. Use his actual name and his actual business.</em></div></div>
+    <div class="row"><div class="tm">0:15</div><div class="wt">"There's a crowd over in Swords running four ads right now. Here they are. You're running none."<em>Switch to the Ad Library tab. Show them.</em></div></div>
+    <div class="row"><div class="tm">0:45</div><div class="wt">"The one thing I'd change on your side is this…"<em>Pick ONE thing. Their price isn't shown. Their photos are buried. Their form asks for too much. One thing, not five.</em></div></div>
+    <div class="row"><div class="tm">1:15</div><div class="wt">"No pitch, I just thought it might be useful. If you want the other two things I spotted, say the word."<em>Then stop. Don't ask for a call.</em></div></div>
+  </div>
+</div>
+
+<div class="warn">
+  <span class="tag">Why you don't ask for a call</span>
+  <p>He's braced for a pitch. The second you ask for something, he stops watching and deletes it.</p>
+  <p style="margin-bottom:0">Give it away for free and a few of them will ask <em>you</em> what you do. Those ones are already sold.</p>
+</div>
+
+<!-- PART 4 -->
+<div class="part"><span class="n">Part 4</span><h2>What you send</h2><div class="meta">Copy these · swap the names</div></div>
+
+<h3>Day 0 — the first email</h3>
+<p>Send it from your normal inbox. The subject line is just his company name. Nothing else.</p>
+<div class="copyblock"><div class="copyhead"><span>First email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: Attic Masters
+
+Dave — made you a 90-second video about your site, no pitch attached.
+
+[paste your Loom link]
+
+If it's useful I'll send the other two things I spotted. If not,
+ignore me and I won't chase.
+
+Ryan</pre></div>
+<p><strong>Leave "I won't chase" in.</strong> It's the line that gets replies, because it removes the exact thing he's dreading. And it's true — you don't chase, you send a different video instead.</p>
+<p>Send the same thing as an Instagram DM too, if they have one. Takes ten seconds and it often lands better than email.</p>
+
+<h3>Day 3 — the nudge</h3>
+<div class="copyblock"><div class="copyhead"><span>Nudge</span><button class="copybtn" data-copy>Copy</button></div><pre>Did that come through alright, Dave?</pre></div>
+<p>That's the whole message. Reply to your own email so the video is underneath it.</p>
+
+<h3>Day 10 — a second video</h3>
+<p>New recording, different angle. Do not mention the first one.</p>
+<div class="copyblock"><div class="copyhead"><span>Second video email</span><button class="copybtn" data-copy>Copy</button></div><pre>Subject: One more thing on Attic Masters
+
+Dave — spotted something else on your Google listing. 60 seconds:
+
+[paste link]
+
+Ryan</pre></div>
+
+<h3>Day 24 — ring him</h3>
+<p>Mid-morning, between 10 and 11. He's between jobs and not on a roof.</p>
+<div class="copyblock"><div class="copyhead"><span>What to say on the phone</span><button class="copybtn" data-copy>Copy</button></div><pre>"Dave? Ryan here, I sent you a couple of videos about your website —
+not sure if they landed. I won't keep you. Are you taking on
+much new work at the minute, or are you flat out?"</pre></div>
+<p>Then listen. That question does the qualifying for you.</p>
+
+<!-- PART 5 -->
+<div class="part"><span class="n">Part 5</span><h2>When someone replies</h2><div class="meta">This is where it gets real</div></div>
+<p class="note">Reply fast. Within an hour if you can. Then ask these four questions — <strong>one at a time</strong>, waiting for each answer.</p>
+
+<div class="copyblock"><div class="copyhead"><span>The four questions</span><button class="copybtn" data-copy>Copy</button></div><pre>1. How many jobs a month are you doing now, and how many
+   could you handle?
+
+2. What's an average job for you, roughly?
+
+3. Where's the work coming from at the moment?
+
+4. When someone rings, who picks up?</pre></div>
+<p>Never paste all four at once. A list of questions looks like a form and gets ignored.</p>
+
+<h3>What his answers mean</h3>
+<div class="tw"><table>
+  <thead><tr><th>He says</th><th>You do</th></tr></thead>
+  <tbody>
+    <tr><td>"Booked out, couldn't take more"</td><td>Don't sell. Ask when his diary frees up, write it down, come back then.</td></tr>
+    <tr><td>Average job under €6,000</td><td>Tell him straight it won't pay for itself, and move on. He'll remember you for that.</td></tr>
+    <tr><td>"All word of mouth"</td><td><strong>This is the good one.</strong> Book him.</td></tr>
+    <tr><td>"Tried Facebook ads, waste of money"</td><td>Ask what he ran and for how long. Usually two weeks with nothing tracked. Easy to explain.</td></tr>
+    <tr><td>"The wife takes the calls"</td><td>Fine. Someone answers. That's what matters.</td></tr>
+    <tr><td>"I've got someone doing that"</td><td>Ask what he's getting from them. Either he's happy — leave it — or you've just found your way in.</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Booking the call</h3>
+<div class="copyblock"><div class="copyhead"><span>The ask</span><button class="copybtn" data-copy>Copy</button></div><pre>Right, that all stacks up. I'd rather show you than type it —
+20 minutes on a call, I'll walk you through what I'd run for you
+specifically and you can tell me if it's mad. No pitch deck, no
+pressure. Does Thursday morning suit?</pre></div>
+<div class="warn">
+  <span class="tag">Give him two times, not a link</span>
+  <p>"Thursday morning or Friday afternoon?" works. A calendar link does not — he's on a phone, on a site, and he won't open it.</p>
+  <p style="margin-bottom:0">Once he says a time out loud, <em>then</em> send the booking link to lock it in. That's what starts your reminder system.</p>
+</div>
+<p>Last thing: in HighLevel, put the tag <code>stage-booked</code> on him. That switches off his follow-up reminders automatically.</p>
+
+<!-- PART 6 -->
+<div class="part"><span class="n">Part 6</span><h2>Your actual week</h2><div class="meta">This is the bit that decides whether it works</div></div>
+<p class="note">The system doesn't fail because the videos are bad. It fails because people do four of them and stop.</p>
+
+<div class="tw"><table>
+  <thead><tr><th>When</th><th>What</th></tr></thead>
+  <tbody>
+    <tr><td>Every morning<br>8:00–9:00</td><td>Open your task list in HighLevel. Do whatever it tells you. Usually three videos, or a nudge and a phone call.</td></tr>
+    <tr><td>Through the day</td><td>Reply to anyone who replied. Within the hour.</td></tr>
+    <tr><td>Friday</td><td>Count what you sent. Write the number down.</td></tr>
+  </tbody>
+</table></div>
+
+<h3>The numbers to expect</h3>
+<div class="tw"><table>
+  <thead><tr><th>Thing</th><th>Aim for</th></tr></thead>
+  <tbody>
+    <tr><td>Videos sent per week</td><td>15</td></tr>
+    <tr><td>Replies</td><td>3 out of every 15</td></tr>
+    <tr><td>Calls booked</td><td>1 out of every 4 who reply</td></tr>
+    <tr><td>They turn up</td><td>7 out of 10 (that's System 4's job)</td></tr>
+    <tr><td>They sign</td><td>1 in 4 of the ones who turn up</td></tr>
+  </tbody>
+</table></div>
+<p>Work that through and 22 firms, done properly, is roughly your first client. Which is why you don't add a 23rd name until all 22 have had the full run.</p>
+
+<div class="warn">
+  <span class="tag">If you're getting no replies at all</span>
+  <p>Fewer than 1 in 15 replying means the message is wrong, not the market.</p>
+  <p style="margin-bottom:0">Nine times out of ten it's because the video was about you instead of about them. Watch your last one back. If you say "I" more than you say their name, that's the problem.</p>
+</div>
+
+<footer>
+  RELIER — System 1, cold outreach version · no ad spend<br>
+  Send every email by hand from your own inbox. HighLevel tracks who and when; it does not do the sending.<br>
+  Most of these firms are limited companies. For any that are sole traders, keep it to their listed business contact and always give them an easy way to tell you to stop.
+</footer>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var pre=btn.closest('.copyblock').querySelector('pre');
+      var done=function(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},1600);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pre.textContent).then(done,function(){btn.textContent='Select manually';});}
+      else{var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);done();}
+    });
+  });
+  var KEY='relier-outreach-v1';
+  var steps=Array.prototype.slice.call(document.querySelectorAll('li.click'));
+  var boxes=steps.map(function(s){return s.querySelector('input');});
+  var saved=[];try{saved=JSON.parse(localStorage.getItem(KEY)||'[]')||[];}catch(e){saved=[];}
+  boxes.forEach(function(b,i){if(saved[i])b.checked=true;});
+  function render(){steps.forEach(function(s,i){s.classList.toggle('done',boxes[i].checked);});}
+  boxes.forEach(function(b){b.addEventListener('change',function(){
+    render();
+    try{localStorage.setItem(KEY,JSON.stringify(boxes.map(function(x){return x.checked?1:0;})));}catch(e){}
+  });});
+  render();
+})();
+</script>
